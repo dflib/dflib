@@ -5,6 +5,7 @@ import org.dflib.DataFrame;
 import org.dflib.IntSeries;
 import org.dflib.RowSet;
 import org.dflib.Series;
+import org.dflib.Sorter;
 import org.dflib.range.Range;
 import org.dflib.series.IntSequenceSeries;
 
@@ -19,11 +20,11 @@ public class RangeRowSet extends BaseRowSet {
     private final int toExclusive;
 
     public RangeRowSet(DataFrame source, int fromInclusive, int toExclusive) {
-        this(source, -1, null, fromInclusive, toExclusive);
+        this(source, -1, null, null, fromInclusive, toExclusive);
     }
 
-    protected RangeRowSet(DataFrame source, int expansionColumn, int[] uniqueKeyColumns, int fromInclusive, int toExclusive) {
-        super(source, expansionColumn, uniqueKeyColumns);
+    protected RangeRowSet(DataFrame source, int expansionColumn, int[] uniqueKeyColumns, Sorter[] sorters, int fromInclusive, int toExclusive) {
+        super(source, expansionColumn, uniqueKeyColumns, sorters);
 
         Range.checkRange(fromInclusive, toExclusive - fromInclusive, source.height());
 
@@ -34,13 +35,18 @@ public class RangeRowSet extends BaseRowSet {
     @Override
     public RowSet expand(int columnPos) {
         return this.expansionColumn != columnPos
-                ? new RangeRowSet(source, columnPos, uniqueKeyColumns, fromInclusive, toExclusive)
+                ? new RangeRowSet(source, columnPos, uniqueKeyColumns, sorters, fromInclusive, toExclusive)
                 : this;
     }
 
     @Override
     public RowSet unique(int... uniqueKeyColumns) {
-        return new RangeRowSet(source, expansionColumn, uniqueKeyColumns, fromInclusive, toExclusive);
+        return new RangeRowSet(source, expansionColumn, uniqueKeyColumns, sorters, fromInclusive, toExclusive);
+    }
+
+    @Override
+    public RowSet sort(Sorter... sorters) {
+        return new RangeRowSet(source, expansionColumn, uniqueKeyColumns, sorters, fromInclusive, toExclusive);
     }
 
     @Override

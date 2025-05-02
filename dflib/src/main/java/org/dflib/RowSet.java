@@ -90,28 +90,36 @@ public interface RowSet {
     DataFrame merge(RowToValueMapper<?>... mappers);
 
     /**
-     * Sorts the RowSet, applying provided sorters and returns a DataFrame with the sorted rows from the RowSet merged
-     * into the original DataFrame.
+     * Configures the RowSet to sort rows, applying provided sorters.
+     *
+     * @since 2.0.0
      */
-    DataFrame sort(Sorter... sorters);
+    RowSet sort(Sorter... sorters);
 
     /**
-     * Sorts the RowSet based on the specified column and returns a DataFrame with the sorted rows from the RowSet merged
-     * into the original DataFrame.
+     * Configures the RowSet to sort rows based on the specified column.
+     *
+     * @since 2.0.0
      */
-    default DataFrame sort(int sortCol, boolean ascending) {
+    default RowSet sort(int sortCol, boolean ascending) {
         return sort(new int[]{sortCol}, new boolean[]{ascending});
     }
 
     /**
-     * Sorts the RowSet based on the specified column and returns a DataFrame with the sorted rows from the RowSet merged
-     * into the original DataFrame.
+     * Configures the RowSet to sort rows based on the specified column.
+     *
+     * @since 2.0.0
      */
-    default DataFrame sort(String sortCol, boolean ascending) {
+    default RowSet sort(String sortCol, boolean ascending) {
         return sort(new String[]{sortCol}, new boolean[]{ascending});
     }
 
-    default DataFrame sort(int[] sortCols, boolean[] ascending) {
+    /**
+     * Configures the RowSet to sort rows based on the specified columns.
+     *
+     * @since 2.0.0
+     */
+    default RowSet sort(int[] sortCols, boolean[] ascending) {
         int len = sortCols.length;
         Sorter[] sorters = new Sorter[len];
         for (int i = 0; i < len; i++) {
@@ -121,7 +129,12 @@ public interface RowSet {
         return sort(sorters);
     }
 
-    default DataFrame sort(String[] sortCols, boolean[] ascending) {
+    /**
+     * Configures the RowSet to sort rows based on the specified columns.
+     *
+     * @since 2.0.0
+     */
+    default RowSet sort(String[] sortCols, boolean[] ascending) {
         int len = sortCols.length;
         Sorter[] sorters = new Sorter[len];
         for (int i = 0; i < len; i++) {
@@ -130,7 +143,6 @@ public interface RowSet {
 
         return sort(sorters);
     }
-
 
     /**
      * Returns a new DataFrame with the RowSet rows only. No transformation is applied to columns. If the RowSet

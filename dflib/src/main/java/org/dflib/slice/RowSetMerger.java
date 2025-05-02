@@ -41,7 +41,7 @@ class RowSetMerger {
         IntSeries mergeIndex = new IntSequenceSeries(0, source.height());
         return new RowSetMerger(source, DataFrame.empty(source.getColumnsIndex()), mergeIndex);
     }
-    
+
     public static RowSetMerger ofAll(DataFrame source) {
         IntSeries mergeIndex = new IntReverseSequenceSeries(-1, -1 - source.height());
         return new RowSetMerger(source, source, mergeIndex);
@@ -222,6 +222,10 @@ class RowSetMerger {
     }
 
     public RowSetMerger sort(Sorter... sorters) {
+        if (sorters == null || sorters.length == 0) {
+            return this;
+        }
+
         IntSeries sortIndex = IntComparator.of(rowSet, sorters).sortIndex(rowSet.height());
         DataFrame sortedRowSet = rowSet.rows(sortIndex).select();
         return new RowSetMerger(source, sortedRowSet, mergeIndex);

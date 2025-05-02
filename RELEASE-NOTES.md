@@ -16,6 +16,7 @@
 * #474 "$decimalVal(..)" improvements
 * #475 "$bigintVal(..)" String argument flavor
 * #478 ifNull($col(...), $col(...)) does not compile
+* #479 "RowSet.sort()" as a non-terminal operation
 * #483 Upgrade ECharts to 5.6.0
 * #484 Upgrade Parquet and Hadoop
 * #486 ColumnSet.compact()

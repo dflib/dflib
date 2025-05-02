@@ -3,7 +3,7 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-public class RowSet_SortByColTest {
+public class RowSet_MergeSortByColPosTest {
 
     @Test
     public void all() {
@@ -14,7 +14,8 @@ public class RowSet_SortByColTest {
                         4, "e", "k",
                         0, "f", "g")
                 .rows()
-                .sort("a", true);
+                .sort(0, true)
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(4)
@@ -33,7 +34,8 @@ public class RowSet_SortByColTest {
                         4, "e", "k", // <--
                         0, "f", "g") // <--
                 .rows(Series.ofInt(0, 2, 3))
-                .sort("a", true);
+                .sort(0, true)
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(4)

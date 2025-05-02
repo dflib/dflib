@@ -51,6 +51,7 @@ public class DefaultRowColumnSet implements RowColumnSet {
                 .apply(merger)
                 .syncSourceColumnsFromRowSet()
                 .unique(rowSet.uniqueKeyColumns)
+                .sort(rowSet.sorters)
                 .merge();
     }
 

@@ -17,24 +17,29 @@ public class IndexedRowSet extends BaseRowSet {
     private final IntSeries intIndex;
 
     public IndexedRowSet(DataFrame source, IntSeries intIndex) {
-        this(source, -1, null, intIndex);
+        this(source, -1, null, null, intIndex);
     }
 
-    protected IndexedRowSet(DataFrame source, int expansionColumn, int[] uniqueKeyColumns, IntSeries intIndex) {
-        super(source, expansionColumn, uniqueKeyColumns);
+    protected IndexedRowSet(DataFrame source, int expansionColumn, int[] uniqueKeyColumns, Sorter[] sorters, IntSeries intIndex) {
+        super(source, expansionColumn, uniqueKeyColumns, sorters);
         this.intIndex = intIndex;
     }
 
     @Override
     public RowSet expand(int columnPos) {
         return this.expansionColumn != columnPos
-                ? new IndexedRowSet(source, columnPos, null, intIndex)
+                ? new IndexedRowSet(source, columnPos, null, sorters, intIndex)
                 : this;
     }
 
     @Override
     public RowSet unique(int... uniqueKeyColumns) {
-        return new IndexedRowSet(source, expansionColumn, uniqueKeyColumns, intIndex);
+        return new IndexedRowSet(source, expansionColumn, uniqueKeyColumns, sorters, intIndex);
+    }
+
+    @Override
+    public RowSet sort(Sorter... sorters) {
+        return new IndexedRowSet(source, expansionColumn, uniqueKeyColumns, sorters, intIndex);
     }
 
     @Override
@@ -52,15 +57,6 @@ public class IndexedRowSet extends BaseRowSet {
         }
 
         return new ConditionalRowSet(source, Series.ofBool(condition)).select();
-    }
-
-    @Override
-    public DataFrame sort(Sorter... sorters) {
-        if (intIndex.size() < 2) {
-            return source;
-        }
-
-        return super.sort(sorters);
     }
 
     @Override

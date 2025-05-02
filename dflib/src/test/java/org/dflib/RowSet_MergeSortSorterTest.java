@@ -5,7 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-public class RowSet_SortTest {
+import static org.dflib.Exp.$col;
+import static org.dflib.Exp.$int;
+
+public class RowSet_MergeSortSorterTest {
 
     @Test
     public void all() {
@@ -17,7 +20,8 @@ public class RowSet_SortTest {
                         0, "f", "g",
                         1, "m", "n")
                 .rows()
-                .sort(Exp.$int("a").asc(), Exp.$str("b").desc());
+                .sort(Exp.$int("a").asc(), Exp.$str("b").desc())
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(5)
@@ -26,6 +30,32 @@ public class RowSet_SortTest {
                 .expectRow(2, 1, "m", "n")
                 .expectRow(3, 2, "y", "b")
                 .expectRow(4, 4, "e", "k");
+    }
+
+    @Test
+    public void all_overTransformedColumn() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        -1, "x", "a",
+                        2, "y", "b",
+                        4, "e", "k",
+                        0, "f", "g",
+                        1, "m", "n")
+                .rows()
+                .sort(Exp.$int("a").asc())
+                .merge(
+                        $int("a").mapVal(i -> -i),
+                        $col("b"),
+                        $col("c")
+                );
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(5)
+                .expectRow(0, -4, "e", "k" )
+                .expectRow(1, -2, "y", "b")
+                .expectRow(2, -1, "m", "n")
+                .expectRow(3, 0, "f", "g")
+                .expectRow(4, 1, "x", "a");
     }
 
     @Test
@@ -38,7 +68,8 @@ public class RowSet_SortTest {
                         0, "f", "g", // <--
                         1, "m", "n") // <--
                 .rows(Series.ofInt(0, 3, 4))
-                .sort(Exp.$int("a").asc(), Exp.$str("b").desc());
+                .sort(Exp.$int("a").asc(), Exp.$str("b").desc())
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(5)
@@ -59,7 +90,8 @@ public class RowSet_SortTest {
                         0, "f", "g", // <--
                         1, "m", "n")
                 .rowsRange(1, 4)
-                .sort(Exp.$int("a").asc(), Exp.$str("b").desc());
+                .sort(Exp.$int("a").asc(), Exp.$str("b").desc())
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(5)
@@ -80,7 +112,8 @@ public class RowSet_SortTest {
                         0, "f", "g", // <--
                         1, "m", "n") // <--
                 .rows(Series.ofBool(true, false, false, true, true))
-                .sort(Exp.$int("a").asc(), Exp.$str("b").desc());
+                .sort(Exp.$int("a").asc(), Exp.$str("b").desc())
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(5)
@@ -101,7 +134,8 @@ public class RowSet_SortTest {
                         0, "f", "g",
                         1, "m", "n")
                 .rowsSample(3, new Random(9))
-                .sort(Exp.$int("a").asc(), Exp.$str("b").desc());
+                .sort(Exp.$int("a").asc(), Exp.$str("b").desc())
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(5)

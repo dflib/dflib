@@ -21,11 +21,18 @@ public abstract class BaseRowSet implements RowSet {
     protected final DataFrame source;
     protected final int expansionColumn;
     protected final int[] uniqueKeyColumns;
+    protected final Sorter[] sorters;
 
-    protected BaseRowSet(DataFrame source, int expansionColumn, int[] uniqueKeyColumns) {
+    protected BaseRowSet(
+            DataFrame source,
+            int expansionColumn,
+            int[] uniqueKeyColumns,
+            Sorter[] sorters) {
+
         this.source = source;
         this.expansionColumn = expansionColumn;
         this.uniqueKeyColumns = uniqueKeyColumns;
+        this.sorters = sorters;
     }
 
     @Override
@@ -68,20 +75,6 @@ public abstract class BaseRowSet implements RowSet {
         return expand(source.getColumnsIndex().position(columnName));
     }
 
-
-    @Override
-    public DataFrame sort(Sorter... sorters) {
-
-        if (sorters.length == 0) {
-            return source;
-        }
-
-        return createMerger()
-                .expand(expansionColumn)
-                .unique(uniqueKeyColumns)
-                .sort(sorters)
-                .merge();
-    }
 
     @Override
     public RowSet unique() {
@@ -131,6 +124,7 @@ public abstract class BaseRowSet implements RowSet {
         return columnMapStep
                 .apply(selector)
                 .unique(uniqueKeyColumns)
+                .sort(sorters)
                 .select();
     }
 
@@ -190,6 +184,7 @@ public abstract class BaseRowSet implements RowSet {
         return columnMapStep
                 .apply(merger)
                 .unique(uniqueKeyColumns)
+                .sort(sorters)
                 .merge();
     }
 

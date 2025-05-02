@@ -242,23 +242,23 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame insertRow(int pos, Map<String, Object> row);
 
     default DataFrame sort(Sorter... sorters) {
-        return rows().sort(sorters);
+        return rows().sort(sorters).merge();
     }
 
     default DataFrame sort(String column, boolean ascending) {
-        return rows().sort(column, ascending);
+        return rows().sort(column, ascending).merge();
     }
 
     default DataFrame sort(int column, boolean ascending) {
-        return rows().sort(column, ascending);
+        return rows().sort(column, ascending).merge();
     }
 
     default DataFrame sort(String[] columns, boolean[] ascending) {
-        return rows().sort(columns, ascending);
+        return rows().sort(columns, ascending).merge();
     }
 
     default DataFrame sort(int[] columns, boolean[] ascending) {
-        return rows().sort(columns, ascending);
+        return rows().sort(columns, ascending).merge();
     }
 
     /**

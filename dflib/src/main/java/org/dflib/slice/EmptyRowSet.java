@@ -18,7 +18,7 @@ import java.util.function.UnaryOperator;
 public class EmptyRowSet extends BaseRowSet {
 
     public EmptyRowSet(DataFrame source) {
-        super(source, -1, null);
+        super(source, -1, null, null);
     }
 
     @Override
@@ -66,8 +66,8 @@ public class EmptyRowSet extends BaseRowSet {
     }
 
     @Override
-    public DataFrame sort(Sorter... sorters) {
-        return source;
+    public RowSet sort(Sorter... sorters) {
+        return this;
     }
 
     @Override

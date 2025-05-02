@@ -4,7 +4,9 @@ import org.dflib.ColumnDataFrame;
 import org.dflib.DataFrame;
 import org.dflib.IntSeries;
 import org.dflib.Series;
+import org.dflib.Sorter;
 import org.dflib.f.IntObjectFunction2;
+import org.dflib.sort.IntComparator;
 
 import java.util.function.UnaryOperator;
 
@@ -77,6 +79,16 @@ class RowSetSelector {
         }
 
         return new RowSetSelector(new ColumnDataFrame(null, rowSet.getColumnsIndex(), cols));
+    }
+
+    public RowSetSelector sort(Sorter... sorters) {
+        if (sorters == null || sorters.length == 0) {
+            return this;
+        }
+
+        IntSeries sortIndex = IntComparator.of(rowSet, sorters).sortIndex(rowSet.height());
+        DataFrame sortedRowSet = rowSet.rows(sortIndex).select();
+        return new RowSetSelector(sortedRowSet);
     }
 
     public DataFrame select() {
