@@ -39,10 +39,10 @@ public abstract class RowSetMerger {
         if (ei > 0) {
             int[] miCombined = Arrays.copyOf(mi, srcLen + ei);
             System.arraycopy(mie, 0, miCombined, srcLen, ei);
-            return new DefaultRowSetMerger(miCombined);
+            return new IndexedRowSetMerger(miCombined);
         }
 
-        return new DefaultRowSetMerger(mi);
+        return new IndexedRowSetMerger(mi);
     }
 
     public static RowSetMerger of(BooleanSeries rowIndex) {
@@ -51,7 +51,7 @@ public abstract class RowSetMerger {
         for (int i = 0, rsi = 0; i < h; i++) {
             mergeIndex[i] = rowIndex.getBool(i) ? -rsi++ - 1 : i;
         }
-        return new DefaultRowSetMerger(mergeIndex);
+        return new IndexedRowSetMerger(mergeIndex);
     }
 
     public static RowSetMerger ofAll() {

@@ -26,7 +26,7 @@ class AllRowSetMerger extends RowSetMerger {
             // else - delete row (don't add to the produced index)
         }
 
-        return new DefaultRowSetMerger(shrunkIndex);
+        return new IndexedRowSetMerger(shrunkIndex);
     }
 
     @Override
@@ -46,6 +46,6 @@ class AllRowSetMerger extends RowSetMerger {
             et += explodeBy - 1;
         }
 
-        return new DefaultRowSetMerger(explodeIndex);
+        return new IndexedRowSetMerger(explodeIndex);
     }
 }

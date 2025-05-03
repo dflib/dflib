@@ -4,7 +4,7 @@ import org.dflib.BooleanSeries;
 import org.dflib.IntSeries;
 import org.dflib.Series;
 
-class DefaultRowSetMerger extends RowSetMerger {
+class IndexedRowSetMerger extends RowSetMerger {
 
     // An index to reconstruct a Series from the original source and a transformed row set. It encodes a source
     // of row value in each position (source Series, or transformed row set series), and also implicitly allows
@@ -18,7 +18,7 @@ class DefaultRowSetMerger extends RowSetMerger {
 
     private final int[] mergeIndex;
 
-    DefaultRowSetMerger(int[] mergeIndex) {
+    IndexedRowSetMerger(int[] mergeIndex) {
         this.mergeIndex = mergeIndex;
     }
 
@@ -62,7 +62,7 @@ class DefaultRowSetMerger extends RowSetMerger {
             }
         }
 
-        return new DefaultRowSetMerger(shrunkIndex);
+        return new IndexedRowSetMerger(shrunkIndex);
     }
 
     @Override
@@ -90,6 +90,6 @@ class DefaultRowSetMerger extends RowSetMerger {
             }
         }
 
-        return new DefaultRowSetMerger(explodeIndex);
+        return new IndexedRowSetMerger(explodeIndex);
     }
 }
