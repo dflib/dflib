@@ -22,6 +22,7 @@
 * #487 Series.compact()
 * #488 Upgrade Apache POI to 5.4.1
 * #489 Fix resource management for HttpByteSource
+* #490 ECharts: BarSeriesOpts.barWidth
 
 ## Release 2.0.0-M2
 
