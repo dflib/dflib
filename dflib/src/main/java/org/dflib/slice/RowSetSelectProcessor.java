@@ -76,17 +76,22 @@ class RowSetSelectProcessor {
     }
 
     public DataFrame select(Index index) {
-        Series<?>[] cols = uniqueIndex != null ? selectUnique(rowSelection) : rowSelection;
+        Series<?>[] cols = rowSelection();
         DataFrame df = selectAndMap(index, cols);
         return colMapper != null ? selectColMapper(df) : df;
     }
 
-    private Series[] selectUnique(Series<?>[] src) {
-        int w = src.length;
+    private Series[] rowSelection() {
+        if (uniqueIndex == null) {
+            return rowSelection;
+        }
+
+        int w = rowSelection.length;
         Series<?>[] cols = new Series[w];
         for (int i = 0; i < w; i++) {
-            cols[i] = src[i].select(uniqueIndex);
+            cols[i] = rowSelection[i].select(uniqueIndex);
         }
+        
         return cols;
     }
 
