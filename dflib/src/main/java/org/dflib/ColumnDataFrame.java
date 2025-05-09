@@ -313,12 +313,12 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     public RowSet rows() {
-        return height() > 0 ? new AllRowSet(this, dataColumns) : new EmptyRowSet(this, dataColumns);
+        return height() > 0 ? new AllRowSet(this) : new EmptyRowSet(this);
     }
 
     @Override
     public RowSet rows(IntSeries positions) {
-        return positions.size() > 0 ? new IndexedRowSet(this, dataColumns, positions) : new EmptyRowSet(this, dataColumns);
+        return positions.size() > 0 ? new IndexedRowSet(this, positions) : new EmptyRowSet(this);
     }
 
     @Override
@@ -329,7 +329,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public RowSet rows(BooleanSeries condition) {
-        return new ConditionalRowSet(this, dataColumns, condition);
+        return new ConditionalRowSet(this, condition);
     }
 
     @Override
@@ -338,9 +338,9 @@ public class ColumnDataFrame implements DataFrame {
         if (h == 0) {
             return new EmptyRowSet(this);
         } else if (h == height()) {
-            return new AllRowSet(this, dataColumns);
+            return new AllRowSet(this);
         } else {
-            return new RangeRowSet(this, dataColumns, fromInclusive, toExclusive);
+            return new RangeRowSet(this, fromInclusive, toExclusive);
         }
     }
 

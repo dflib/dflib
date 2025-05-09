@@ -16,25 +16,25 @@ public class IndexedRowSet extends BaseRowSet {
 
     private final IntSeries intIndex;
 
-    public IndexedRowSet(DataFrame source, Series<?>[] sourceColumns, IntSeries intIndex) {
-        this(source, sourceColumns, -1, null, intIndex);
+    public IndexedRowSet(DataFrame source, IntSeries intIndex) {
+        this(source, -1, null, intIndex);
     }
 
-    protected IndexedRowSet(DataFrame source, Series<?>[] sourceColumns, int expansionColumn, int[] uniqueKeyColumns, IntSeries intIndex) {
-        super(source, sourceColumns, expansionColumn, uniqueKeyColumns);
+    protected IndexedRowSet(DataFrame source, int expansionColumn, int[] uniqueKeyColumns, IntSeries intIndex) {
+        super(source, expansionColumn, uniqueKeyColumns);
         this.intIndex = intIndex;
     }
 
     @Override
     public RowSet expand(int columnPos) {
         return this.expansionColumn != columnPos
-                ? new IndexedRowSet(source, sourceColumns, columnPos, null, intIndex)
+                ? new IndexedRowSet(source, columnPos, null, intIndex)
                 : this;
     }
 
     @Override
     public RowSet unique(int... uniqueKeyColumns) {
-        return new IndexedRowSet(source, sourceColumns, expansionColumn, uniqueKeyColumns, intIndex);
+        return new IndexedRowSet(source, expansionColumn, uniqueKeyColumns, intIndex);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class IndexedRowSet extends BaseRowSet {
             condition[intIndex.getInt(i)] = false;
         }
 
-        return new ConditionalRowSet(source, sourceColumns, Series.ofBool(condition)).select();
+        return new ConditionalRowSet(source, Series.ofBool(condition)).select();
     }
 
     @Override
@@ -83,17 +83,12 @@ public class IndexedRowSet extends BaseRowSet {
     }
 
     @Override
-    protected int size() {
-        return intIndex.size();
-    }
-
-    @Override
     protected <T> Series<T> selectCol(Series<T> sourceColumn) {
         return sourceColumn.select(intIndex);
     }
 
     @Override
-    protected RowSetMerger merger() {
-        return RowSetMerger.of(source.height(), intIndex);
+    protected RowSetMerger createMerger() {
+        return RowSetMerger.ofIndex(source, selectRows(), intIndex);
     }
 }

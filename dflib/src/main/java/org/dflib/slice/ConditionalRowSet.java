@@ -13,35 +13,34 @@ public class ConditionalRowSet extends BaseRowSet {
 
     private final BooleanSeries conditionalIndex;
 
-    public ConditionalRowSet(DataFrame source, Series<?>[] sourceColumns, BooleanSeries conditionalIndex) {
-        this(source, sourceColumns, -1, null, conditionalIndex);
+    public ConditionalRowSet(DataFrame source, BooleanSeries conditionalIndex) {
+        this(source, -1, null, conditionalIndex);
     }
 
     protected ConditionalRowSet(
             DataFrame source,
-            Series<?>[] sourceColumns,
             int expansionColumn,
             int[] uniqueColumns,
             BooleanSeries conditionalIndex) {
-        super(source, sourceColumns, expansionColumn, uniqueColumns);
+        super(source, expansionColumn, uniqueColumns);
         this.conditionalIndex = conditionalIndex;
     }
 
     @Override
     public RowSet expand(int columnPos) {
         return this.expansionColumn != columnPos
-                ? new ConditionalRowSet(source, sourceColumns, columnPos, uniqueKeyColumns, conditionalIndex)
+                ? new ConditionalRowSet(source, columnPos, uniqueKeyColumns, conditionalIndex)
                 : this;
     }
 
     @Override
     public RowSet unique(int... uniqueKeyColumns) {
-        return new ConditionalRowSet(source, sourceColumns, expansionColumn, uniqueKeyColumns, conditionalIndex);
+        return new ConditionalRowSet(source, expansionColumn, uniqueKeyColumns, conditionalIndex);
     }
 
     @Override
     public DataFrame drop() {
-        return new ConditionalRowSet(source, sourceColumns, conditionalIndex.not()).select();
+        return new ConditionalRowSet(source, conditionalIndex.not()).select();
     }
 
     @Override
@@ -55,11 +54,6 @@ public class ConditionalRowSet extends BaseRowSet {
     }
 
     @Override
-    protected int size() {
-        return conditionalIndex.countTrue();
-    }
-
-    @Override
     protected <T> Series<T> selectCol(Series<T> sourceColumn) {
         // TODO: an implicitly lazy impl instead of Series.select(..) to avoid evaluation of unneeded columns when
         //  calculating DefaultRowColumnSet
@@ -67,7 +61,7 @@ public class ConditionalRowSet extends BaseRowSet {
     }
 
     @Override
-    protected RowSetMerger merger() {
-        return RowSetMerger.of(conditionalIndex);
+    protected RowSetMerger createMerger() {
+        return RowSetMerger.ofCondition(source, selectRows(), conditionalIndex);
     }
 }

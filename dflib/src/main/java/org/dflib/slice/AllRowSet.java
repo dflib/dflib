@@ -13,24 +13,24 @@ import org.dflib.series.TrueSeries;
  */
 public class AllRowSet extends BaseRowSet {
 
-    public AllRowSet(DataFrame source, Series<?>[] sourceColumns) {
-        this(source, sourceColumns, -1, null);
+    public AllRowSet(DataFrame source) {
+        this(source, -1, null);
     }
 
-    protected AllRowSet(DataFrame source, Series<?>[] sourceColumns, int expansionColumn, int[] uniqueColumns) {
-        super(source, sourceColumns, expansionColumn, uniqueColumns);
+    protected AllRowSet(DataFrame source, int expansionColumn, int[] uniqueColumns) {
+        super(source, expansionColumn, uniqueColumns);
     }
 
     @Override
     public RowSet expand(int columnPos) {
         return this.expansionColumn != columnPos
-                ? new AllRowSet(source, sourceColumns, columnPos, uniqueKeyColumns)
+                ? new AllRowSet(source, columnPos, uniqueKeyColumns)
                 : this;
     }
 
     @Override
     public RowSet unique(int... uniqueKeyColumns) {
-        return new AllRowSet(source, sourceColumns, expansionColumn, uniqueKeyColumns);
+        return new AllRowSet(source, expansionColumn, uniqueKeyColumns);
     }
 
     @Override
@@ -49,17 +49,12 @@ public class AllRowSet extends BaseRowSet {
     }
 
     @Override
-    protected int size() {
-        return source.height();
-    }
-
-    @Override
     protected <T> Series<T> selectCol(Series<T> sourceColumn) {
         return sourceColumn;
     }
 
     @Override
-    protected RowSetMerger merger() {
-        return RowSetMerger.ofAll();
+    protected RowSetMerger createMerger() {
+        return RowSetMerger.ofAll(source);
     }
 }

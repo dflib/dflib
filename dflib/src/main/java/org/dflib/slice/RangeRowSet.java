@@ -18,12 +18,12 @@ public class RangeRowSet extends BaseRowSet {
     private final int fromInclusive;
     private final int toExclusive;
 
-    public RangeRowSet(DataFrame source, Series<?>[] sourceColumns, int fromInclusive, int toExclusive) {
-        this(source, sourceColumns, -1, null, fromInclusive, toExclusive);
+    public RangeRowSet(DataFrame source, int fromInclusive, int toExclusive) {
+        this(source, -1, null, fromInclusive, toExclusive);
     }
 
-    protected RangeRowSet(DataFrame source, Series<?>[] sourceColumns, int expansionColumn, int[] uniqueKeyColumns, int fromInclusive, int toExclusive) {
-        super(source, sourceColumns, expansionColumn, uniqueKeyColumns);
+    protected RangeRowSet(DataFrame source, int expansionColumn, int[] uniqueKeyColumns, int fromInclusive, int toExclusive) {
+        super(source, expansionColumn, uniqueKeyColumns);
 
         Range.checkRange(fromInclusive, toExclusive - fromInclusive, source.height());
 
@@ -34,19 +34,20 @@ public class RangeRowSet extends BaseRowSet {
     @Override
     public RowSet expand(int columnPos) {
         return this.expansionColumn != columnPos
-                ? new RangeRowSet(source, sourceColumns, columnPos, uniqueKeyColumns, fromInclusive, toExclusive)
+                ? new RangeRowSet(source, columnPos, uniqueKeyColumns, fromInclusive, toExclusive)
                 : this;
     }
 
     @Override
     public RowSet unique(int... uniqueKeyColumns) {
-        return new RangeRowSet(source, sourceColumns, expansionColumn, uniqueKeyColumns, fromInclusive, toExclusive);
+        return new RangeRowSet(source, expansionColumn, uniqueKeyColumns, fromInclusive, toExclusive);
     }
 
     @Override
     public DataFrame drop() {
         int srcLen = source.height();
-        int[] index = new int[srcLen - size()];
+        int rowSetLen = toExclusive - fromInclusive;
+        int[] index = new int[srcLen - rowSetLen];
 
         int ii = 0;
         for (int i = 0; i < fromInclusive; i++) {
@@ -57,7 +58,7 @@ public class RangeRowSet extends BaseRowSet {
             index[ii++] = i;
         }
 
-        return new IndexedRowSet(source, sourceColumns, Series.ofInt(index)).select();
+        return new IndexedRowSet(source, Series.ofInt(index)).select();
     }
 
     @Override
@@ -74,17 +75,12 @@ public class RangeRowSet extends BaseRowSet {
     }
 
     @Override
-    protected int size() {
-        return toExclusive - fromInclusive;
-    }
-
-    @Override
     protected <T> Series<T> selectCol(Series<T> sourceColumn) {
         return sourceColumn.selectRange(fromInclusive, toExclusive);
     }
 
     @Override
-    protected RowSetMerger merger() {
-        return RowSetMerger.ofRange(source.height(), fromInclusive, toExclusive);
+    protected RowSetMerger createMerger() {
+        return RowSetMerger.ofRange(source, selectRows(), fromInclusive, toExclusive);
     }
 }
