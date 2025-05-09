@@ -1,6 +1,7 @@
 ## Release 1.4.0
 
 * #492 "IntSequenceSeries.copyToInt(..)" is broken
+* #501 ExcelLoader modifies Excel files it opens
 
 ## Release 1.3.0
 
