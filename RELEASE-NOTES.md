@@ -1,3 +1,7 @@
+## Release 1.4.0
+
+* #492 "IntSequenceSeries.copyToInt(..)" is broken
+
 ## Release 1.3.0
 
 * #457 MissingFormatWidthException when printing Series with all empty strings
