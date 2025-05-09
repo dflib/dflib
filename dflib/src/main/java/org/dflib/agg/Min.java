@@ -7,10 +7,6 @@ import org.dflib.Series;
  */
 public class Min {
 
-    public static int ofRange(int first) {
-        return first;
-    }
-
     public static int ofArray(int[] ints, int start, int len) {
 
         if (len == 0) {

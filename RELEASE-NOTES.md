@@ -23,6 +23,7 @@
 * #488 Upgrade Apache POI to 5.4.1
 * #489 Fix resource management for HttpByteSource
 * #490 ECharts: BarSeriesOpts.barWidth
+* #493 IntReverseSequenceSeries - decreasing sequential IntSeries
 
 ## Release 2.0.0-M2
 

@@ -7,10 +7,6 @@ import org.dflib.Series;
  */
 public class Max {
 
-    public static int ofRange(int lastExclusive) {
-        return lastExclusive - 1;
-    }
-
     public static int ofArray(int[] ints, int start, int len) {
 
         if (len == 0) {

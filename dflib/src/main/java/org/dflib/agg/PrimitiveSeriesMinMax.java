@@ -8,11 +8,11 @@ package org.dflib.agg;
 public class PrimitiveSeriesMinMax {
 
     public static int minOfRange(int first) {
-        return Min.ofRange(first);
+        return first;
     }
 
     public static int maxOfRange(int lastExclusive) {
-        return Max.ofRange(lastExclusive);
+        return lastExclusive - 1;
     }
 
     public static int minOfArray(int[] ints, int start, int len) {
