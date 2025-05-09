@@ -40,12 +40,12 @@ public class IntSequenceSeries extends IntBaseSeries {
 
     @Override
     public void copyToInt(int[] to, int fromOffset, int toOffset, int len) {
-        if (fromOffset + len > toExclusive) {
+        if (fromOffset + len > size()) {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
         }
 
         for (int i = 0; i < len; i++) {
-            to[toOffset + i] = fromInclusive + i;
+            to[toOffset + i] = fromOffset + fromInclusive + i;
         }
     }
 
