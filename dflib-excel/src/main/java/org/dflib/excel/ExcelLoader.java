@@ -218,7 +218,7 @@ public class ExcelLoader {
         Objects.requireNonNull(file, "Null file");
 
         try {
-            return WorkbookFactory.create(file);
+            return WorkbookFactory.create(file, null, true);
         } catch (IOException e) {
             throw new RuntimeException("Error reading file: " + file, e);
         }
