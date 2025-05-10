@@ -30,37 +30,37 @@ public abstract class BaseRowSet implements RowSet {
 
     @Override
     public RowColumnSet cols() {
-        return new DefaultRowColumnSet(source, this, df -> df.cols());
+        return new DefaultRowColumnSet(this, df -> df.cols());
     }
 
     @Override
     public RowColumnSet cols(String... columns) {
-        return new DefaultRowColumnSet(source, this, df -> df.cols(columns));
+        return new DefaultRowColumnSet(this, df -> df.cols(columns));
     }
 
     @Override
     public RowColumnSet cols(Index columnsIndex) {
-        return new DefaultRowColumnSet(source, this, df -> df.cols(columnsIndex));
+        return new DefaultRowColumnSet(this, df -> df.cols(columnsIndex));
     }
 
     @Override
     public RowColumnSet cols(int... columns) {
-        return new DefaultRowColumnSet(source, this, df -> df.cols(columns));
+        return new DefaultRowColumnSet(this, df -> df.cols(columns));
     }
 
     @Override
     public RowColumnSet cols(Predicate<String> condition) {
-        return new DefaultRowColumnSet(source, this, df -> df.cols(condition));
+        return new DefaultRowColumnSet(this, df -> df.cols(condition));
     }
 
     @Override
     public RowColumnSet colsExcept(String... columns) {
-        return new DefaultRowColumnSet(source, this, df -> df.colsExcept(columns));
+        return new DefaultRowColumnSet(this, df -> df.colsExcept(columns));
     }
 
     @Override
     public RowColumnSet colsExcept(int... columns) {
-        return new DefaultRowColumnSet(source, this, df -> df.colsExcept(columns));
+        return new DefaultRowColumnSet(this, df -> df.colsExcept(columns));
     }
 
     @Override
@@ -68,44 +68,6 @@ public abstract class BaseRowSet implements RowSet {
         return expand(source.getColumnsIndex().position(columnName));
     }
 
-    @Override
-    public DataFrame merge() {
-        if (source.width() == 0) {
-            return source;
-        }
-
-        return createAndConfigMerger().mapColumns((i, rowsAsDf) -> rowsAsDf.getColumn(i)).merge();
-    }
-
-    @Override
-    public DataFrame merge(Exp<?>... exps) {
-
-        int w = exps.length;
-        if (w != source.width()) {
-            throw new IllegalArgumentException("The number of column expressions (" + w + ") is different from the DataFrame width (" + source.width() + ")");
-        }
-
-        return createAndConfigMerger().mapColumns((i, rowsAsDf) -> exps[i].eval(rowsAsDf)).merge();
-    }
-
-    @Override
-    public DataFrame merge(RowToValueMapper<?>... mappers) {
-
-        int w = mappers.length;
-        if (w != source.width()) {
-            throw new IllegalArgumentException("The number of column mappers (" + w + ") is different from the DataFrame width (" + source.width() + ")");
-        }
-
-        return createAndConfigMerger().mapColumns((i, rowsAsDf) -> new RowMappedSeries<>(rowsAsDf, mappers[i])).merge();
-    }
-
-    @Override
-    public DataFrame merge(RowMapper mapper) {
-
-        return createAndConfigMerger()
-                .mapDf(df -> df.cols(source.getColumnsIndex()).merge(mapper))
-                .merge();
-    }
 
     @Override
     public DataFrame sort(Sorter... sorters) {
@@ -114,7 +76,11 @@ public abstract class BaseRowSet implements RowSet {
             return source;
         }
 
-        return createAndConfigMerger().sort(sorters).merge();
+        return createMerger()
+                .expand(expansionColumn)
+                .unique(uniqueKeyColumns)
+                .sort(sorters)
+                .merge();
     }
 
     @Override
@@ -129,22 +95,7 @@ public abstract class BaseRowSet implements RowSet {
 
     @Override
     public DataFrame select() {
-        return createAndConfigSelector().select();
-    }
-
-    @Override
-    public DataFrame selectAs(Map<String, String> oldToNewNames) {
-        return createAndConfigSelector().select().cols().selectAs(oldToNewNames);
-    }
-
-    @Override
-    public DataFrame selectAs(UnaryOperator<String> renamer) {
-        return createAndConfigSelector().select().cols().selectAs(renamer);
-    }
-
-    @Override
-    public DataFrame selectAs(String... newColumnNames) {
-        return createAndConfigSelector().select().cols().selectAs(newColumnNames);
+        return runSelect(s -> s);
     }
 
     @Override
@@ -154,9 +105,7 @@ public abstract class BaseRowSet implements RowSet {
             throw new IllegalArgumentException("The number of column expressions (" + w + ") is different from the DataFrame width (" + source.width() + ")");
         }
 
-        return createAndConfigSelector()
-                .mapColumns((i, rowsAsDf) -> exps[i].eval(rowsAsDf))
-                .select();
+        return runSelect(s -> s.mapColumns((i, rowSet) -> exps[i].eval(rowSet)));
     }
 
     @Override
@@ -166,26 +115,82 @@ public abstract class BaseRowSet implements RowSet {
             throw new IllegalArgumentException("The number of column mappers (" + w + ") is different from the DataFrame width (" + source.width() + ")");
         }
 
-        return createAndConfigSelector()
-                .mapColumns((i, rowsAsDf) -> new RowMappedSeries<>(rowsAsDf, mappers[i]))
-                .select();
+        return runSelect(s -> s.mapColumns((i, rowSet) -> new RowMappedSeries<>(rowSet, mappers[i])));
     }
 
     @Override
     public DataFrame select(RowMapper mapper) {
-        return createAndConfigSelector().mapDf(df -> df.cols(source.getColumnsIndex()).merge(mapper)).select();
+        return runSelect(s -> s.mapDf(rowSet -> rowSet.cols(source.getColumnsIndex()).merge(mapper)));
     }
 
-    protected RowSetMerger createAndConfigMerger() {
-        return createMerger()
-                .expand(expansionColumn)
-                .unique(uniqueKeyColumns);
+    // executes a standard select sequence with a single customizable step
+    private DataFrame runSelect(UnaryOperator<RowSetSelector> columnMapStep) {
+        RowSetSelector selector = createSelector()
+                .expand(expansionColumn);
+
+        return columnMapStep
+                .apply(selector)
+                .unique(uniqueKeyColumns)
+                .select();
     }
 
-    protected RowSetSelector createAndConfigSelector() {
-        return createSelector()
-                .expand(expansionColumn)
-                .unique(uniqueKeyColumns);
+    @Override
+    public DataFrame selectAs(Map<String, String> oldToNewNames) {
+        return select().cols().selectAs(oldToNewNames);
+    }
+
+    @Override
+    public DataFrame selectAs(UnaryOperator<String> renamer) {
+        return select().cols().selectAs(renamer);
+    }
+
+    @Override
+    public DataFrame selectAs(String... newColumnNames) {
+        return select().cols().selectAs(newColumnNames);
+    }
+
+    @Override
+    public DataFrame merge() {
+        return runMerge(m -> m);
+    }
+
+    @Override
+    public DataFrame merge(Exp<?>... exps) {
+
+        int w = exps.length;
+        if (w != source.width()) {
+            throw new IllegalArgumentException("The number of column expressions (" + w + ") is different from the DataFrame width (" + source.width() + ")");
+        }
+
+        return runMerge(m -> m.mapColumns((i, rowSet) -> exps[i].eval(rowSet)));
+    }
+
+    @Override
+    public DataFrame merge(RowToValueMapper<?>... mappers) {
+
+        int w = mappers.length;
+        if (w != source.width()) {
+            throw new IllegalArgumentException("The number of column mappers (" + w + ") is different from the DataFrame width (" + source.width() + ")");
+        }
+
+        return runMerge(m -> m.mapColumns((i, rowSet) -> new RowMappedSeries<>(rowSet, mappers[i])));
+    }
+
+    @Override
+    public DataFrame merge(RowMapper mapper) {
+        return runMerge(m -> m.mapDf(df -> df.cols(source.getColumnsIndex()).merge(mapper)));
+    }
+
+    // executes a standard merge sequence with a single customizable step
+    private DataFrame runMerge(UnaryOperator<RowSetMerger> columnMapStep) {
+
+        RowSetMerger merger = createMerger()
+                .expand(expansionColumn);
+
+        return columnMapStep
+                .apply(merger)
+                .unique(uniqueKeyColumns)
+                .merge();
     }
 
     protected abstract RowSetMerger createMerger();

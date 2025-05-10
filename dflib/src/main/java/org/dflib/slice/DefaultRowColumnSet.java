@@ -13,52 +13,44 @@ import java.util.function.UnaryOperator;
 
 public class DefaultRowColumnSet implements RowColumnSet {
 
-    private final DataFrame source;
     private final BaseRowSet rowSet;
     private final Function<DataFrame, ColumnSet> columnSetMaker;
 
-    public DefaultRowColumnSet(
-            DataFrame source,
-            BaseRowSet rowSet,
-            Function<DataFrame, ColumnSet> columnSetMaker) {
-        this.source = source;
+    public DefaultRowColumnSet(BaseRowSet rowSet, Function<DataFrame, ColumnSet> columnSetMaker) {
         this.rowSet = rowSet;
         this.columnSetMaker = columnSetMaker;
     }
 
     @Override
     public DataFrame merge() {
-        return rowSet
-                .createAndConfigMerger()
-                .mapDf(df -> columnSetMaker.apply(df).merge())
-                .syncSourceColumnsFromRowSet()
-                .merge();
+        return runMerge(m -> m.mapDf(rowSet -> columnSetMaker.apply(rowSet).merge()));
     }
 
     @Override
     public DataFrame merge(Exp<?>... exps) {
-        return rowSet
-                .createAndConfigMerger()
-                .mapDf(df -> columnSetMaker.apply(df).merge(exps))
-                .syncSourceColumnsFromRowSet()
-                .merge();
+        return runMerge(m -> m.mapDf(rowSet -> columnSetMaker.apply(rowSet).merge(exps)));
     }
 
     @Override
     public DataFrame merge(RowMapper mapper) {
-        return rowSet
-                .createAndConfigMerger()
-                .mapDf(df -> columnSetMaker.apply(df).merge(mapper))
-                .syncSourceColumnsFromRowSet()
-                .merge();
+        return runMerge(m -> m.mapDf(rowSet -> columnSetMaker.apply(rowSet).merge(mapper)));
     }
 
     @Override
     public DataFrame merge(RowToValueMapper<?>... mappers) {
-        return rowSet
-                .createAndConfigMerger()
-                .mapDf(df -> columnSetMaker.apply(df).merge(mappers))
+        return runMerge(m -> m.mapDf(rowSet -> columnSetMaker.apply(rowSet).merge(mappers)));
+    }
+
+    // executes a standard merge sequence with a single customizable step
+    private DataFrame runMerge(UnaryOperator<RowSetMerger> columnMapStep) {
+        RowSetMerger merger = rowSet
+                .createMerger()
+                .expand(rowSet.expansionColumn);
+
+        return columnMapStep
+                .apply(merger)
                 .syncSourceColumnsFromRowSet()
+                .unique(rowSet.uniqueKeyColumns)
                 .merge();
     }
 

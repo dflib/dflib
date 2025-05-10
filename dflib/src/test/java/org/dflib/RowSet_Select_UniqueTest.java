@@ -4,6 +4,7 @@ import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.$col;
+import static org.dflib.Exp.$int;
 
 public class RowSet_Select_UniqueTest {
 
@@ -53,6 +54,31 @@ public class RowSet_Select_UniqueTest {
                 .expectRow(1, 2, "x", "b")
                 .expectRow(2, 1, "f", "g")
                 .expectRow(3, 1, "m", "n");
+    }
+
+    @Test
+    public void all_overTransformedColumn() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        3, "x", "a",
+                        2, "y", "b",
+                        5, "e", "k",
+                        7, "f", "g",
+                        9, "m", "n")
+                .rows()
+
+                // "unique" must be applied to the target column, not the source
+                .unique("a")
+                .select(
+                        $int("a").mod(2),
+                        $col("b"),
+                        $col("c")
+                );
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(2)
+                .expectRow(0, 1, "x", "a")
+                .expectRow(1, 0, "y", "b");
     }
 
     @Test
