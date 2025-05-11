@@ -94,6 +94,7 @@ public interface FloatValueMapper<V> {
     /**
      * @deprecated in favor of {@link #ofStr(float)}
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     static FloatValueMapper<String> fromString(float forNull) {
         return ofStr(forNull);
     }
