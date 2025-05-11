@@ -8,7 +8,6 @@ import org.dflib.Series;
 import org.dflib.builder.BoolBuilder;
 import org.dflib.exp.Exp2;
 
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
@@ -65,13 +64,6 @@ public class MapCondition2<L, R> extends Exp2<L, R, Boolean> implements Conditio
                 Series.ofVal(left.reduce(s), 1),
                 Series.ofVal(right.reduce(s), 1)
         ).get(0);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o)
-                ? Objects.equals(op, ((MapCondition2) o).op)
-                : false;
     }
 
     protected BooleanSeries doEval(Series<L> left, Series<R> right) {
