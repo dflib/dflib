@@ -7,6 +7,7 @@ import java.util.List;
 
 import static org.dflib.Exp.*;
 
+@Deprecated
 public class ColumnSet_SelectExpandTest {
 
     @Test

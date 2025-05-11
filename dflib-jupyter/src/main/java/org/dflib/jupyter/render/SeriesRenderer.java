@@ -17,6 +17,6 @@ public class SeriesRenderer implements RenderFunction<Series> {
 
     @Override
     public void render(Series s, RenderContext context) {
-        context.renderIfRequested(MIMEType.TEXT_PLAIN, () -> printer.toString(s));
+        context.renderIfRequested(MIMEType.TEXT_PLAIN, () -> printer.print(s));
     }
 }

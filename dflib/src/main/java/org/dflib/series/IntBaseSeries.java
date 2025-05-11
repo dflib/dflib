@@ -10,16 +10,15 @@ import org.dflib.SeriesGroupBy;
 import org.dflib.Sorter;
 import org.dflib.ValueMapper;
 import org.dflib.ValueToRowMapper;
+import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.ObjectAccum;
 import org.dflib.builder.UniqueIntAccum;
-import org.dflib.concat.SeriesConcat;
 import org.dflib.groupby.SeriesGrouper;
 import org.dflib.map.Mapper;
 import org.dflib.sample.Sampler;
 import org.dflib.sort.IntComparator;
 import org.dflib.sort.IntTimSort;
-import org.dflib.sort.SeriesSorter;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -136,9 +135,8 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public IntSeries sort(Sorter... sorters) {
-        // TODO: can't use "sortInt(IntComparator), as "Comparators.of(s, sorters)" is not compatible.
-        //   Need to analyze why.
-        return selectAsIntSeries(new SeriesSorter<>(this).sortIndex(sorters));
+        IntSeries index = IntComparator.of(this, sorters).sortIndex(size());
+        return selectAsIntSeries(index);
     }
 
     @Override
@@ -174,18 +172,14 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public IntSeries sortIndexInt() {
-        return doSortIndexInt((i1, i2) -> getInt(i1) - getInt(i2));
+        IntComparator comparator = (i1, i2) -> getInt(i1) - getInt(i2);
+        return comparator.sortIndex(size());
     }
 
     @Override
     public IntSeries sortIndexInt(IntComparator comparator) {
-        return doSortIndexInt((i1, i2) -> comparator.compare(getInt(i1), getInt(i2)));
-    }
-
-    private IntSeries doSortIndexInt(IntComparator comparator) {
-        int[] mutableIndex = SeriesSorter.rowNumberSequence(size());
-        IntTimSort.sort(mutableIndex, comparator);
-        return new IntArraySeries(mutableIndex);
+        IntComparator resolvedComparator = (i1, i2) -> comparator.compare(getInt(i1), getInt(i2));
+        return resolvedComparator.sortIndex(size());
     }
 
     private IntSeries selectAsIntSeries(IntSeries positions) {
@@ -218,33 +212,6 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public IntSeries concatInt(IntSeries... other) {
-
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-        int size = size();
-        int h = size;
-        for (IntSeries s : other) {
-            h += s.size();
-        }
-
-        int[] data = new int[h];
-        copyToInt(data, 0, 0, size);
-
-        int offset = size;
-        for (IntSeries s : other) {
-            int len = s.size();
-            s.copyToInt(data, 0, offset, len);
-            offset += len;
-        }
-
-        return new IntArraySeries(data);
-    }
-
-    @Override
     public Series<Integer> fillNulls(Integer value) {
         // primitive series has no nulls
         return this;
@@ -266,23 +233,6 @@ public abstract class IntBaseSeries implements IntSeries {
     public Series<Integer> fillNullsForward() {
         // primitive series has no nulls
         return this;
-    }
-
-    @SafeVarargs
-    @Override
-    public final Series<Integer> concat(Series<? extends Integer>... other) {
-        // concatenating as Integer... to concat as IntSeries, "concatInt" should be used
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-
-        Series<Integer>[] combined = new Series[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
-
-        return SeriesConcat.concat(combined);
     }
 
     @Override
@@ -333,15 +283,7 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public BooleanSeries locateInt(IntPredicate predicate) {
-        int len = size();
-
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = predicate.test(getInt(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> predicate.test(getInt(i)), size());
     }
 
     @Override
@@ -520,12 +462,7 @@ public abstract class IntBaseSeries implements IntSeries {
             return new FalseSeries(len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = set.contains(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> set.contains(get(i)), len);
     }
 
     @Override
@@ -548,12 +485,7 @@ public abstract class IntBaseSeries implements IntSeries {
             return new TrueSeries(len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = !set.contains(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> !set.contains(get(i)), len);
     }
 
     @Override

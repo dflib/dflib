@@ -7,12 +7,11 @@ public class RowSet_Merge_RowMapperTest {
 
     @Test
     public void all() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows()
                 .merge((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -29,12 +28,11 @@ public class RowSet_Merge_RowMapperTest {
 
     @Test
     public void byIndex() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofInt(0, 2))
                 .merge((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -51,12 +49,11 @@ public class RowSet_Merge_RowMapperTest {
 
     @Test
     public void byIndex_Duplicate() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofInt(0, 2, 2, 0))
                 .merge((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -75,12 +72,11 @@ public class RowSet_Merge_RowMapperTest {
 
     @Test
     public void byRange() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rowsRange(1, 2)
                 .merge((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -97,12 +93,11 @@ public class RowSet_Merge_RowMapperTest {
 
     @Test
     public void byIndex_Unordered() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofInt(2, 0))
                 .merge((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -119,12 +114,11 @@ public class RowSet_Merge_RowMapperTest {
 
     @Test
     public void byCondition() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofBool(true, false, true))
                 .merge((f, t) -> {
                     t.set(0, f.getInt(0) * 3);

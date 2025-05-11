@@ -33,7 +33,7 @@ public class SqlLogger {
             if (plen > 0) {
                 log.append(" | bind ")
                         .append(label)
-                        .append(paramPrinter.toString(params))
+                        .append(paramPrinter.print(params))
                         .append("] ");
             }
 
@@ -55,7 +55,7 @@ public class SqlLogger {
                 log.append(" | bind ")
                         .append(slabel)
                         .append(plabel)
-                        .append(paramPrinter.toString(paramsBatch))
+                        .append(paramPrinter.print(paramsBatch))
                         .append("]");
             }
 

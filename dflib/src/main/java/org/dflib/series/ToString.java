@@ -6,6 +6,6 @@ import org.dflib.Environment;
 class ToString {
 
     static String toString(Series<?> series) {
-        return Environment.commonEnv().printer().print(new StringBuilder(), series).toString();
+        return Environment.commonEnv().printer().print(series);
     }
 }

@@ -17,7 +17,7 @@ public class Window_MergePartitionedTest {
     @Test
     public void implicit() {
 
-        DataFrame r = TEST_DF.over().partitioned("a").merge($int("a").sum());
+        DataFrame r = TEST_DF.over().partition("a").merge($int("a").sum());
         new DataFrameAsserts(r, "a", "b", "sum(a)")
                 .expectHeight(5)
                 .expectRow(0, 1, "x", 3)
@@ -31,7 +31,7 @@ public class Window_MergePartitionedTest {
     public void byName_MultiExp() {
 
         DataFrame r = TEST_DF.over()
-                .partitioned("a")
+                .partition("a")
                 .cols("a", "rn", "s")
                 .merge(
                         $col("a"),

@@ -1,5 +1,39 @@
-## Release 2.0.0
+## Release 2.0.0-M3
 
+* #422 "ColumnSet.expand()" as a non-terminal operation
+* #446 "RowSet.unique()" as a non-terminal operation
+* #462 "Exp.shift(..)" in specialized expressions must return the type of that expression
+* #463 "Exp.as(..)" in specialized expressions must return the type of that expression
+* #464 Printer.toString(..) -> Printer.print(..)
+* #465 Align display defaults between core Printers and Jupyter
+* #466 Add max columns limit to Printers
+* #467 Index.head(..), tail(..)
+* #468 Faster tabular printers
+* #469 Exp.mapBool(..) and Exp.mapBoolVal(..) with binary predicate
+* #470 Tabular Printers should output "..." for a row limit of 1
+* #471 Align Window API with GroupBy
+* #472 "df.cols().merge(Series)" overrides columns with numeric names
+* #474 "$decimalVal(..)" improvements
+* #475 "$bigintVal(..)" String argument flavor
+* #478 ifNull($col(...), $col(...)) does not compile
+* #479 "RowSet.sort()" as a non-terminal operation
+* #483 Upgrade ECharts to 5.6.0
+* #484 Upgrade Parquet and Hadoop
+* #486 ColumnSet.compact()
+* #487 Series.compact()
+* #488 Upgrade Apache POI to 5.4.1
+* #489 Fix resource management for HttpByteSource
+* #490 ECharts: BarSeriesOpts.barWidth
+* #493 IntReverseSequenceSeries - decreasing sequential IntSeries
+* #494 Upgrade to Parquet 1.15.2
+
+## Release 2.0.0-M2
+
+* #459 `BoolBuilder.buildSeries()` produces incorrect first element for size greater than 64 
+
+## Release 2.0.0-M1
+
+* #326 Memory-efficient bitset-based BooleanSeries
 * #359 Exp: IllegalArgumentException on arithmetics ops following aggregation
 * #361 Introduce aggregating semantics in Exp
 * #372 NumExp.as() should return a NumExp
@@ -41,12 +75,24 @@
 * #449 "$decimal(..).avg()", "$bigint(..).avg()"
 * #450 Unexpected decimal operations precision
 
+## Release 1.4.0
+
+* #492 "IntSequenceSeries.copyToInt(..)" is broken
+
+## Release 1.3.0
+
+* #457 MissingFormatWidthException when printing Series with all empty strings
+* #477 vConcat loses the type of the column
+* #480 Add "NumExp.variance(..)" and "NumExp.sdtDev(..)"
+* #481 NumExp.max() for double can't handle all negative numbers
+
 ## Release 1.2.0
 
 * #430 CsvLoader.nullString(String)
 * #435 ByteSources.process() exception for single-entry source
 * #437 ByteSource doesn't close streams in internal methods
 * #451 Decimal equality should work if two decimals only differ in trailing fractional zeros
+* #455 Insert row into dataframe
 
 ## Release 1.1.0
 

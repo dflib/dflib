@@ -4,7 +4,9 @@ import org.dflib.agg.Percentiles;
 import org.dflib.exp.agg.ComparableAggregators;
 import org.dflib.exp.agg.TimeAggregators;
 import org.dflib.exp.agg.TimeReduceExp1;
+import org.dflib.exp.datetime.TimeAsExp;
 import org.dflib.exp.datetime.TimeExp2;
+import org.dflib.exp.datetime.TimeShiftExp;
 import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.map.MapCondition3;
 import org.dflib.exp.num.IntExp1;
@@ -13,10 +15,20 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 
 import static org.dflib.Exp.$val;
 
 public interface TimeExp extends Exp<LocalTime> {
+
+    /**
+     * @since 2.0.0
+     */
+    @Override
+    default TimeExp as(String name) {
+        Objects.requireNonNull(name, "Null 'name'");
+        return new TimeAsExp(name, this);
+    }
 
     @Override
     default TimeExp castAsTime() {
@@ -249,5 +261,15 @@ public interface TimeExp extends Exp<LocalTime> {
      */
     default TimeExp quantile(double q, Condition filter) {
         return new TimeReduceExp1<>("quantile", this, s -> Percentiles.ofTimes(s, q), filter);
+    }
+
+    @Override
+    default TimeExp shift(int offset) {
+        return shift(offset, null);
+    }
+
+    @Override
+    default TimeExp shift(int offset, LocalTime filler) {
+        return new TimeShiftExp(this, offset, filler);
     }
 }

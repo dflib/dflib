@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.$col;
 
+@Deprecated
 public class RowSet_SelectUniqueTest {
 
     @Test

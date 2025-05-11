@@ -5,7 +5,6 @@ import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.concat.SeriesConcat;
 import org.dflib.series.IntSequenceSeries;
-import org.dflib.sort.DataFrameSorter;
 import org.dflib.sort.IntComparator;
 
 public class RowNumberer {
@@ -23,7 +22,7 @@ public class RowNumberer {
     }
 
 
-    public static IntSeries rowNumber(DataFrame dataFrame, IntComparator sorter) {
+    public static IntSeries rowNumber(DataFrame dataFrame, IntComparator comparator) {
 
         // note how we are calling "sortIndex(sortIndex(..))"
         // 1. the first call produces a Series where Series positions correspond to the new positions of the old rows
@@ -34,7 +33,7 @@ public class RowNumberer {
         // (1) is good for producing a sorted Series or DataFrame, (2) is good for producing row numbers that follow
         // the sorting.. We have case (2) here.
 
-        IntSeries rowPositions = DataFrameSorter.sort(sorter, dataFrame.height()).sortIndexInt();
+        IntSeries rowPositions = comparator.sortIndex(dataFrame.height()).sortIndexInt();
 
         // since we control select indices, and don't expect negative values, we can safely cast to IntSeries
         return (IntSeries) RowNumberer.sequence(dataFrame.height()).select(rowPositions);

@@ -1,9 +1,10 @@
 package org.dflib.series;
 
 import org.dflib.DoubleSeries;
-import org.dflib.agg.PrimitiveSeriesAvg;
-import org.dflib.agg.PrimitiveSeriesMinMax;
+import org.dflib.agg.Max;
+import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
+import org.dflib.agg.PrimitiveSeriesAvg;
 import org.dflib.agg.PrimitiveSeriesSum;
 
 public class DoubleArraySeries extends DoubleBaseSeries {
@@ -172,12 +173,12 @@ public class DoubleArraySeries extends DoubleBaseSeries {
 
     @Override
     public double max() {
-        return PrimitiveSeriesMinMax.maxOfArray(data, 0, size());
+        return Max.ofArray(data, 0, size());
     }
 
     @Override
     public double min() {
-        return PrimitiveSeriesMinMax.minOfArray(data, 0, size());
+        return Min.ofArray(data, 0, size());
     }
 
     @Override

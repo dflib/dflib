@@ -1,9 +1,10 @@
 package org.dflib.series;
 
 import org.dflib.LongSeries;
-import org.dflib.agg.PrimitiveSeriesAvg;
-import org.dflib.agg.PrimitiveSeriesMinMax;
+import org.dflib.agg.Max;
+import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
+import org.dflib.agg.PrimitiveSeriesAvg;
 import org.dflib.agg.PrimitiveSeriesSum;
 import org.dflib.range.Range;
 
@@ -254,12 +255,12 @@ public class LongArrayRangeSeries extends LongBaseSeries {
 
     @Override
     public long max() {
-        return PrimitiveSeriesMinMax.maxOfArray(data, offset, size);
+        return Max.ofArray(data, offset, size);
     }
 
     @Override
     public long min() {
-        return PrimitiveSeriesMinMax.minOfArray(data, offset, size);
+        return Min.ofArray(data, offset, size);
     }
 
     @Override

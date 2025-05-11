@@ -50,11 +50,11 @@ public class GroupBy_AggTest {
         DataFrame df = df1
                 .group("b")
                 .agg(
-                        $col("b").first(),
+                        $col("b"),
                         $long("a").sum(),
                         $double("a").median());
 
-        new DataFrameAsserts(df, "first(b)", "sum(a)", "median(a)")
+        new DataFrameAsserts(df, "b", "sum(a)", "median(a)")
                 .expectHeight(3)
                 .expectRow(0, "x", 2L, 1.)
                 .expectRow(1, "y", 3L, 1.5)
@@ -202,5 +202,47 @@ public class GroupBy_AggTest {
                 .expectRow(0, 3L, "x;z;x")
                 .expectRow(1, 2L, "y")
                 .expectRow(2, 0L, "a");
+    }
+
+    @Test
+    public void nonAggregatingExp() {
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
+                1, "x",
+                2, "y",
+                1, "z",
+                0, "a",
+                1, "x");
+
+
+        DataFrame df = df1.group("a").cols("A").agg(
+                // no ".first()" or ".last()", just the column name
+                $col("a")
+        );
+
+        new DataFrameAsserts(df, "A")
+                .expectHeight(3)
+                .expectRow(0, 1)
+                .expectRow(1, 2)
+                .expectRow(2, 0);
+    }
+
+    @Test
+    public void nonAggregatingExp_WithTransform() {
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
+                1, "x",
+                2, "y",
+                1, "z",
+                0, "a",
+                1, "x");
+
+        DataFrame df = df1.group("a").cols("A").agg(
+                $int("a").add(34)
+        );
+
+        new DataFrameAsserts(df, "A")
+                .expectHeight(3)
+                .expectRow(0, 35)
+                .expectRow(1, 36)
+                .expectRow(2, 34);
     }
 }

@@ -56,12 +56,12 @@
         <avro.version>1.12.0</avro.version>
         <jackson.version>2.15.4</jackson.version>
         <jackson.databind.version>2.15.4</jackson.databind.version>
-        <poi.version>5.3.0</poi.version>
+        <poi.version>5.4.1</poi.version>
         <commons.csv.version>1.11.0</commons.csv.version>
         <commons.compress.version>1.27.1</commons.compress.version>
         <mustache.version>0.9.10</mustache.version>
-        <parquet.version>1.14.2</parquet.version>
-        <hadoop.version>3.4.0</hadoop.version>
+        <parquet.version>1.15.2</parquet.version>
+        <hadoop.version>3.4.1</hadoop.version>
         <jjava.version>1.0-M3</jjava.version>
         <mysql.version>9.1.0</mysql.version>
         <antlr4.version>4.13.2</antlr4.version>
@@ -109,7 +109,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>5.14.1</version>
+                <version>5.17.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

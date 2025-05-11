@@ -3,9 +3,8 @@ package org.dflib.series;
 import org.dflib.IntSeries;
 import org.dflib.LongSeries;
 import org.dflib.Series;
-import org.dflib.agg.PrimitiveSeriesAvg;
-import org.dflib.agg.PrimitiveSeriesMinMax;
 import org.dflib.agg.Percentiles;
+import org.dflib.agg.PrimitiveSeriesAvg;
 import org.dflib.agg.PrimitiveSeriesSum;
 import org.dflib.range.Range;
 
@@ -14,23 +13,23 @@ import org.dflib.range.Range;
  */
 public class IntSequenceSeries extends IntBaseSeries {
 
-    private final int fromInclusive;
-    private final int toExclusive;
+    private final int seqFromInclusive;
+    private final int seqToExclusive;
 
-    public IntSequenceSeries(int fromInclusive, int toExclusive) {
+    public IntSequenceSeries(int seqFromInclusive, int seqToExclusive) {
 
-        if (fromInclusive > toExclusive) {
-            throw new IllegalArgumentException("'first' sequence element is larger than 'last': " + fromInclusive + " vs. " + toExclusive);
+        if (seqFromInclusive > seqToExclusive) {
+            throw new IllegalArgumentException("'first' sequence element is larger than 'last': " + seqFromInclusive + " vs. " + seqToExclusive);
         }
 
-        this.fromInclusive = fromInclusive;
-        this.toExclusive = toExclusive;
+        this.seqFromInclusive = seqFromInclusive;
+        this.seqToExclusive = seqToExclusive;
     }
 
     @Override
     public int getInt(int index) {
-        int i = fromInclusive + index;
-        if (i >= toExclusive) {
+        int i = seqFromInclusive + index;
+        if (i >= seqToExclusive) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
 
@@ -39,12 +38,12 @@ public class IntSequenceSeries extends IntBaseSeries {
 
     @Override
     public void copyToInt(int[] to, int fromOffset, int toOffset, int len) {
-        if (fromOffset + len > toExclusive) {
+        if (fromOffset + len > size()) {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
         }
 
         for (int i = 0; i < len; i++) {
-            to[toOffset + i] = fromInclusive + i;
+            to[toOffset + i] = fromOffset + seqFromInclusive + i;
         }
     }
 
@@ -55,35 +54,27 @@ public class IntSequenceSeries extends IntBaseSeries {
             return super.diff(other);
         }
 
-        int otherFirst = ((IntSequenceSeries) other).fromInclusive;
-        int otherLastExclusive = ((IntSequenceSeries) other).toExclusive;
+        int intersectFrom = Math.max(seqFromInclusive, ((IntSequenceSeries) other).seqFromInclusive);
+        int intersectTo = Math.min(seqToExclusive, ((IntSequenceSeries) other).seqToExclusive);
 
-        int head = otherFirst - fromInclusive;
-        int tail = toExclusive - otherLastExclusive;
-
-        if (head > 0) {
-            if (tail <= 0) {
-                return head(head);
-            }
-
-            int len = head + tail;
-            int[] data = new int[len];
-            for (int i = 0; i < head; i++) {
-                data[i] = fromInclusive + i;
-            }
-
-            int tailOffset = toExclusive - tail - 1;
-            for (int i = head; i < len; i++) {
-                data[i] = tailOffset + i;
-            }
-
-            return Series.ofInt(data);
-
-        } else if (tail > 0) {
-            return tail(tail);
-        } else {
+        if (intersectFrom >= intersectTo) {
             return Series.ofInt();
         }
+
+        int head = intersectFrom - seqFromInclusive;
+        int tail = seqToExclusive - intersectTo;
+        int len = head + tail;
+        int[] data = new int[len];
+
+        for (int i = 0; i < head; i++) {
+            data[i] = seqFromInclusive + i;
+        }
+
+        for (int i = 0; i < tail; i++) {
+            data[i + head] = intersectTo + i;
+        }
+
+        return Series.ofInt(data);
     }
 
     @Override
@@ -92,19 +83,10 @@ public class IntSequenceSeries extends IntBaseSeries {
             return super.intersect(other);
         }
 
-        int otherFirst = ((IntSequenceSeries) other).fromInclusive;
-        int otherLastExclusive = ((IntSequenceSeries) other).toExclusive;
+        int from = Math.max(seqFromInclusive, ((IntSequenceSeries) other).seqFromInclusive);
+        int to = Math.min(seqToExclusive, ((IntSequenceSeries) other).seqToExclusive);
 
-        int head = otherFirst - fromInclusive;
-        int tail = toExclusive - otherLastExclusive;
-
-        if (head > 0) {
-            return tail > 0 ? head(-head).tail(-tail) : head(-head);
-        } else if (tail > 0) {
-            return tail(-tail);
-        } else {
-            return this;
-        }
+        return from < to ? new IntSequenceSeries(from, to) : Series.ofInt();
     }
 
     @Override
@@ -120,8 +102,8 @@ public class IntSequenceSeries extends IntBaseSeries {
         }
 
         int newLen = toExclusive - fromInclusive;
-        int newFrom = this.fromInclusive + fromInclusive;
-        int newTo = this.fromInclusive + toExclusive;
+        int newFrom = this.seqFromInclusive + fromInclusive;
+        int newTo = this.seqFromInclusive + toExclusive;
 
         Range.checkRange(fromInclusive, newLen, len);
         return new IntSequenceSeries(newFrom, newTo);
@@ -129,37 +111,37 @@ public class IntSequenceSeries extends IntBaseSeries {
 
     @Override
     public int size() {
-        return toExclusive - fromInclusive;
+        return seqToExclusive - seqFromInclusive;
     }
 
     @Override
     public int max() {
-        return PrimitiveSeriesMinMax.maxOfRange(toExclusive);
+        return seqToExclusive - 1;
     }
 
     @Override
     public int min() {
-        return PrimitiveSeriesMinMax.minOfRange(fromInclusive);
+        return seqFromInclusive;
     }
 
     @Override
     public long sum() {
-        return PrimitiveSeriesSum.sumOfRange(fromInclusive, toExclusive);
+        return PrimitiveSeriesSum.sumOfRange(seqFromInclusive, seqToExclusive);
     }
 
     @Override
     public double avg() {
-        return PrimitiveSeriesAvg.avgOfRange(fromInclusive, toExclusive);
+        return PrimitiveSeriesAvg.avgOfRange(seqFromInclusive, seqToExclusive);
     }
 
     @Override
     public double quantile(double q) {
-        return Percentiles.ofRange(q, fromInclusive, toExclusive);
+        return Percentiles.ofRange(seqFromInclusive, seqToExclusive, q);
     }
 
     @Override
     public LongSeries cumSum() {
-        long[] cumSum = PrimitiveSeriesSum.cumSumOfRange(fromInclusive, toExclusive);
+        long[] cumSum = PrimitiveSeriesSum.cumSumOfRange(seqFromInclusive, seqToExclusive);
         return new LongArraySeries(cumSum);
     }
 }

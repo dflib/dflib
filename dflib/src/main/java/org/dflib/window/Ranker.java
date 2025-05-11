@@ -4,7 +4,6 @@ import org.dflib.DataFrame;
 import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.series.IntSingleValueSeries;
-import org.dflib.sort.DataFrameSorter;
 import org.dflib.sort.IntComparator;
 
 import java.util.Collection;
@@ -24,7 +23,7 @@ public class Ranker {
     }
 
     public IntSeries rank(DataFrame dataFrame) {
-        IntSeries sortIndex = DataFrameSorter.sort(sorter, dataFrame.height());
+        IntSeries sortIndex = sorter.sortIndex(dataFrame.height());
         return rank(dataFrame, Collections.singletonList(sortIndex));
     }
 

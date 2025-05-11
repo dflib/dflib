@@ -29,6 +29,19 @@ public class BarSeriesTest {
     }
 
     @Test
+    public void barWidth() {
+
+        String s1 = ECharts.chart().series(SeriesOpts.ofBar(), "y1").plot(df2, "_tid").getChartScript();
+        assertFalse(s1.contains("barWidth: "), s1);
+
+        String s2 = ECharts.chart().series(SeriesOpts.ofBar().barWidthPx(35), "y1").plot(df2, "_tid").getChartScript();
+        assertTrue(s2.contains("barWidth: 35,"), s2);
+
+        String s3 = ECharts.chart().series(SeriesOpts.ofBar().barWidthPct(35.5), "y1").plot(df2, "_tid").getChartScript();
+        assertTrue(s3.contains("barWidth: '35.5%',"), s3);
+    }
+
+    @Test
     public void itemStyle() {
 
         BarItemStyle style = BarItemStyle.of()

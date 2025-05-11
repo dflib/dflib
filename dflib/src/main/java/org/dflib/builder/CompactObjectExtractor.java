@@ -3,19 +3,14 @@ package org.dflib.builder;
 import org.dflib.Extractor;
 import org.dflib.ValueMapper;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class CompactObjectExtractor<F, T> implements Extractor<F, T> {
 
     private final ValueMapper<F, T> mapper;
-    private final Map<T, T> valueCache;
+    private final ValueCompactor<T> valueCompactor;
 
     public CompactObjectExtractor(ValueMapper<F, T> mapper) {
         this.mapper = mapper;
-
-        // extractors are single-threaded, can use a thread-unsafe map
-        this.valueCache = new HashMap<>();
+        this.valueCompactor = new ValueCompactor<>();
     }
 
     @Override
@@ -25,12 +20,12 @@ public class CompactObjectExtractor<F, T> implements Extractor<F, T> {
 
     @Override
     public void extractAndStore(F from, ValueStore<T> to) {
-        to.push(ValueCompactor.get(valueCache, mapper.map(from)));
+        to.push(valueCompactor.get(mapper.map(from)));
     }
 
     @Override
     public void extractAndStore(F from, ValueStore<T> to, int toPos) {
-        to.replace(toPos, ValueCompactor.get(valueCache, mapper.map(from)));
+        to.replace(toPos, valueCompactor.get(mapper.map(from)));
     }
 
     @Override

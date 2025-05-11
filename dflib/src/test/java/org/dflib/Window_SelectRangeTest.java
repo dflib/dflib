@@ -105,10 +105,10 @@ public class Window_SelectRangeTest {
     }
 
     @Test
-    public void preceding_Sorted() {
+    public void preceding_sort() {
 
         DataFrame r = TWO_COL_TEST_DF.over()
-                .sorted($col("order").asc())
+                .sort($col("order").asc())
                 .range(WindowRange.allPreceding)
                 .select($int("val").sum());
 
@@ -120,10 +120,10 @@ public class Window_SelectRangeTest {
     }
 
     @Test
-    public void following_Sorted() {
+    public void following_sort() {
 
         DataFrame r = TWO_COL_TEST_DF.over()
-                .sorted($col("order").asc())
+                .sort($col("order").asc())
                 .range(WindowRange.allFollowing)
                 .select($int("val").sum());
 
@@ -135,7 +135,7 @@ public class Window_SelectRangeTest {
     }
 
     @Test
-    public void preceding_Partitioned_Sorted() {
+    public void preceding_partition_sort() {
         DataFrame df = DataFrame.foldByRow("label", "order", "val").of(
                 "a", 2, 1,
                 "a", 3, 22,
@@ -145,8 +145,8 @@ public class Window_SelectRangeTest {
                 "b", 2, 12);
 
         DataFrame r = df.over()
-                .partitioned("label")
-                .sorted($col("order").asc())
+                .partition("label")
+                .sort($col("order").asc())
                 .range(WindowRange.allPreceding)
                 .select(
                         $int("val").sum(),

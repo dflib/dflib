@@ -33,6 +33,28 @@ public interface RowSet {
      */
     RowSet expand(int columnPos);
 
+    /**
+     * Configures the row set to filter out repeating rows from the row set. Uniqueness is checked across all columns.
+     *
+     * @since 2.0.0
+     */
+    RowSet unique();
+
+    /**
+     * Configures the row set to filter out repeating rows from the row set. Uniqueness is checked only for the
+     * specified columns.
+     *
+     * @since 2.0.0
+     */
+    RowSet unique(String... uniqueKeyColumns);
+
+    /**
+     * Configures the row set to filter out repeating rows from the row set. Uniqueness is checked only for the
+     * specified columns.
+     *
+     * @since 2.0.0
+     */
+    RowSet unique(int... uniqueKeyColumns);
 
     RowColumnSet cols();
 
@@ -68,28 +90,36 @@ public interface RowSet {
     DataFrame merge(RowToValueMapper<?>... mappers);
 
     /**
-     * Sorts the RowSet, applying provided sorters and returns a DataFrame with the sorted rows from the RowSet merged
-     * into the original DataFrame.
+     * Configures the RowSet to sort rows, applying provided sorters.
+     *
+     * @since 2.0.0
      */
-    DataFrame sort(Sorter... sorters);
+    RowSet sort(Sorter... sorters);
 
     /**
-     * Sorts the RowSet based on the specified column and returns a DataFrame with the sorted rows from the RowSet merged
-     * into the original DataFrame.
+     * Configures the RowSet to sort rows based on the specified column.
+     *
+     * @since 2.0.0
      */
-    default DataFrame sort(int sortCol, boolean ascending) {
+    default RowSet sort(int sortCol, boolean ascending) {
         return sort(new int[]{sortCol}, new boolean[]{ascending});
     }
 
     /**
-     * Sorts the RowSet based on the specified column and returns a DataFrame with the sorted rows from the RowSet merged
-     * into the original DataFrame.
+     * Configures the RowSet to sort rows based on the specified column.
+     *
+     * @since 2.0.0
      */
-    default DataFrame sort(String sortCol, boolean ascending) {
+    default RowSet sort(String sortCol, boolean ascending) {
         return sort(new String[]{sortCol}, new boolean[]{ascending});
     }
 
-    default DataFrame sort(int[] sortCols, boolean[] ascending) {
+    /**
+     * Configures the RowSet to sort rows based on the specified columns.
+     *
+     * @since 2.0.0
+     */
+    default RowSet sort(int[] sortCols, boolean[] ascending) {
         int len = sortCols.length;
         Sorter[] sorters = new Sorter[len];
         for (int i = 0; i < len; i++) {
@@ -99,7 +129,12 @@ public interface RowSet {
         return sort(sorters);
     }
 
-    default DataFrame sort(String[] sortCols, boolean[] ascending) {
+    /**
+     * Configures the RowSet to sort rows based on the specified columns.
+     *
+     * @since 2.0.0
+     */
+    default RowSet sort(String[] sortCols, boolean[] ascending) {
         int len = sortCols.length;
         Sorter[] sorters = new Sorter[len];
         for (int i = 0; i < len; i++) {
@@ -108,12 +143,6 @@ public interface RowSet {
 
         return sort(sorters);
     }
-
-    DataFrame unique();
-
-    DataFrame unique(String... uniqueKeyColumns);
-
-    DataFrame unique(int... uniqueKeyColumns);
 
     /**
      * Returns a new DataFrame with the RowSet rows only. No transformation is applied to columns. If the RowSet
@@ -166,11 +195,29 @@ public interface RowSet {
         return expand(columnPos).select();
     }
 
-    DataFrame selectUnique();
+    /**
+     * @deprecated in favor of {@link #unique()} and then {@link #select()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default DataFrame selectUnique() {
+        return unique().select();
+    }
 
-    DataFrame selectUnique(String... uniqueKeyColumns);
+    /**
+     * @deprecated in favor of {@link #unique(String...)} and then {@link #select()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default DataFrame selectUnique(String... uniqueKeyColumns) {
+        return unique(uniqueKeyColumns).select();
+    }
 
-    DataFrame selectUnique(int... uniqueKeyColumns);
+    /**
+     * @deprecated in favor of {@link #unique(int...)} and then {@link #select()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default DataFrame selectUnique(int... uniqueKeyColumns) {
+        return unique(uniqueKeyColumns).select();
+    }
 
     /**
      * Returns a BooleanSeries indicating whether each source DataFrame position is included in the RowSet. Can be
@@ -179,7 +226,7 @@ public interface RowSet {
     BooleanSeries locate();
 
     /**
-     * Returns a IntSeries of the source DataFrame positions thta re included in the RowSet. Can be
+     * Returns a IntSeries of the source DataFrame positions that are included in the RowSet. Can be
      * utilized as a reusable "selector" of RowSets from other DataFrames.
      */
     IntSeries index();

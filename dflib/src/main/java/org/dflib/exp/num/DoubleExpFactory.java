@@ -5,6 +5,8 @@ import org.dflib.DecimalExp;
 import org.dflib.DoubleSeries;
 import org.dflib.Exp;
 import org.dflib.NumExp;
+import org.dflib.agg.Max;
+import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
 import org.dflib.exp.agg.DoubleAggregators;
 import org.dflib.exp.agg.DoubleReduceExp1;
@@ -103,12 +105,12 @@ public class DoubleExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<?> min(Exp<? extends Number> exp, Condition filter) {
-        return new DoubleReduceExp1<>("min", exp, DoubleAggregators::min, filter);
+        return new DoubleReduceExp1<>("min", exp, Min::ofDoubles, filter);
     }
 
     @Override
     public NumExp<?> max(Exp<? extends Number> exp, Condition filter) {
-        return new DoubleReduceExp1<>("max", exp, DoubleAggregators::max, filter);
+        return new DoubleReduceExp1<>("max", exp, Max::ofDoubles, filter);
     }
 
     @Override
@@ -125,6 +127,16 @@ public class DoubleExpFactory extends NumericExpFactory {
     public NumExp<?> quantile(Exp<? extends Number> exp, double q, Condition filter) {
         // TODO: display "q" argument in the exp signature
         return new DoubleReduceExp1<>("quantile", exp, s -> Percentiles.ofDoubles(s, q), filter);
+    }
+
+    @Override
+    public NumExp<?> variance(Exp<? extends Number> exp, boolean usePopulationVariance) {
+        return new DoubleReduceExp1<>("variance", exp, s -> DoubleAggregators.variance(s, usePopulationVariance), null);
+    }
+
+    @Override
+    public NumExp<?> stdDev(Exp<? extends Number> exp, boolean usePopulationStdDev) {
+        return new DoubleReduceExp1<>("stdDev", exp, s -> DoubleAggregators.stdDev(s, usePopulationStdDev), null);
     }
 
     @Override

@@ -11,7 +11,9 @@ public class ColumnSet_Merge_ExpTest {
     public void all() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
-                .cols().merge($int(0).mul(100).as("b"), $int(0).mul(10));
+                .cols().merge(
+                        $int(0).mul(100).as("b"),
+                        $int(0).mul(10));
 
         new DataFrameAsserts(df, "a", "b", "a * 10")
                 .expectHeight(2)

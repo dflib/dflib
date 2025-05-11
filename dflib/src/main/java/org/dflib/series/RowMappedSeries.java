@@ -3,13 +3,15 @@ package org.dflib.series;
 import org.dflib.DataFrame;
 import org.dflib.Series;
 import org.dflib.RowToValueMapper;
+import org.dflib.builder.ValueCompactor;
 import org.dflib.row.RowProxy;
 
 public class RowMappedSeries<T> extends ObjectSeries<T> {
 
-    private DataFrame source;
+    private volatile DataFrame source;
     private RowToValueMapper<T> mapper;
     private Series<T> materialized;
+    private volatile boolean materializedCompacted;
 
     public RowMappedSeries(DataFrame source, RowToValueMapper<T> mapper) {
         super(Object.class);
@@ -33,6 +35,26 @@ public class RowMappedSeries<T> extends ObjectSeries<T> {
     }
 
     @Override
+    public Series<T> compact() {
+        if (!materializedCompacted) {
+            synchronized (this) {
+                if (!materializedCompacted) {
+
+                    Series<T> compact = materialized != null ? materialized.compact() : doCompact();
+
+                    materializedCompacted = true;
+                    this.materialized = compact;
+
+                    // reset source reference, allowing to free up memory
+                    source = null;
+                }
+            }
+        }
+
+        return materialized;
+    }
+
+    @Override
     public Series<T> materialize() {
         if (materialized == null) {
             synchronized (this) {
@@ -43,6 +65,23 @@ public class RowMappedSeries<T> extends ObjectSeries<T> {
         }
 
         return materialized;
+    }
+
+    protected Series<T> doCompact() {
+
+        ValueCompactor<T> compactor = new ValueCompactor<>();
+        Object[] data = new Object[source.height()];
+
+        int i = 0;
+        for (RowProxy row : source) {
+            data[i++] = compactor.get(mapper.map(row));
+        }
+
+        // reset source reference, allowing to free up memory..
+        source = null;
+        mapper = null;
+
+        return new ArraySeries(data);
     }
 
     protected Series<T> doMaterialize() {

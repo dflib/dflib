@@ -44,6 +44,12 @@ public class DoubleArraySeries_ReduceTest {
     }
 
     @Test
+    public void max_AllNegative() {
+        DoubleArraySeries s = new DoubleArraySeries(-3, -2, -30, -56, -8);
+        assertEquals(-2., s.max());
+    }
+
+    @Test
     public void agg_MaxInt() {
         DoubleArraySeries s = new DoubleArraySeries(1, -2, 3, 56.1, 8);
         assertEquals(56, s.reduce(Exp.$int("").max()));
@@ -65,6 +71,18 @@ public class DoubleArraySeries_ReduceTest {
     public void min() {
         DoubleArraySeries s = new DoubleArraySeries(1, -2.9, 3, 56, 8);
         assertEquals(-2.9, s.min(), 0.00000001);
+    }
+
+    @Test
+    public void min_AllPositive() {
+        DoubleArraySeries s = new DoubleArraySeries(3, 2, 30, 56, 8);
+        assertEquals(2., s.min());
+    }
+
+    @Test
+    public void min_AllNegative() {
+        DoubleArraySeries s = new DoubleArraySeries(-3, -2, -30, -56, -8);
+        assertEquals(-56., s.min());
     }
 
     @Test

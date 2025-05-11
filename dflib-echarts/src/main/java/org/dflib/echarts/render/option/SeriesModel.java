@@ -22,6 +22,7 @@ public class SeriesModel {
     private final Boolean showSymbol;
     private final Boolean smooth;
     private final Boolean stack;
+    private final String barWidth;
     private final Integer symbolSize;
     private final Integer xAxisIndex;
     private final Integer yAxisIndex;
@@ -48,6 +49,7 @@ public class SeriesModel {
             Boolean areaStyle,
             Boolean showSymbol,
             Boolean stack,
+            String barWidth,
             Boolean smooth,
             Integer symbolSize,
             Integer xAxisIndex,
@@ -71,6 +73,7 @@ public class SeriesModel {
         this.areaStyle = areaStyle;
         this.showSymbol = showSymbol;
         this.stack = stack;
+        this.barWidth = barWidth;
         this.smooth = smooth;
         this.symbolSize = symbolSize;
         this.xAxisIndex = xAxisIndex;
@@ -107,7 +110,7 @@ public class SeriesModel {
             Integer endAngle,
             String roseType) {
 
-        this(name, type, null, encode, label, seriesLayoutBy, null, areaStyle, showSymbol, stack, smooth, null,
+        this(name, type, null, encode, label, seriesLayoutBy, null, areaStyle, showSymbol, stack, null, smooth, null,
                 xAxisIndex, yAxisIndex, null, radius, center, startAngle, endAngle, roseType, null, null);
     }
 
@@ -136,7 +139,7 @@ public class SeriesModel {
             String roseType,
             ItemStyleModel itemStyle,
             LineStyleModel lineStyle) {
-        this(name, type, null, encode, label, seriesLayoutBy, null, areaStyle, showSymbol, stack, smooth, symbolSize,
+        this(name, type, null, encode, label, seriesLayoutBy, null, areaStyle, showSymbol, stack, null, smooth, symbolSize,
                 xAxisIndex, yAxisIndex, null, radius, center, startAngle, endAngle, roseType, itemStyle, lineStyle);
     }
 
@@ -205,6 +208,10 @@ public class SeriesModel {
 
     public boolean isStack() {
         return stack != null && stack;
+    }
+
+    public String getBarWidth() {
+        return barWidth;
     }
 
     public boolean isSmooth() {

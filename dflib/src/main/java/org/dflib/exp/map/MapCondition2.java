@@ -5,9 +5,10 @@ import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
-import org.dflib.builder.BoolAccum;
+import org.dflib.builder.BoolBuilder;
 import org.dflib.exp.Exp2;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
@@ -26,17 +27,11 @@ public class MapCondition2<L, R> extends Exp2<L, R, Boolean> implements Conditio
     }
 
     protected static <L, R> BiFunction<Series<L>, Series<R>, BooleanSeries> valToSeries(BiPredicate<L, R> predicate) {
-        return (ls, rs) -> {
-            int len = ls.size();
-            BoolAccum accum = new BoolAccum(len);
-            for (int i = 0; i < len; i++) {
-                L l = ls.get(i);
-                R r = rs.get(i);
-                accum.pushBool(l != null && r != null ? predicate.test(l, r) : false);
-            }
-
-            return accum.toSeries();
-        };
+        return (ls, rs) -> BoolBuilder.buildSeries(i -> {
+            L l = ls.get(i);
+            R r = rs.get(i);
+            return l != null && r != null && predicate.test(l, r);
+        }, ls.size());
     }
 
     private final BiFunction<Series<L>, Series<R>, BooleanSeries> op;
@@ -70,6 +65,13 @@ public class MapCondition2<L, R> extends Exp2<L, R, Boolean> implements Conditio
                 Series.ofVal(left.reduce(s), 1),
                 Series.ofVal(right.reduce(s), 1)
         ).get(0);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o)
+                ? Objects.equals(op, ((MapCondition2) o).op)
+                : false;
     }
 
     protected BooleanSeries doEval(Series<L> left, Series<R> right) {

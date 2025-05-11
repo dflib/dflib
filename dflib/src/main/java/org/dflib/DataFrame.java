@@ -230,24 +230,35 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     DataFrame addRow(Map<String, Object> row);
 
+    /**
+     * Inserts a single row in the specified position of the DataFrame. The row is specified as a map of column names to values.
+     * Missing values will be represented as nulls, and extra values with no matching DataFrame columns will be ignored.
+     * Be aware that this operation can be really slow, as DataFrame is optimized for columnar operations, not row appends.
+     * If you are appending more than one row, consider creating a new DataFrame and then concatenating it with this one
+     * using {@link #vConcat(DataFrame...)}.
+     *
+     * @since 1.2.0
+     */
+    DataFrame insertRow(int pos, Map<String, Object> row);
+
     default DataFrame sort(Sorter... sorters) {
-        return rows().sort(sorters);
+        return rows().sort(sorters).merge();
     }
 
     default DataFrame sort(String column, boolean ascending) {
-        return rows().sort(column, ascending);
+        return rows().sort(column, ascending).merge();
     }
 
     default DataFrame sort(int column, boolean ascending) {
-        return rows().sort(column, ascending);
+        return rows().sort(column, ascending).merge();
     }
 
     default DataFrame sort(String[] columns, boolean[] ascending) {
-        return rows().sort(columns, ascending);
+        return rows().sort(columns, ascending).merge();
     }
 
     default DataFrame sort(int[] columns, boolean[] ascending) {
-        return rows().sort(columns, ascending);
+        return rows().sort(columns, ascending).merge();
     }
 
     /**
@@ -493,25 +504,21 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Creates a ColumnSet with columns from this DataFrame excluding specified columns.
      */
     default ColumnSet colsExcept(String... columns) {
-        // all positions here will be within the existing DataFrame, so we are not losing any labels by delegating to
-        // an index-based method
-        return cols(getColumnsIndex().positionsExcept(columns));
+        return FixedColumnSet.ofColsExcept(this, columns);
     }
 
     /**
      * Creates a ColumnSet with columns from this DataFrame that match the specified condition.
      */
     default ColumnSet cols(Predicate<String> condition) {
-        // all positions here will be within the existing DataFrame, so we are not losing any labels by delegating to
-        // an index-based method
-        return cols(getColumnsIndex().positions(condition));
+        return FixedColumnSet.of(this, condition);
     }
 
     /**
      * Creates a ColumnSet with columns from this DataFrame that do not match the specified condition.
      */
     default ColumnSet colsExcept(Predicate<String> condition) {
-        return cols(condition.negate());
+        return FixedColumnSet.ofColsExcept(this, condition);
     }
 
     /**
@@ -527,7 +534,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Creates a ColumnSet with columns from this DataFrame excluding specified column positions.
      */
     default ColumnSet colsExcept(int... columns) {
-        return cols(getColumnsIndex().positionsExcept(columns));
+        return FixedColumnSet.ofColsExcept(this, columns);
     }
 
     default ColumnSet colsSample(int size) {

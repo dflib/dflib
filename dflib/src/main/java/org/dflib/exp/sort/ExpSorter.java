@@ -1,10 +1,9 @@
 package org.dflib.exp.sort;
 
 import org.dflib.DataFrame;
-import org.dflib.Series;
 import org.dflib.Exp;
+import org.dflib.Series;
 import org.dflib.Sorter;
-import org.dflib.sort.Comparators;
 import org.dflib.sort.IntComparator;
 
 /**
@@ -23,12 +22,12 @@ public class ExpSorter implements Sorter {
     @Override
     public IntComparator eval(DataFrame df) {
         Series<?> column = exp.eval(df);
-        return Comparators.of(column, ascending);
+        return IntComparator.of(column, ascending);
     }
 
     @Override
     public IntComparator eval(Series<?> s) {
         Series<?> column = exp.eval(s);
-        return Comparators.of(column, ascending);
+        return IntComparator.of(column, ascending);
     }
 }

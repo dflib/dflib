@@ -50,12 +50,12 @@ public class IfNullExp<T> implements Exp<T> {
 
     @Override
     public String toQL() {
-        return "ifNull(" + exp.toQL() + ", " + ifNullExp.toQL() + ")";
+        return "ifNull(" + exp.toQL() + "," + ifNullExp.toQL() + ")";
     }
 
     @Override
     public String toQL(DataFrame df) {
-        return "ifNull(" + exp.toQL(df) + ", " + ifNullExp.toQL(df) + ")";
+        return "ifNull(" + exp.toQL(df) + "," + ifNullExp.toQL(df) + ")";
     }
 
     @Override

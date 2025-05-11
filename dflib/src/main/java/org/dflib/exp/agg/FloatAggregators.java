@@ -2,6 +2,8 @@ package org.dflib.exp.agg;
 
 import org.dflib.FloatSeries;
 import org.dflib.Series;
+import org.dflib.agg.Max;
+import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
 import org.dflib.builder.ObjectAccum;
 
@@ -67,49 +69,20 @@ public class FloatAggregators {
         return s.size() == 0 ? 0. : sum.apply(s);
     }
 
+    /**
+     * @deprecated in favor of {@link Min#ofFloats(Series)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static float min(Series<? extends Number> s) {
-
-        int size = s.size();
-        if (size == 0) {
-            return 0f;
-        }
-
-        float min = Float.MAX_VALUE;
-
-        for (int i = 0; i < size; i++) {
-
-            Number n = s.get(i);
-            if (n != null) {
-                float in = n.floatValue();
-                if (in < min) {
-                    min = in;
-                }
-            }
-        }
-
-        return min;
+        return Min.ofFloats(s);
     }
 
+    /**
+     * @deprecated in favor of {@link Max#ofFloats(Series)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static float max(Series<? extends Number> s) {
-        int size = s.size();
-        if (size == 0) {
-            return 0f;
-        }
-
-        float max = Float.MIN_VALUE;
-
-        for (int i = 0; i < size; i++) {
-
-            Number n = s.get(i);
-            if (n != null) {
-                float in = n.floatValue();
-                if (in > max) {
-                    max = in;
-                }
-            }
-        }
-
-        return max;
+        return Max.ofFloats(s);
     }
 
     public static float avg(Series<? extends Number> s) {

@@ -3,6 +3,7 @@ package org.dflib.series;
 import org.dflib.BooleanSeries;
 import org.dflib.IntSeries;
 import org.dflib.Series;
+import org.dflib.builder.BoolBuilder;
 
 import java.util.Objects;
 
@@ -17,7 +18,7 @@ public class BooleanIndexedSeries extends BooleanBaseSeries {
 
     public static Series<Boolean> of(BooleanSeries source, IntSeries includePositions) {
 
-        // check for negative indices (that are found in joins) and return either an IntSeries or a Series<Integer>.
+        // check for negative indices (that are found in joins) and return either an BooleanSeries or a Series<Boolean>.
         int len = includePositions.size();
         for (int i = 0; i < len; i++) {
             if (includePositions.getInt(i) < 0) {
@@ -28,12 +29,23 @@ public class BooleanIndexedSeries extends BooleanBaseSeries {
         return new BooleanIndexedSeries(source, includePositions);
     }
 
+    /**
+     * @deprecated will be made non-public. Use {@link #of(BooleanSeries, IntSeries)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public BooleanIndexedSeries(BooleanSeries source, IntSeries includePositions) {
         this.raw = new Raw(source, includePositions);
     }
 
     public boolean isMaterialized() {
         return materialized != null;
+    }
+
+    @Override
+    public BooleanSeries concatBool(BooleanSeries... other) {
+        return other.length == 0
+                ? this
+                : materialize().concatBool(other);
     }
 
     @Override
@@ -132,16 +144,8 @@ public class BooleanIndexedSeries extends BooleanBaseSeries {
         }
 
         BooleanSeries materialize() {
-
             int h = includePositions.size();
-
-            boolean[] data = new boolean[h];
-
-            for (int i = 0; i < h; i++) {
-                data[i] = getBool(i);
-            }
-
-            return new BooleanArraySeries(data);
+            return BoolBuilder.buildSeries(this::getBool, h);
         }
     }
 }

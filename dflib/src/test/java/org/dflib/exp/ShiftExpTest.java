@@ -20,13 +20,13 @@ public class ShiftExpTest extends BaseExpTest {
     @Test
     public void shiftOffset() {
         Series<String> s1 = Series.of("a", "b", "c");
-        new SeriesAsserts(s1.eval($str("a").shift(1))).expectData(null, "a", "b");
-        new SeriesAsserts(s1.eval($str("a").shift(2))).expectData(null, null, "a");
-        new SeriesAsserts(s1.eval($str("a").shift(6))).expectData(null, null, null);
-        new SeriesAsserts(s1.eval($str("a").shift(100))).expectData(null, null, null);
+        new SeriesAsserts(s1.map($str("a").shift(1))).expectData(null, "a", "b");
+        new SeriesAsserts(s1.map($str("a").shift(2))).expectData(null, null, "a");
+        new SeriesAsserts(s1.map($str("a").shift(6))).expectData(null, null, null);
+        new SeriesAsserts(s1.map($str("a").shift(100))).expectData(null, null, null);
 
-        new SeriesAsserts(s1.eval($str("a").shift(-1))).expectData("b", "c", null);
-        new SeriesAsserts(s1.eval($str("a").shift(-100))).expectData(null, null, null);
+        new SeriesAsserts(s1.map($str("a").shift(-1))).expectData("b", "c", null);
+        new SeriesAsserts(s1.map($str("a").shift(-100))).expectData(null, null, null);
     }
 
     @Test

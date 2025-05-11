@@ -13,8 +13,6 @@ import org.dflib.exp.Exps;
 import org.dflib.series.IntSequenceSeries;
 import org.dflib.slice.ColumnSetMerger;
 import org.dflib.slice.FixedColumnSetIndex;
-import org.dflib.sort.Comparators;
-import org.dflib.sort.DataFrameSorter;
 import org.dflib.sort.IntComparator;
 
 import java.util.Objects;
@@ -38,8 +36,8 @@ public class Window {
     }
 
     /**
-     * Returns the unchanged original DataFrame that was used to build the window, that does not have GroupBy sorting,
-     * trimming and other changes applied.
+     * Returns the unchanged original DataFrame that was used to build the window, that does not have Window sorting,
+     * or other changes applied.
      */
     public DataFrame getSource() {
         return source;
@@ -83,29 +81,40 @@ public class Window {
         return cols(colsPredicate.negate());
     }
 
-
-    public Window partitioned(Hasher partitioner) {
+    public Window partition(Hasher partitioner) {
         this.partitioner = Objects.requireNonNull(partitioner);
         return this;
     }
 
+    /**
+     * @deprecated in favor of {@link #partition(String...)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public Window partitioned(String... columns) {
-
-        int len = columns.length;
-        if (len == 0) {
-            throw new IllegalArgumentException("No partitioning columns specified");
-        }
-
-        Hasher partitioner = Hasher.of(columns[0]);
-        for (int i = 1; i < columns.length; i++) {
-            partitioner = partitioner.and(columns[i]);
-        }
-
-        this.partitioner = partitioner;
-        return this;
+        return partition(columns);
     }
 
+    /**
+     * @deprecated in favor of {@link #partition(int...)} 
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public Window partitioned(int... columns) {
+        return partition(columns);
+    }
+
+    /**
+     * @deprecated in favor of {@link #partition(Hasher)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public Window partitioned(Hasher partitioner) {
+        return partition(partitioner);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Window partition(String... columns) {
+
         int len = columns.length;
         if (len == 0) {
             throw new IllegalArgumentException("No partitioning columns specified");
@@ -120,29 +129,101 @@ public class Window {
         return this;
     }
 
+    /**
+     * @since 2.0.0
+     */
+    public Window partition(int... columns) {
+        int len = columns.length;
+        if (len == 0) {
+            throw new IllegalArgumentException("No partitioning columns specified");
+        }
 
+        Hasher partitioner = Hasher.of(columns[0]);
+        for (int i = 1; i < columns.length; i++) {
+            partitioner = partitioner.and(columns[i]);
+        }
+
+        this.partitioner = partitioner;
+        return this;
+    }
+
+    /**
+     * @deprecated in favor of {@link #sort(Sorter...)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public Window sorted(Sorter... sorters) {
-        this.sorter = sorters.length == 0 ? null : Comparators.of(source, sorters);
-        return this;
+        return sort(sorters);
     }
 
+    /**
+     * @deprecated in favor of {@link #sort(String, boolean)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public Window sorted(String column, boolean ascending) {
-        this.sorter = Comparators.of(source.getColumn(column), ascending);
-        return this;
+        return sort(column, ascending);
     }
 
+    /**
+     * @deprecated in favor of {@link #sort(int, boolean)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public Window sorted(int column, boolean ascending) {
-        this.sorter = Comparators.of(source.getColumn(column), ascending);
-        return this;
+        return sort(column, ascending);
     }
 
+    /**
+     * @deprecated in favor of {@link #sort(String[], boolean[])}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public Window sorted(String[] columns, boolean[] ascending) {
-        this.sorter = Comparators.of(source, columns, ascending);
+        return sort(columns, ascending);
+    }
+
+    /**
+     * @deprecated in favor of {@link #sort(int[], boolean[])}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public Window sorted(int[] columns, boolean[] ascending) {
+        return sort(columns, ascending);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Window sort(Sorter... sorters) {
+        this.sorter = sorters.length == 0 ? null : IntComparator.of(source, sorters);
         return this;
     }
 
-    public Window sorted(int[] columns, boolean[] ascending) {
-        this.sorter = Comparators.of(source, columns, ascending);
+    /**
+     * @since 2.0.0
+     */
+    public Window sort(String column, boolean ascending) {
+        this.sorter = IntComparator.of(source.getColumn(column), ascending);
+        return this;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Window sort(int column, boolean ascending) {
+        this.sorter = IntComparator.of(source.getColumn(column), ascending);
+        return this;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Window sort(String[] columns, boolean[] ascending) {
+        this.sorter = IntComparator.of(source, columns, ascending);
+        return this;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Window sort(int[] columns, boolean[] ascending) {
+        this.sorter = IntComparator.of(source, columns, ascending);
         return this;
     }
 
@@ -250,7 +331,7 @@ public class Window {
     private <T> Series<T> shiftUnPartitioned(int column, int offset, T filler) {
         if (sorter != null) {
             IntSeries index = new IntSequenceSeries(0, source.height());
-            IntSeries sortedPositions = DataFrameSorter.sort(sorter, index);
+            IntSeries sortedPositions = index.sortInt(sorter);
             Series<T> s = source.getColumn(column);
             return s.select(sortedPositions).shift(offset, filler).select(sortedPositions.sortIndexInt());
         } else {
@@ -309,7 +390,7 @@ public class Window {
 
     private Series<?>[] selectUnPartitioned(Exp<?>... aggregators) {
         DataFrame df = sorter != null
-                ? source.rows(DataFrameSorter.sort(sorter, source.height())).select()
+                ? source.rows(sorter.sortIndex(source.height())).select()
                 : source;
 
         return WindowColumnEvaluator.of(df, resolveRange()).eval(aggregators);

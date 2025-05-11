@@ -18,7 +18,7 @@ public class Window_SelectSortedTest {
                 1, "x");
 
         DataFrame r = df.over()
-                .sorted($col("b").asc())
+                .sort($col("b").asc())
                 .select(
                         $int("a").sum(),
                         $col("b").first()

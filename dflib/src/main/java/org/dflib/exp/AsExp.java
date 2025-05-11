@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class AsExp<T> implements Exp<T>  {
 
-    private final Exp<T> delegate;
+    protected final Exp<T> delegate;
     protected final String name;
 
     public AsExp(String name, Exp<T> delegate) {

@@ -1,51 +1,40 @@
 package org.dflib.print;
 
+import org.dflib.Index;
 import org.dflib.Series;
 import org.dflib.series.EmptySeries;
 
-public class SeriesTruncator<T> {
+class SeriesTruncator<T> {
 
-    Series<T> series;
-    boolean truncated;
-    int head;
-    int tail;
-
-    private SeriesTruncator(Series<T> series, boolean truncated, int head, int tail) {
-        this.series = series;
-        this.truncated = truncated;
-        this.head = head;
-        this.tail = tail;
+    public static SeriesTruncator<String> create(Index index, int maxSize) {
+        return create(index.toSeries(), maxSize);
     }
 
     public static <T> SeriesTruncator<T> create(Series<T> series, int maxSize) {
 
-        if (maxSize < 0) {
-            maxSize = 0;
+        if (maxSize <= 0) {
+            maxSize = 1;
         }
 
         int h = series.size();
         if (h <= maxSize) {
-            return new SeriesTruncator<>(series, false, h, 0);
+            return new SeriesTruncator(series, series, new EmptySeries(), false);
         }
 
         int head = maxSize / 2 + maxSize % 2;
         int tail = maxSize - head;
-        return new SeriesTruncator<>(series, true, head, tail);
+        return new SeriesTruncator(series, series.head(head), series.tail(tail), true);
     }
 
-    public Series<T> head() {
-        return truncated ? series.head(head) : series;
-    }
+    final Series<T> series;
+    final Series<T> head;
+    final Series<T> tail;
+    final boolean truncated;
 
-    public Series<T> tail() {
-        return truncated ? series.tail(tail) : new EmptySeries();
-    }
-
-    public boolean isTruncated() {
-        return truncated;
-    }
-
-    public int size() {
-        return truncated ? head + tail + 1 : series.size();
+    private SeriesTruncator(Series<T> series, Series<T> head, Series<T> tail, boolean truncated) {
+        this.series = series;
+        this.head = head;
+        this.tail = tail;
+        this.truncated = truncated;
     }
 }

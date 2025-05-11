@@ -89,6 +89,10 @@ public interface NumExp<N extends Number> extends Exp<N> {
         return (NumExp<N>) NumericExpFactory.factory(this).abs(this);
     }
 
+    @Override
+    default Condition castAsBool() {
+        return ConditionFactory.castAsBool(this);
+    }
 
     @Override
     default NumExp<Integer> castAsInt() {
@@ -272,8 +276,51 @@ public interface NumExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this).round(this);
     }
 
+    /**
+     * Aggregating expression that calculates Series variance using "population" variant.
+     *
+     * @since 1.3.0
+     */
+    default NumExp<?> variance() {
+        return variance(true);
+    }
+
+    /**
+     * Aggregating expression that calculates Series variance.
+     *
+     * @param usePopulationVariance Use the population variant if true, sample variant if false
+     * @since 1.3.0
+     */
+    default NumExp<?> variance(boolean usePopulationVariance) {
+        return NumericExpFactory.factory(this).variance(this, usePopulationVariance);
+    }
+
+    /**
+     * Aggregating expression that calculates Series standard deviation using "population" variant.
+     *
+     * @since 1.3.0
+     */
+    default NumExp<?> stdDev() {
+        return stdDev(true);
+    }
+
+    /**
+     * Aggregating expression that calculates Series standard deviation.
+     *
+     * @param usePopulationStdDev Use the population variant if true, sample variant if false
+     * @since 1.3.0
+     */
+    default NumExp<?> stdDev(boolean usePopulationStdDev) {
+        return NumericExpFactory.factory(this).stdDev(this, usePopulationStdDev);
+    }
+
     @Override
-    default Condition castAsBool() {
-        return ConditionFactory.castAsBool(this);
+    default NumExp<N> shift(int offset) {
+        return shift(offset, null);
+    }
+
+    @Override
+    default NumExp<N> shift(int offset, N filler) {
+        return NumericExpFactory.factory(this).shift(this, offset, filler);
     }
 }

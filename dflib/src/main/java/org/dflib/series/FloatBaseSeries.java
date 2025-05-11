@@ -11,16 +11,16 @@ import org.dflib.SeriesGroupBy;
 import org.dflib.Sorter;
 import org.dflib.ValueMapper;
 import org.dflib.ValueToRowMapper;
+import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.FloatAccum;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.ObjectAccum;
 import org.dflib.builder.UniqueFloatAccum;
-import org.dflib.concat.SeriesConcat;
 import org.dflib.f.FloatPredicate;
 import org.dflib.groupby.SeriesGrouper;
 import org.dflib.map.Mapper;
 import org.dflib.sample.Sampler;
-import org.dflib.sort.SeriesSorter;
+import org.dflib.sort.IntComparator;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -136,12 +136,13 @@ public abstract class FloatBaseSeries implements FloatSeries {
 
     @Override
     public FloatSeries sort(Sorter... sorters) {
-        return selectAsFloatSeries(new SeriesSorter<>(this).sortIndex(sorters));
+        IntSeries index = IntComparator.of(this, sorters).sortIndex(size());
+        return selectAsFloatSeries(index);
     }
 
     @Override
     public FloatSeries sort(Comparator<? super Float> comparator) {
-        return selectAsFloatSeries(new SeriesSorter<>(this).sortIndex(comparator));
+        return selectAsFloatSeries(sortIndex(comparator));
     }
 
     @Override
@@ -185,33 +186,6 @@ public abstract class FloatBaseSeries implements FloatSeries {
     }
 
     @Override
-    public FloatSeries concatFloat(FloatSeries... other) {
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-
-        int size = size();
-        int h = size;
-        for (FloatSeries s : other) {
-            h += s.size();
-        }
-
-        float[] data = new float[h];
-        copyToFloat(data, 0, 0, size);
-
-        int offset = size;
-        for (FloatSeries s : other) {
-            int len = s.size();
-            s.copyToFloat(data, 0, offset, len);
-            offset += len;
-        }
-
-        return new FloatArraySeries(data);
-    }
-
-    @Override
     public Series<Float> fillNulls(Float value) {
         // primitive series has no nulls
         return this;
@@ -233,23 +207,6 @@ public abstract class FloatBaseSeries implements FloatSeries {
     public Series<Float> fillNullsForward() {
         // primitive series has no nulls
         return this;
-    }
-
-    @SafeVarargs
-    @Override
-    public final Series<Float> concat(Series<? extends Float>... other) {
-        // concatenating as Float... to concat as FloatSeries, "concatFloat" should be used
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-
-        Series<Float>[] combined = new Series[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
-
-        return SeriesConcat.concat(combined);
     }
 
     @Override
@@ -300,14 +257,7 @@ public abstract class FloatBaseSeries implements FloatSeries {
 
     @Override
     public BooleanSeries locateFloat(FloatPredicate predicate) {
-        int len = size();
-
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = predicate.test(getFloat(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> predicate.test(getFloat(i)), size());
     }
 
     @Override
@@ -486,12 +436,7 @@ public abstract class FloatBaseSeries implements FloatSeries {
             return new FalseSeries(len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = set.contains(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> set.contains(get(i)), len);
     }
 
     @Override
@@ -514,12 +459,7 @@ public abstract class FloatBaseSeries implements FloatSeries {
             return new TrueSeries(len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = !set.contains(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> !set.contains(get(i)), len);
     }
 
     @Override

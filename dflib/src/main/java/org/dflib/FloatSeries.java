@@ -1,8 +1,8 @@
 package org.dflib;
 
+import org.dflib.builder.BoolBuilder;
 import org.dflib.f.FloatPredicate;
 import org.dflib.op.ReplaceOp;
-import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.FloatArraySeries;
 import org.dflib.series.FloatIndexedSeries;
@@ -34,6 +34,11 @@ public interface FloatSeries extends Series<Float> {
 
     @Override
     default FloatSeries castAsFloat() {
+        return this;
+    }
+
+    @Override
+    default FloatSeries compact() {
         return this;
     }
 
@@ -132,7 +137,114 @@ public interface FloatSeries extends Series<Float> {
         return Series.ofFloat(expanded);
     }
 
-    FloatSeries concatFloat(FloatSeries... other);
+    @Override
+    default Series<?> insert(int pos, Object... values) {
+
+        int ilen = values.length;
+        float[] floats = new float[ilen];
+        for (int i = 0; i < ilen; i++) {
+            if (values[i] instanceof Float) {
+                floats[i] = (Float) values[i];
+            } else {
+                return Series.super.insert(pos, values);
+            }
+        }
+
+        return insertFloat(pos, floats);
+    }
+
+    /**
+     * @since 1.2.0
+     */
+    default FloatSeries insertFloat(int pos, float... values) {
+
+        if (pos < 0) {
+            // TODO: treat it as offset from the end?
+            throw new IllegalArgumentException("Negative insert position: " + pos);
+        }
+
+        int slen = size();
+        if (pos > slen) {
+            throw new IllegalArgumentException("Insert position past the end of the Series: " + pos + ", len: " + slen);
+        }
+
+        int ilen = values.length;
+        if (ilen == 0) {
+            return this;
+        }
+
+        float[] expanded = new float[slen + ilen];
+        if (pos > 0) {
+            this.copyToFloat(expanded, 0, 0, pos);
+        }
+
+        System.arraycopy(values, 0, expanded, pos, ilen);
+
+        if (pos < slen) {
+            this.copyToFloat(expanded, pos, pos + ilen, slen - pos);
+        }
+
+        return Series.ofFloat(expanded);
+    }
+
+    @Override
+    default Series<Float> concat(Series<? extends Float>... other) {
+
+        int olen = other.length;
+        if (olen == 0) {
+            return this;
+        }
+
+        for (int i = 0; i < olen; i++) {
+            if (!(other[i] instanceof FloatSeries)) {
+                return Series.super.concat(other);
+            }
+        }
+
+        int size = size();
+
+        int h = size;
+        for (Series<? extends Float> s : other) {
+            h += s.size();
+        }
+
+        float[] data = new float[h];
+        copyToFloat(data, 0, 0, size);
+
+        int offset = size;
+        for (Series<? extends Float> s : other) {
+            int len = s.size();
+            ((FloatSeries) s).copyToFloat(data, 0, offset, len);
+            offset += len;
+        }
+
+        return Series.ofFloat(data);
+    }
+
+    default FloatSeries concatFloat(FloatSeries... other) {
+        if (other.length == 0) {
+            return this;
+        }
+
+        int size = size();
+
+        int h = size;
+        for (FloatSeries s : other) {
+            h += s.size();
+        }
+
+        float[] data = new float[h];
+        copyToFloat(data, 0, 0, size);
+
+        int offset = size;
+        for (FloatSeries s : other) {
+            int len = s.size();
+            s.copyToFloat(data, 0, offset, len);
+            offset += len;
+        }
+
+        return Series.ofFloat(data);
+    }
 
     @Override
     default FloatSeries diff(Series<? extends Float> other) {
@@ -288,7 +400,7 @@ public interface FloatSeries extends Series<Float> {
     }
 
     /**
-     * Compute the variance, using the population variantC1
+     * Compute the variance, using the population variant.
      */
     default double variance() {
         return variance(true);
@@ -305,14 +417,8 @@ public interface FloatSeries extends Series<Float> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
         FloatSeries as = (FloatSeries) s;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getFloat(i) == as.getFloat(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getFloat(i) == as.getFloat(i), len);
     }
 
     @Override
@@ -326,14 +432,8 @@ public interface FloatSeries extends Series<Float> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
         FloatSeries as = (FloatSeries) s;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getFloat(i) != as.getFloat(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getFloat(i) != as.getFloat(i), len);
     }
 
     /**
@@ -454,12 +554,7 @@ public interface FloatSeries extends Series<Float> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getFloat(i) < s.getFloat(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getFloat(i) < s.getFloat(i), len);
     }
 
     default BooleanSeries le(FloatSeries s) {
@@ -468,12 +563,7 @@ public interface FloatSeries extends Series<Float> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getFloat(i) <= s.getFloat(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getFloat(i) <= s.getFloat(i), len);
     }
 
     default BooleanSeries gt(FloatSeries s) {
@@ -482,12 +572,7 @@ public interface FloatSeries extends Series<Float> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getFloat(i) > s.getFloat(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getFloat(i) > s.getFloat(i), len);
     }
 
 
@@ -497,12 +582,7 @@ public interface FloatSeries extends Series<Float> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getFloat(i) >= s.getFloat(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getFloat(i) >= s.getFloat(i), len);
     }
 
     default BooleanSeries between(FloatSeries from, FloatSeries to) {
@@ -513,13 +593,9 @@ public interface FloatSeries extends Series<Float> {
             throw new IllegalArgumentException("'to' Series size " + to.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            float d = this.getFloat(i);
-            data[i] = d >= from.getFloat(i) && d <= to.getFloat(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> {
+            float v = this.getFloat(i);
+            return v >= from.getFloat(i) && v <= to.getFloat(i);
+        }, len);
     }
 }

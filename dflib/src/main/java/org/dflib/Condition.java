@@ -2,15 +2,27 @@ package org.dflib;
 
 import org.dflib.exp.agg.BoolAggregators;
 import org.dflib.exp.bool.AndCondition;
+import org.dflib.exp.bool.AsCondition;
 import org.dflib.exp.bool.NotCondition;
 import org.dflib.exp.bool.OrCondition;
 import org.dflib.exp.num.IntExp1;
+
+import java.util.Objects;
 
 /**
  * A {@link Exp} that evaluates to a BooleanSeries indicating whether the condition is true for any given
  * row of the source DataFrame.
  */
 public interface Condition extends Exp<Boolean> {
+
+    /**
+     * @since 2.0.0
+     */
+    @Override
+    default Condition as(String name) {
+        Objects.requireNonNull(name, "Null 'name'");
+        return new AsCondition(name, this);
+    }
 
     @Override
     BooleanSeries eval(DataFrame df);

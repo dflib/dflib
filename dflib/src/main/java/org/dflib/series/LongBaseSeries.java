@@ -11,15 +11,15 @@ import org.dflib.SeriesGroupBy;
 import org.dflib.Sorter;
 import org.dflib.ValueMapper;
 import org.dflib.ValueToRowMapper;
+import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.LongAccum;
 import org.dflib.builder.ObjectAccum;
 import org.dflib.builder.UniqueLongAccum;
-import org.dflib.concat.SeriesConcat;
 import org.dflib.groupby.SeriesGrouper;
 import org.dflib.map.Mapper;
 import org.dflib.sample.Sampler;
-import org.dflib.sort.SeriesSorter;
+import org.dflib.sort.IntComparator;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -136,14 +136,15 @@ public abstract class LongBaseSeries implements LongSeries {
 
     @Override
     public LongSeries sort(Sorter... sorters) {
-        return selectAsLongSeries(new SeriesSorter<>(this).sortIndex(sorters));
+        IntSeries index = IntComparator.of(this, sorters).sortIndex(size());
+        return selectAsLongSeries(index);
     }
 
     // TODO: implement 'sortLong(LongComparator)' similar to how IntBaseSeries does "sortInt(IntComparator)"
     //   Reimplement this method to delegate to 'sortLong'
     @Override
     public LongSeries sort(Comparator<? super Long> comparator) {
-        return selectAsLongSeries(new SeriesSorter<>(this).sortIndex(comparator));
+        return selectAsLongSeries(sortIndex(comparator));
     }
 
     @Override
@@ -188,33 +189,6 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public LongSeries concatLong(LongSeries... other) {
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-
-        int size = size();
-        int h = size;
-        for (LongSeries s : other) {
-            h += s.size();
-        }
-
-        long[] data = new long[h];
-        copyToLong(data, 0, 0, size);
-
-        int offset = size;
-        for (LongSeries s : other) {
-            int len = s.size();
-            s.copyToLong(data, 0, offset, len);
-            offset += len;
-        }
-
-        return new LongArraySeries(data);
-    }
-
-    @Override
     public Series<Long> fillNulls(Long value) {
         // primitive series has no nulls
         return this;
@@ -236,23 +210,6 @@ public abstract class LongBaseSeries implements LongSeries {
     public Series<Long> fillNullsForward() {
         // primitive series has no nulls
         return this;
-    }
-
-    @SafeVarargs
-    @Override
-    public final Series<Long> concat(Series<? extends Long>... other) {
-        // concatenating as Double... to concat as DoubleSeries, "concatDouble" should be used
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-
-        Series<Long>[] combined = new Series[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
-
-        return SeriesConcat.concat(combined);
     }
 
     @Override
@@ -302,15 +259,7 @@ public abstract class LongBaseSeries implements LongSeries {
 
     @Override
     public BooleanSeries locateLong(LongPredicate predicate) {
-        int len = size();
-
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = predicate.test(getLong(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> predicate.test(getLong(i)), size());
     }
 
     @Override
@@ -491,12 +440,7 @@ public abstract class LongBaseSeries implements LongSeries {
             return new FalseSeries(len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = set.contains(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> set.contains(get(i)), len);
     }
 
     @Override
@@ -519,12 +463,7 @@ public abstract class LongBaseSeries implements LongSeries {
             return new TrueSeries(len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = !set.contains(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> !set.contains(get(i)), len);
     }
 
     @Override

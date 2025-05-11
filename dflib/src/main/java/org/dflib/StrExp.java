@@ -8,10 +8,13 @@ import org.dflib.exp.map.MapExp1;
 import org.dflib.exp.num.DecimalExp1;
 import org.dflib.exp.num.DoubleExp1;
 import org.dflib.exp.num.FloatExp1;
+import org.dflib.exp.str.StrAsExp;
 import org.dflib.exp.str.StrExp1;
+import org.dflib.exp.str.StrShiftExp;
 import org.dflib.exp.str.StrSplitExp;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import static org.dflib.Exp.$val;
@@ -20,6 +23,15 @@ import static org.dflib.Exp.$val;
  * An expression applied to String columns.
  */
 public interface StrExp extends Exp<String> {
+
+    /**
+     * @since 2.0.0
+     */
+    @Override
+    default StrExp as(String name) {
+        Objects.requireNonNull(name, "Null 'name'");
+        return new StrAsExp(name, this);
+    }
 
     @Override
     default StrExp castAsStr() {
@@ -80,8 +92,8 @@ public interface StrExp extends Exp<String> {
         return MapCondition2.mapVal("endsWith", this, $val(suffix), (s, p) -> s.endsWith(suffix));
     }
 
-    default Condition contains(String suffix) {
-        return MapCondition2.mapVal("contains", this, $val(suffix), (s, p) -> s.contains(suffix));
+    default Condition contains(String substring) {
+        return MapCondition2.mapVal("contains", this, $val(substring), (s, p) -> s.contains(substring));
     }
 
     /**
@@ -199,4 +211,13 @@ public interface StrExp extends Exp<String> {
         return new StrReduceExp1<>("max", this, s -> ComparableAggregators.max(s), filter);
     }
 
+    @Override
+    default StrExp shift(int offset) {
+        return shift(offset, null);
+    }
+
+    @Override
+    default StrExp shift(int offset, String filler) {
+        return new StrShiftExp(this, offset, filler);
+    }
 }

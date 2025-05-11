@@ -18,8 +18,8 @@ public class Window_SelectPartitionedSortedTest {
     public void implicit() {
 
         DataFrame r = TEST_DF.over()
-                .partitioned("a")
-                .sorted($col("b").asc())
+                .partition("a")
+                .sort($col("b").asc())
                 .select(
                         $int("a").sum(),
                         $col("b").first()
@@ -38,8 +38,8 @@ public class Window_SelectPartitionedSortedTest {
     public void byName_RowNum() {
 
         DataFrame r = TEST_DF.over()
-                .partitioned("a")
-                .sorted($col("b").asc())
+                .partition("a")
+                .sort($col("b").asc())
                 .cols("a", "rn")
                 .select(
                         $col("a"),

@@ -12,49 +12,22 @@ import org.dflib.Series;
 import org.dflib.Sorter;
 import org.dflib.series.FalseSeries;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
 public class EmptyRowSet extends BaseRowSet {
 
-    @Deprecated
-    private static Series<?>[] emptyCols(int w) {
-        Series<?> empty = Series.of();
-        Series<?>[] emptyCols = new Series[w];
-        Arrays.fill(emptyCols, 0, w, empty);
-        return emptyCols;
-    }
-
-    /**
-     * @deprecated in favor of a 2-arg constructor
-     */
-    @Deprecated(since = "2.0.0", forRemoval = true)
     public EmptyRowSet(DataFrame source) {
-        this(source, emptyCols(source.width()));
-    }
-
-    /**
-     * @since 2.0.0
-     */
-    public EmptyRowSet(
-            DataFrame source,
-            Series<?>[] sourceColumns) {
-        super(source, sourceColumns, -1);
+        super(source, -1, null, null);
     }
 
     @Override
-    protected RowSetMerger merger() {
-        return EmptyRowSetMerger.instance;
+    protected RowSetMerger createMerger() {
+        return RowSetMerger.ofNone(source);
     }
 
     @Override
-    protected int size() {
-        return 0;
-    }
-
-    @Override
-    protected <T> Series<T> doSelect(Series<T> sourceColumn) {
+    protected <T> Series<T> selectCol(Series<T> sourceColumn) {
         return Series.of();
     }
 
@@ -93,23 +66,24 @@ public class EmptyRowSet extends BaseRowSet {
     }
 
     @Override
-    public DataFrame sort(Sorter... sorters) {
-        return source;
+    public RowSet sort(Sorter... sorters) {
+        return this;
     }
 
     @Override
-    public DataFrame unique() {
-        return source;
+    public RowSet unique() {
+        return this;
     }
 
     @Override
-    public DataFrame unique(String... uniqueKeyColumns) {
-        return source;
-    }
+    public RowSet unique(int... uniqueKeyColumns) {
+        // validate the argument, even though the operation does nothing
+        Index index = source.getColumnsIndex();
+        for (int p : uniqueKeyColumns) {
+            index.get(p);
+        }
 
-    @Override
-    public DataFrame unique(int... uniqueKeyColumns) {
-        return source;
+        return this;
     }
 
     @Override
@@ -145,28 +119,6 @@ public class EmptyRowSet extends BaseRowSet {
     @Override
     public DataFrame select(RowToValueMapper<?>... mappers) {
         return DataFrame.empty(source.getColumnsIndex());
-    }
-
-    @Override
-    public DataFrame selectUnique(String... uniqueKeyColumns) {
-        // validate the argument, even though the operation does nothing
-        source.getColumnsIndex().positions(uniqueKeyColumns);
-        return DataFrame.empty(source.getColumnsIndex());
-    }
-
-    @Override
-    public DataFrame selectUnique(int... uniqueKeyColumns) {
-        // validate the argument, even though the operation does nothing
-        for (int p : uniqueKeyColumns) {
-            source.getColumnsIndex().get(p);
-        }
-
-        return DataFrame.empty(source.getColumnsIndex());
-    }
-
-    @Override
-    public DataFrame selectUnique() {
-        return selectUnique(source.getColumnsIndex().toArray());
     }
 
     @Override

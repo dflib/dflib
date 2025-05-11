@@ -52,54 +52,54 @@ class ColumnExpander {
     public static ColumnExpander expand(Series<?> s) {
 
         int h = s.size();
-        ValueAccum<Object> explodedAccum = new ObjectAccum<>(h);
-        IntAccum indexAccum = new IntAccum(h);
+        ValueAccum<Object> expanded = new ObjectAccum<>(h);
+        IntAccum stretchCounts = new IntAccum(h);
 
         for (int i = 0; i < h; i++) {
             Object v = s.get(i);
             if (v == null) {
-                explodedAccum.push(null);
-                indexAccum.push(1);
+                expanded.push(null);
+                stretchCounts.push(1);
             } else if (v instanceof Iterable) {
-                explodeIterable(explodedAccum, indexAccum, (Iterable<?>) v);
+                explodeIterable(expanded, stretchCounts, (Iterable<?>) v);
             } else if (v.getClass().isArray()) {
-                explodeArray(explodedAccum, indexAccum, v);
+                explodeArray(expanded, stretchCounts, v);
             }
             // scalar
             else {
-                explodedAccum.push(v);
-                indexAccum.push(1);
+                expanded.push(v);
+                stretchCounts.push(1);
             }
         }
 
-        return new ColumnExpander(explodedAccum.toSeries(), indexAccum.toSeries());
+        return new ColumnExpander(expanded.toSeries(), stretchCounts.toSeries());
     }
 
     private static void explodeIterable(
-            ValueAccum<Object> explodedAccum,
-            IntAccum indexAccum,
+            ValueAccum<Object> expanded,
+            IntAccum stretchCounts,
             Iterable<?> iterable) {
 
         // empty iterable should generate a single null row
         Iterator<?> it = iterable.iterator();
 
         if (!it.hasNext()) {
-            explodedAccum.push(null);
-            indexAccum.push(1);
+            expanded.push(null);
+            stretchCounts.push(1);
         } else {
             int c = 0;
             while (it.hasNext()) {
-                explodedAccum.push(it.next());
+                expanded.push(it.next());
                 c++;
             }
 
-            indexAccum.push(c);
+            stretchCounts.push(c);
         }
     }
 
     private static void explodeArray(
-            ValueAccum<Object> explodedAccum,
-            IntAccum indexAccum,
+            ValueAccum<Object> expanded,
+            IntAccum stretchCounts,
             Object array) {
 
         if (array instanceof Object[]) {
@@ -107,81 +107,81 @@ class ColumnExpander {
 
             // empty array should generate a single null row
             if (a.length == 0) {
-                explodedAccum.push(null);
-                indexAccum.push(1);
+                expanded.push(null);
+                stretchCounts.push(1);
             } else {
                 for (Object sv : a) {
-                    explodedAccum.push(sv);
+                    expanded.push(sv);
                 }
 
-                indexAccum.push(a.length);
+                stretchCounts.push(a.length);
             }
         } else if (array instanceof int[]) {
             int[] a = (int[]) array;
 
             // empty array should generate a single null row
             if (a.length == 0) {
-                explodedAccum.push(null);
-                indexAccum.push(1);
+                expanded.push(null);
+                stretchCounts.push(1);
             } else {
                 for (int sv : a) {
-                    explodedAccum.push(sv);
+                    expanded.push(sv);
                 }
-                indexAccum.push(a.length);
+                stretchCounts.push(a.length);
             }
         } else if (array instanceof double[]) {
             double[] a = (double[]) array;
 
             // empty array should generate a single null row
             if (a.length == 0) {
-                explodedAccum.push(null);
-                indexAccum.push(1);
+                expanded.push(null);
+                stretchCounts.push(1);
             } else {
                 for (double sv : a) {
-                    explodedAccum.push(sv);
+                    expanded.push(sv);
                 }
-                indexAccum.push(a.length);
+                stretchCounts.push(a.length);
             }
         } else if (array instanceof long[]) {
             long[] a = (long[]) array;
 
             // empty array should generate a single null row
             if (a.length == 0) {
-                explodedAccum.push(null);
-                indexAccum.push(1);
+                expanded.push(null);
+                stretchCounts.push(1);
             } else {
                 for (long sv : a) {
-                    explodedAccum.push(sv);
+                    expanded.push(sv);
                 }
 
-                indexAccum.push(a.length);
+                stretchCounts.push(a.length);
             }
         } else if (array instanceof boolean[]) {
             boolean[] a = (boolean[]) array;
 
             // empty array should generate a single null row
             if (a.length == 0) {
-                explodedAccum.push(null);
-                indexAccum.push(1);
+                expanded.push(null);
+                stretchCounts.push(1);
             } else {
                 for (boolean sv : a) {
-                    explodedAccum.push(sv);
+                    expanded.push(sv);
                 }
 
-                indexAccum.push(a.length);
+                stretchCounts.push(a.length);
             }
         } else if (array instanceof byte[]) {
             byte[] a = (byte[]) array;
 
             // empty array should generate a single null row
             if (a.length == 0) {
-                explodedAccum.push(null);
-                indexAccum.push(1);
+                expanded.push(null);
+                stretchCounts.push(1);
             } else {
                 for (byte sv : a) {
-                    explodedAccum.push(sv);
+                    expanded.push(sv);
                 }
-                indexAccum.push(a.length);
+                stretchCounts.push(a.length);
             }
         }
         // TODO: short[], float[]?

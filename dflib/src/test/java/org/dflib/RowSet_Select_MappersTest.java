@@ -7,12 +7,11 @@ public class RowSet_Select_MappersTest {
 
     @Test
     public void all() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows()
                 .select(
                         r -> r.getInt(0) * 3,
@@ -29,12 +28,11 @@ public class RowSet_Select_MappersTest {
 
     @Test
     public void byIndex() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofInt(0, 2))
                 .select(
                         r -> r.getInt(0) * 3,
@@ -50,12 +48,11 @@ public class RowSet_Select_MappersTest {
 
     @Test
     public void byRange() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rowsRange(0, 2)
                 .select(
                         r -> r.getInt(0) * 3,
@@ -72,12 +69,11 @@ public class RowSet_Select_MappersTest {
 
     @Test
     public void byCondition() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofBool(true, false, true))
                 .select(
                         r -> r.getInt(0) * 3,

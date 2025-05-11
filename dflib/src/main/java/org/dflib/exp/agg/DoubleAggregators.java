@@ -2,6 +2,8 @@ package org.dflib.exp.agg;
 
 import org.dflib.DoubleSeries;
 import org.dflib.Series;
+import org.dflib.agg.Max;
+import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
 import org.dflib.builder.ObjectAccum;
 
@@ -64,49 +66,20 @@ public class DoubleAggregators {
         return s.size() == 0 ? 0. : sum.apply(s);
     }
 
+    /**
+     * @deprecated use {@link org.dflib.agg.Min#ofDoubles(Series)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static double min(Series<? extends Number> s) {
-
-        int size = s.size();
-        if (size == 0) {
-            return 0.;
-        }
-
-        double min = Double.MAX_VALUE;
-
-        for (int i = 0; i < size; i++) {
-
-            Number n = s.get(i);
-            if (n != null) {
-                double in = n.doubleValue();
-                if (in < min) {
-                    min = in;
-                }
-            }
-        }
-
-        return min;
+        return Min.ofDoubles(s);
     }
 
+    /**
+     * @deprecated use {@link org.dflib.agg.Max#ofDoubles(Series)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static double max(Series<? extends Number> s) {
-        int size = s.size();
-        if (size == 0) {
-            return 0.;
-        }
-
-        double max = Double.MIN_VALUE;
-
-        for (int i = 0; i < size; i++) {
-
-            Number n = s.get(i);
-            if (n != null) {
-                double in = n.doubleValue();
-                if (in > max) {
-                    max = in;
-                }
-            }
-        }
-
-        return max;
+        return Max.ofDoubles(s);
     }
 
     public static double avg(Series<? extends Number> s) {
@@ -119,5 +92,28 @@ public class DoubleAggregators {
     @Deprecated(since = "2.0.0", forRemoval = true)
     public static double median(Series<? extends Number> s) {
         return Percentiles.ofDoubles(s, 0.5);
+    }
+
+    public static double variance(Series<? extends Number> s, boolean usePopulationVariance) {
+
+        int size = s.size();
+        double avg = DoubleAggregators.avg(s);
+        double denominator = usePopulationVariance ? size : size - 1;
+
+        // TODO: ignoring a possibility of nulls... e.g., numpy throws when calculating a variance of array with Nones
+        //  Should we be smarter?
+
+        double acc = 0;
+        for (int i = 0; i < size; i++) {
+            double x = s.get(i).doubleValue();
+            acc += (x - avg) * (x - avg);
+        }
+
+        return acc / denominator;
+    }
+
+    public static double stdDev(Series<? extends Number> s, boolean usePopulationStdDev) {
+        double variance = variance(s, usePopulationStdDev);
+        return Math.sqrt(variance);
     }
 }

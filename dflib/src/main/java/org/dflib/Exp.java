@@ -2,8 +2,6 @@ package org.dflib;
 
 import org.dflib.exp.AsExp;
 import org.dflib.exp.Column;
-import org.dflib.exp.num.BigintColumn;
-import org.dflib.exp.num.BigintScalarExp;
 import org.dflib.exp.RowNumExp;
 import org.dflib.exp.ScalarExp;
 import org.dflib.exp.ShiftExp;
@@ -37,6 +35,8 @@ import org.dflib.exp.map.MapCondition1;
 import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.map.MapExp1;
 import org.dflib.exp.map.MapExp2;
+import org.dflib.exp.num.BigintColumn;
+import org.dflib.exp.num.BigintScalarExp;
 import org.dflib.exp.num.DecimalColumn;
 import org.dflib.exp.num.DecimalScalarExp;
 import org.dflib.exp.num.DoubleColumn;
@@ -54,8 +54,8 @@ import org.dflib.exp.str.StrColumn;
 import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrScalarExp;
 
-import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -65,6 +65,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -145,13 +146,33 @@ public interface Exp<T> {
     }
 
     /**
-     * Returns a {@code NumExp<BigDecimal>} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * Returns a {@code NumExp<BigInteger>} whose "eval" returns a Series with the value argument at each position, and "reduce"
      * returns the value itself.
      *
      * @since 2.0.0
      */
-    static NumExp<BigDecimal> $decimalVal(BigDecimal value) {
+    static NumExp<BigInteger> $bigintVal(String value) {
+        return Exp.$bigintVal(value != null ? new BigInteger(value) : null);
+    }
+
+    /**
+     * Returns a {@link DecimalExp} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
+     *
+     * @since 2.0.0
+     */
+    static DecimalExp $decimalVal(BigDecimal value) {
         return new DecimalScalarExp(value);
+    }
+
+    /**
+     * Returns a {@code DecimalExp} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
+     *
+     * @since 2.0.0
+     */
+    static DecimalExp $decimalVal(String value) {
+        return Exp.$decimalVal(value != null ? new BigDecimal(value) : null);
     }
 
     /**
@@ -474,7 +495,7 @@ public interface Exp<T> {
     /**
      * A function that evaluates "exp", replacing any null values with "ifNull" value.
      */
-    static <T> Exp<T> ifNull(Exp<T> exp, T ifNull) {
+    static <T> Exp<T> ifNullVal(Exp<T> exp, T ifNull) {
         return new IfNullExp<>(exp, $val(ifNull));
     }
 
@@ -826,6 +847,29 @@ public interface Exp<T> {
 
     default Condition mapBoolVal(Predicate<T> op) {
         return mapBoolVal(op, true);
+    }
+
+    /**
+     * Creates a Condition expression that takes the results of this and another Exp and applies the provided Series
+     * transformation BiFunction.
+     *
+     * @since 2.0.0
+     */
+    default <S> Condition mapBool(Exp<S> other, BiFunction<Series<T>, Series<S>, BooleanSeries> op) {
+        return MapCondition2.map("map", this, other, op);
+    }
+
+    /**
+     * Creates a Condition expression that takes the results of this and another Exp and applies the provided
+     * BiPredicate to them. Note that DFLib will only pass non-null values to the "op" function. Any source
+     * "null" values on either side of the expression automatically evaluate to "null" result. This assumption makes
+     * writing transformation functions easier (and closer to how SQL operates). If special handling of nulls is
+     * required, consider using {@link #mapBool(Exp, BiFunction)} method instead.
+     *
+     * @since 2.0.0
+     */
+    default <S> Condition mapBoolVal(Exp<S> other, BiPredicate<T, S> op) {
+        return MapCondition2.mapVal("map", this, other, op);
     }
 
     default Condition mapBoolVal(Predicate<T> op, boolean hideNulls) {

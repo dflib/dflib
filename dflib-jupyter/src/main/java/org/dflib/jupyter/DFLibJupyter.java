@@ -34,8 +34,12 @@ public class DFLibJupyter {
     /**
      * This method should be explicitly invoked in the notebook to connect DFLib extensions to Jupyter environment.
      */
+    // While this method may show as unused in an IDE, it is called inside the script in DFLibJupyterExtension
     public static void init(BaseKernel kernel) {
-        MutableTabularPrinter printer = new MutableTabularPrinter(10, 50);
+
+        // not passing explicit display parameters, relying on DFLib defaults instead
+        MutableTabularPrinter printer = new MutableTabularPrinter();
+
         DFLibJupyter jupyterBridge = new DFLibJupyter(printer);
         jupyterBridge.doInit(kernel);
 
@@ -50,10 +54,27 @@ public class DFLibJupyter {
     }
 
     /**
-     * Configures notebook DFLib printer's max width of a column in characters for a DataFrame or Series.
+     * Configures notebook DFLib printer's max number of display rows for a DataFrame or Series.
      */
+    public static void setMaxDisplayCols(int cols) {
+        instance.printer.setMaxDisplayCols(cols);
+    }
+
+    /**
+     * Configures notebook DFLib printer's max width of a column in characters for a DataFrame or Series.
+     *
+     * @since 2.0.0
+     */
+    public static void setMaxDisplayValueWidth(int w) {
+        instance.printer.setMaxDisplayValueWidth(w);
+    }
+
+    /**
+     * @deprecated in favor of {@link #setMaxDisplayValueWidth(int)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static void setMaxDisplayColumnWidth(int w) {
-        instance.printer.setMaxDisplayColumnWidth(w);
+        instance.printer.setMaxDisplayValueWidth(w);
     }
 
     private void doInit(BaseKernel kernel) {

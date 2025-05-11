@@ -16,7 +16,7 @@ import java.util.Objects;
  */
 public class EChart {
 
-    private static final String DEFAULT_ECHARTS_SCRIPT_URL = "https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js";
+    private static final String DEFAULT_ECHARTS_SCRIPT_URL = "https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js";
 
     private final ElementIdGenerator idGenerator;
     private final Option option;

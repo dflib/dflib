@@ -1,9 +1,9 @@
 package org.dflib;
 
 import org.dflib.builder.BoolAccum;
+import org.dflib.builder.BoolBuilder;
 import org.dflib.op.BooleanSeriesOps;
 import org.dflib.op.ReplaceOp;
-import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.BooleanIndexedSeries;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.TrueSeries;
@@ -37,6 +37,11 @@ public interface BooleanSeries extends Series<Boolean> {
 
     @Override
     default BooleanSeries castAsBool() {
+        return this;
+    }
+
+    @Override
+    default BooleanSeries compact() {
         return this;
     }
 
@@ -132,7 +137,116 @@ public interface BooleanSeries extends Series<Boolean> {
         return Series.ofBool(expanded);
     }
 
-    BooleanSeries concatBool(BooleanSeries... other);
+    @Override
+    default Series<?> insert(int pos, Object... values) {
+
+        int ilen = values.length;
+        boolean[] bools = new boolean[ilen];
+        for (int i = 0; i < ilen; i++) {
+            if (values[i] instanceof Boolean) {
+                bools[i] = (Boolean) values[i];
+            } else {
+                return Series.super.insert(pos, values);
+            }
+        }
+
+        return insertBool(pos, bools);
+    }
+
+    /**
+     * @since 1.2.0
+     */
+    default BooleanSeries insertBool(int pos, boolean... values) {
+
+        if (pos < 0) {
+            // TODO: treat it as offset from the end?
+            throw new IllegalArgumentException("Negative insert position: " + pos);
+        }
+
+        int slen = size();
+        if (pos > slen) {
+            throw new IllegalArgumentException("Insert position past the end of the Series: " + pos + ", len: " + slen);
+        }
+
+        int ilen = values.length;
+        if (ilen == 0) {
+            return this;
+        }
+
+        // TODO: in 2.0 use bitsets here, as the size is known, avoiding a separate compaction step.
+        //  For this we'll need an appendable
+        boolean[] expanded = new boolean[slen + ilen];
+        if (pos > 0) {
+            this.copyToBool(expanded, 0, 0, pos);
+        }
+
+        System.arraycopy(values, 0, expanded, pos, ilen);
+
+        if (pos < slen) {
+            this.copyToBool(expanded, pos, pos + ilen, slen - pos);
+        }
+
+        return Series.ofBool(expanded);
+    }
+
+    @Override
+    default Series<Boolean> concat(Series<? extends Boolean>... other) {
+
+        int olen = other.length;
+        if (olen == 0) {
+            return this;
+        }
+
+        for (int i = 0; i < olen; i++) {
+            if (!(other[i] instanceof BooleanSeries)) {
+                return Series.super.concat(other);
+            }
+        }
+
+        int size = size();
+
+        int h = size;
+        for (Series<? extends Boolean> s : other) {
+            h += s.size();
+        }
+
+        boolean[] data = new boolean[h];
+        copyToBool(data, 0, 0, size);
+
+        int offset = size;
+        for (Series<? extends Boolean> s : other) {
+            int len = s.size();
+            ((BooleanSeries) s).copyToBool(data, 0, offset, len);
+            offset += len;
+        }
+
+        return Series.ofBool(data);
+    }
+
+    default BooleanSeries concatBool(BooleanSeries... other) {
+        if (other.length == 0) {
+            return this;
+        }
+
+        int size = size();
+
+        int h = size;
+        for (BooleanSeries s : other) {
+            h += s.size();
+        }
+
+        boolean[] data = new boolean[h];
+        copyToBool(data, 0, 0, size);
+
+        int offset = size;
+        for (BooleanSeries s : other) {
+            int len = s.size();
+            s.copyToBool(data, 0, offset, len);
+            offset += len;
+        }
+
+        return Series.ofBool(data);
+    }
 
     @Override
     default BooleanSeries diff(Series<? extends Boolean> other) {
@@ -282,14 +396,8 @@ public interface BooleanSeries extends Series<Boolean> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
         BooleanSeries anotherBool = (BooleanSeries) s;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getBool(i) == anotherBool.getBool(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getBool(i) == anotherBool.getBool(i), len);
     }
 
     @Override
@@ -303,13 +411,7 @@ public interface BooleanSeries extends Series<Boolean> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
         BooleanSeries anotherBool = (BooleanSeries) s;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getBool(i) != anotherBool.getBool(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getBool(i) != anotherBool.getBool(i), len);
     }
 }

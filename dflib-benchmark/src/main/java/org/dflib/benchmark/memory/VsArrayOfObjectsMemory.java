@@ -38,9 +38,11 @@ public class VsArrayOfObjectsMemory extends MemoryTest {
         VsArrayOfObjectsMemory test = new VsArrayOfObjectsMemory();
         test.run("Integer DataFrame", test::intCells, cells);
         test.run("Integer List<..>", test::intCellsAsObjectList, cells);
+        test.run("Integer Object[]", test::intCellsAsObjectArray, cells);
 
         test.run("int DataFrame", test::intPrimitiveCells, cells);
         test.run("int List<..>", test::intPrimitiveCellsAsObjectList, cells);
+        test.run("int Object[]", test::intPrimitiveCellsAsObjectArray, cells);
     }
 
     public DataFrame intCells() {
@@ -67,6 +69,18 @@ public class VsArrayOfObjectsMemory extends MemoryTest {
         return rows;
     }
 
+    public TestIntRow[] intCellsAsObjectArray() {
+
+        ValueMaker<Integer> i1s = ValueMaker.intSeq();
+        ValueMaker<Integer> i2s = ValueMaker.intSeq();
+        TestIntRow[] rows = new TestIntRow[ROWS];
+        for (int i = 0; i < ROWS; i++) {
+            rows[i] = new TestIntRow(i1s.get(), i2s.get());
+        }
+
+        return rows;
+    }
+
     public List<TestIntPrimitiveRow> intPrimitiveCellsAsObjectList() {
 
         ValueMaker<Integer> i1s = ValueMaker.intSeq();
@@ -74,6 +88,18 @@ public class VsArrayOfObjectsMemory extends MemoryTest {
         List<TestIntPrimitiveRow> rows = new ArrayList<>(ROWS);
         for (int i = 0; i < ROWS; i++) {
             rows.add(new TestIntPrimitiveRow(i1s.get(), i2s.get()));
+        }
+
+        return rows;
+    }
+
+    public TestIntPrimitiveRow[] intPrimitiveCellsAsObjectArray() {
+
+        ValueMaker<Integer> i1s = ValueMaker.intSeq();
+        ValueMaker<Integer> i2s = ValueMaker.intSeq();
+        TestIntPrimitiveRow[] rows = new TestIntPrimitiveRow[ROWS];
+        for (int i = 0; i < ROWS; i++) {
+            rows[i] = new TestIntPrimitiveRow(i1s.get(), i2s.get());
         }
 
         return rows;

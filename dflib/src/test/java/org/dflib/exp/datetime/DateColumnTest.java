@@ -11,7 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static org.dflib.Exp.*;
+import static org.dflib.Exp.$col;
+import static org.dflib.Exp.$date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -218,5 +219,16 @@ public class DateColumnTest {
 
         Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2011, 12, 31));
         new SeriesAsserts(exp.eval(s)).expectData(LocalDate.of(2007, 1, 19), LocalDate.of(2012, 1, 11));
+    }
+
+    @Test
+    public void shift_plus() {
+        DateExp e = $date(0).shift(-1).plusDays(3);
+
+        Series<LocalDate> s = Series.of(
+                LocalDate.of(2007, 1, 8),
+                LocalDate.of(2011, 12, 31));
+
+        new SeriesAsserts(e.eval(s)).expectData(LocalDate.of(2012, 1, 3), null);
     }
 }

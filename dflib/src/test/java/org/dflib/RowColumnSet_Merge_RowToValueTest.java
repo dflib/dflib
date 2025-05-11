@@ -7,12 +7,11 @@ public class RowColumnSet_Merge_RowToValueTest {
 
     @Test
     public void all() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows()
                 .cols("b", "a")
                 .merge(
@@ -28,12 +27,11 @@ public class RowColumnSet_Merge_RowToValueTest {
 
     @Test
     public void byIndex() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofInt(0, 2))
                 .cols("b", "a")
                 .merge(
@@ -49,12 +47,11 @@ public class RowColumnSet_Merge_RowToValueTest {
 
     @Test
     public void byCondition() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofBool(true, false, true))
                 .cols("b", "a")
                 .merge(

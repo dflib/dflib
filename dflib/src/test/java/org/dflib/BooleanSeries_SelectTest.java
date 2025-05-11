@@ -15,6 +15,13 @@ public class BooleanSeries_SelectTest {
     }
 
     @Test
+    public void positional_IntSeries() {
+        Series<Boolean> s = Series.ofBool(true, false, true).select(Series.ofInt(2, 1));
+        new SeriesAsserts(s).expectData(true, false);
+        assertInstanceOf(BooleanSeries.class, s);
+    }
+
+    @Test
     public void positional_Empty() {
         Series<Boolean> s = Series.ofBool(true, false, true).select();
         new SeriesAsserts(s).expectData();

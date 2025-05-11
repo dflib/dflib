@@ -10,15 +10,15 @@ import org.dflib.SeriesGroupBy;
 import org.dflib.Sorter;
 import org.dflib.ValueMapper;
 import org.dflib.ValueToRowMapper;
+import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.ObjectAccum;
-import org.dflib.concat.SeriesConcat;
 import org.dflib.groupby.SeriesGrouper;
 import org.dflib.map.Mapper;
 import org.dflib.sample.Sampler;
 import org.dflib.set.Diff;
 import org.dflib.set.Intersect;
-import org.dflib.sort.SeriesSorter;
+import org.dflib.sort.IntComparator;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -128,20 +128,6 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
                 // RangeSeries constructor does range checking
                 : new RangeSeries<>(this, fromInclusive, toExclusive - fromInclusive);
-    }
-
-    @SafeVarargs
-    @Override
-    public final Series<T> concat(Series<? extends T>... other) {
-        if (other.length == 0) {
-            return this;
-        }
-
-        Series<T>[] combined = new Series[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
-
-        return SeriesConcat.concat(combined);
     }
 
     @Override
@@ -256,12 +242,18 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
     @Override
     public Series<T> sort(Sorter... sorters) {
-        return new SeriesSorter<>(this).sort(sorters);
+        return sorters.length == 0
+                ? this
+                : select(IntComparator.of(this, sorters).sortIndex(size()));
     }
 
     @Override
     public Series<T> sort(Comparator<? super T> comparator) {
-        return new SeriesSorter<>(this).sort(comparator);
+        int size = size();
+        T[] sorted = (T[]) new Object[size];
+        copyTo(sorted, 0, 0, size);
+        Arrays.sort(sorted, comparator);
+        return new ArraySeries<>(sorted);
     }
 
     @Override
@@ -356,26 +348,12 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
     @Override
     public BooleanSeries isNull() {
-        int s = size();
-
-        boolean[] data = new boolean[s];
-        for (int i = 0; i < s; i++) {
-            data[i] = get(i) == null;
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> get(i) == null, size());
     }
 
     @Override
     public BooleanSeries isNotNull() {
-        int s = size();
-
-        boolean[] data = new boolean[s];
-        for (int i = 0; i < s; i++) {
-            data[i] = get(i) != null;
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> get(i) != null, size());
     }
 
     @Override
@@ -388,13 +366,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
         }
 
         Set<?> set = new HashSet<>(Arrays.asList(values));
-
-        boolean[] data = new boolean[s];
-        for (int i = 0; i < s; i++) {
-            data[i] = set.contains(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> set.contains(get(i)), s);
     }
 
     @Override
@@ -407,13 +379,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
         }
 
         Set<?> set = new HashSet<>(Arrays.asList(values));
-
-        boolean[] data = new boolean[s];
-        for (int i = 0; i < s; i++) {
-            data[i] = !set.contains(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> !set.contains(get(i)), s);
     }
 
     @Override

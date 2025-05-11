@@ -1,7 +1,7 @@
 package org.dflib;
 
+import org.dflib.builder.BoolBuilder;
 import org.dflib.op.ReplaceOp;
-import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.IntArraySeries;
 import org.dflib.series.IntIndexedSeries;
@@ -33,6 +33,11 @@ public interface IntSeries extends Series<Integer> {
 
     @Override
     default IntSeries castAsInt() {
+        return this;
+    }
+
+    @Override
+    default IntSeries compact() {
         return this;
     }
 
@@ -131,7 +136,114 @@ public interface IntSeries extends Series<Integer> {
         return Series.ofInt(expanded);
     }
 
-    IntSeries concatInt(IntSeries... other);
+    @Override
+    default Series<?> insert(int pos, Object... values) {
+
+        int ilen = values.length;
+        int[] ints = new int[ilen];
+        for (int i = 0; i < ilen; i++) {
+            if (values[i] instanceof Integer) {
+                ints[i] = (Integer) values[i];
+            } else {
+                return Series.super.insert(pos, values);
+            }
+        }
+
+        return insertInt(pos, ints);
+    }
+
+    /**
+     * @since 1.2.0
+     */
+    default IntSeries insertInt(int pos, int... values) {
+
+        if (pos < 0) {
+            // TODO: treat it as offset from the end?
+            throw new IllegalArgumentException("Negative insert position: " + pos);
+        }
+
+        int slen = size();
+        if (pos > slen) {
+            throw new IllegalArgumentException("Insert position past the end of the Series: " + pos + ", len: " + slen);
+        }
+
+        int ilen = values.length;
+        if (ilen == 0) {
+            return this;
+        }
+
+        int[] expanded = new int[slen + ilen];
+        if (pos > 0) {
+            this.copyToInt(expanded, 0, 0, pos);
+        }
+
+        System.arraycopy(values, 0, expanded, pos, ilen);
+
+        if (pos < slen) {
+            this.copyToInt(expanded, pos, pos + ilen, slen - pos);
+        }
+
+        return Series.ofInt(expanded);
+    }
+
+    @Override
+    default Series<Integer> concat(Series<? extends Integer>... other) {
+
+        int olen = other.length;
+        if (olen == 0) {
+            return this;
+        }
+
+        for (int i = 0; i < olen; i++) {
+            if (!(other[i] instanceof IntSeries)) {
+                return Series.super.concat(other);
+            }
+        }
+
+        int size = size();
+
+        int h = size;
+        for (Series<? extends Integer> s : other) {
+            h += s.size();
+        }
+
+        int[] data = new int[h];
+        copyToInt(data, 0, 0, size);
+
+        int offset = size;
+        for (Series<? extends Integer> s : other) {
+            int len = s.size();
+            ((IntSeries) s).copyToInt(data, 0, offset, len);
+            offset += len;
+        }
+
+        return Series.ofInt(data);
+    }
+
+    default IntSeries concatInt(IntSeries... other) {
+        if (other.length == 0) {
+            return this;
+        }
+
+        int size = size();
+
+        int h = size;
+        for (IntSeries s : other) {
+            h += s.size();
+        }
+
+        int[] data = new int[h];
+        copyToInt(data, 0, 0, size);
+
+        int offset = size;
+        for (IntSeries s : other) {
+            int len = s.size();
+            s.copyToInt(data, 0, offset, len);
+            offset += len;
+        }
+
+        return Series.ofInt(data);
+    }
 
     @Override
     default IntSeries diff(Series<? extends Integer> other) {
@@ -142,7 +254,6 @@ public interface IntSeries extends Series<Integer> {
     default IntSeries intersect(Series<? extends Integer> other) {
         return Intersect.intersectInt(this, other);
     }
-
 
     IntSeries rangeInt(int fromInclusive, int toExclusive);
 
@@ -316,14 +427,8 @@ public interface IntSeries extends Series<Integer> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
         IntSeries anotherInt = (IntSeries) s;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getInt(i) == anotherInt.getInt(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getInt(i) == anotherInt.getInt(i), len);
     }
 
     @Override
@@ -337,14 +442,8 @@ public interface IntSeries extends Series<Integer> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
         IntSeries anotherInt = (IntSeries) s;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getInt(i) != anotherInt.getInt(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getInt(i) != anotherInt.getInt(i), len);
     }
 
     /**
@@ -476,13 +575,7 @@ public interface IntSeries extends Series<Integer> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getInt(i) < s.getInt(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getInt(i) < s.getInt(i), len);
     }
 
 
@@ -492,13 +585,7 @@ public interface IntSeries extends Series<Integer> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getInt(i) <= s.getInt(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getInt(i) <= s.getInt(i), len);
     }
 
 
@@ -508,13 +595,7 @@ public interface IntSeries extends Series<Integer> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getInt(i) > s.getInt(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getInt(i) > s.getInt(i), len);
     }
 
 
@@ -524,13 +605,7 @@ public interface IntSeries extends Series<Integer> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getInt(i) >= s.getInt(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getInt(i) >= s.getInt(i), len);
     }
 
 
@@ -542,13 +617,9 @@ public interface IntSeries extends Series<Integer> {
             throw new IllegalArgumentException("'to' Series size " + to.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
+        return BoolBuilder.buildSeries(i -> {
             int v = this.getInt(i);
-            data[i] = v >= from.getInt(i) && v <= to.getInt(i);
-        }
-
-        return new BooleanArraySeries(data);
+            return v >= from.getInt(i) && v <= to.getInt(i);
+        }, len);
     }
 }

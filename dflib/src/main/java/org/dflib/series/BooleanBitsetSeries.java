@@ -4,7 +4,8 @@ import org.dflib.BooleanSeries;
 import org.dflib.IntSeries;
 import org.dflib.Sorter;
 import org.dflib.builder.BoolAccum;
-import org.dflib.sort.SeriesSorter;
+import org.dflib.builder.BoolBuilder;
+import org.dflib.sort.IntComparator;
 
 import java.util.Comparator;
 import java.util.function.Predicate;
@@ -33,10 +34,10 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
 
     @Override
     public boolean getBool(int index) {
-        int i = index >> INDEX_BIT_SHIFT;
-        if (i >= data.length) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + data.length);
+        if (index >= size) {
+            throw new ArrayIndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
+        int i = index >> INDEX_BIT_SHIFT;
         return (this.data[i] & (1L << index)) != 0;
     }
 
@@ -143,23 +144,58 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
     }
 
     @Override
+    public BooleanSeries concatBool(BooleanSeries... other) {
+        if (other.length == 0) {
+            return this;
+        }
+
+        int size = size();
+        int h = size;
+        for (BooleanSeries s : other) {
+            if(!(s instanceof BooleanBitsetSeries)) {
+                // most "other" will be BooleanBitsetSeries too, but there are exceptions
+                // (indexed series, TrueSeries, FalseSeries)
+                return super.concatBool(other);
+            }
+            h += s.size();
+        }
+
+        long[] result = new long[arraySize(h)];
+        // copy this series as is
+        System.arraycopy(this.data, 0, result, 0, this.data.length);
+
+        // shift and pack other series
+        int currentSizeInBits = size;
+        for(BooleanSeries s : other) {
+            BooleanBitsetSeries nextBitsetSeries = (BooleanBitsetSeries) s;
+            int bitsLeft = nextBitsetSeries.size();
+            for(long nextLong : nextBitsetSeries.data) {
+                int nextIndex = arraySize(currentSizeInBits);
+                result[nextIndex - 1] |= nextLong << currentSizeInBits;
+                if(nextIndex < result.length) {
+                    result[nextIndex] |= nextLong >>> -currentSizeInBits;
+                }
+                currentSizeInBits += Math.min(bitsLeft, Long.SIZE);
+                bitsLeft -= Long.SIZE;
+            }
+        }
+
+        return new BooleanBitsetSeries(result, h);
+    }
+
+    @Override
     public BooleanSeries sort(Sorter... sorters) {
-        return selectAsBooleanSeries(new SeriesSorter<>(this).sortIndex(sorters));
+        IntSeries index = IntComparator.of(this, sorters).sortIndex(size());
+        return selectAsBooleanSeries(index);
     }
 
     @Override
     public BooleanSeries sort(Comparator<? super Boolean> comparator) {
-        return selectAsBooleanSeries(new SeriesSorter<>(this).sortIndex(comparator));
+        return selectAsBooleanSeries(sortIndex(comparator));
     }
 
     private BooleanSeries selectAsBooleanSeries(IntSeries positions) {
-        int len = positions.size();
-        BoolAccum accum = new BoolAccum(len);
-        for (int i = 0; i < len; i++) {
-            int index = positions.getInt(i);
-            accum.pushBool(getUnchecked(index));
-        }
-        return accum.toSeries();
+        return BoolBuilder.buildSeries(i -> getUnchecked(positions.getInt(i)), positions.size());
     }
 
     @Override

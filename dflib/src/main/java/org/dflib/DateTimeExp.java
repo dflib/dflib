@@ -5,7 +5,9 @@ import org.dflib.exp.agg.ComparableAggregators;
 import org.dflib.exp.agg.DateTimeAggregators;
 import org.dflib.exp.agg.DateTimeReduceExp1;
 import org.dflib.exp.datetime.DateExp1;
+import org.dflib.exp.datetime.DateTimeAsExp;
 import org.dflib.exp.datetime.DateTimeExp2;
+import org.dflib.exp.datetime.DateTimeShiftExp;
 import org.dflib.exp.datetime.TimeExp1;
 import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.map.MapCondition3;
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 
 import static org.dflib.Exp.$val;
 
@@ -22,6 +25,15 @@ import static org.dflib.Exp.$val;
  * An expression applied to datetime columns.
  */
 public interface DateTimeExp extends Exp<LocalDateTime> {
+
+    /**
+     * @since 2.0.0
+     */
+    @Override
+    default DateTimeExp as(String name) {
+        Objects.requireNonNull(name, "Null 'name'");
+        return new DateTimeAsExp(name, this);
+    }
 
     default NumExp<Integer> year() {
         return IntExp1.mapVal("year", this, LocalDateTime::getYear);
@@ -291,5 +303,15 @@ public interface DateTimeExp extends Exp<LocalDateTime> {
      */
     default DateTimeExp quantile(double q, Condition filter) {
         return new DateTimeReduceExp1<>("quantile", this, s -> Percentiles.ofDateTimes(s, q), filter);
+    }
+
+    @Override
+    default DateTimeExp shift(int offset) {
+        return shift(offset, null);
+    }
+
+    @Override
+    default DateTimeExp shift(int offset, LocalDateTime filler) {
+        return new DateTimeShiftExp(this, offset, filler);
     }
 }

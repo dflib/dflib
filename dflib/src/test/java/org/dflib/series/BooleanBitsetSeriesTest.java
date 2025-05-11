@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BooleanBitsetSeriesTest {
 
+    static final long LONG_BITS_MASK = 0xFFFFFFFF_FFFFFFFFL;
+
     @Test
     public void create() {
         long[] data = {
@@ -193,5 +195,119 @@ class BooleanBitsetSeriesTest {
     public void cumSum() {
         BooleanBitsetSeries s = new BooleanBitsetSeries(new long[]{0b1001L}, 4);
         new SeriesAsserts(s.cumSum()).expectData(1, 1, 1, 2);
+    }
+
+    @Test
+    public void concatBool() {
+        {
+            BooleanBitsetSeries s1 = new BooleanBitsetSeries(new long[]{0b1001L}, 4);
+            BooleanBitsetSeries s2 = new BooleanBitsetSeries(new long[]{0b1001L}, 4);
+            BooleanBitsetSeries s3 = new BooleanBitsetSeries(new long[]{0b1001L}, 4);
+            BooleanBitsetSeries concat = new BooleanBitsetSeries(new long[]{0b1001_1001_1001L}, 12);
+
+            BooleanSeries booleans = s1.concatBool(s2, s3);
+            assertEquals(12, booleans.size());
+            assertTrue(concat.eq(booleans).isTrue());
+        }
+
+        {
+
+            BooleanBitsetSeries s1 = new BooleanBitsetSeries(new long[]{LONG_BITS_MASK, 0b1001}, 68);
+            BooleanBitsetSeries s2 = new BooleanBitsetSeries(new long[]{0b1001L}, 4);
+            BooleanBitsetSeries s3 = new BooleanBitsetSeries(new long[]{0b1001L}, 4);
+            BooleanBitsetSeries concat = new BooleanBitsetSeries(new long[]{LONG_BITS_MASK, 0b1001_1001_1001L}, 76);
+
+            BooleanSeries booleans = s1.concatBool(s2, s3);
+            assertEquals(76, booleans.size());
+            assertTrue(concat.eq(booleans).isTrue());
+        }
+
+        {
+            BooleanBitsetSeries s1 = new BooleanBitsetSeries(new long[]{LONG_BITS_MASK, 0b1001}, 68);
+            BooleanBitsetSeries s2 = new BooleanBitsetSeries(new long[]{LONG_BITS_MASK, 0b1001}, 68);
+            BooleanBitsetSeries s3 = new BooleanBitsetSeries(new long[]{0b1001L}, 4);
+
+            BooleanBitsetSeries concat = new BooleanBitsetSeries(new long[]{
+                    0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111L,
+                    0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111001L,
+                    0b00001001_10011111L
+            }, 140);
+
+            BooleanSeries booleans = s1.concatBool(s2, s3);
+            assertEquals(140, booleans.size());
+            assertTrue(concat.eq(booleans).isTrue());
+        }
+
+        {
+            BooleanBitsetSeries s1 = new BooleanBitsetSeries(new long[]{LONG_BITS_MASK, 0b1001}, 68);
+            BooleanBitsetSeries s2 = new BooleanBitsetSeries(new long[]{LONG_BITS_MASK, 0b1001}, 68);
+            BooleanBitsetSeries s3 = new BooleanBitsetSeries(new long[]{LONG_BITS_MASK, 0b1001}, 68);
+
+            BooleanBitsetSeries concat = new BooleanBitsetSeries(new long[]{
+                    0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111L,
+                    0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111001L,
+                    0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_10011111L,
+                    0b00001001_11111111L
+            }, 204);
+
+            BooleanSeries booleans = s1.concatBool(s2, s3);
+            assertEquals(68+68+68, booleans.size());
+            assertTrue(concat.eq(booleans).isTrue());
+        }
+
+        {
+            BooleanBitsetSeries s1 = new BooleanBitsetSeries(new long[]{LONG_BITS_MASK, LONG_BITS_MASK, 0b1001}, 132);
+            BooleanBitsetSeries s2 = new BooleanBitsetSeries(new long[]{LONG_BITS_MASK, LONG_BITS_MASK, 0b1001}, 132);
+            BooleanBitsetSeries s3 = new BooleanBitsetSeries(new long[]{LONG_BITS_MASK, LONG_BITS_MASK, 0b1001}, 132);
+
+            BooleanBitsetSeries concat = new BooleanBitsetSeries(new long[]{
+                    0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111L,
+                    0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111L,
+                    0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111001L,
+                    0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111L,
+                    0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_10011111L,
+                    0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111L,
+                    0b00001001_11111111L
+            }, 396);
+
+            BooleanSeries booleans = s1.concatBool(s2, s3);
+            assertEquals(132+132+132, booleans.size());
+            assertTrue(concat.eq(booleans).isTrue());
+        }
+
+        {
+            BooleanBitsetSeries s1 = new BooleanBitsetSeries(new long[]{0b00001111_11111111_11111111_11111111_11111111_11111111_11111111_11111001L}, 60);
+            BooleanBitsetSeries s2 = new BooleanBitsetSeries(new long[]{0b00001111_11111111_11111111_11111111_11111111_11111111_11111111_11111001L}, 60);
+            BooleanBitsetSeries s3 = new BooleanBitsetSeries(new long[]{0b00001111_11111111_11111111_11111111_11111111_11111111_11111111_11111001L}, 60);
+
+            BooleanBitsetSeries concat = new BooleanBitsetSeries(new long[]{
+                    0b10011111_11111111_11111111_11111111_11111111_11111111_11111111_11111001L,
+                    0b11111001_11111111_11111111_11111111_11111111_11111111_11111111_11111111L,
+                    0b00000000_00001111_11111111_11111111_11111111_11111111_11111111_11111111L,
+            }, 180);
+
+            BooleanSeries booleans = s1.concatBool(s2, s3);
+            assertEquals(180, booleans.size());
+            assertTrue(concat.eq(booleans).isTrue());
+        }
+
+        {
+            BooleanBitsetSeries s1 = new BooleanBitsetSeries(new long[]{LONG_BITS_MASK, LONG_BITS_MASK}, 128);
+            BooleanBitsetSeries s2 = new BooleanBitsetSeries(new long[]{LONG_BITS_MASK, LONG_BITS_MASK}, 128);
+            BooleanBitsetSeries s3 = new BooleanBitsetSeries(new long[]{LONG_BITS_MASK, LONG_BITS_MASK}, 128);
+
+            BooleanBitsetSeries concat = new BooleanBitsetSeries(new long[]{
+                    LONG_BITS_MASK,
+                    LONG_BITS_MASK,
+                    LONG_BITS_MASK,
+                    LONG_BITS_MASK,
+                    LONG_BITS_MASK,
+                    LONG_BITS_MASK
+            }, 384);
+
+            BooleanSeries booleans = s1.concatBool(s2, s3);
+            assertEquals(384, booleans.size());
+            assertTrue(concat.eq(booleans).isTrue());
+        }
     }
 }

@@ -1,10 +1,11 @@
 package org.dflib;
 
 import org.dflib.agg.SeriesAggregator;
+import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.SeriesByElementBuilder;
+import org.dflib.builder.ValueCompactor;
 import org.dflib.op.ReplaceOp;
 import org.dflib.series.ArraySeries;
-import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.ColumnMappedSeries;
 import org.dflib.series.DoubleArraySeries;
 import org.dflib.series.DoubleSingleValueSeries;
@@ -20,7 +21,7 @@ import org.dflib.series.OffsetLagSeries;
 import org.dflib.series.OffsetLeadSeries;
 import org.dflib.series.SingleValueSeries;
 import org.dflib.series.TrueSeries;
-import org.dflib.sort.SeriesSorter;
+import org.dflib.sort.IntComparator;
 
 import java.lang.reflect.Array;
 import java.util.Comparator;
@@ -63,7 +64,7 @@ public interface Series<T> extends Iterable<T> {
     }
 
     static BooleanSeries ofBool(boolean... bools) {
-        return new BooleanArraySeries(bools);
+        return BoolBuilder.buildSeries(i -> bools[i], bools.length);
     }
 
     static IntSeries ofInt(int... ints) {
@@ -150,8 +151,9 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Extends the Series, adding extra values to the end of this Series.
+     * Extends the Series, adding provided values to the end of this Series.
      */
+    // Didn't name this "add", as "add" in numeric series is an operation for summing two series together
     default Series<?> expand(Object... values) {
         int rlen = values.length;
         if (rlen == 0) {
@@ -168,6 +170,42 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
+     * Extends the Series, inserting provided values at the specified position.
+     *
+     * @since 1.2.0
+     */
+    default Series<?> insert(int pos, Object... values) {
+
+        if (pos < 0) {
+            // TODO: treat it as offset from the end?
+            throw new IllegalArgumentException("Negative insert position: " + pos);
+        }
+
+        int slen = size();
+        if (pos > slen) {
+            throw new IllegalArgumentException("Insert position past the end of the Series: " + pos + ", len: " + slen);
+        }
+
+        int ilen = values.length;
+        if (ilen == 0) {
+            return this;
+        }
+
+        Object[] expanded = new Object[slen + ilen];
+        if (pos > 0) {
+            this.copyTo(expanded, 0, 0, pos);
+        }
+
+        System.arraycopy(values, 0, expanded, pos, ilen);
+
+        if (pos < slen) {
+            this.copyTo(expanded, pos, pos + ilen, slen - pos);
+        }
+
+        return Series.of(expanded);
+    }
+
+    /**
      * Converts the Series to another Series of the same length, applying the provided function.
      *
      * @param mapper a function that maps each Series value to some other value
@@ -179,8 +217,26 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Produces a primitive BooleanSeries by converting each series value to a boolean. This can be thought
-     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     * Returns this or equivalent Series with "compacted" values. Internally, values will be checked for equality, and
+     * any duplicates replaced with a single value. Should be used to save memory for low-cardinality columns.
+     *
+     * @since 2.0.0
+     */
+    default Series<T> compact() {
+        ValueCompactor<T> compactor = new ValueCompactor<>();
+
+        int s = size();
+        Object[] data = new Object[s];
+
+        for (int i = 0; i < s; i++) {
+            data[i] = compactor.get(get(i));
+        }
+
+        return new ArraySeries(data);
+    }
+
+    /**
+     * Produces a primitive BooleanSeries by converting each series value to a boolean.
      *
      * @since 2.0.0
      */
@@ -189,21 +245,14 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Produces a primitive BooleanSeries by applying the provided mapper to each Series value. This can be thought
-     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     * Produces a primitive BooleanSeries by applying the provided mapper to each Series value.
      *
      * @since 2.0.0
      */
     // TODO: functionally, this is a duplicate of "locate()"
     default BooleanSeries compactBool(BoolValueMapper<? super T> mapper) {
         int len = size();
-
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = mapper.map(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> mapper.map(get(i)), len);
     }
 
     /**
@@ -216,7 +265,7 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * Produces a primitive IntSeries by converting each series value to an int and replacing nulls with the
-     * "forNull" argument. This can be thought as a specific flavor of {@link #map(ValueMapper)} operation.
+     * "forNull" argument.
      *
      * @since 2.0.0
      */
@@ -225,8 +274,7 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Produces a primitive IntSeries by applying the provided mapper to each Series value. This can be thought
-     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     * Produces a primitive IntSeries by applying the provided mapper to each Series value.
      *
      * @since 2.0.0
      */
@@ -251,7 +299,7 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * Produces a primitive LongSeries by converting each series value to a long and replacing nulls with the
-     * "forNull" argument. This can be thought as a specific flavor of {@link #map(ValueMapper)} operation.
+     * "forNull" argument.
      *
      * @since 2.0.0
      */
@@ -260,8 +308,7 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Produces a primitive LongSeries by applying the provided mapper to each Series value. This can be thought
-     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     * Produces a primitive LongSeries by applying the provided mapper to each Series value.
      *
      * @since 2.0.0
      */
@@ -285,7 +332,7 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * Produces a primitive FloatSeries by converting each series value to a long and replacing nulls with the
-     * "forNull" argument. This can be thought as a specific flavor of {@link #map(ValueMapper)} operation.
+     * "forNull" argument.
      *
      * @since 2.0.0
      */
@@ -294,8 +341,7 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Produces a primitive FloatSeries by applying the provided mapper to each Series value. This can be thought
-     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     * Produces a primitive FloatSeries by applying the provided mapper to each Series value.
      *
      * @since 2.0.0
      */
@@ -320,7 +366,7 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * Produces a primitive DoubleSeries by converting each series value to a long and replacing nulls with the
-     * "forNull" argument. This can be thought as a specific flavor of {@link #map(ValueMapper)} operation.
+     * "forNull" argument.
      *
      * @since 2.0.0
      */
@@ -329,8 +375,7 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Produces a primitive DoubleSeries by applying the provided mapper to each Series value. This can be thought
-     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     * Produces a primitive DoubleSeries by applying the provided mapper to each Series value.
      *
      * @since 2.0.0
      */
@@ -415,7 +460,8 @@ public interface Series<T> extends Iterable<T> {
     Series<T> selectRange(int fromInclusive, int toExclusive);
 
     /**
-     * Resolves the Series executing any lazy calculations. If called more than once, the first evaluation result is reused.
+     * Finalizes any lazy calculations that might be still pending in the Series. If called more than once, the first
+     * evaluation result is reused.
      */
     Series<T> materialize();
 
@@ -434,7 +480,30 @@ public interface Series<T> extends Iterable<T> {
     /**
      * Combines this Series with multiple other Series. This is an operation similar to SQL "UNION"
      */
-    Series<T> concat(Series<? extends T>... other);
+    default Series<T> concat(Series<? extends T>... other) {
+        if (other.length == 0) {
+            return this;
+        }
+
+        int size = size();
+
+        int h = size;
+        for (Series<? extends T> s : other) {
+            h += s.size();
+        }
+
+        T[] data = (T[]) new Object[h];
+        copyTo(data, 0, 0, size);
+
+        int offset = size;
+        for (Series<? extends T> s : other) {
+            int len = s.size();
+            s.copyTo(data, 0, offset, len);
+            offset += len;
+        }
+
+        return new ArraySeries<>(data);
+    }
 
     /**
      * Returns a Series with elements from this Series that are not present in another Series. This is an operation
@@ -504,7 +573,7 @@ public interface Series<T> extends Iterable<T> {
      * @return an IntSeries representing element indices from the original Series
      */
     default IntSeries sortIndex(Comparator<? super T> comparator) {
-        return new SeriesSorter<>(this).sortIndex(comparator);
+        return IntComparator.of(this, comparator).sortIndex(size());
     }
 
     /**
@@ -519,13 +588,7 @@ public interface Series<T> extends Iterable<T> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = Objects.equals(get(i), s.get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> Objects.equals(get(i), s.get(i)), len);
     }
 
     /**
@@ -540,12 +603,7 @@ public interface Series<T> extends Iterable<T> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = !Objects.equals(get(i), s.get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> !Objects.equals(get(i), s.get(i)), len);
     }
 
     BooleanSeries isNull();
@@ -564,18 +622,9 @@ public interface Series<T> extends Iterable<T> {
      * the predicate.
      */
     default BooleanSeries locate(Predicate<T> predicate) {
-
         // even for primitive Series it is slightly faster to implement "locate" directly than delegating
         // to "locateXyz", because the predicate signature requires primitive boxing
-
-        int len = size();
-        boolean[] matches = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            matches[i] = predicate.test(get(i));
-        }
-
-        return new BooleanArraySeries(matches);
+        return BoolBuilder.buildSeries(i -> predicate.test(get(i)), size());
     }
 
     /**
@@ -748,8 +797,12 @@ public interface Series<T> extends Iterable<T> {
         }
     }
 
+    /**
+     * @deprecated in favor of an identical {@link #map(Exp)} method.
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default <V> Series<V> eval(Exp<V> exp) {
-        return exp.eval(this);
+        return map(exp);
     }
 
     @Override

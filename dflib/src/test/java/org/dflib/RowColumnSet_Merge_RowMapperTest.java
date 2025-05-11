@@ -7,12 +7,11 @@ public class RowColumnSet_Merge_RowMapperTest {
 
     @Test
     public void rowsAll_colsByName() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows().cols("b", "a")
                 .merge((f, t) -> t.set(0, f.get(1, String.class) + f.get(2)).set(1, f.getInt(0) * 3));
 
@@ -25,12 +24,11 @@ public class RowColumnSet_Merge_RowMapperTest {
 
     @Test
     public void rowsByIndex_colsByName() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofInt(0, 2)).cols("b", "a")
                 .merge((f, t) -> t.set(0, f.get(1, String.class) + f.get(2)).set(1, f.getInt(0) * 3));
 
@@ -43,12 +41,11 @@ public class RowColumnSet_Merge_RowMapperTest {
 
     @Test
     public void rowsByCondition_colsByName() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofBool(true, false, true)).cols("b", "a")
                 .merge((f, t) -> t.set(0, f.get(1, String.class) + f.get(2)).set(1, f.getInt(0) * 3));
 

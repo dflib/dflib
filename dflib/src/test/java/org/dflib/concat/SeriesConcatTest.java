@@ -20,6 +20,7 @@ public class SeriesConcatTest {
         new SeriesAsserts(c).expectData("m", "n", "a", "b", "d");
     }
 
+    @Deprecated
     @Test
     public void concat_List() {
         Collection<Series<String>> ss = asList(

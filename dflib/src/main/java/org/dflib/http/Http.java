@@ -1,6 +1,7 @@
 package org.dflib.http;
 
 import org.dflib.ByteSource;
+import org.dflib.Environment;
 
 import java.net.URI;
 import java.net.URL;
@@ -28,47 +29,63 @@ public class Http {
     final String url;
     final Map<String, Set<Object>> headers;
     final Map<String, Set<Object>> queryParams;
+    final HttpClient client;
 
     public static Http of(String url) {
-        return new Http(url, Map.of(), Map.of());
+        return new Http(url, Map.of(), Map.of(), null);
     }
 
-    private Http(String url, Map<String, Set<Object>> headers, Map<String, Set<Object>> queryParams) {
+    private Http(
+            String url,
+            Map<String, Set<Object>> headers,
+            Map<String, Set<Object>> queryParams,
+            HttpClient client) {
         this.url = Objects.requireNonNull(url);
         this.headers = Objects.requireNonNull(headers);
         this.queryParams = Objects.requireNonNull(queryParams);
+
+        // can be null
+        this.client = client;
     }
 
     /**
      * Returns a new connector with the provided path appended to this connector's path.
      */
     public Http path(String path) {
-        return new Http(concatUrls(url, path), headers, queryParams);
+        return new Http(concatUrls(url, path), headers, queryParams, client);
     }
 
     /**
      * Returns a new connector with the provided query parameter combined with this connector's parameters.
      */
     public Http queryParam(String name, Object... values) {
-        return new Http(url, headers, appendToMap(queryParams, name, values));
+        return new Http(url, headers, appendToMap(queryParams, name, values), client);
     }
 
     /**
      * Returns a new connector with the provided header combined with this connector's headers.
      */
     public Http header(String name, Object values) {
-        return new Http(url, appendToMap(headers, name, values), queryParams);
+        return new Http(url, appendToMap(headers, name, values), queryParams, client);
+    }
+
+    /**
+     * Returns a new connector with an explicitly provided HttpClient. If this method is not called, the client
+     * is taken from the common {@link Environment}.
+     *
+     * @since 2.0.0
+     */
+    public Http client(HttpClient client) {
+        return new Http(url, headers, queryParams, client);
     }
 
     public ByteSource source() {
-        return new HttpByteSource(createClient(), createRequest());
-    }
 
-    private HttpClient createClient() {
-        // TODO: Expose some of the client settings like timeouts?
-        return HttpClient.newBuilder()
-                .followRedirects(HttpClient.Redirect.ALWAYS)
-                .build();
+        // environment client is initialized lazily, so resolve it at the very last moment
+        // TODO: pass Supplier<HttpClient> down to the ByteSource?
+        HttpClient client = this.client != null ? this.client : Environment.commonEnv().httpClient();
+
+        return new HttpByteSource(client, createRequest());
     }
 
     private HttpRequest createRequest() {

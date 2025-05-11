@@ -26,83 +26,137 @@ import org.dflib.series.SingleValueSeries;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 public class FixedColumnSet implements ColumnSet {
 
-    protected final DataFrame source;
-    protected final String[] csIndex;
+    private final DataFrame source;
+    private final UnaryOperator<Series<?>> colCompactor;
+
+    // defer index resolving until a terminal method is caller, as the DataFrame can be affected by expansions, etc.
+    private final Function<Index, String[]> csIndexResolver;
 
     public static FixedColumnSet of(DataFrame source, Index csIndex) {
-        return new FixedColumnSet(source, csIndex.toArray());
+        return new FixedColumnSet(source, i -> csIndex.toArray(), null);
     }
 
     public static FixedColumnSet of(DataFrame source, String[] csIndex) {
-        return new FixedColumnSet(source, csIndex);
+        return new FixedColumnSet(source, i -> csIndex, null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public static FixedColumnSet of(DataFrame source, Predicate<String> condition) {
+        return new FixedColumnSet(source, i -> i.select(condition).toArray(), null);
     }
 
     public static FixedColumnSet ofAppend(DataFrame source, String[] csIndex) {
         return new FixedColumnSet(
                 source,
-                FixedColumnSetIndex.ofAppend(source.getColumnsIndex(), csIndex).getLabels());
+                i -> FixedColumnSetIndex.ofAppend(i, csIndex).getLabels(),
+                null);
     }
 
     public static FixedColumnSet of(DataFrame source, int[] csIndex) {
         return new FixedColumnSet(
                 source,
-                FixedColumnSetIndex.of(source.getColumnsIndex(), csIndex).getLabels());
-    }
-
-    protected FixedColumnSet(DataFrame source, String[] csIndex) {
-        this.source = source;
-        this.csIndex = csIndex;
+                i -> FixedColumnSetIndex.of(i, csIndex).getLabels(),
+                null);
     }
 
     /**
-     * Returns the index of this column set. This is the index produced by various "select" operations
+     * @since 2.0.0
      */
-    public Index getColumnSetIndex() {
-        return Index.ofDeduplicated(csIndex);
+    public static FixedColumnSet ofColsExcept(DataFrame source, String[] columns) {
+        return new FixedColumnSet(source, i -> i.selectExcept(columns).toArray(), null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public static FixedColumnSet ofColsExcept(DataFrame source, int[] columns) {
+        return new FixedColumnSet(source, i -> i.select(i.positionsExcept(columns)).toArray(), null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public static FixedColumnSet ofColsExcept(DataFrame source, Predicate<String> condition) {
+        return new FixedColumnSet(source, i -> i.selectExcept(condition).toArray(), null);
+    }
+
+    FixedColumnSet(DataFrame source, Function<Index, String[]> csIndexResolver, UnaryOperator<Series<?>> colCompactor) {
+        this.source = source;
+        this.csIndexResolver = csIndexResolver;
+        this.colCompactor = colCompactor;
+    }
+
+    @Override
+    public ColumnSet expand(Exp<? extends Iterable<?>> splitExp) {
+        return doExpand(ColumnSets.mapIterables(source, splitExp));
+    }
+
+    @Override
+    public ColumnSet expandArray(Exp<? extends Object[]> splitExp) {
+        return doExpand(ColumnSets.mapArrays(source, splitExp));
     }
 
     @Override
     public RowColumnSet rows() {
-        return source.rows().cols(csIndex);
+        // resolving csIndex here will only work for as long as RowColumnSet does not define operations that expand
+        // its columns
+        return source.rows().cols(csIndex());
     }
 
     @Override
     public RowColumnSet rows(IntSeries positions) {
-        return source.rows(positions).cols(csIndex);
+        // resolving csIndex here will only work for as long as RowColumnSet does not define operations that expand
+        // its columns
+        return source.rows(positions).cols(csIndex());
     }
 
     @Override
     public RowColumnSet rows(RowPredicate condition) {
-        return source.rows(condition).cols(csIndex);
+        // resolving csIndex here will only work for as long as RowColumnSet does not define operations that expand
+        // its columns
+        return source.rows(condition).cols(csIndex());
     }
 
     @Override
     public RowColumnSet rows(Condition condition) {
-        return source.rows(condition).cols(csIndex);
+        // resolving csIndex here will only work for as long as RowColumnSet does not define operations that expand
+        // its columns
+        return source.rows(condition).cols(csIndex());
     }
 
     @Override
     public RowColumnSet rows(BooleanSeries condition) {
-        return source.rows(condition).cols(csIndex);
+        // resolving csIndex here will only work for as long as RowColumnSet does not define operations that expand
+        // its columns
+        return source.rows(condition).cols(csIndex());
     }
 
     @Override
     public RowColumnSet rowsRange(int fromInclusive, int toExclusive) {
-        return source.rowsRange(fromInclusive, toExclusive).cols(csIndex);
+        // resolving csIndex here will only work for as long as RowColumnSet does not define operations that expand
+        // its columns
+        return source.rowsRange(fromInclusive, toExclusive).cols(csIndex());
     }
 
     @Override
     public DataFrame drop() {
-        return source.colsExcept(csIndex).select();
+        return source.colsExcept(csIndex()).select();
     }
 
     @Override
     public DataFrame as(String... newColumnNames) {
+
+        String[] csIndex = csIndex();
+
         int w = newColumnNames.length;
         if (w != csIndex.length) {
             throw new IllegalArgumentException(
@@ -119,11 +173,17 @@ public class FixedColumnSet implements ColumnSet {
 
     @Override
     public DataFrame selectAs(String... newColumnNames) {
-        return new ColumnDataFrame(null, Index.ofDeduplicated(newColumnNames), doSelect());
+        String[] csIndex = csIndex();
+        return new ColumnDataFrame(
+                null,
+                Index.ofDeduplicated(newColumnNames),
+                compactColsIfNeeded(doSelect(csIndex)));
     }
 
     @Override
     public DataFrame as(UnaryOperator<String> renamer) {
+
+        String[] csIndex = csIndex();
 
         Map<String, String> oldToNewMap = new HashMap<>((int) Math.ceil(csIndex.length / 0.75));
         for (String l : csIndex) {
@@ -135,30 +195,40 @@ public class FixedColumnSet implements ColumnSet {
 
     @Override
     public DataFrame selectAs(UnaryOperator<String> renamer) {
-        return new ColumnDataFrame(null, Index.of(csIndex).replace(renamer), doSelect());
+        String[] csIndex = csIndex();
 
+        return new ColumnDataFrame(
+                null,
+                Index.of(csIndex).replace(renamer),
+                compactColsIfNeeded(doSelect(csIndex)));
     }
 
     @Override
     public DataFrame as(Map<String, String> oldToNewNames) {
+        String[] csIndex = csIndex();
 
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            columns[i] = getOrCreateColumn(i);
+            columns[i] = getOrCreateColumn(csIndex, i);
         }
 
-        return doMerge(columns, oldToNewNames);
+        return doMerge(csIndex, columns, oldToNewNames);
     }
 
     @Override
     public DataFrame selectAs(Map<String, String> oldToNewNames) {
-        return new ColumnDataFrame(null, Index.of(csIndex).replace(oldToNewNames), doSelect());
+        String[] csIndex = csIndex();
+        return new ColumnDataFrame(
+                null,
+                Index.of(csIndex).replace(oldToNewNames),
+                compactColsIfNeeded(doSelect(csIndex)));
     }
 
     @Override
     public DataFrame fill(Object... values) {
+        String[] csIndex = csIndex();
 
         int w = values.length;
         if (w != csIndex.length) {
@@ -174,7 +244,7 @@ public class FixedColumnSet implements ColumnSet {
             columns[i] = Series.ofVal(values[i], h);
         }
 
-        return doMerge(columns);
+        return doMerge(csIndex, columns);
     }
 
     @Override
@@ -184,6 +254,8 @@ public class FixedColumnSet implements ColumnSet {
             return source;
         }
 
+        String[] csIndex = csIndex();
+
         int w = csIndex.length;
         int h = source.height();
 
@@ -191,16 +263,18 @@ public class FixedColumnSet implements ColumnSet {
 
         for (int i = 0; i < w; i++) {
             columns[i] = getOrCreateColumn(
+                    csIndex,
                     i,
                     e -> ((Series<Object>) e).fillNulls(value),
                     () -> Series.ofVal(value, h));
         }
 
-        return doMerge(columns);
+        return doMerge(csIndex, columns);
     }
 
     @Override
     public DataFrame fillNullsBackwards() {
+        String[] csIndex = csIndex();
 
         int w = csIndex.length;
         int h = source.height();
@@ -208,16 +282,18 @@ public class FixedColumnSet implements ColumnSet {
 
         for (int i = 0; i < w; i++) {
             columns[i] = getOrCreateColumn(
+                    csIndex,
                     i,
                     e -> e.fillNullsBackwards(),
                     () -> new SingleValueSeries<>(null, h));
         }
 
-        return doMerge(columns);
+        return doMerge(csIndex, columns);
     }
 
     @Override
     public DataFrame fillNullsForward() {
+        String[] csIndex = csIndex();
 
         int w = csIndex.length;
         int h = source.height();
@@ -225,26 +301,28 @@ public class FixedColumnSet implements ColumnSet {
 
         for (int i = 0; i < w; i++) {
             columns[i] = getOrCreateColumn(
+                    csIndex,
                     i,
                     e -> e.fillNullsForward(),
                     () -> new SingleValueSeries<>(null, h));
         }
 
-        return doMerge(columns);
+        return doMerge(csIndex, columns);
     }
 
     @Override
     public DataFrame fillNullsFromSeries(Series<?> series) {
+        String[] csIndex = csIndex();
 
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(i);
+            Series s = getOrCreateColumn(csIndex, i);
             columns[i] = s.fillNullsFromSeries(series);
         }
 
-        return doMerge(columns);
+        return doMerge(csIndex, columns);
     }
 
     @Override
@@ -253,156 +331,97 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame compactBool() {
-        int w = csIndex.length;
-        Series<?>[] columns = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(i);
-            columns[i] = s.compactBool();
-        }
-
-        return doMerge(columns);
+    public ColumnSet compact() {
+        return new FixedColumnSet(source, csIndexResolver, Series::compact);
     }
 
     @Override
-    public <V> DataFrame compactBool(BoolValueMapper<V> mapper) {
-        int w = csIndex.length;
-        Series<?>[] columns = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(i);
-            columns[i] = s.compactBool(mapper);
-        }
-
-        return doMerge(columns);
+    public ColumnSet compactBool() {
+        return new FixedColumnSet(source, csIndexResolver, s -> s.compactBool());
     }
 
     @Override
-    public DataFrame compactInt(int forNull) {
-        int w = csIndex.length;
-        Series<?>[] columns = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(i);
-            columns[i] = s.compactInt(forNull);
-        }
-
-        return doMerge(columns);
+    public <V> ColumnSet compactBool(BoolValueMapper<V> mapper) {
+        BoolValueMapper raw = mapper;
+        return new FixedColumnSet(source, csIndexResolver, s -> s.compactBool(raw));
     }
 
     @Override
-    public <V> DataFrame compactInt(IntValueMapper<V> mapper) {
-        int w = csIndex.length;
-        Series<?>[] columns = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(i);
-            columns[i] = s.compactInt(mapper);
-        }
-
-        return doMerge(columns);
+    public ColumnSet compactInt(int forNull) {
+        return new FixedColumnSet(source, csIndexResolver, s -> s.compactInt(forNull));
     }
 
     @Override
-    public DataFrame compactLong(long forNull) {
-        int w = csIndex.length;
-        Series<?>[] columns = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(i);
-            columns[i] = s.compactLong(forNull);
-        }
-
-        return doMerge(columns);
+    public <V> ColumnSet compactInt(IntValueMapper<V> mapper) {
+        IntValueMapper raw = mapper;
+        return new FixedColumnSet(source, csIndexResolver, s -> s.compactInt(raw));
     }
 
     @Override
-    public <V> DataFrame compactLong(LongValueMapper<V> mapper) {
-        int w = csIndex.length;
-        Series<?>[] columns = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(i);
-            columns[i] = s.compactLong(mapper);
-        }
-
-        return doMerge(columns);
+    public ColumnSet compactLong(long forNull) {
+        return new FixedColumnSet(source, csIndexResolver, s -> s.compactLong(forNull));
     }
 
     @Override
-    public DataFrame compactFloat(float forNull) {
-        int w = csIndex.length;
-        Series<?>[] columns = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(i);
-            columns[i] = s.compactFloat(forNull);
-        }
-
-        return doMerge(columns);
+    public <V> ColumnSet compactLong(LongValueMapper<V> mapper) {
+        LongValueMapper raw = mapper;
+        return new FixedColumnSet(source, csIndexResolver, s -> s.compactLong(raw));
     }
 
     @Override
-    public <V> DataFrame compactFloat(FloatValueMapper<V> mapper) {
-        int w = csIndex.length;
-        Series<?>[] columns = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(i);
-            columns[i] = s.compactFloat(mapper);
-        }
-
-        return doMerge(columns);
+    public ColumnSet compactFloat(float forNull) {
+        return new FixedColumnSet(source, csIndexResolver, s -> s.compactFloat(forNull));
     }
 
     @Override
-    public DataFrame compactDouble(double forNull) {
-        int w = csIndex.length;
-        Series<?>[] columns = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(i);
-            columns[i] = s.compactDouble(forNull);
-        }
-
-        return doMerge(columns);
+    public <V> ColumnSet compactFloat(FloatValueMapper<V> mapper) {
+        FloatValueMapper raw = mapper;
+        return new FixedColumnSet(source, csIndexResolver, s -> s.compactFloat(raw));
     }
 
     @Override
-    public <V> DataFrame compactDouble(DoubleValueMapper<V> mapper) {
-        int w = csIndex.length;
-        Series<?>[] columns = new Series[w];
+    public ColumnSet compactDouble(double forNull) {
+        return new FixedColumnSet(source, csIndexResolver, s -> s.compactDouble(forNull));
+    }
 
-        for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(i);
-            columns[i] = s.compactDouble(mapper);
-        }
-
-        return doMerge(columns);
+    @Override
+    public <V> ColumnSet compactDouble(DoubleValueMapper<V> mapper) {
+        DoubleValueMapper raw = mapper;
+        return new FixedColumnSet(source, csIndexResolver, s -> s.compactDouble(raw));
     }
 
     @Override
     public DataFrame merge() {
-        return doMerge(doSelect());
+        String[] csIndex = csIndex();
+
+        return doMerge(csIndex, doSelect(csIndex));
     }
 
     @Override
     public DataFrame select() {
-        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doSelect());
+        String[] csIndex = csIndex();
+        return new ColumnDataFrame(
+                null,
+                Index.ofDeduplicated(csIndex),
+                compactColsIfNeeded(doSelect(csIndex)));
     }
 
     @Override
     public DataFrame merge(Exp<?>... exps) {
-        return doMerge(doMap(exps));
+        String[] csIndex = csIndex();
+        return doMerge(csIndex, doMap(csIndex, exps));
     }
 
     @Override
     public DataFrame select(Exp<?>... exps) {
-        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doMap(exps));
+        String[] csIndex = csIndex();
+        return new ColumnDataFrame(
+                null,
+                Index.ofDeduplicated(csIndex),
+                compactColsIfNeeded(doMap(csIndex, exps)));
     }
 
-    private Series<?>[] doMap(Exp<?>[] exps) {
+    private Series<?>[] doMap(String[] csIndex, Exp<?>[] exps) {
 
         int w = exps.length;
         if (w != csIndex.length) {
@@ -420,6 +439,7 @@ public class FixedColumnSet implements ColumnSet {
 
     @Override
     public DataFrame merge(Series<?>... columns) {
+        String[] csIndex = csIndex();
 
         int w = csIndex.length;
 
@@ -435,71 +455,36 @@ public class FixedColumnSet implements ColumnSet {
             }
         }
 
-        return doMerge(columns);
+        return doMerge(csIndex, columns);
     }
 
     @Override
     public DataFrame merge(RowToValueMapper<?>... exps) {
-        return doMerge(doMap(exps));
+        String[] csIndex = csIndex();
+        return doMerge(csIndex, doMap(csIndex, exps));
     }
 
     @Override
     public DataFrame select(RowToValueMapper<?>... exps) {
-        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doMap(exps));
+        String[] csIndex = csIndex();
+        return new ColumnDataFrame(
+                null,
+                Index.ofDeduplicated(csIndex),
+                compactColsIfNeeded(doMap(csIndex, exps)));
     }
 
-    private Series<?>[] doMap(RowToValueMapper<?>[] mappers) {
-
-        int w = mappers.length;
-        if (w != csIndex.length) {
-            throw new IllegalArgumentException(
-                    "Can't perform 'map': RowToValueMappers size is different from the ColumnSet size: " + w + " vs. " + csIndex.length);
-        }
-
-        Series<?>[] columns = new Series[w];
-        for (int i = 0; i < w; i++) {
-            columns[i] = new RowMappedSeries<>(source, mappers[i]);
-        }
-
-        return columns;
-    }
-
-    @Override
-    public DataFrame merge(RowMapper mapper) {
-
-        MultiArrayRowBuilder b = new MultiArrayRowBuilder(Index.of(csIndex), source.height());
-
-        source.forEach(from -> {
-            b.next();
-            mapper.map(from, b);
-        });
-
-        return doMerge(b.getData());
-    }
-
-    @Override
-    public DataFrame select(RowMapper mapper) {
-        MultiArrayRowBuilder b = new MultiArrayRowBuilder(Index.of(csIndex), source.height());
-
-        source.forEach(from -> {
-            b.next();
-            mapper.map(from, b);
-        });
-
-        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), b.getData());
-    }
-
-    @Override
-    public DataFrame expand(Exp<? extends Iterable<?>> splitExp) {
-        return doMerge(doMapIterables(splitExp));
-    }
-
+    @Deprecated
     @Override
     public DataFrame selectExpand(Exp<? extends Iterable<?>> splitExp) {
-        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doMapIterables(splitExp));
+        String[] csIndex = csIndex();
+        return new ColumnDataFrame(
+                null,
+                Index.ofDeduplicated(csIndex),
+                compactColsIfNeeded(doMapIterables(csIndex, splitExp)));
     }
 
-    private Series<?>[] doMapIterables(Exp<? extends Iterable<?>> mapper) {
+    @Deprecated
+    private Series<?>[] doMapIterables(String[] csIndex, Exp<? extends Iterable<?>> mapper) {
 
         Series<? extends Iterable<?>> ranges = mapper.eval(source);
 
@@ -531,29 +516,17 @@ public class FixedColumnSet implements ColumnSet {
         return columns;
     }
 
-    @Override
-    public DataFrame expandArray(Exp<? extends Object[]> splitExp) {
-        return doMerge(doMapArrays(splitExp));
-    }
-
+    @Deprecated
     @Override
     public DataFrame selectExpandArray(Exp<? extends Object[]> splitExp) {
-        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doMapArrays(splitExp));
+        String[] csIndex = csIndex();
+        return new ColumnDataFrame(
+                null,
+                Index.ofDeduplicated(csIndex),
+                compactColsIfNeeded(doMapArrays(csIndex, splitExp)));
     }
 
-    @Override
-    public DataFrame agg(Exp<?>... aggregators) {
-        int w = aggregators.length;
-        if (w != csIndex.length) {
-            throw new IllegalArgumentException(
-                    "Can't perform 'agg': Exp[] size is different from the ColumnSet size: " + w + " vs. " + csIndex.length);
-        }
-
-        Series<?>[] aggregated = DataFrameAggregator.agg(source, aggregators);
-        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), aggregated);
-    }
-
-    private Series<?>[] doMapArrays(Exp<? extends Object[]> mapper) {
+    private Series<?>[] doMapArrays(String[] csIndex, Exp<? extends Object[]> mapper) {
         Series<? extends Object[]> ranges = mapper.eval(source);
 
         int w = csIndex.length;
@@ -584,7 +557,71 @@ public class FixedColumnSet implements ColumnSet {
         return columns;
     }
 
-    private Series<?> getOrCreateColumn(int pos) {
+    private Series<?>[] doMap(String[] csIndex, RowToValueMapper<?>[] mappers) {
+
+        int w = mappers.length;
+        if (w != csIndex.length) {
+            throw new IllegalArgumentException(
+                    "Can't perform 'map': RowToValueMappers size is different from the ColumnSet size: " + w + " vs. " + csIndex.length);
+        }
+
+        Series<?>[] columns = new Series[w];
+        for (int i = 0; i < w; i++) {
+            columns[i] = new RowMappedSeries<>(source, mappers[i]);
+        }
+
+        return columns;
+    }
+
+    @Override
+    public DataFrame merge(RowMapper mapper) {
+        String[] csIndex = csIndex();
+
+        MultiArrayRowBuilder b = new MultiArrayRowBuilder(Index.of(csIndex), source.height());
+
+        source.forEach(from -> {
+            b.next();
+            mapper.map(from, b);
+        });
+
+        return doMerge(csIndex, b.getData());
+    }
+
+    @Override
+    public DataFrame select(RowMapper mapper) {
+        String[] csIndex = csIndex();
+
+        MultiArrayRowBuilder b = new MultiArrayRowBuilder(Index.of(csIndex), source.height());
+
+        source.forEach(from -> {
+            b.next();
+            mapper.map(from, b);
+        });
+
+        return new ColumnDataFrame(
+                null,
+                Index.ofDeduplicated(csIndex),
+                compactColsIfNeeded(b.getData()));
+    }
+
+    @Override
+    public DataFrame agg(Exp<?>... aggregators) {
+        String[] csIndex = csIndex();
+
+        int w = aggregators.length;
+        if (w != csIndex.length) {
+            throw new IllegalArgumentException(
+                    "Can't perform 'agg': Exp[] size is different from the ColumnSet size: " + w + " vs. " + csIndex.length);
+        }
+
+        Series<?>[] aggregated = DataFrameAggregator.agg(source, aggregators);
+        return new ColumnDataFrame(
+                null,
+                Index.ofDeduplicated(csIndex),
+                compactColsIfNeeded(aggregated));
+    }
+
+    private Series<?> getOrCreateColumn(String[] csIndex, int pos) {
         String name = csIndex[pos];
         return source.getColumnsIndex().contains(name)
                 ? source.getColumn(name)
@@ -592,6 +629,7 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     private Series<?> getOrCreateColumn(
+            String[] csIndex,
             int pos,
             UnaryOperator<Series<?>> andApplyToExisting,
             Supplier<Series<?>> createNew) {
@@ -602,25 +640,53 @@ public class FixedColumnSet implements ColumnSet {
                 : createNew.get();
     }
 
-    private DataFrame doMerge(Series<?>[] columns) {
-        return ColumnSetMerger.merge(source, csIndex, columns);
+    private DataFrame doMerge(String[] csIndex, Series<?>[] columns) {
+        return ColumnSetMerger.merge(source, csIndex, compactColsIfNeeded(columns));
     }
 
-    private DataFrame doMerge(Series<?>[] columns, Map<String, String> oldToNewNames) {
+    private DataFrame doMerge(String[] csIndex, Series<?>[] columns, Map<String, String> oldToNewNames) {
         return ColumnSetMerger.mergeAs(source,
                 csIndex,
                 Index.of(csIndex).replace(oldToNewNames).toArray(),
-                columns);
+                compactColsIfNeeded(columns));
     }
 
-    private Series<?>[] doSelect() {
+    private Series<?>[] doSelect(String[] csIndex) {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            columns[i] = getOrCreateColumn(i);
+            columns[i] = getOrCreateColumn(csIndex, i);
         }
 
         return columns;
+    }
+
+    private ColumnSet doExpand(Series[] expansionColumns) {
+        return new FixedColumnSet(
+                source.cols().merge(expansionColumns),
+                csIndexResolver,
+                colCompactor
+        );
+    }
+
+    // should only be called by terminal methods, as we need to defer until all expansions and other operations
+    // changing the columns of the source are applied
+    private String[] csIndex() {
+        return csIndexResolver.apply(source.getColumnsIndex());
+    }
+
+    private Series<?>[] compactColsIfNeeded(Series<?>[] columns) {
+        if (colCompactor == null) {
+            return columns;
+        }
+
+        int w = columns.length;
+        Series<?>[] compact = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            compact[i] = colCompactor.apply(columns[i]);
+        }
+        return compact;
     }
 }

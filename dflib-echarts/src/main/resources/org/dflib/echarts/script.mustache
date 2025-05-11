@@ -430,6 +430,9 @@ var chart_{{id}} = echarts.init(
             {{#stack}}
                 stack: 'total',
             {{/stack}}
+            {{#barWidth}}
+                barWidth: {{{.}}},
+            {{/barWidth}}
             {{#symbolSize}}
                 symbolSize: {{{.}}},
             {{/symbolSize}}
