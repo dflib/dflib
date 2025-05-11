@@ -157,7 +157,7 @@ public class SqlLoader {
             names[i] = rsmd.getColumnLabel(i + 1);
         }
 
-        return Index.of(names);
+        return Index.ofDeduplicated(names);
     }
 
     protected Extractor<ResultSet, ?>[] extractors(Index index, ResultSet resultSet) throws SQLException {

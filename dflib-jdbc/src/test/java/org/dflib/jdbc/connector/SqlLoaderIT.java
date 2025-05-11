@@ -11,6 +11,7 @@ import java.time.LocalTime;
 
 import static org.dflib.Exp.$col;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SqlLoaderIT extends BaseDbTest {
 
@@ -140,6 +141,30 @@ public class SqlLoaderIT extends BaseDbTest {
                 .load();
 
         new DataFrameAsserts(df, "id", "salary").expectHeight(0);
+    }
+
+    @Test
+    public void duplicateColumnNames() {
+
+        adapter.getTable("t1")
+                .insert(1L, "n1", 50_000.01)
+                .insert(2L, "n2", 120_000.);
+
+        String sql = adapter.toNativeSql("SELECT \"id\", \"id\", \"id\" from \"t1\"");
+
+        DataFrame df = adapter.createConnector()
+                .sqlLoader(sql)
+                .load();
+
+        // if the columns are loaded as dupes, the following would throw
+        assertNotNull(df.getColumn("id"));
+        assertNotNull(df.getColumn("id_"));
+        assertNotNull(df.getColumn("id__"));
+
+        new DataFrameAsserts(df, "id", "id_", "id__")
+                .expectHeight(2)
+                .expectRow(0, 1L, 1L, 1L)
+                .expectRow(1, 2L, 2L, 2L);
     }
 
     @Test
