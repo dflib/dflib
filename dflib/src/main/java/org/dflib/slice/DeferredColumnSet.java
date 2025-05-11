@@ -28,8 +28,8 @@ import java.util.Map;
 import java.util.function.UnaryOperator;
 
 /**
- * A {@link ColumnSet} implementation that defers defining the resulting columns until the operation is applied, and
- * does it based on the operation semantics.
+ * A {@link ColumnSet} implementation that defers resolving the result columns until the final operation is applied.
+ * Resolution is done based on the operation semantics.
  */
 public class DeferredColumnSet implements ColumnSet {
 
