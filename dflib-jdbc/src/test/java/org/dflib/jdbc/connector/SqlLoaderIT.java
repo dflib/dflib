@@ -156,7 +156,7 @@ public class SqlLoaderIT extends BaseDbTest {
                 .sqlLoader(sql)
                 .load();
 
-        // if the columns are loaded as dupes, the following would throw
+        // if the duplicate column names are present, the following would throw
         assertNotNull(df.getColumn("id"));
         assertNotNull(df.getColumn("id_"));
         assertNotNull(df.getColumn("id__"));

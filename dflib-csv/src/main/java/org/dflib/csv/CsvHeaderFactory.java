@@ -36,7 +36,7 @@ interface CsvHeaderFactory {
             columnNames[i] = firstRow.get(i);
         }
 
-        return new CsvHeader(Index.of(columnNames), null);
+        return new CsvHeader(Index.ofDeduplicated(columnNames), null);
     }
 
     private static CsvHeader generated(Iterator<CSVRecord> it) {

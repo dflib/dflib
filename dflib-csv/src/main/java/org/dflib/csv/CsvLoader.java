@@ -80,7 +80,7 @@ public class CsvLoader {
      * and usually prepended to the name of the first column in the resulting DataFrame. This is highly confusing, since
      * those symbols are invisible.
      *
-     * <p>This setting is "safe" in a sense that it works with files with or without a BOM. It is not a default in
+     * <p>This setting is "safe" in the sense that it works with files with or without a BOM. It is not a default in
      * {@link CsvLoader} though, as it creates some minor overhead on load.
      */
     public CsvLoader checkByteOrderMark() {
@@ -96,7 +96,7 @@ public class CsvLoader {
     }
 
     /**
-     * Allow to change the encoding from the platoform default. Ignored if the DataFrame is loaded from a Reader
+     * Allows changing the encoding from the platform default. Ignored if the DataFrame is loaded from a Reader
      * (that performs character decoding on its own).
      *
      * @since 1.1.0
