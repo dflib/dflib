@@ -47,6 +47,7 @@ import org.dflib.exp.num.IntColumn;
 import org.dflib.exp.num.IntScalarExp;
 import org.dflib.exp.num.LongColumn;
 import org.dflib.exp.num.LongScalarExp;
+import org.dflib.exp.parser.ExpParser;
 import org.dflib.exp.sort.ExpSorter;
 import org.dflib.exp.str.ConcatExp;
 import org.dflib.exp.str.StrColumn;
@@ -522,6 +523,18 @@ public interface Exp<T> {
      */
     static NumExp<Integer> rowNum() {
         return RowNumExp.getInstance();
+    }
+
+    /**
+     * Returns an expression created from the string representation
+     *
+     * @param str string to parse
+     * @return expression parsed from the string
+     *
+     * @since 2.0.0
+     */
+    static Exp<?> exp(String str) {
+        return ExpParser.parse(str);
     }
 
     /**
