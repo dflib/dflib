@@ -12,6 +12,9 @@ import org.dflib.exp.parser.antlr4.LexerCancellationException;
 
 import java.time.format.DateTimeParseException;
 
+/**
+ * @since 2.0.0
+ */
 public class ExpParser {
 
     /**
