@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.stream.Stream;
 
+import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -20,45 +21,45 @@ public class StrExpTest {
     @ParameterizedTest
     @MethodSource
     void scalar(String text, Exp<?> expected) {
-        Exp<?> exp = Exp.exp(text);
+        Exp<?> exp = exp(text);
         assertInstanceOf(StrExp.class, exp);
         assertEquals(expected, exp);
     }
 
     static Stream<Arguments> scalar() {
         return Stream.of(
-                arguments("'single quotes'", Exp.$val("single quotes")),
-                arguments("'^\\d+$'", Exp.$val("^\\d+$")),
-                arguments("\"double quotes\"", Exp.$val("double quotes")),
-                arguments("\"unicode \\u1234\"", Exp.$val("unicode ሴ")),
-                arguments("\"escaped \\\"quote\\\"\"", Exp.$val("escaped \"quote\"")),
-                arguments("\"newline\nline\"", Exp.$val("newline\nline")),
-                arguments("\"newline\\not\"", Exp.$val("newline\\not")),
-                arguments("\"\\tab\"", Exp.$val("\\tab")),
-                arguments("\"\"", Exp.$val(""))
+                arguments("'single quotes'", $val("single quotes")),
+                arguments("'^\\d+$'", $val("^\\d+$")),
+                arguments("\"double quotes\"", $val("double quotes")),
+                arguments("\"unicode \\u1234\"", $val("unicode ሴ")),
+                arguments("\"escaped \\\"quote\\\"\"", $val("escaped \"quote\"")),
+                arguments("\"newline\nline\"", $val("newline\nline")),
+                arguments("\"newline\\not\"", $val("newline\\not")),
+                arguments("\"\\tab\"", $val("\\tab")),
+                arguments("\"\"", $val(""))
         );
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"\"missing \" escape\"", "\"missing quote", "'mismatched quotes\""})
     void scalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> Exp.exp(text));
+        assertThrows(ExpParserException.class, () -> exp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void column(String text, Exp<?> expected) {
-        Exp<?> exp = Exp.exp(text);
+        Exp<?> exp = exp(text);
         assertInstanceOf(StrExp.class, exp);
         assertEquals(expected, exp);
     }
 
     static Stream<Arguments> column() {
         return Stream.of(
-                arguments("str(a)", Exp.$str("a")),
-                arguments("str('a')", Exp.$str("a")),
-                arguments("str(\"a\")", Exp.$str("a")),
-                arguments("str(1)", Exp.$str(1))
+                arguments("str(a)", $str("a")),
+                arguments("str('a')", $str("a")),
+                arguments("str(\"a\")", $str("a")),
+                arguments("str(1)", $str(1))
         );
     }
 
@@ -72,23 +73,23 @@ public class StrExpTest {
             "str(-1)",
     })
     void column_throws(String text) {
-        assertThrows(ExpParserException.class, () -> Exp.exp(text));
+        assertThrows(ExpParserException.class, () -> exp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void cast(String text, Exp<?> expected) {
-        Exp<?> exp = Exp.exp(text);
+        Exp<?> exp = exp(text);
         assertInstanceOf(StrExp.class, exp);
         assertEquals(expected, exp);
     }
 
     static Stream<Arguments> cast() {
         return Stream.of(
-                arguments("castAsStr(null)", Exp.$val(null).castAsStr()),
-                arguments("castAsStr(1)", Exp.$val(1).castAsStr()),
-                arguments("castAsStr(true)", Exp.$val(true).castAsStr()),
-                arguments("castAsStr('1')", Exp.$strVal("1").castAsStr())
+                arguments("castAsStr(null)", $val(null).castAsStr()),
+                arguments("castAsStr(1)", $val(1).castAsStr()),
+                arguments("castAsStr(true)", $val(true).castAsStr()),
+                arguments("castAsStr('1')", $strVal("1").castAsStr())
         );
     }
 
@@ -97,23 +98,23 @@ public class StrExpTest {
             "CASTASSTR(1)",
     })
     void cast_throws(String text) {
-        assertThrows(ExpParserException.class, () -> Exp.exp(text));
+        assertThrows(ExpParserException.class, () -> exp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void relation(String text, Exp<?> expected) {
-        Exp<?> exp = Exp.exp(text);
+        Exp<?> exp = exp(text);
         assertInstanceOf(Condition.class, exp);
         assertEquals(expected, exp);
     }
 
     static Stream<Arguments> relation() {
         return Stream.of(
-                arguments("'hello' = 'hello'", Exp.$val("hello").eq(Exp.$val("hello"))),
-                arguments("'hello' != 'world'", Exp.$val("hello").ne(Exp.$val("world"))),
-                arguments("str(1) = 'test'", Exp.$str(1).eq(Exp.$val("test"))),
-                arguments("trim(str(1)) = 'test'", Exp.$str(1).trim().eq(Exp.$val("test")))
+                arguments("'hello' = 'hello'", $val("hello").eq($val("hello"))),
+                arguments("'hello' != 'world'", $val("hello").ne($val("world"))),
+                arguments("str(1) = 'test'", $str(1).eq($val("test"))),
+                arguments("trim(str(1)) = 'test'", $str(1).trim().eq($val("test")))
         );
     }
 
@@ -127,25 +128,25 @@ public class StrExpTest {
             "len(str(col1)) = '4'",
     })
     void relation_throws(String text) {
-        assertThrows(ExpParserException.class, () -> Exp.exp(text));
+        assertThrows(ExpParserException.class, () -> exp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void function_returnsCondition(String text, Exp<?> expected) {
-        Exp<?> exp = Exp.exp(text);
+        Exp<?> exp = exp(text);
         assertInstanceOf(Condition.class, exp);
         assertEquals(expected, exp);
     }
 
     static Stream<Arguments> function_returnsCondition() {
         return Stream.of(
-                arguments("matches('hello', 'he.*')", Exp.$strVal("hello").matches("he.*")),
-                arguments("startsWith('hello', 'he')", Exp.$strVal("hello").startsWith("he")),
-                arguments("endsWith('hello', 'lo')", Exp.$strVal("hello").endsWith("lo")),
-                arguments("contains('hello', 'ell')", Exp.$strVal("hello").contains("ell")),
-                arguments("matches(str(1), 'he.*')", Exp.$str(1).matches("he.*")),
-                arguments("matches(trim('  hello'), 'he.*')", Exp.$strVal("  hello").trim().matches("he.*"))
+                arguments("matches('hello', 'he.*')", $strVal("hello").matches("he.*")),
+                arguments("startsWith('hello', 'he')", $strVal("hello").startsWith("he")),
+                arguments("endsWith('hello', 'lo')", $strVal("hello").endsWith("lo")),
+                arguments("contains('hello', 'ell')", $strVal("hello").contains("ell")),
+                arguments("matches(str(1), 'he.*')", $str(1).matches("he.*")),
+                arguments("matches(trim('  hello'), 'he.*')", $strVal("  hello").trim().matches("he.*"))
         );
     }
 
@@ -159,29 +160,29 @@ public class StrExpTest {
             "endsWith('hello', null)",
     })
     void function_returnsCondition_throws(String text) {
-        assertThrows(ExpParserException.class, () -> Exp.exp(text));
+        assertThrows(ExpParserException.class, () -> exp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void function_returnsStrExp(String text, Exp<?> expected) {
-        Exp<?> exp = Exp.exp(text);
+        Exp<?> exp = exp(text);
         assertInstanceOf(StrExp.class, exp);
         assertEquals(expected, exp);
     }
 
     static Stream<Arguments> function_returnsStrExp() {
         return Stream.of(
-                arguments("concat(str(1), 'example')", Exp.concat(Exp.$str(1), Exp.$strVal("example"))),
-                arguments("concat(str(1))", Exp.concat(Exp.$str(1))),
-                arguments("concat( )", Exp.concat()),
-                arguments("concat()", Exp.concat()),
-                arguments("trim('  example  ')", Exp.$strVal("  example  ").trim()),
-                arguments("substr('example', 2)", Exp.$strVal("example").substr(2)),
-                arguments("substr('example', 2, 3)", Exp.$strVal("example").substr(2, 3)),
-                arguments("substr('example', -2, 3)", Exp.$strVal("example").substr(-2, 3)),
-                arguments("trim(str(1))", Exp.$str(1).trim()),
-                arguments("trim(castAsStr(3))", Exp.$intVal(3).castAsStr().trim())
+                arguments("concat(str(1), 'example')", concat($str(1), $strVal("example"))),
+                arguments("concat(str(1))", concat($str(1))),
+                arguments("concat( )", concat()),
+                arguments("concat()", concat()),
+                arguments("trim('  example  ')", $strVal("  example  ").trim()),
+                arguments("substr('example', 2)", $strVal("example").substr(2)),
+                arguments("substr('example', 2, 3)", $strVal("example").substr(2, 3)),
+                arguments("substr('example', -2, 3)", $strVal("example").substr(-2, 3)),
+                arguments("trim(str(1))", $str(1).trim()),
+                arguments("trim(castAsStr(3))", $intVal(3).castAsStr().trim())
         );
     }
 
@@ -196,22 +197,22 @@ public class StrExpTest {
             "substr('example', 2, -1)",
     })
     void function_returnsStrExp_throws(String text) {
-        assertThrows(ExpParserException.class, () -> Exp.exp(text));
+        assertThrows(ExpParserException.class, () -> exp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void split(String text, Exp<?> expected) {
-        Exp<?> exp = Exp.exp(text);
+        Exp<?> exp = exp(text);
         assertEquals(expected, exp);
     }
 
     static Stream<Arguments> split() {
         return Stream.of(
-                arguments("split('a,b,c', ',')", Exp.$strVal("a,b,c").split(",")),
-                arguments("split('a,b,c', ',', 2)", Exp.$strVal("a,b,c").split(",", 2)),
-                arguments("split(str(1), '|')", Exp.$str(1).split("|")),
-                arguments("split(trim(' a|b|c '), '|', 2)", Exp.$strVal(" a|b|c ").trim().split("|", 2))
+                arguments("split('a,b,c', ',')", $strVal("a,b,c").split(",")),
+                arguments("split('a,b,c', ',', 2)", $strVal("a,b,c").split(",", 2)),
+                arguments("split(str(1), '|')", $str(1).split("|")),
+                arguments("split(trim(' a|b|c '), '|', 2)", $strVal(" a|b|c ").trim().split("|", 2))
         );
     }
 
@@ -224,24 +225,24 @@ public class StrExpTest {
             "split(time(1), ':')",
     })
     void split_throws(String text) {
-        assertThrows(ExpParserException.class, () -> Exp.exp(text));
+        assertThrows(ExpParserException.class, () -> exp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void aggregate(String text, Exp<?> expected) {
-        Exp<?> exp = Exp.exp(text);
+        Exp<?> exp = exp(text);
         assertInstanceOf(StrExp.class, exp);
         assertEquals(expected, exp);
     }
 
     static Stream<Arguments> aggregate() {
         return Stream.of(
-                arguments("min(str(1))", Exp.$str(1).min()),
-                arguments("max(str(1))", Exp.$str(1).max()),
-                arguments("min(str(1), matches(str(1), '#.*'))", Exp.$str(1).min(Exp.$str(1).matches("#.*"))),
-                arguments("max(str(1), matches(str(1), '#.*'))", Exp.$str(1).max(Exp.$str(1).matches("#.*"))),
-                arguments("min(str(1), matches(str(2), '#.*'))", Exp.$str(1).min(Exp.$str(2).matches("#.*")))
+                arguments("min(str(1))", $str(1).min()),
+                arguments("max(str(1))", $str(1).max()),
+                arguments("min(str(1), matches(str(1), '#.*'))", $str(1).min($str(1).matches("#.*"))),
+                arguments("max(str(1), matches(str(1), '#.*'))", $str(1).max($str(1).matches("#.*"))),
+                arguments("min(str(1), matches(str(2), '#.*'))", $str(1).min($str(2).matches("#.*")))
         );
     }
 
@@ -253,6 +254,6 @@ public class StrExpTest {
             "max(str(1), 0)",
     })
     void aggregate_throws(String text) {
-        assertThrows(ExpParserException.class, () -> Exp.exp(text));
+        assertThrows(ExpParserException.class, () -> exp(text));
     }
 }

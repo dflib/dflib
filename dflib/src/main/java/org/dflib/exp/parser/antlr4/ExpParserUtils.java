@@ -1,5 +1,6 @@
 package org.dflib.exp.parser.antlr4;
 
+import org.antlr.v4.runtime.Token;
 import org.dflib.Condition;
 import org.dflib.DateExp;
 import org.dflib.DateTimeExp;
@@ -133,6 +134,30 @@ class ExpParserUtils {
     @SuppressWarnings({"rawtypes", "unchecked"})
     static Exp<?> ifNullExp(Exp a, Exp b) {
         return new IfNullExp<>(a, b);
+    }
+
+    static NumExp<?> addOrSub(NumExp a, NumExp b, Token op) {
+        switch (op.getType()) {
+            case ExpParser.ADD:
+                return a.add(b);
+            case ExpParser.SUB:
+                return a.sub(b);
+            default:
+                throw new RuntimeException("Unknown operator: " + op.getText());
+        }
+    }
+
+    static NumExp<?> mulDivOrMod(NumExp a, NumExp b, Token op) {
+        switch (op.getType()) {
+            case ExpParser.MUL:
+                return a.mul(b);
+            case ExpParser.DIV:
+                return a.div(b);
+            case ExpParser.MOD:
+                return a.mod(b);
+            default:
+                throw new RuntimeException("Unknown operator: " + op.getText());
+        }
     }
 
     static Number parseIntegerValue(String token) {
