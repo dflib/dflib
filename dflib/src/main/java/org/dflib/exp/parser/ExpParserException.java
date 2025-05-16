@@ -1,5 +1,8 @@
 package org.dflib.exp.parser;
 
+/**
+ * @since 2.0.0
+ */
 public class ExpParserException extends RuntimeException {
 
     public ExpParserException() {

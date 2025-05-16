@@ -51,11 +51,8 @@ numExp returns [NumExp<?> exp]
     | numColumn { $exp = $numColumn.exp; }
     | numFn { $exp = $numFn.exp; }
     | numAgg { $exp = $numAgg.exp; }
-    | a=numExp MUL b=numExp { $exp = $a.exp.mul($b.exp); }
-    | a=numExp DIV b=numExp { $exp = $a.exp.div($b.exp); }
-    | a=numExp MOD b=numExp { $exp = $a.exp.mod($b.exp); }
-    | a=numExp ADD b=numExp { $exp = $a.exp.add($b.exp); }
-    | a=numExp SUB b=numExp { $exp = $a.exp.sub($b.exp); }
+    | a=numExp op=(MUL | DIV | MOD) b=numExp { $exp = mulDivOrMod($a.exp, $b.exp, $op); }
+    | a=numExp op=(ADD | SUB) b=numExp { $exp = addOrSub($a.exp, $b.exp, $op); }
     | '(' numExp ')' { $exp = $numExp.exp; }
     ;
 
@@ -567,7 +564,7 @@ genericRelation returns [Condition exp] locals [BiFunction<Exp<?>, Exp<?>, Condi
     : a=genericExp (
         : EQ { $rel = (a, b) -> a.eq(b); }
         | NE { $rel = (a, b) -> a.ne(b); }
-    ) b=expression { $rel.apply($a.exp, $b.exp); }
+    ) b=expression { $exp = $rel.apply($a.exp, $b.exp); }
     ;
 
 /// **Functions**

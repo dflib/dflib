@@ -4,6 +4,9 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.LexerNoViableAltException;
 import org.antlr.v4.runtime.RecognitionException;
 
+/**
+ * @since 2.0.0
+ */
 public class ExpStrictLexer extends ExpLexer {
 
     public ExpStrictLexer(CharStream input) {
