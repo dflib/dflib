@@ -28,6 +28,7 @@
 * #494 Upgrade to Parquet 1.15.2
 * #495 Force column name deduplication in SqlLoader
 * #496 Force column name deduplication in CsvLoader
+* #498 Exp.toQL() should not quote boolean scalars
 
 ## Release 2.0.0-M2
 

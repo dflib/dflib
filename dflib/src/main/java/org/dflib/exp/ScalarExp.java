@@ -19,7 +19,7 @@ public class ScalarExp<T> implements Exp<T> {
     static String scalarToQL(Object val) {
         // TODO: val is a bare object and may produce an ugly toString(). Need to be smarter about it
 
-        boolean quotes = val != null && !(val instanceof Number);
+        boolean quotes = val != null && !(val instanceof Number || val instanceof Boolean);
         String unquoted = String.valueOf(val);
         return quotes ? "'" + unquoted + "'" : unquoted;
     }
