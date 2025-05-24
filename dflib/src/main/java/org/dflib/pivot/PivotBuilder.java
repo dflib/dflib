@@ -4,6 +4,7 @@ import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.GroupBy;
 import org.dflib.Series;
+import org.dflib.Udf1;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,10 +95,26 @@ public class PivotBuilder {
      * with matching pivot row and column are aggregated with the provided aggregator. Aggregator may look like this:
      * <code>$decimal(0).sum()</code>. Notice that the column name or index can be anything, as the evaluation happens
      * against individual columns, not DataFrame.
+     *
+     * @deprecated in favor of {@link #vals(String, Udf1)} that removes the ambiguity as to what column is being
+     * aggregated
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public <T> DataFrame vals(String columnName, Exp<T> valuesAggregator) {
         int pos = validateColumn(columnName);
         return doPivot(pos, valuesAggregator);
+    }
+
+    /**
+     * Executes pivot transform, using values from the provided column name to populate the resulting DataFame. Values
+     * with matching pivot row and column are aggregated with the provided aggregator UDF. Aggregator may look like this:
+     * <code>e -> e.castAsDecimal().sum()</code>.
+     *
+     * @since 2.0.0
+     */
+    public <T> DataFrame vals(String columnName, Udf1<?, T> valuesAggregator) {
+        int pos = validateColumn(columnName);
+        return doPivot(pos, valuesAggregator.call(pos));
     }
 
     /**

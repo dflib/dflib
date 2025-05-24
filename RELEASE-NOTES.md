@@ -29,6 +29,7 @@
 * #495 Force column name deduplication in SqlLoader
 * #496 Force column name deduplication in CsvLoader
 * #498 Exp.toQL() should not quote boolean scalars
+* #500 Use Udf1 for pivot aggregator for consistency
 
 ## Release 2.0.0-M2
 

@@ -1,6 +1,5 @@
 package org.dflib;
 
-import org.dflib.pivot.PivotBuilder;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -8,9 +7,11 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.dflib.Exp.$double;
+import static org.dflib.Exp.$int;
 
-public class DataFrame_PivotTest {
+@Deprecated
+public class DataFrame_PivotAggExpTest {
 
     @Test
     public void withAggregation_2by2() {
@@ -22,7 +23,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
 
-        DataFrame df = df1.pivot().cols("b").rows("a").vals("c", e -> e.castAsDouble().sum());
+        DataFrame df = df1.pivot().cols("b").rows("a").vals("c", $double(0).sum());
 
         new DataFrameAsserts(df, "a", "x", "y")
                 .expectHeight(2)
@@ -47,7 +48,7 @@ public class DataFrame_PivotTest {
 
 
         DataFrame df = df1.pivot().cols("b").rows("a")
-                .vals("c", e -> e.castAsInt().sum())
+                .vals("c", $int(0).sum())
                 .sort("a", true);
 
         new DataFrameAsserts(df, "a", "x", "y", "z", "t")
@@ -71,7 +72,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
 
-        DataFrame df = df1.pivot().cols("b").rows("a").vals("c", e -> e.castAsDouble().sum());
+        DataFrame df = df1.pivot().cols("b").rows("a").vals("c", $double(0).sum());
 
         new DataFrameAsserts(df, "a", "x", "y")
                 .expectHeight(2)
@@ -90,7 +91,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
 
-        DataFrame df = df1.pivot().cols("b").rows("a").vals("c", e -> e.castAsDouble().sum());
+        DataFrame df = df1.pivot().cols("b").rows("a").vals("c", $double(0).sum());
 
         new DataFrameAsserts(df, "a", "y")
                 .expectHeight(2)
@@ -98,35 +99,6 @@ public class DataFrame_PivotTest {
                 .expectRow(1, 1, 20.0);
     }
 
-    @Test
-    public void noAggregation() {
-
-        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
-                1, "x", 15.0,
-                2, "y", 19.0,
-                1, "y", 20.0);
-
-
-        DataFrame df = df1.pivot().cols("b").rows("a").vals("c");
-
-        new DataFrameAsserts(df, "a", "x", "y")
-                .expectHeight(2)
-                .expectRow(0, 1, 15.0, 20.0)
-                .expectRow(1, 2, null, 19.0);
-    }
-
-    @Test
-    public void noAggregation_Dupes() {
-
-        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
-                1, "x", 15.0,
-                2, "y", 19.0,
-                2, "y", 21.0,
-                1, "y", 20.0);
-
-        PivotBuilder pb = df1.pivot().cols("b").rows("a");
-        assertThrows(IllegalArgumentException.class, () -> pb.vals("c"));
-    }
 
     @Test
     public void withAggregation_WithConversion() {
@@ -138,7 +110,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
 
-        DataFrame df = df1.pivot().cols("b").rows("a").vals("c", e -> e.castAsDecimal().sum().scale(2));
+        DataFrame df = df1.pivot().cols("b").rows("a").vals("c", $double(0).sum().castAsDecimal().scale(2));
 
         new DataFrameAsserts(df, "a", "x", "y")
                 .expectHeight(2)
