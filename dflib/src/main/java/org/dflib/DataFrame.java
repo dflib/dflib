@@ -436,7 +436,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame ne(DataFrame another);
 
     /**
-     * Returns a new DataFrame with 3 columns "row", "column", "value", that contains values from all columns of
+     * Returns a new DataFrame with 3 columns "row", "column", "value" containing values from all columns of
      * this DataFrame. Null values are not included.
      *
      * @return a new DataFrame with columns called "row", "column", "value".
@@ -444,7 +444,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame stack();
 
     /**
-     * Returns a new DataFrame with 3 columns "row", "column", "value", that contains values from all columns of
+     * Returns a new DataFrame with 3 columns "row", "column", "value" containing values from all columns of
      * this DataFrame. Null values are included.
      *
      * @return a new DataFrame with columns called "row", "column", "value".
