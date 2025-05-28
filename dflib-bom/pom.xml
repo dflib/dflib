@@ -44,15 +44,9 @@
 
     <distributionManagement>
         <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>s01-oss-sonatype-releases</id>
-            <name>Deployment Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+            <id>sonatype-central</id>
+            <name>Sonatype Central Portal Repository</name>
         </repository>
-        <snapshotRepository>
-            <id>s01-oss-sonatype-snapshots</id>
-	    <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
     </distributionManagement>
 
 
