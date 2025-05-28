@@ -62,7 +62,7 @@
         <mustache.version>0.9.10</mustache.version>
         <parquet.version>1.15.2</parquet.version>
         <hadoop.version>3.4.1</hadoop.version>
-        <jjava.version>1.0-M3</jjava.version>
+        <jjava.version>1.0-a5</jjava.version>
         <mysql.version>9.1.0</mysql.version>
     </properties>
 
