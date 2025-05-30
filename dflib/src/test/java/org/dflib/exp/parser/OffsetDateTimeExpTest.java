@@ -28,8 +28,7 @@ public class OffsetDateTimeExpTest {
     static Stream<Arguments> column() {
         return Stream.of(
                 arguments("offsetDateTime(a)", $offsetDateTime("a")),
-                arguments("offsetDateTime('a')", $offsetDateTime("a")),
-                arguments("offsetDateTime(\"a\")", $offsetDateTime("a")),
+                arguments("offsetDateTime(`a`)", $offsetDateTime("a")),
                 arguments("offsetDateTime(1)", $offsetDateTime(1))
         );
     }

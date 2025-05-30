@@ -28,8 +28,7 @@ public class TimeExpTest {
     static Stream<Arguments> column() {
         return Stream.of(
                 arguments("time(a)", $time("a")),
-                arguments("time('a')", $time("a")),
-                arguments("time(\"a\")", $time("a")),
+                arguments("time(`a`)", $time("a")),
                 arguments("time(1)", $time(1))
         );
     }
