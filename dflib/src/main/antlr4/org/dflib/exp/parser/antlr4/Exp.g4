@@ -71,6 +71,8 @@ boolExp returns [Condition exp]
     | NOT boolExp { $exp = Exp.not($boolExp.exp); }
     | a=boolExp AND b=boolExp { $exp = Exp.and($a.exp, $b.exp); }
     | a=boolExp OR b=boolExp { $exp = Exp.or($a.exp, $b.exp); }
+    | a=boolExp EQ b=boolExp { $exp = $a.exp.eq($b.exp); }
+    | a=boolExp NE b=boolExp { $exp = $a.exp.ne($b.exp); }
     | '(' boolExp ')' { $exp = $boolExp.exp; }
     ;
 
@@ -374,7 +376,6 @@ genericColumn returns [Exp<?> exp]
  */
 columnId returns [Object id]
     : integerScalar { $id = $integerScalar.value; }
-    | strScalar { $id = $strScalar.value; }
     | identifier { $id = $identifier.id; }
     ;
 
@@ -384,6 +385,7 @@ columnId returns [Object id]
 //@ doc:inline
 identifier returns [String id]
     : IDENTIFIER { $id = $text; }
+    | QUOTED_IDENTIFIER { $id = unescapeString($text.substring(1, $text.length() - 1)); }
     ;
 
 /// **Relational expressions**
@@ -1447,6 +1449,11 @@ SINGLE_QUOTE_STRING_LITERAL: '\'' ('\\\'' | ~['] | UNICODE_ESCAPE)* '\'';
  * Matches a string literal enclosed in double quotes. Supports Java escape sequences.
  */
 DOUBLE_QUOTE_STRING_LITERAL: '"' ('\\"' | ~["] | UNICODE_ESCAPE)* '"';
+
+/**
+ * Matches a quoted identifier.
+ */
+QUOTED_IDENTIFIER: '`' ('\\`' | ~[`] | UNICODE_ESCAPE)* '`';
 
 /**
  * Matches an identifier. Identifiers start with a letter and can be followed by letters or digits.

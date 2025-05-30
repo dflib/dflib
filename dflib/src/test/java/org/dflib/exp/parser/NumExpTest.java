@@ -344,8 +344,7 @@ public class NumExpTest {
                 arguments("float(a)", $float("a")),
                 arguments("double(a)", $double("a")),
                 arguments("decimal(a)", $decimal("a")),
-                arguments("int('a')", $int("a")),
-                arguments("int(\"a\")", $int("a")),
+                arguments("int(`a`)", $int("a")),
                 arguments("int(1)", $int(1))
         );
     }
