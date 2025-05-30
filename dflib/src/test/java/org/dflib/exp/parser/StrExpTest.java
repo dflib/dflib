@@ -57,8 +57,7 @@ public class StrExpTest {
     static Stream<Arguments> column() {
         return Stream.of(
                 arguments("str(a)", $str("a")),
-                arguments("str('a')", $str("a")),
-                arguments("str(\"a\")", $str("a")),
+                arguments("str(`a`)", $str("a")),
                 arguments("str(1)", $str(1))
         );
     }

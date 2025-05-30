@@ -28,8 +28,7 @@ public class DateTimeExpTest {
     static Stream<Arguments> column() {
         return Stream.of(
                 arguments("dateTime(a)", $dateTime("a")),
-                arguments("dateTime('a')", $dateTime("a")),
-                arguments("dateTime(\"a\")", $dateTime("a")),
+                arguments("dateTime(`a`)", $dateTime("a")),
                 arguments("dateTime(1)", $dateTime(1))
         );
     }

@@ -386,7 +386,7 @@ class ExpParserUtils {
                 }
             }
 
-            if (nextChar == '"' || nextChar == '\'') {
+            if (nextChar == '"' || nextChar == '\'' || nextChar == '`') {
                 result.append(nextChar);
             } else {
                 result.append(currentChar);

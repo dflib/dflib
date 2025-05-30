@@ -27,6 +27,13 @@ public class ColumnTest {
                 arguments("_a", $col("_a")),
                 arguments("$a", $col("$a")),
 
+                // quoted identifiers
+                arguments("`a`", $col("a")),
+                arguments("`_a`", $col("_a")),
+                arguments("`$a`", $col("$a")),
+                arguments("`a b`", $col("a b")),
+                arguments("`a\\`b`", $col("a`b")),
+
                 // must allow unquoted names in col(..). TODO: dubious syntax
                 arguments("col(a)", $col("a")),
                 arguments("col(_a)", $col("_a")),
@@ -36,11 +43,12 @@ public class ColumnTest {
                 arguments("\"a b\"", $val("a b")),
                 arguments("'a b'", $val("a b")),
 
-                arguments("col(\"a b\")", $col("a b")),
-                arguments("col('a b')", $col("a b")),
-                arguments("col('a)b')", $col("a)b")),
-                arguments("col('a\\'b')", $col("a'b")),
-                arguments("col(\"a\\\"b\")", $col("a\"b"))
+                arguments("col(`a b`)", $col("a b")),
+                arguments("col(`a b`)", $col("a b")),
+                arguments("col(`a)b`)", $col("a)b")),
+                arguments("col(`a'b`)", $col("a'b")),
+                arguments("col(`a\\`b`)", $col("a`b")),
+                arguments("col(`a\"b`)", $col("a\"b"))
         );
     }
 

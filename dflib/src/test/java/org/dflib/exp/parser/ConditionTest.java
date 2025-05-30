@@ -85,7 +85,7 @@ public class ConditionTest {
                 // 3. [<, >, <=, >=] takes precedence over [=, !=]
                 arguments("true = 5 < 4", $boolVal(true).eq($intVal(5).lt(4))),
                 arguments("true != 5 > 4", $boolVal(true).ne($intVal(5).gt(4))),
-                arguments("6 < 2 = 5 > 4", $boolVal(true).ne($intVal(5).gt(4))),
+                arguments("6 < 2 = 5 > 4", $intVal(6).lt($intVal(2)).eq($intVal(5).gt(4))),
 
                 // 4. [=, !=] takes precedence over [and]
                 arguments("true and 5 != 4", $boolVal(true).and($intVal(5).ne(4))),
@@ -131,8 +131,7 @@ public class ConditionTest {
     static Stream<Arguments> column() {
         return Stream.of(
                 arguments("bool(a)", $bool("a")),
-                arguments("bool('a')", $bool("a")),
-                arguments("bool(\"a\")", $bool("a")),
+                arguments("bool(`a`)", $bool("a")),
                 arguments("bool(1)", $bool(1))
         );
     }

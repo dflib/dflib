@@ -63,6 +63,7 @@
                 </executions>
                 <configuration>
                     <visitor>true</visitor>
+                    <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
                     <includes>
                         <include>**/Exp.g4</include>
                     </includes>
