@@ -385,7 +385,7 @@ columnId returns [Object id]
 //@ doc:inline
 identifier returns [String id]
     : IDENTIFIER { $id = $text; }
-    | QUOTED_IDENTIFIER { $id = unescapeString($text.substring(1, $text.length() - 1)); }
+    | QUOTED_IDENTIFIER { $id = unescapeIdentifier($text.substring(1, $text.length() - 1)); }
     ;
 
 /// **Relational expressions**
@@ -1453,7 +1453,7 @@ DOUBLE_QUOTE_STRING_LITERAL: '"' ('\\"' | ~["] | UNICODE_ESCAPE)* '"';
 /**
  * Matches a quoted identifier.
  */
-QUOTED_IDENTIFIER: '`' ('\\`' | ~[`] | UNICODE_ESCAPE)* '`';
+QUOTED_IDENTIFIER: '`' ('``' | ~[`] | UNICODE_ESCAPE)* '`';
 
 /**
  * Matches an identifier. Identifiers start with a letter and can be followed by letters or digits.

@@ -43,13 +43,13 @@ class ExpParserUtils {
     private static final int DOUBLE_MAX_EXPONENT = 307;
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    static <T> Exp<T> val(T value) {
+    public static <T> Exp<T> val(T value) {
         Class type = value != null ? value.getClass() : Object.class;
         return val(value, type);
     }
 
     @SuppressWarnings("unchecked")
-    static <T, V extends T> Exp<T> val(V value, Class<T> type) {
+    public static <T, V extends T> Exp<T> val(V value, Class<T> type) {
         if (Integer.class.equals(type) || Integer.TYPE.equals(type)) {
             return (Exp<T>) Exp.$intVal((Integer) value);
         } else if (Long.class.equals(type) || Long.TYPE.equals(type)) {
@@ -79,64 +79,64 @@ class ExpParserUtils {
         }
     }
 
-    static NumExp<Integer> intCol(Object columnId) {
+    public static NumExp<Integer> intCol(Object columnId) {
         return col(columnId, Exp::$int, Exp::$int);
     }
 
-    static NumExp<Long> longCol(Object columnId) {
+    public static NumExp<Long> longCol(Object columnId) {
         return col(columnId, Exp::$long, Exp::$long);
     }
 
-    static NumExp<Float> floatCol(Object columnId) {
+    public static NumExp<Float> floatCol(Object columnId) {
         return col(columnId, Exp::$float, Exp::$float);
     }
 
-    static NumExp<Double> doubleCol(Object columnId) {
+    public static NumExp<Double> doubleCol(Object columnId) {
         return col(columnId, Exp::$double, Exp::$double);
     }
 
-    static NumExp<BigInteger> bigintCol(Object columnId) {
+    public static NumExp<BigInteger> bigintCol(Object columnId) {
         return col(columnId, Exp::$bigint, Exp::$bigint);
     }
 
-    static DecimalExp decimalCol(Object columnId) {
+    public static DecimalExp decimalCol(Object columnId) {
         return col(columnId, Exp::$decimal, Exp::$decimal);
     }
 
-    static StrExp strCol(Object columnId) {
+    public static StrExp strCol(Object columnId) {
         return col(columnId, Exp::$str, Exp::$str);
     }
 
-    static Condition boolCol(Object columnId) {
+    public static Condition boolCol(Object columnId) {
         return col(columnId, Exp::$bool, Exp::$bool);
     }
 
-    static DateExp dateCol(Object columnId) {
+    public static DateExp dateCol(Object columnId) {
         return col(columnId, Exp::$date, Exp::$date);
     }
 
-    static TimeExp timeCol(Object columnId) {
+    public static TimeExp timeCol(Object columnId) {
         return col(columnId, Exp::$time, Exp::$time);
     }
 
-    static DateTimeExp dateTimeCol(Object columnId) {
+    public static DateTimeExp dateTimeCol(Object columnId) {
         return col(columnId, Exp::$dateTime, Exp::$dateTime);
     }
 
-    static OffsetDateTimeExp offsetCol(Object columnId) {
+    public static OffsetDateTimeExp offsetCol(Object columnId) {
         return col(columnId, Exp::$offsetDateTime, Exp::$offsetDateTime);
     }
 
-    static Exp<?> col(Object columnId) {
+    public static Exp<?> col(Object columnId) {
         return col(columnId, Exp::$col, Exp::$col);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    static Exp<?> ifNullExp(Exp a, Exp b) {
+    public static Exp<?> ifNullExp(Exp a, Exp b) {
         return new IfNullExp<>(a, b);
     }
 
-    static NumExp<?> addOrSub(NumExp a, NumExp b, Token op) {
+    public static NumExp<?> addOrSub(NumExp a, NumExp b, Token op) {
         switch (op.getType()) {
             case ExpParser.ADD:
                 return a.add(b);
@@ -147,7 +147,7 @@ class ExpParserUtils {
         }
     }
 
-    static NumExp<?> mulDivOrMod(NumExp a, NumExp b, Token op) {
+    public static NumExp<?> mulDivOrMod(NumExp a, NumExp b, Token op) {
         switch (op.getType()) {
             case ExpParser.MUL:
                 return a.mul(b);
@@ -160,7 +160,7 @@ class ExpParserUtils {
         }
     }
 
-    static Number parseIntegerValue(String token) {
+    public static Number parseIntegerValue(String token) {
         int radix = radix(token);
         String sanitizedToken = sanitizeNumScalar(token, radix);
         Matcher matcher = Pattern.compile("(?<number>.+?)[ilh]?").matcher(sanitizedToken);
@@ -190,7 +190,7 @@ class ExpParserUtils {
         return value;
     }
 
-    static Number parseFloatingPointValue(String token) {
+    public static Number parseFloatingPointValue(String token) {
         String normalizedToken = token.replaceAll("_+", "").toLowerCase();
         Matcher matcher = Pattern.compile("(?<number>.+?)[fdm]?").matcher(normalizedToken);
         if (!matcher.matches()) {
@@ -274,19 +274,19 @@ class ExpParserUtils {
         return isNegative ? result.negate() : result;
     }
 
-    static LocalDate parseDateValue(String token) {
+    public static LocalDate parseDateValue(String token) {
         return LocalDate.parse(token, DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
-    static LocalTime parseTimeValue(String token) {
+    public static LocalTime parseTimeValue(String token) {
         return LocalTime.parse(token, DateTimeFormatter.ISO_LOCAL_TIME);
     }
 
-    static LocalDateTime parseDateTimeValue(String token) {
+    public static LocalDateTime parseDateTimeValue(String token) {
         return LocalDateTime.parse(token, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
-    static OffsetDateTime parseOffsetDateTimeValue(String token) {
+    public static OffsetDateTime parseOffsetDateTimeValue(String token) {
         return OffsetDateTime.parse(token, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 
@@ -358,21 +358,24 @@ class ExpParserUtils {
         }
     }
 
-    static String unescapeString(String raw) {
+    public static String unescapeIdentifier(String raw) {
         if (raw == null) {
             return null;
         }
 
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < raw.length(); i++) {
+        int len = raw.length();
+        StringBuilder result = new StringBuilder(len + 2);
+
+        for (int i = 0; i < len; i++) {
             char currentChar = raw.charAt(i);
-            if (currentChar != '\\' || i + 1 >= raw.length()) {
+            if (i + 1 == len) {
                 result.append(currentChar);
                 continue;
             }
 
-            char nextChar = raw.charAt(i + 1);
-            if (nextChar == 'u' && i + 5 < raw.length()) {
+            // Unicode escape
+            if (currentChar == '\\' && raw.charAt(i + 1) == 'u' && i + 5 < len) {
+
                 String hex = raw.substring(i + 2, i + 6);
                 try {
                     int unicodeValue = Integer.parseInt(hex, 16);
@@ -380,13 +383,56 @@ class ExpParserUtils {
                     i += 5;
                     continue;
                 } catch (NumberFormatException e) {
+                    // TODO: check for "isDigit" for the next 4 chars instead of relying on exception
+                    result.append("\\u");
+                    i++;
+                }
+            }
+
+            // Backtick escape
+            if (currentChar == '`' && raw.charAt(i + 1) == '`') {
+                result.append('`');
+                i++;
+                continue;
+            }
+
+            result.append(currentChar);
+        }
+        return result.toString();
+    }
+
+    public static String unescapeString(String raw) {
+        if (raw == null) {
+            return null;
+        }
+
+        int len = raw.length();
+        StringBuilder result = new StringBuilder(len + 2);
+
+        for (int i = 0; i < len; i++) {
+            char currentChar = raw.charAt(i);
+            if (currentChar != '\\' || i + 1 >= len) {
+                result.append(currentChar);
+                continue;
+            }
+
+            char nextChar = raw.charAt(i + 1);
+            if (nextChar == 'u' && i + 5 < len) {
+                String hex = raw.substring(i + 2, i + 6);
+                try {
+                    int unicodeValue = Integer.parseInt(hex, 16);
+                    result.append((char) unicodeValue);
+                    i += 5;
+                    continue;
+                } catch (NumberFormatException e) {
+                    // TODO: check for "isDigit" for the next 4 chars instead of relying on exception
                     result.append("\\u");
                     i++;
                     continue;
                 }
             }
 
-            if (nextChar == '"' || nextChar == '\'' || nextChar == '`') {
+            if (nextChar == '"' || nextChar == '\'') {
                 result.append(nextChar);
             } else {
                 result.append(currentChar);

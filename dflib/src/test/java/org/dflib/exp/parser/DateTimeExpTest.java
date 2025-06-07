@@ -20,7 +20,7 @@ public class DateTimeExpTest {
     @ParameterizedTest
     @MethodSource
     void column(String text, Exp<?> expected) {
-        Exp<?> exp = exp(text);
+        Exp<?> exp = $(text);
         assertInstanceOf(DateTimeExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -43,13 +43,13 @@ public class DateTimeExpTest {
             "dateTime(-1)",
     })
     void column_throws(String text) {
-        assertThrows(ExpParserException.class, () -> exp(text));
+        assertThrows(ExpParserException.class, () -> $(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void cast(String text, Exp<?> expected) {
-        Exp<?> exp = exp(text);
+        Exp<?> exp = $(text);
         assertInstanceOf(DateTimeExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -68,13 +68,13 @@ public class DateTimeExpTest {
             "CASTASDATETIME(1)",
     })
     void cast_throws(String text) {
-        assertThrows(ExpParserException.class, () -> exp(text));
+        assertThrows(ExpParserException.class, () -> $(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void relation(String text, Exp<?> expected) {
-        Exp<?> exp = exp(text);
+        Exp<?> exp = $(text);
         assertInstanceOf(Condition.class, exp);
         assertEquals(expected, exp);
     }
@@ -103,13 +103,13 @@ public class DateTimeExpTest {
             "dateTime(1) = null",
     })
     void relation_throws(String text) {
-        assertThrows(ExpParserException.class, () -> exp(text));
+        assertThrows(ExpParserException.class, () -> $(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void fieldFunction(String text, Exp<?> expected) {
-        Exp<?> exp = exp(text);
+        Exp<?> exp = $(text);
         assertInstanceOf(NumExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -132,13 +132,13 @@ public class DateTimeExpTest {
             "day(castAsDateTime('1970-01-01T12:00:00Z'), 2)"
     })
     void fieldFunction_throws(String text) {
-        assertThrows(ExpParserException.class, () -> exp(text));
+        assertThrows(ExpParserException.class, () -> $(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void function(String text, Exp<?> expected) {
-        Exp<?> exp = exp(text);
+        Exp<?> exp = $(text);
         assertInstanceOf(DateTimeExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -167,13 +167,13 @@ public class DateTimeExpTest {
             "plusHours(dateTime(1), null)",
     })
     void function_throws(String text) {
-        assertThrows(ExpParserException.class, () -> exp(text));
+        assertThrows(ExpParserException.class, () -> $(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void aggregate(String text, Exp<?> expected) {
-        Exp<?> exp = exp(text);
+        Exp<?> exp = $(text);
         assertInstanceOf(DateTimeExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -208,6 +208,6 @@ public class DateTimeExpTest {
             "quantile(dateTime(1), dateTime(1) > 0)",
     })
     void aggregate_throws(String text) {
-        assertThrows(ExpParserException.class, () -> exp(text));
+        assertThrows(ExpParserException.class, () -> $(text));
     }
 }
