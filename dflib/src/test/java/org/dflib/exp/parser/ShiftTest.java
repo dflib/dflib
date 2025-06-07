@@ -19,7 +19,7 @@ public class ShiftTest {
     @ParameterizedTest
     @MethodSource
     public void shift(String text, Exp<?> expected) {
-        Exp<?> exp = exp(text);
+        Exp<?> exp = $(text);
         assertEquals(expected, exp);
     }
 
@@ -45,6 +45,6 @@ public class ShiftTest {
             "shift(plusDays(date(1), 1), 1)",
     })
     public void shift_throws(String text) {
-        assertThrows(ExpParserException.class, () -> exp(text));
+        assertThrows(ExpParserException.class, () -> $(text));
     }
 }

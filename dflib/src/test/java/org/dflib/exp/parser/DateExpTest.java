@@ -20,7 +20,7 @@ public class DateExpTest {
     @ParameterizedTest
     @MethodSource
     void column(String text, Exp<?> expected) {
-        Exp<?> exp = exp(text);
+        Exp<?> exp = $(text);
         assertInstanceOf(DateExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -43,13 +43,13 @@ public class DateExpTest {
             "date(-1)",
     })
     void column_throws(String text) {
-        assertThrows(ExpParserException.class, () -> exp(text));
+        assertThrows(ExpParserException.class, () -> $(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void cast(String text, Exp<?> expected) {
-        Exp<?> exp = exp(text);
+        Exp<?> exp = $(text);
         assertInstanceOf(DateExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -68,13 +68,13 @@ public class DateExpTest {
             "CASTASDATE(1)",
     })
     void cast_throws(String text) {
-        assertThrows(ExpParserException.class, () -> exp(text));
+        assertThrows(ExpParserException.class, () -> $(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void relation(String text, Exp<?> expected) {
-        Exp<?> exp = exp(text);
+        Exp<?> exp = $(text);
         assertInstanceOf(Condition.class, exp);
         assertEquals(expected, exp);
     }
@@ -100,13 +100,13 @@ public class DateExpTest {
             "date(1) = null",
     })
     void relation_throws(String text) {
-        assertThrows(ExpParserException.class, () -> exp(text));
+        assertThrows(ExpParserException.class, () -> $(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void fieldFunction(String text, Exp<?> expected) {
-        Exp<?> exp = exp(text);
+        Exp<?> exp = $(text);
         assertInstanceOf(NumExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -128,13 +128,13 @@ public class DateExpTest {
             "day(castAsDate('1970-01-01'), 2)",
     })
     void filedFunction_throws(String text) {
-        assertThrows(ExpParserException.class, () -> exp(text));
+        assertThrows(ExpParserException.class, () -> $(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void function(String text, Exp<?> expected) {
-        Exp<?> exp = exp(text);
+        Exp<?> exp = $(text);
         assertInstanceOf(DateExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -158,13 +158,13 @@ public class DateExpTest {
             "plusDays(date(1), null)",
     })
     void function_throws(String text) {
-        assertThrows(ExpParserException.class, () -> exp(text));
+        assertThrows(ExpParserException.class, () -> $(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void aggregate(String text, Exp<?> expected) {
-        Exp<?> exp = exp(text);
+        Exp<?> exp = $(text);
         assertInstanceOf(DateExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -195,6 +195,6 @@ public class DateExpTest {
             "quantile(date(1), date(1) > 0)",
     })
     void aggregate_throws(String text) {
-        assertThrows(ExpParserException.class, () -> exp(text));
+        assertThrows(ExpParserException.class, () -> $(text));
     }
 }

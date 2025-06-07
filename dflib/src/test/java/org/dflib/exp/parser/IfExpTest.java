@@ -18,7 +18,7 @@ public class IfExpTest {
     @ParameterizedTest
     @MethodSource
     public void test(String text, Exp<?> expected) {
-        Exp<?> exp = exp(text);
+        Exp<?> exp = $(text);
         assertEquals(expected, exp);
     }
 
@@ -46,6 +46,6 @@ public class IfExpTest {
             "if(true, 1, 0, 2)",
     })
     public void testThrows(String text) {
-        assertThrows(ExpParserException.class, () -> exp(text));
+        assertThrows(ExpParserException.class, () -> $(text));
     }
 }

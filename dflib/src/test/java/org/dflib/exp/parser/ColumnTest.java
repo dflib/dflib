@@ -16,7 +16,7 @@ public class ColumnTest {
     @ParameterizedTest
     @MethodSource
     public void named(String exp, Exp<?> result) {
-        assertEquals(result, exp(exp));
+        assertEquals(result, $(exp));
     }
 
     static Stream<Arguments> named() {
@@ -32,7 +32,7 @@ public class ColumnTest {
                 arguments("`_a`", $col("_a")),
                 arguments("`$a`", $col("$a")),
                 arguments("`a b`", $col("a b")),
-                arguments("`a\\`b`", $col("a`b")),
+                arguments("`a``b`", $col("a`b")),
 
                 // must allow unquoted names in col(..). TODO: dubious syntax
                 arguments("col(a)", $col("a")),
@@ -47,7 +47,7 @@ public class ColumnTest {
                 arguments("col(`a b`)", $col("a b")),
                 arguments("col(`a)b`)", $col("a)b")),
                 arguments("col(`a'b`)", $col("a'b")),
-                arguments("col(`a\\`b`)", $col("a`b")),
+                arguments("col(`a``b`)", $col("a`b")),
                 arguments("col(`a\"b`)", $col("a\"b"))
         );
     }
@@ -55,7 +55,7 @@ public class ColumnTest {
     @ParameterizedTest
     @MethodSource
     public void namedInExp(String exp, Exp<?> expected) {
-        assertEquals(expected, exp(exp));
+        assertEquals(expected, $(exp));
     }
 
     static Stream<Arguments> namedInExp() {
@@ -74,7 +74,7 @@ public class ColumnTest {
     @ParameterizedTest
     @MethodSource
     public void posInExp(String exp, Exp<?> expected) {
-        assertEquals(expected, exp(exp));
+        assertEquals(expected, $(exp));
     }
 
     static Stream<Arguments> posInExp() {

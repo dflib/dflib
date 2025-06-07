@@ -775,11 +775,11 @@ public class ExpParser extends Parser {
 						_localctx.a = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_boolExp);
 						setState(267);
-						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
+						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
 						setState(268);
 						match(EQ);
 						setState(269);
-						((BoolExpContext)_localctx).b = ((BoolExpContext)_localctx).boolExp = boolExp(3);
+						((BoolExpContext)_localctx).b = ((BoolExpContext)_localctx).boolExp = boolExp(4);
 						 ((BoolExpContext)_localctx).exp =  ((BoolExpContext)_localctx).a.exp.eq(((BoolExpContext)_localctx).b.exp); 
 						}
 						break;
@@ -789,11 +789,11 @@ public class ExpParser extends Parser {
 						_localctx.a = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_boolExp);
 						setState(272);
-						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
+						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 						setState(273);
 						match(NE);
 						setState(274);
-						((BoolExpContext)_localctx).b = ((BoolExpContext)_localctx).boolExp = boolExp(2);
+						((BoolExpContext)_localctx).b = ((BoolExpContext)_localctx).boolExp = boolExp(3);
 						 ((BoolExpContext)_localctx).exp =  ((BoolExpContext)_localctx).a.exp.ne(((BoolExpContext)_localctx).b.exp); 
 						}
 						break;
@@ -2950,7 +2950,7 @@ public class ExpParser extends Parser {
 				{
 				setState(521);
 				match(QUOTED_IDENTIFIER);
-				 ((IdentifierContext)_localctx).id =  unescapeString(_input.getText(_localctx.start, _input.LT(-1)).substring(1, _input.getText(_localctx.start, _input.LT(-1)).length() - 1)); 
+				 ((IdentifierContext)_localctx).id =  unescapeIdentifier(_input.getText(_localctx.start, _input.LT(-1)).substring(1, _input.getText(_localctx.start, _input.LT(-1)).length() - 1)); 
 				}
 				break;
 			default:
@@ -8217,9 +8217,9 @@ public class ExpParser extends Parser {
 		case 3:
 			return precpred(_ctx, 4);
 		case 4:
-			return precpred(_ctx, 2);
+			return precpred(_ctx, 3);
 		case 5:
-			return precpred(_ctx, 1);
+			return precpred(_ctx, 2);
 		}
 		return true;
 	}
@@ -8495,10 +8495,10 @@ public class ExpParser extends Parser {
 		"\u0000\u0105\u0116\u0001\u0000\u0000\u0000\u0106\u0107\n\u0004\u0000\u0000"+
 		"\u0107\u0108\u0005\u0012\u0000\u0000\u0108\u0109\u0003\u0006\u0003\u0005"+
 		"\u0109\u010a\u0006\u0003\uffff\uffff\u0000\u010a\u0116\u0001\u0000\u0000"+
-		"\u0000\u010b\u010c\n\u0002\u0000\u0000\u010c\u010d\u0005\u0005\u0000\u0000"+
-		"\u010d\u010e\u0003\u0006\u0003\u0003\u010e\u010f\u0006\u0003\uffff\uffff"+
-		"\u0000\u010f\u0116\u0001\u0000\u0000\u0000\u0110\u0111\n\u0001\u0000\u0000"+
-		"\u0111\u0112\u0005\u0006\u0000\u0000\u0112\u0113\u0003\u0006\u0003\u0002"+
+		"\u0000\u010b\u010c\n\u0003\u0000\u0000\u010c\u010d\u0005\u0005\u0000\u0000"+
+		"\u010d\u010e\u0003\u0006\u0003\u0004\u010e\u010f\u0006\u0003\uffff\uffff"+
+		"\u0000\u010f\u0116\u0001\u0000\u0000\u0000\u0110\u0111\n\u0002\u0000\u0000"+
+		"\u0111\u0112\u0005\u0006\u0000\u0000\u0112\u0113\u0003\u0006\u0003\u0003"+
 		"\u0113\u0114\u0006\u0003\uffff\uffff\u0000\u0114\u0116\u0001\u0000\u0000"+
 		"\u0000\u0115\u0101\u0001\u0000\u0000\u0000\u0115\u0106\u0001\u0000\u0000"+
 		"\u0000\u0115\u010b\u0001\u0000\u0000\u0000\u0115\u0110\u0001\u0000\u0000"+

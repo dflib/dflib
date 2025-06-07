@@ -18,7 +18,7 @@ public class ExpTest {
     @ParameterizedTest
     @MethodSource
     public void nullScalar(String text, Exp<?> expected) {
-        Exp<?> exp = exp(text);
+        Exp<?> exp = $(text);
         assertEquals(expected, exp);
     }
 
@@ -31,14 +31,14 @@ public class ExpTest {
     @ParameterizedTest
     @ValueSource(strings = {"NULL", "Null", "None", "nil", "void"})
     public void nullScalar_parsingErrorAsGenericColumn(String text) {
-        assertEquals(exp(text), $col(text));
+        assertEquals($(text), $col(text));
     }
 
 
     @ParameterizedTest
     @MethodSource
     public void positionalAggregate(String text, Exp<?> expected) {
-        Exp<?> exp = exp(text);
+        Exp<?> exp = $(text);
         assertEquals(expected, exp);
     }
 
@@ -62,6 +62,6 @@ public class ExpTest {
             "last(int(1), int(1) > 0)",
     })
     public void positionalAggregate_throws(String text) {
-        assertThrows(ExpParserException.class, () -> exp(text));
+        assertThrows(ExpParserException.class, () -> $(text));
     }
 }

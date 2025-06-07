@@ -526,14 +526,14 @@ public interface Exp<T> {
     }
 
     /**
-     * Returns an expression created from the string representation
+     * Parses the provided String into an expression.
      *
      * @param str string to parse
      * @return expression parsed from the string
      *
      * @since 2.0.0
      */
-    static Exp<?> exp(String str) {
+    static Exp<?> $(String str) {
         return ExpParser.parse(str);
     }
 
