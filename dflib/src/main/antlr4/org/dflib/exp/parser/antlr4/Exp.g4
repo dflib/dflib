@@ -221,10 +221,8 @@ offsetDateTimeStrScalar returns [String value]
  * A string literal.
  */
 strScalar returns [String value]
-    : SINGLE_QUOTE_STRING_LITERAL { $value = unescapeString($text.substring(1, $text.length() - 1)); }
-    | DOUBLE_QUOTE_STRING_LITERAL { $value = unescapeString($text.substring(1, $text.length() - 1)); }
+    : STRING_LITERAL { $value = unescapeString($text.substring(1, $text.length() - 1)); }
     ;
-
 
 /// **Column expressions**
 
@@ -1441,19 +1439,14 @@ FLOAT_LITERAL
     ;
 
 /**
- * Matches a string literal enclosed in single quotes. Supports standard Java escape sequences.
+ * Matches a string literal.
  */
-SINGLE_QUOTE_STRING_LITERAL: '\'' ('\\\'' | ~['] | UNICODE_ESCAPE)* '\'';
-
-/**
- * Matches a string literal enclosed in double quotes. Supports Java escape sequences.
- */
-DOUBLE_QUOTE_STRING_LITERAL: '"' ('\\"' | ~["] | UNICODE_ESCAPE)* '"';
+STRING_LITERAL: '\'' ('\'\'' | ~['])* '\'';
 
 /**
  * Matches a quoted identifier.
  */
-QUOTED_IDENTIFIER: '`' ('``' | ~[`] | UNICODE_ESCAPE)* '`';
+QUOTED_IDENTIFIER: '`' ('``' | ~[`])* '`';
 
 /**
  * Matches an identifier. Identifiers start with a letter and can be followed by letters or digits.
@@ -1481,13 +1474,10 @@ fragment HEX_EXPONENT: [pP] [+-]? DEC_LITERAL;
 fragment HEX_DIGITS: [0-9a-fA-F] ([0-9a-fA-F_]* [0-9a-fA-F])?;
 
 //@ doc:inline
-fragment UNICODE_ESCAPE: '\\u' [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F];
-
-//@ doc:inline
 fragment IDENTIFIER_START: [$A-Z_a-z\u0080-\uFFFF];
 
 //@ doc:inline
-fragment IDENTIFIER_PART: [$A-Z_a-z0-9\u0080-\uFFFF;?!#|`[\]{}@^\\];
+fragment IDENTIFIER_PART: [$A-Z_a-z0-9\u0080-\uFFFF];
 
 /**
  * Skipped symbols: Whitespace and tabs.

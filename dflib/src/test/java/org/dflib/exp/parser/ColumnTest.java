@@ -40,13 +40,13 @@ public class ColumnTest {
                 arguments("col($a)", $col("$a")),
 
                 // standalone quoted strings are treated as values not column names
-                arguments("\"a b\"", $val("a b")),
                 arguments("'a b'", $val("a b")),
 
                 arguments("col(`a b`)", $col("a b")),
                 arguments("col(`a b`)", $col("a b")),
                 arguments("col(`a)b`)", $col("a)b")),
                 arguments("col(`a'b`)", $col("a'b")),
+                arguments("col(`a``b`)", $col("a`b")),
                 arguments("col(`a``b`)", $col("a`b")),
                 arguments("col(`a\"b`)", $col("a\"b"))
         );

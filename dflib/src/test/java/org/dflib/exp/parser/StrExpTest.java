@@ -26,22 +26,22 @@ public class StrExpTest {
         assertEquals(expected, exp);
     }
 
+    @SuppressWarnings("UnnecessaryUnicodeEscape")
     static Stream<Arguments> scalar() {
         return Stream.of(
                 arguments("'single quotes'", $val("single quotes")),
                 arguments("'^\\d+$'", $val("^\\d+$")),
-                arguments("\"double quotes\"", $val("double quotes")),
-                arguments("\"unicode \\u1234\"", $val("unicode ሴ")),
-                arguments("\"escaped \\\"quote\\\"\"", $val("escaped \"quote\"")),
-                arguments("\"newline\nline\"", $val("newline\nline")),
-                arguments("\"newline\\not\"", $val("newline\\not")),
-                arguments("\"\\tab\"", $val("\\tab")),
-                arguments("\"\"", $val(""))
+                arguments("'unicode \u1234'", $val("unicode ሴ")),
+                arguments("'escaped ''quote'''", $val("escaped 'quote'")),
+                arguments("'newline\nline'", $val("newline\nline")),
+                arguments("'newline\\not'", $val("newline\\not")),
+                arguments("'\\tab'", $val("\\tab")),
+                arguments("''", $val(""))
         );
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"\"missing \" escape\"", "\"missing quote", "'mismatched quotes\""})
+    @ValueSource(strings = {"'missing ' escape'", "'missing quote", "'mismatched quotes\""})
     void scalar_throws(String text) {
         assertThrows(ExpParserException.class, () -> $(text));
     }

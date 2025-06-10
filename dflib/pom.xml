@@ -71,6 +71,36 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>clean-antlr4-generated-sources</id>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                            <filesets>
+                                <fileset>
+                                    <directory>${project.build.sourceDirectory}</directory>
+                                    <includes>
+                                        <include>*.tokens</include>
+                                    </includes>
+                                </fileset>
+                                <fileset>
+                                    <directory>${project.build.sourceDirectory}/org/dflib/exp/parser/antlr4</directory>
+                                    <includes>
+                                        <include>*.interp</include>
+                                    </includes>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <executions>
                     <execution>

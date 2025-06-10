@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ExpParserUtilsTest {
 
+    @SuppressWarnings("UnnecessaryUnicodeEscape")
     @Test
     public void unescapeIdentifier() {
         assertEquals("abc", ExpParserUtils.unescapeIdentifier("abc"));
@@ -14,6 +15,6 @@ public class ExpParserUtilsTest {
         assertEquals("a'c", ExpParserUtils.unescapeIdentifier("a'c"));
         assertEquals("a\\c", ExpParserUtils.unescapeIdentifier("a\\c"));
         assertEquals("a\"c", ExpParserUtils.unescapeIdentifier("a\"c"));
-        assertEquals("Abc", ExpParserUtils.unescapeIdentifier("\\u0041bc"));
+        assertEquals("Abc", ExpParserUtils.unescapeIdentifier("\u0041bc"));
     }
 }
