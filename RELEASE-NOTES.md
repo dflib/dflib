@@ -30,6 +30,7 @@
 * #496 Force column name deduplication in CsvLoader
 * #498 Exp.toQL() should not quote boolean scalars
 * #500 Use Udf1 for pivot aggregator for consistency
+* #503 Upgrade JJava to 1.0-a5 
 
 ## Release 2.0.0-M2
 
