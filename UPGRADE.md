@@ -38,7 +38,7 @@ other primitive compaction methods became "non-terminal", so they no longer retu
 `ColumnSet`. As a result, you may get a compilation error. You should add a "merge" step to them, like: 
 `ColumnSet.compactInt(..).merge()`
 
-* [dflib #503](https://github.com/dflib/dflib/issues/503): DFLib requires [JJava kernel](https://github.com/dflib/jjava/) version [1.0-a5](https://github.com/dflib/jjava/releases/tag/1.0-a5) or later.
+* [dflib #503](https://github.com/dflib/dflib/issues/503): If you are using DFLib in Jupyter with [JJava kernel](https://github.com/dflib/jjava/), DFLib starting from version 2.0.0-M3 would require JJava kernel version [1.0-a5](https://github.com/dflib/jjava/releases/tag/1.0-a5) or newer.
 
 ## 1.1.0
 
