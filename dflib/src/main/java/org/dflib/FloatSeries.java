@@ -280,7 +280,7 @@ public interface FloatSeries extends Series<Float> {
     }
 
     @Override
-    FloatSeries select(Condition condition);
+    FloatSeries select(Exp<?> condition);
 
     @Override
     FloatSeries select(Predicate<Float> p);

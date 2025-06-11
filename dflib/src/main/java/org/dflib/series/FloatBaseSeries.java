@@ -1,8 +1,8 @@
 package org.dflib.series;
 
 import org.dflib.BooleanSeries;
-import org.dflib.Condition;
 import org.dflib.DataFrame;
+import org.dflib.Exp;
 import org.dflib.FloatSeries;
 import org.dflib.Index;
 import org.dflib.IntSeries;
@@ -60,8 +60,8 @@ public abstract class FloatBaseSeries implements FloatSeries {
     }
 
     @Override
-    public FloatSeries select(Condition condition) {
-        return select(condition.eval(this));
+    public FloatSeries select(Exp<?> condition) {
+        return select(condition.castAsBool().eval(this));
     }
 
     @Override

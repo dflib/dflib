@@ -1,8 +1,8 @@
 package org.dflib.series;
 
 import org.dflib.BooleanSeries;
-import org.dflib.Condition;
 import org.dflib.DataFrame;
+import org.dflib.Exp;
 import org.dflib.Index;
 import org.dflib.IntSeries;
 import org.dflib.LongSeries;
@@ -60,8 +60,8 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public LongSeries select(Condition condition) {
-        return select(condition.eval(this));
+    public LongSeries select(Exp<?> condition) {
+        return select(condition.castAsBool().eval(this));
     }
 
     @Override

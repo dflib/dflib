@@ -288,7 +288,7 @@ public interface BooleanSeries extends Series<Boolean> {
     BooleanSeries select(Predicate<Boolean> p);
 
     @Override
-    BooleanSeries select(Condition condition);
+    BooleanSeries select(Exp<?> condition);
 
     @Override
     default Series<Boolean> select(IntSeries positions) {

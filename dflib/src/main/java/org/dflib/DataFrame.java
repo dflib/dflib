@@ -550,8 +550,8 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     RowSet rows();
 
-    default RowSet rows(Condition rowCondition) {
-        IntSeries index = rowCondition.eval(this).indexTrue();
+    default RowSet rows(Exp<?> rowCondition) {
+        IntSeries index = rowCondition.castAsBool().eval(this).indexTrue();
 
         // there's no reordering or index duplication when applying a Condition,
         // so we can compare the sizes to detect changes
@@ -588,8 +588,8 @@ public interface DataFrame extends Iterable<RowProxy> {
         return rows(condition.negate());
     }
 
-    default RowSet rowsExcept(Condition condition) {
-        return rows(condition.not());
+    default RowSet rowsExcept(Exp<?> condition) {
+        return rows(condition.castAsBool().not());
     }
 
     RowSet rowsRange(int fromInclusive, int toExclusive);

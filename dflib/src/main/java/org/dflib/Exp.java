@@ -2,6 +2,7 @@ package org.dflib;
 
 import org.dflib.exp.AsExp;
 import org.dflib.exp.Column;
+import org.dflib.exp.Exps;
 import org.dflib.exp.RowNumExp;
 import org.dflib.exp.ScalarExp;
 import org.dflib.exp.ShiftExp;
@@ -463,26 +464,27 @@ public interface Exp<T> {
         return new OffsetDateTimeColumn(position);
     }
 
-    static Condition or(Condition... conditions) {
+    static Condition or(Exp<?>... conditions) {
         return conditions.length == 1
-                ? conditions[0] : new OrCondition(conditions);
+                ? conditions[0].castAsBool() : new OrCondition(Exps.asConditions(conditions));
     }
 
-    static Condition and(Condition... conditions) {
+    static Condition and(Exp<?>... conditions) {
         return conditions.length == 1
-                ? conditions[0] : new AndCondition(conditions);
+                ? conditions[0].castAsBool()
+                : new AndCondition(Exps.asConditions(conditions));
     }
 
-    static Condition not(Condition condition) {
-        return condition.not();
+    static Condition not(Exp<?> condition) {
+        return condition.castAsBool().not();
     }
 
     /**
      * A "control flow" function that evaluates condition, and executes either "ifTrue" or "ifFalse", depending
      * on the condition value. Evaluation is done per row.
      */
-    static <T> Exp<T> ifExp(Condition condition, Exp<T> ifTrue, Exp<T> ifFalse) {
-        return new IfExp<>(condition, ifTrue, ifFalse);
+    static <T> Exp<T> ifExp(Exp<?> condition, Exp<T> ifTrue, Exp<T> ifFalse) {
+        return new IfExp<>(condition.castAsBool(), ifTrue, ifFalse);
     }
 
     /**
@@ -756,8 +758,8 @@ public interface Exp<T> {
      * result of this expression. Provided filter is applied to the input before evaluating this expression and
      * passing the result to the aggregator function.
      */
-    default <A> Exp<A> agg(Condition filter, Function<Series<T>, A> aggregator) {
-        return new ReduceExp1<>("_custom", (Class<A>) Object.class, this, aggregator, filter);
+    default <A> Exp<A> agg(Exp<?> filter, Function<Series<T>, A> aggregator) {
+        return new ReduceExp1<>("_custom", (Class<A>) Object.class, this, aggregator, filter.castAsBool());
     }
 
     default Exp<T> first() {
@@ -768,8 +770,8 @@ public interface Exp<T> {
         return new LastExp<>(getType(), this, null);
     }
 
-    default Exp<T> first(Condition filter) {
-        return new FirstExp<>(getType(), this, filter);
+    default Exp<T> first(Exp<?> filter) {
+        return new FirstExp<>(getType(), this, filter.castAsBool());
     }
 
     /**
@@ -781,9 +783,9 @@ public interface Exp<T> {
         return new ReduceExp2<>("vConcat", String.class, this, $val(delimiter), (s, d) -> (String) f.apply(s), null);
     }
 
-    default Exp<String> vConcat(Condition filter, String delimiter) {
+    default Exp<String> vConcat(Exp<?> filter, String delimiter) {
         Function f = StringAggregators.vConcat(delimiter);
-        return new ReduceExp2<>("vConcat", String.class, this, $val(delimiter), (s, d) -> (String) f.apply(s), filter);
+        return new ReduceExp2<>("vConcat", String.class, this, $val(delimiter), (s, d) -> (String) f.apply(s), filter.castAsBool());
     }
 
     /**
@@ -800,14 +802,14 @@ public interface Exp<T> {
                 null);
     }
 
-    default Exp<String> vConcat(Condition filter, String delimiter, String prefix, String suffix) {
+    default Exp<String> vConcat(Exp<?> filter, String delimiter, String prefix, String suffix) {
         Function f = StringAggregators.vConcat(delimiter, prefix, suffix);
         return new ReduceExpN<>(
                 "vConcat",
                 String.class,
                 new Exp[]{this, $val(delimiter), $val(prefix), $val(suffix)},
                 ss -> (String) f.apply(ss[0]),
-                filter);
+                filter.castAsBool());
     }
 
     /**

@@ -531,7 +531,7 @@ public interface Series<T> extends Iterable<T> {
      */
     Series<T> tail(int len);
 
-    Series<T> select(Condition condition);
+    Series<T> select(Exp<?> condition);
 
     default Series<T> select(int... positions) {
         return select(Series.ofInt(positions));

@@ -4,7 +4,6 @@ import org.dflib.BoolValueMapper;
 import org.dflib.BooleanSeries;
 import org.dflib.ColumnDataFrame;
 import org.dflib.ColumnSet;
-import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.DoubleValueMapper;
 import org.dflib.Exp;
@@ -127,7 +126,7 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
-    public RowColumnSet rows(Condition condition) {
+    public RowColumnSet rows(Exp<?> condition) {
         // resolving csIndex here will only work for as long as RowColumnSet does not define operations that expand
         // its columns
         return source.rows(condition).cols(csIndex());

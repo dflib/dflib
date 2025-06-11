@@ -4,7 +4,6 @@ import org.dflib.BoolValueMapper;
 import org.dflib.BooleanSeries;
 import org.dflib.ColumnDataFrame;
 import org.dflib.ColumnSet;
-import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.DoubleValueMapper;
 import org.dflib.Exp;
@@ -87,7 +86,7 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public RowColumnSet rows(Condition condition) {
+    public RowColumnSet rows(Exp<?> condition) {
         return source.rows(condition).cols();
     }
 

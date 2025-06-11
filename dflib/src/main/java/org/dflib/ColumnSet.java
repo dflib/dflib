@@ -38,7 +38,7 @@ public interface ColumnSet {
 
     RowColumnSet rows();
 
-    RowColumnSet rows(Condition condition);
+    RowColumnSet rows(Exp<?> condition);
 
     default RowColumnSet rows(int... positions) {
         return rows(Series.ofInt(positions));
