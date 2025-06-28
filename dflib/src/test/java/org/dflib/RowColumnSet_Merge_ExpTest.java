@@ -249,4 +249,24 @@ public class RowColumnSet_Merge_ExpTest {
                 .expectRow(1, 2, "y", "b")
                 .expectRow(2, -3, "mn", "n");
     }
+
+    @Test
+    public void rowsByCondition_colsByName_StrExp() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .rows(Series.ofBool(true, false, true)).cols("b", "a")
+                .merge(
+                        "concat(str(1), str(2))",
+                        "int(0) * 3"
+                );
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(3)
+                .expectRow(0, 3, "xa", "a")
+                .expectRow(1, 2, "y", "b")
+                .expectRow(2, -3, "mn", "n");
+    }
 }

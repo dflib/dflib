@@ -4,6 +4,7 @@ import org.dflib.BoolValueMapper;
 import org.dflib.BooleanSeries;
 import org.dflib.ColumnDataFrame;
 import org.dflib.ColumnSet;
+import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.DoubleValueMapper;
 import org.dflib.Exp;
@@ -126,7 +127,7 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
-    public RowColumnSet rows(Exp<?> condition) {
+    public RowColumnSet rows(Condition condition) {
         // resolving csIndex here will only work for as long as RowColumnSet does not define operations that expand
         // its columns
         return source.rows(condition).cols(csIndex());
@@ -604,16 +605,16 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame agg(Exp<?>... aggregators) {
+    public DataFrame agg(Exp<?>... aggregatingExps) {
         String[] csIndex = csIndex();
 
-        int w = aggregators.length;
+        int w = aggregatingExps.length;
         if (w != csIndex.length) {
             throw new IllegalArgumentException(
                     "Can't perform 'agg': Exp[] size is different from the ColumnSet size: " + w + " vs. " + csIndex.length);
         }
 
-        Series<?>[] aggregated = DataFrameAggregator.agg(source, aggregators);
+        Series<?>[] aggregated = DataFrameAggregator.agg(source, aggregatingExps);
         return new ColumnDataFrame(
                 null,
                 Index.ofDeduplicated(csIndex),

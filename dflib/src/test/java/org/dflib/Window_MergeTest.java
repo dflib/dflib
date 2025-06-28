@@ -72,6 +72,27 @@ public class Window_MergeTest {
     }
 
     @Test
+    public void byName_MultiExp_StrExp() {
+
+        DataFrame r = TEST_DF.over()
+                .cols("a", "s", "rn", "cs")
+                .merge(
+                        "a",
+                        "sum(int(a))",
+                        "rowNum()",
+                        "cumSum(int(a))"
+                );
+
+        new DataFrameAsserts(r, "a", "b", "s", "rn", "cs")
+                .expectHeight(5)
+                .expectRow(0, 1, "x", 5, 1, 1L)
+                .expectRow(1, 2, "y", 5, 2, 3L)
+                .expectRow(2, 1, "z", 5, 3, 4L)
+                .expectRow(3, 0, "a", 5, 4, 4L)
+                .expectRow(4, 1, "x", 5, 5, 5L);
+    }
+
+    @Test
     public void byPos() {
 
         DataFrame r = TEST_DF.over()

@@ -27,6 +27,13 @@ public class Series_AggTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
+    public void reduce_StrExp(SeriesType type) {
+        String aggregated = type.createSeries("a", "b", "cd", "e", "fg").reduce("max(str(0))");
+        assertEquals("fg", aggregated);
+    }
+
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
     public void aggMultiple(SeriesType type) {
 
         DataFrame aggregated = type.createSeries("a", "b", "cd", "e", "fg")
@@ -38,6 +45,19 @@ public class Series_AggTest {
 
         new DataFrameAsserts(aggregated, "first", "concat", "concat_", "count")
                 .expectRow(0, "a", "a|b|cd|e|fg", "[a_b_cd_e_fg]", 5);
+    }
+
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void aggMultiple_StrExp(SeriesType type) {
+
+        DataFrame aggregated = type.createSeries("a", "b", "cd", "e", "fg")
+                .aggMultiple(
+                        "a",
+                        "count()");
+
+        new DataFrameAsserts(aggregated, "a", "count")
+                .expectRow(0, "a", 5);
     }
 
     @ParameterizedTest

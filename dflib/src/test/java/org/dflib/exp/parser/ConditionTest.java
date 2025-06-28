@@ -18,7 +18,7 @@ public class ConditionTest {
     @ParameterizedTest
     @MethodSource
     void test(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(Condition.class, exp);
         assertEquals(expected, exp);
     }
@@ -53,13 +53,13 @@ public class ConditionTest {
             "int(1) and int(2)",
     })
     void exp_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void precedence(String text, Condition expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(Condition.class, exp);
         assertEquals(expected, exp);
     }
@@ -102,7 +102,7 @@ public class ConditionTest {
     @ParameterizedTest
     @MethodSource
     void scalar(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(Condition.class, exp);
         assertEquals(expected, exp);
     }
@@ -117,13 +117,13 @@ public class ConditionTest {
     @ParameterizedTest
     @ValueSource(strings = {"TRUE", "FALSE", "True", "False"})
     void wrongCapitalizationTreatedAsColName(String text) {
-        assertEquals($(text), $col(text));
+        assertEquals(parseExp(text), $col(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void column(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(Condition.class, exp);
         assertEquals(expected, exp);
     }
@@ -146,13 +146,13 @@ public class ConditionTest {
             "bool(-1)",
     })
     void column_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void cast(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(Condition.class, exp);
         assertEquals(expected, exp);
     }
@@ -171,13 +171,13 @@ public class ConditionTest {
             "CASTASBOOL(1)",
     })
     void cast_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void function(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(Condition.class, exp);
         assertEquals(expected, exp);
     }
@@ -203,6 +203,6 @@ public class ConditionTest {
             "endsWith('hello', null)",
     })
     void function_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 }

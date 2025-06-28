@@ -32,6 +32,7 @@
 * #498 Exp.toQL() should not quote boolean scalars
 * #500 Use Udf1 for pivot aggregator for consistency
 * #503 Upgrade JJava to 1.0-a5 
+* #504 Methods taking Exp<?> argument(s) should have String argument(s) versions
 
 ## Release 2.0.0-M2
 

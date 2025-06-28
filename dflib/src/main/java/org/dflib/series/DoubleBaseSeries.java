@@ -1,9 +1,9 @@
 package org.dflib.series;
 
 import org.dflib.BooleanSeries;
+import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.DoubleSeries;
-import org.dflib.Exp;
 import org.dflib.Index;
 import org.dflib.IntSeries;
 import org.dflib.Series;
@@ -57,8 +57,8 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public DoubleSeries select(Exp<?> condition) {
-        return select(condition.castAsBool().eval(this));
+    public DoubleSeries select(Condition condition) {
+        return select(condition.eval(this));
     }
 
     @Override

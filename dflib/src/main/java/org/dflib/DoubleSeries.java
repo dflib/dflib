@@ -279,7 +279,7 @@ public interface DoubleSeries extends Series<Double> {
     }
 
     @Override
-    DoubleSeries select(Exp<?> condition);
+    DoubleSeries select(Condition condition);
 
     @Override
     DoubleSeries select(Predicate<Double> p);

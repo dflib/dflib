@@ -43,4 +43,11 @@ public class Series_SelectTest {
         Series<Integer> s = type.createSeries(3, 4, 2).select(condition);
         new SeriesAsserts(s).expectData(4, 2);
     }
+
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void expStrCondition(SeriesType type) {
+        Series<Integer> s = type.createSeries(3, 4, 2).select("int(0) % 2 = 0");
+        new SeriesAsserts(s).expectData(4, 2);
+    }
 }

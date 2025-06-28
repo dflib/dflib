@@ -1,8 +1,8 @@
 package org.dflib.series;
 
 import org.dflib.BooleanSeries;
+import org.dflib.Condition;
 import org.dflib.DataFrame;
-import org.dflib.Exp;
 import org.dflib.Index;
 import org.dflib.IntSeries;
 import org.dflib.Series;
@@ -58,8 +58,8 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public BooleanSeries select(Exp<?> condition) {
-        return select(condition.castAsBool().eval(this));
+    public BooleanSeries select(Condition condition) {
+        return select(condition.eval(this));
     }
 
     @Override

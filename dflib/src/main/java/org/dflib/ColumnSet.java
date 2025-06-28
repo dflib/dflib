@@ -1,5 +1,7 @@
 package org.dflib;
 
+import org.dflib.exp.Exps;
+
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
@@ -38,7 +40,16 @@ public interface ColumnSet {
 
     RowColumnSet rows();
 
-    RowColumnSet rows(Exp<?> condition);
+    /**
+     * @param rowCondition a String parsed to an expression that defines which rows should be included in
+     *                     the {@link RowColumnSet}
+     * @since 2.0.0
+     */
+    default RowColumnSet rows(String rowCondition) {
+        return rows(Exp.parseExp(rowCondition).castAsBool());
+    }
+
+    RowColumnSet rows(Condition rowCondition);
 
     default RowColumnSet rows(int... positions) {
         return rows(Series.ofInt(positions));
@@ -70,6 +81,14 @@ public interface ColumnSet {
     DataFrame fillNullsForward();
 
     DataFrame fillNullsFromSeries(Series<?> series);
+
+    /**
+     * @param replacementValuesExp a String parsed to an expression that generates a column with null replacement values
+     * @since 2.0.0
+     */
+    default DataFrame fillNullsWithExp(String replacementValuesExp) {
+        return fillNullsWithExp(Exp.parseExp(replacementValuesExp));
+    }
 
     DataFrame fillNullsWithExp(Exp<?> replacementValuesExp);
 
@@ -175,6 +194,17 @@ public interface ColumnSet {
     DataFrame merge();
 
     /**
+     * Parses String arguments into an array of expressions and returns a transformed DataFrame that contains columns
+     * from this DataFrame and added / replaced columns produced by the expressions. Expressions are matched with the
+     * result columns using the algorithm defined in this specific ColumnSet.
+     *
+     * @since 2.0.0
+     */
+    default DataFrame merge(String... exps) {
+        return merge(Exps.asExps(exps));
+    }
+
+    /**
      * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
      * produced by the specified expressions. Expressions are matched with the result columns using the algorithm
      * defined in this specific ColumnSet.
@@ -235,6 +265,16 @@ public interface ColumnSet {
 
     DataFrame selectAs(Map<String, String> oldToNewNames);
 
+    /**
+     * Parses String arguments into an array of expressions and returns a DataFrame with columns produced by those
+     * expressions. Expressions are matched with the result columns using the algorithm defined in this specific
+     * ColumnSet.
+     *
+     * @since 2.0.0
+     */
+    default DataFrame select(String... exps) {
+        return select(Exps.asExps(exps));
+    }
 
     /**
      * Returns a DataFrame that contains columns produced by the specified expressions. Expressions are matched with
@@ -276,9 +316,22 @@ public interface ColumnSet {
     @Deprecated(since = "2.0.0", forRemoval = true)
     DataFrame selectExpandArray(Exp<? extends Object[]> splitExp);
 
+    // TODO: to avoid ambiguity between "agg(String...)" and "agg(Exp...)", we may need an "agg()", though unlike
+    //  "select()" and "merge()", unclear what should the behavior be
+
     /**
-     * Returns a single-row DataFrame with columns from this ColumnSet that are produced by the specified aggregating
+     * Parses String arguments into expressions and returns a single-row DataFrame with columns from this ColumnSet
+     * "reduced" by those expressions.
+     *
+     * @since 2.0.0
+     */
+    default DataFrame agg(String... aggregatingExps) {
+        return agg(Exps.asExps(aggregatingExps));
+    }
+
+    /**
+     * Returns a single-row DataFrame with columns from this ColumnSet that are "reduced" by the specified aggregating
      * expressions.
      */
-    DataFrame agg(Exp<?>... aggregators);
+    DataFrame agg(Exp<?>... aggregatingExps);
 }

@@ -1,5 +1,7 @@
 package org.dflib;
 
+import org.dflib.exp.Exps;
+
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
@@ -37,6 +39,16 @@ public interface RowColumnSet {
      */
     DataFrame merge();
 
+    /**
+     * Parses String arguments into an array of expressions and then applies row merge operation with those expressions
+     * transforming RowColumnSet column data.
+     *
+     * @since 2.0.0
+     */
+    default DataFrame merge(String... exps) {
+        return merge(Exps.asExps(exps));
+    }
+
     DataFrame merge(Exp<?>... exps);
 
     DataFrame merge(RowMapper mapper);
@@ -49,6 +61,17 @@ public interface RowColumnSet {
     DataFrame drop();
 
     DataFrame select();
+
+
+    /**
+     * Parses String arguments into an array of expressions and then applies select operation with those expressions
+     * transforming RowColumnSet column data.
+     *
+     * @since 2.0.0
+     */
+    default DataFrame select(String... exps) {
+        return select(Exps.asExps(exps));
+    }
 
     DataFrame select(Exp<?>... exps);
 

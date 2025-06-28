@@ -16,7 +16,7 @@ public class ColumnTest {
     @ParameterizedTest
     @MethodSource
     public void named(String exp, Exp<?> result) {
-        assertEquals(result, $(exp));
+        assertEquals(result, parseExp(exp));
     }
 
     static Stream<Arguments> named() {
@@ -55,7 +55,7 @@ public class ColumnTest {
     @ParameterizedTest
     @MethodSource
     public void namedInExp(String exp, Exp<?> expected) {
-        assertEquals(expected, $(exp));
+        assertEquals(expected, parseExp(exp));
     }
 
     static Stream<Arguments> namedInExp() {
@@ -74,7 +74,7 @@ public class ColumnTest {
     @ParameterizedTest
     @MethodSource
     public void posInExp(String exp, Exp<?> expected) {
-        assertEquals(expected, $(exp));
+        assertEquals(expected, parseExp(exp));
     }
 
     static Stream<Arguments> posInExp() {

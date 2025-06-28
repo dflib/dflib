@@ -4,6 +4,7 @@ import org.dflib.BoolValueMapper;
 import org.dflib.BooleanSeries;
 import org.dflib.ColumnDataFrame;
 import org.dflib.ColumnSet;
+import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.DoubleValueMapper;
 import org.dflib.Exp;
@@ -86,7 +87,7 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public RowColumnSet rows(Exp<?> condition) {
+    public RowColumnSet rows(Condition condition) {
         return source.rows(condition).cols();
     }
 
@@ -445,9 +446,9 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame agg(Exp<?>... aggregators) {
-        Series<?>[] aggregated = DataFrameAggregator.agg(source, aggregators);
-        Index index = Exps.index(source, aggregators);
+    public DataFrame agg(Exp<?>... aggregatingExps) {
+        Series<?>[] aggregated = DataFrameAggregator.agg(source, aggregatingExps);
+        Index index = Exps.index(source, aggregatingExps);
         return new ColumnDataFrame(
                 null,
                 index,

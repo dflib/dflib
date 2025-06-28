@@ -282,7 +282,7 @@ public interface IntSeries extends Series<Integer> {
     IntSeries select(Predicate<Integer> p);
 
     @Override
-    IntSeries select(Exp<?> condition);
+    IntSeries select(Condition condition);
 
     @Override
     IntSeries select(BooleanSeries positions);

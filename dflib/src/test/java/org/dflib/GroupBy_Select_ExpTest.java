@@ -70,6 +70,26 @@ public class GroupBy_Select_ExpTest {
     }
 
     @Test
+    public void cols_ByName_StrExp() {
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
+                1, "a",
+                2, "b",
+                1, "c",
+                0, "d",
+                1, "e");
+
+        DataFrame df = df1.group("a").cols("X").select("rowNum()");
+
+        new DataFrameAsserts(df, "X")
+                .expectHeight(5)
+                .expectRow(0, 1)
+                .expectRow(1, 2)
+                .expectRow(2, 3)
+                .expectRow(3, 1)
+                .expectRow(4, 1);
+    }
+
+    @Test
     public void cols_ByPos() {
         DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "a",

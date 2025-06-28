@@ -20,7 +20,7 @@ public class OffsetDateTimeExpTest {
     @ParameterizedTest
     @MethodSource
     void column(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(OffsetDateTimeExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -43,13 +43,13 @@ public class OffsetDateTimeExpTest {
             "offsetDateTime(-1)",
     })
     void column_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void cast(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(OffsetDateTimeExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -69,13 +69,13 @@ public class OffsetDateTimeExpTest {
             "CASTASOFFSETDATETIME(1)",
     })
     void cast_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void relation(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(Condition.class, exp);
         assertEquals(expected, exp);
     }
@@ -105,13 +105,13 @@ public class OffsetDateTimeExpTest {
             "offsetDateTime(1) = null",
     })
     void relation_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void fieldFunction(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(NumExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -134,13 +134,13 @@ public class OffsetDateTimeExpTest {
             "day(castAsOffsetDateTime('1970-01-01T12:00:00Z+01:00'), 2)"
     })
     void fieldFunction_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void function(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(OffsetDateTimeExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -169,6 +169,6 @@ public class OffsetDateTimeExpTest {
             "plusHours(offsetDateTime(1), null)",
     })
     void function_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 }

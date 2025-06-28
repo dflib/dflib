@@ -105,6 +105,26 @@ public class GroupBy_AggTest {
     }
 
     @Test
+    public void cols_ByName_StrExps() {
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
+                1, "x",
+                2, "y",
+                1, "z",
+                0, "a",
+                1, "x");
+
+        DataFrame df = df1.group("a").cols("A", "B").agg(
+                "sum(long(a))",
+                "min(str(1))");
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(3)
+                .expectRow(0, 3L, "x")
+                .expectRow(1, 2L, "y")
+                .expectRow(2, 0L, "a");
+    }
+
+    @Test
     public void cols_ByPos() {
         DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",

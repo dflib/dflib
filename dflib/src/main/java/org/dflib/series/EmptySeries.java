@@ -2,7 +2,7 @@ package org.dflib.series;
 
 
 import org.dflib.BooleanSeries;
-import org.dflib.Exp;
+import org.dflib.Condition;
 import org.dflib.Series;
 import org.dflib.Sorter;
 
@@ -37,7 +37,7 @@ public class EmptySeries<T> extends ObjectSeries<T> {
     }
 
     @Override
-    public Series<T> select(Exp<?> condition) {
+    public Series<T> select(Condition condition) {
         return this;
     }
 

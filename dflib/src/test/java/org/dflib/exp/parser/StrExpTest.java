@@ -21,7 +21,7 @@ public class StrExpTest {
     @ParameterizedTest
     @MethodSource
     void scalar(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(StrExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -43,13 +43,13 @@ public class StrExpTest {
     @ParameterizedTest
     @ValueSource(strings = {"'missing ' escape'", "'missing quote", "'mismatched quotes\""})
     void scalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void column(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(StrExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -72,13 +72,13 @@ public class StrExpTest {
             "str(-1)",
     })
     void column_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void cast(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(StrExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -97,13 +97,13 @@ public class StrExpTest {
             "CASTASSTR(1)",
     })
     void cast_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void relation(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(Condition.class, exp);
         assertEquals(expected, exp);
     }
@@ -127,13 +127,13 @@ public class StrExpTest {
             "len(str(col1)) = '4'",
     })
     void relation_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void function_returnsCondition(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(Condition.class, exp);
         assertEquals(expected, exp);
     }
@@ -159,13 +159,13 @@ public class StrExpTest {
             "endsWith('hello', null)",
     })
     void function_returnsCondition_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void function_returnsStrExp(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(StrExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -196,13 +196,13 @@ public class StrExpTest {
             "substr('example', 2, -1)",
     })
     void function_returnsStrExp_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void split(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertEquals(expected, exp);
     }
 
@@ -224,13 +224,13 @@ public class StrExpTest {
             "split(time(1), ':')",
     })
     void split_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void aggregate(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(StrExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -253,6 +253,6 @@ public class StrExpTest {
             "max(str(1), 0)",
     })
     void aggregate_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 }

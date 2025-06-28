@@ -279,7 +279,7 @@ public interface LongSeries extends Series<Long> {
     LongSeries select(Predicate<Long> p);
 
     @Override
-    LongSeries select(Exp<?> condition);
+    LongSeries select(Condition condition);
 
     @Override
     LongSeries select(BooleanSeries positions);

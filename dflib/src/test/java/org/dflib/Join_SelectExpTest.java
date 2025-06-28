@@ -57,6 +57,32 @@ public class Join_SelectExpTest {
     }
 
     @Test
+    public void cols_ByName_StrExp() {
+
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
+                1, "x", "X",
+                2, "y", "Y",
+                4, "z", "Z");
+
+        DataFrame df2 = DataFrame.foldByRow("a", "b", "d").of(
+                "a", 2, 20,
+                "x", 4, 40,
+                "c", 3, 30);
+
+        DataFrame df = df1.join(df2).on(0, 1)
+                .cols("X", "Y")
+                .select(
+                        "concat(str(a_), str(b))",
+                        "int(a) + int(d)"
+                );
+
+        new DataFrameAsserts(df, "X", "Y")
+                .expectHeight(2)
+                .expectRow(0, "ay", 22)
+                .expectRow(1, "xz", 44);
+    }
+
+    @Test
     public void cols_ByName_ExpDifferentLength() {
 
         DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(

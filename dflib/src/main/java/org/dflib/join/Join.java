@@ -9,6 +9,7 @@ import org.dflib.IntSeries;
 import org.dflib.JoinType;
 import org.dflib.Series;
 import org.dflib.builder.ObjectAccum;
+import org.dflib.exp.Exps;
 import org.dflib.series.IndexedSeries;
 import org.dflib.series.SingleValueSeries;
 
@@ -160,6 +161,16 @@ public class Join {
         return new ColumnDataFrame(null,
                 index.getIndex().replace(oldToNewNames),
                 merge(selectors[0], selectors[1], index.getPositions()));
+    }
+
+    /**
+     * Parses String arguments into an array of expressions and returns a DataFrame with columns produced by those
+     * expressions from the join.
+     *
+     * @since 2.0.0
+     */
+    public DataFrame select(String... exps) {
+        return select(Exps.asExps(exps));
     }
 
     public DataFrame select(Exp<?>... exps) {

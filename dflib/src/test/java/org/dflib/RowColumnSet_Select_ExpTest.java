@@ -89,4 +89,24 @@ public class RowColumnSet_Select_ExpTest {
                 .expectRow(0, "xa", 3)
                 .expectRow(1, "mn", -3);
     }
+
+    @Test
+    public void byCondition_StrExp() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .rows(Series.ofBool(true, false, true))
+                .cols("b", "a")
+                .select(
+                        "concat(str(1), str(2))",
+                        "int(0) * 3"
+                );
+
+        new DataFrameAsserts(df, "b", "a")
+                .expectHeight(2)
+                .expectRow(0, "xa", 3)
+                .expectRow(1, "mn", -3);
+    }
 }

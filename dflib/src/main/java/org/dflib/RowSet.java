@@ -1,5 +1,7 @@
 package org.dflib;
 
+import org.dflib.exp.Exps;
+
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -83,6 +85,16 @@ public interface RowSet {
      */
     DataFrame merge();
 
+    /**
+     * Parses String arguments into an array of expressions and then applies row merge operation with those expressions
+     * used to transform rowset column data.
+     *
+     * @since 2.0.0
+     */
+    default DataFrame merge(String... exps) {
+        return merge(Exps.asExps(exps));
+    }
+
     DataFrame merge(Exp<?>... exps);
 
     DataFrame merge(RowMapper mapper);
@@ -149,6 +161,16 @@ public interface RowSet {
      * contains rows not present in the source, they are appended in the bottom the result DataFrame.
      */
     DataFrame select();
+
+    /**
+     * Parses String arguments into an array of expressions and then applies row select operation with those expressions
+     * used to transform rowset column data.
+     *
+     * @since 2.0.0
+     */
+    default DataFrame select(String... exps) {
+        return select(Exps.asExps(exps));
+    }
 
     DataFrame select(Exp<?>... exps);
 

@@ -44,6 +44,18 @@ public class ColumnSet_Select_ExpTest {
     }
 
     @Test
+    public void byName_StrExp() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(1, "x", 2, "y")
+                .cols("b", "c").select("int(0) * 100", "int(a) * 10");
+
+        new DataFrameAsserts(df, "b", "c")
+                .expectHeight(2)
+                .expectRow(0, 100, 10)
+                .expectRow(1, 200, 20);
+    }
+
+    @Test
     public void byName_Duplicate() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")

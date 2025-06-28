@@ -132,4 +132,25 @@ public class RowSet_Merge_ExpTest {
                 .expectRow(1, 2, "y", "b")
                 .expectRow(2, -3, "mn", "n");
     }
+
+    @Test
+    public void byCondition_StrExp() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .rows(Series.ofBool(true, false, true))
+                .merge(
+                        "int(0) * 3",
+                        "concat(str(1), str(2))",
+                        "col(2)"
+                );
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(3)
+                .expectRow(0, 3, "xa", "a")
+                .expectRow(1, 2, "y", "b")
+                .expectRow(2, -3, "mn", "n");
+    }
 }

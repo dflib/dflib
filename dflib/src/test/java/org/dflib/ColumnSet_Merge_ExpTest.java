@@ -34,6 +34,20 @@ public class ColumnSet_Merge_ExpTest {
     }
 
     @Test
+    public void byName_StrExp() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(1, "x", 2, "y")
+                .cols("b", "c").merge(
+                        "int(0) * 100",
+                        "int(0) * 10");
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(2)
+                .expectRow(0, 1, 100, 10)
+                .expectRow(1, 2, 200, 20);
+    }
+
+    @Test
     public void byName_Duplicate() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")

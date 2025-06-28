@@ -186,6 +186,46 @@ public class RowSet_Select_ExpTest {
     }
 
     @Test
+    public void byConditionExpString() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .rows("int(a) % 2 != 0")
+                .select(
+                        $int(0).mul(3),
+                        concat($str(1), $str(2)),
+                        $str(2)
+                );
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(2)
+                .expectRow(0, 3, "xa", "a")
+                .expectRow(1, -3, "mn", "n");
+    }
+
+    @Test
+    public void byConditionExpString_SelectExpString() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .rows("int(a) % 2 != 0")
+                .select(
+                        "int(0) * 3",
+                        "concat(str(1), str(2))",
+                        "c"
+                );
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(2)
+                .expectRow(0, 3, "xa", "a")
+                .expectRow(1, -3, "mn", "n");
+    }
+
+    @Test
     public void byRowPredicate() {
         DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
@@ -213,6 +253,44 @@ public class RowSet_Select_ExpTest {
                         Series.of("x", "y", "m"),
                         Series.of("a", "b", "n"))
                 .rowsExcept(r -> r.getInt(0) % 2 != 0)
+                .select(
+                        $int(0).mul(3),
+                        concat($str(1), $str(2)),
+                        $str(2)
+                );
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(1)
+                .expectRow(0, 6, "yb", "b");
+    }
+
+    @Test
+    public void rowsExcept_byExp() {
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
+                .of(
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
+                .rowsExcept($int(0).mod(2).ne(0))
+                .select(
+                        $int(0).mul(3),
+                        concat($str(1), $str(2)),
+                        $str(2)
+                );
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(1)
+                .expectRow(0, 6, "yb", "b");
+    }
+
+    @Test
+    public void rowsExcept_byExpString() {
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
+                .of(
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
+                .rowsExcept("int(0) % 2 != 0")
                 .select(
                         $int(0).mul(3),
                         concat($str(1), $str(2)),

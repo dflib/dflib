@@ -72,6 +72,28 @@ public class Window_SelectTest {
     }
 
     @Test
+    public void byName_MultiExp_StrExp() {
+
+        DataFrame r = TEST_DF.over()
+                .cols("a", "la", "s", "rn", "cs")
+                .select(
+                        "a",
+                        "first(a)",
+                        "sum(int(a))",
+                        "rowNum()",
+                        "cumSum(int(a))"
+                );
+
+        new DataFrameAsserts(r, "a", "la", "s", "rn", "cs")
+                .expectHeight(5)
+                .expectRow(0, 1, 1, 5, 1, 1L)
+                .expectRow(1, 2, 1, 5, 2, 3L)
+                .expectRow(2, 1, 1, 5, 3, 4L)
+                .expectRow(3, 0, 1, 5, 4, 4L)
+                .expectRow(4, 1, 1, 5, 5, 5L);
+    }
+
+    @Test
     public void byPos() {
         DataFrame r = TEST_DF.over()
                 .cols(0, 1)

@@ -69,6 +69,26 @@ public class GroupBy_Merge_ExpTest {
     }
 
     @Test
+    public void cols_ByName_StrExp() {
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
+                1, "a",
+                2, "b",
+                1, "c",
+                0, "d",
+                1, "e");
+
+        DataFrame df = df1.group("a").cols("X").merge("rowNum()");
+
+        new DataFrameAsserts(df, "a", "b", "X")
+                .expectHeight(5)
+                .expectRow(0, 1, "a", 1)
+                .expectRow(1, 1, "c", 2)
+                .expectRow(2, 1, "e", 3)
+                .expectRow(3, 2, "b", 1)
+                .expectRow(4, 0, "d", 1);
+    }
+
+    @Test
     public void cols_ByPos() {
         DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "a",

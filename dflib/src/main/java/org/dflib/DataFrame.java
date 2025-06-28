@@ -550,8 +550,20 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     RowSet rows();
 
-    default RowSet rows(Exp<?> rowCondition) {
-        IntSeries index = rowCondition.castAsBool().eval(this).indexTrue();
+    /**
+     * @param rowCondition a String parsed to a conditional expression that defines which rows should be included in
+     *                     the {@link RowSet}
+     * @since 2.0.0
+     */
+    default RowSet rows(String rowCondition) {
+        return rows(Exp.parseExp(rowCondition).castAsBool());
+    }
+
+    /**
+     * @param rowCondition an expression that defines which rows should be included in the {@link RowSet}
+     */
+    default RowSet rows(Condition rowCondition) {
+        IntSeries index = rowCondition.eval(this).indexTrue();
 
         // there's no reordering or index duplication when applying a Condition,
         // so we can compare the sizes to detect changes
@@ -588,8 +600,17 @@ public interface DataFrame extends Iterable<RowProxy> {
         return rows(condition.negate());
     }
 
-    default RowSet rowsExcept(Exp<?> condition) {
-        return rows(condition.castAsBool().not());
+    /**
+     * @param rowExcludeCondition a String parsed to an expression that defines which rows should be excluded from
+     *                            the {@link RowSet}
+     * @since 2.0.0
+     */
+    default RowSet rowsExcept(String rowExcludeCondition) {
+        return rowsExcept(Exp.parseExp(rowExcludeCondition).castAsBool());
+    }
+
+    default RowSet rowsExcept(Condition rowExcludeCondition) {
+        return rows(rowExcludeCondition.not());
     }
 
     RowSet rowsRange(int fromInclusive, int toExclusive);

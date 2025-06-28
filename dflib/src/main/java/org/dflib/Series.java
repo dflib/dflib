@@ -4,6 +4,7 @@ import org.dflib.agg.SeriesAggregator;
 import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.SeriesByElementBuilder;
 import org.dflib.builder.ValueCompactor;
+import org.dflib.exp.Exps;
 import org.dflib.op.ReplaceOp;
 import org.dflib.series.ArraySeries;
 import org.dflib.series.ColumnMappedSeries;
@@ -145,6 +146,16 @@ public interface Series<T> extends Iterable<T> {
         return position(value) >= 0;
     }
 
+
+    /**
+     * Parses the provided String argument into an expression and evalutes it with Series, producing a Series of the
+     * same size.
+     *
+     * @since 2.0.0
+     */
+    default <V> Series<V> map(String mapperExp) {
+        return (Series<V>) map(Exp.parseExp(mapperExp));
+    }
 
     default <V> Series<V> map(Exp<V> mapper) {
         return mapper.eval(this);
@@ -531,7 +542,14 @@ public interface Series<T> extends Iterable<T> {
      */
     Series<T> tail(int len);
 
-    Series<T> select(Exp<?> condition);
+    /**
+     * @since 2.0.0
+     */
+    default Series<T> select(String conditionalExp) {
+        return select(Exp.parseExp(conditionalExp).castAsBool());
+    }
+
+    Series<T> select(Condition condition);
 
     default Series<T> select(int... positions) {
         return select(Series.ofInt(positions));
@@ -696,22 +714,39 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
+     * Parses the provided String into an expression and returns a scalar value that is a result of applying
+     * {@link Exp#reduce(Series)} to the Series.
+     *
+     * @since 2.0.0
+     */
+    default <R> R reduce(String aggregatingExps) {
+        return (R) reduce(Exp.parseExp(aggregatingExps));
+    }
+
+    /**
      * Returns a scalar value that is a result of applying provided aggregator to Series.
      *
      * @since 2.0.0
      */
-    default <R> R reduce(Exp<R> reducer) {
-        return reducer.reduce(this);
+    default <R> R reduce(Exp<R> aggregatingExps) {
+        return aggregatingExps.reduce(this);
     }
 
     /**
-     * Returns a Series, with each value corresponding to the result of aggregation with each aggregator out of the
-     * provided array of aggregators.
+     * Returns a DataFrame, with each column corresponding to the result of aggregation with each aggregator. The number
+     * of columns will be equal to the number of passed aggregators.
      */
-    default DataFrame aggMultiple(Exp<?>... aggregators) {
-        return SeriesAggregator.aggAsDataFrame(this, aggregators);
+    default DataFrame aggMultiple(String... aggregatingExps) {
+        return aggMultiple(Exps.asExps(aggregatingExps));
     }
 
+    /**
+     * Returns a DataFrame, with each column corresponding to the result of aggregation with each aggregator. The number
+     * of columns will be equal to the number of passed aggregators.
+     */
+    default DataFrame aggMultiple(Exp<?>... aggregatingExps) {
+        return SeriesAggregator.aggAsDataFrame(this, aggregatingExps);
+    }
 
     default T first() {
         return size() > 0 ? get(0) : null;

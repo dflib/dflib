@@ -15,6 +15,12 @@ public class IntSeries_MapTest {
     }
 
     @Test
+    public void map_StrExp() {
+        Series<? extends Number> s = Series.ofInt(3, 28).map("int(0) + 10");
+        new SeriesAsserts(s).expectData(13, 38);
+    }
+
+    @Test
     public void compactInt() {
         Series<Integer> s = Series.ofInt(3, 28).compactInt(i -> i + 10);
         assertTrue(s instanceof IntSeries);

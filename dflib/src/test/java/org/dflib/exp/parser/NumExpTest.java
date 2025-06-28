@@ -29,7 +29,7 @@ public class NumExpTest {
     @ParameterizedTest
     @MethodSource
     void test(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(NumExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -50,7 +50,7 @@ public class NumExpTest {
     @ParameterizedTest
     @MethodSource
     void precedence(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(NumExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -87,13 +87,13 @@ public class NumExpTest {
             "1 ** 2",
     })
     void test_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void integerScalar(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(IntScalarExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -130,13 +130,13 @@ public class NumExpTest {
             "0b",
     })
     void integerScalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void longScalar(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(LongScalarExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -166,13 +166,13 @@ public class NumExpTest {
             "0xFFFFFFFFFFFF1A3.5",
     })
     void longScalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void bigintScalar(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(NumExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -199,13 +199,13 @@ public class NumExpTest {
             "0xFFFFFFFFFFFFFFFFFF1A3.5",
     })
     void bigintScalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void floatScalar(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(FloatScalarExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -247,13 +247,13 @@ public class NumExpTest {
             ".e10",
     })
     void floatScalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void doubleScalar(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(DoubleScalarExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -290,13 +290,13 @@ public class NumExpTest {
             ".e10d",
     })
     void doubleScalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void decimalScalar(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(DecimalScalarExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -326,13 +326,13 @@ public class NumExpTest {
             ".e10m",
     })
     void decimalScalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void column(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(NumExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -352,7 +352,7 @@ public class NumExpTest {
     @ParameterizedTest
     @MethodSource
     void cast(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(NumExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -375,7 +375,7 @@ public class NumExpTest {
     @ParameterizedTest
     @MethodSource
     void relation(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(Condition.class, exp);
         assertEquals(expected, exp);
     }
@@ -400,13 +400,13 @@ public class NumExpTest {
     @ParameterizedTest
     @ValueSource(strings = {"5 > '3'", "int(col1) = null", "int(col1) != false"})
     void relation_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void function(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(NumExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -427,7 +427,7 @@ public class NumExpTest {
     @ParameterizedTest
     @MethodSource
     void aggregate(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(NumExp.class, exp);
         assertEquals(expected, exp);
     }

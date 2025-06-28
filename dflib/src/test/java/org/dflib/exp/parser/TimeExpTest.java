@@ -20,7 +20,7 @@ public class TimeExpTest {
     @ParameterizedTest
     @MethodSource
     void column(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(TimeExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -43,13 +43,13 @@ public class TimeExpTest {
             "time(-1)",
     })
     void column_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void cast(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(TimeExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -68,13 +68,13 @@ public class TimeExpTest {
             "CASTASTIME(1)",
     })
     void cast_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void timeRelation(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(Condition.class, exp);
         assertEquals(expected, exp);
     }
@@ -100,13 +100,13 @@ public class TimeExpTest {
             "time(1) = null",
     })
     void timeRelation_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void timeFieldFn(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(NumExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -129,13 +129,13 @@ public class TimeExpTest {
             "hour(castAsTime('12:34:56'), 2)",
     })
     void timeFieldFn_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void timeFn(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(TimeExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -162,13 +162,13 @@ public class TimeExpTest {
             "plusNanos(time(1), null)",
     })
     void timeFn_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
     void timeAgg(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertInstanceOf(TimeExp.class, exp);
         assertEquals(expected, exp);
     }
@@ -199,6 +199,6 @@ public class TimeExpTest {
             "quantile(time(1), time(1) > 0)",
     })
     void timeAgg_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 }

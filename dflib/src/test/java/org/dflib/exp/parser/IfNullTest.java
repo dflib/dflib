@@ -21,7 +21,7 @@ public class IfNullTest {
     @ParameterizedTest
     @MethodSource
     public void test(String text, Exp<?> expected) {
-        Exp<?> exp = $(text);
+        Exp<?> exp = parseExp(text);
         assertEquals(expected, exp);
     }
 
@@ -40,7 +40,7 @@ public class IfNullTest {
             "ifNull(, $int(1))"
     })
     public void ifNull_throws(String text) {
-        assertThrows(ExpParserException.class, () -> $(text));
+        assertThrows(ExpParserException.class, () -> parseExp(text));
     }
 
 }

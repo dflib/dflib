@@ -1,6 +1,5 @@
 package org.dflib.exp;
 
-import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Index;
@@ -51,15 +50,16 @@ public class Exps {
         }
     }
 
+
     /**
      * @since 2.0.0
      */
-    public static Condition[] asConditions(Exp<?>[] exps) {
+    public static Exp<?>[] asExps(String[] exps) {
         int len = exps.length;
-        Condition[] cs = new Condition[len];
+        Exp[] cs = new Exp[len];
 
         for (int i = 0; i < len; i++) {
-            cs[i] = exps[i].castAsBool();
+            cs[i] = Exp.parseExp(exps[i]);
         }
 
         return cs;

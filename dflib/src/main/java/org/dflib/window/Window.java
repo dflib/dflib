@@ -95,7 +95,7 @@ public class Window {
     }
 
     /**
-     * @deprecated in favor of {@link #partition(int...)} 
+     * @deprecated in favor of {@link #partition(int...)}
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public Window partitioned(int... columns) {
@@ -236,9 +236,20 @@ public class Window {
     }
 
     /**
-     * Generates a DataFrame of the same height as the source DataFrame, with columns generated from the provided
+     * Generates a DataFrame of the same height as the source DataFrame, with columns generated with the provided
      * expressions. Expressions can be a mix of per-row and aggregating. They are invoked per each row, and are passed
-     * the range of rows corresponding to the partitioning, sorting and range settings.
+     * the range of rows corresponding to the partitioning, sorting, and range settings.
+     *
+     * @since 2.0.0
+     */
+    public DataFrame select(String... exps) {
+        return select(Exps.asExps(exps));
+    }
+
+    /**
+     * Generates a DataFrame of the same height as the source DataFrame, with columns generated with the provided
+     * expressions. Expressions can be a mix of per-row and aggregating. They are invoked per each row, and are passed
+     * the range of rows corresponding to the partitioning, sorting, and range settings.
      */
     public DataFrame select(Exp<?>... exps) {
         return new ColumnDataFrame(null,
@@ -247,9 +258,21 @@ public class Window {
     }
 
     /**
-     * Generates a DataFrame of the same height as the source DataFrame, combining columns generated from the provided
-     * expressions with the original DataFrame columns. Expressions can be a mix of per-row and aggregating. They are
-     * invoked per each row, and are passed the range of rows corresponding to the partitioning, sorting and range
+     * Parses String arguments into expressions and generates a DataFrame of the same height as the source DataFrame,
+     * combining columns generated with those expressions from the original DataFrame columns. Expressions can be a mix
+     * of per-row and aggregating. They are invoked per each row, and are passed the range of rows corresponding to the
+     * partitioning, sorting, and range settings.
+     *
+     * @since 2.0.0
+     */
+    public DataFrame merge(String... exps) {
+        return merge(Exps.asExps(exps));
+    }
+
+    /**
+     * Generates a DataFrame of the same height as the source DataFrame, combining columns generated with the provided
+     * expressions from the original DataFrame columns. Expressions can be a mix of per-row and aggregating. They are
+     * invoked per each row, and are passed the range of rows corresponding to the partitioning, sorting, and range
      * settings.
      */
     public DataFrame merge(Exp<?>... exps) {
