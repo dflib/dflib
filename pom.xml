@@ -65,6 +65,8 @@
         <jjava.version>1.0-a5</jjava.version>
         <mysql.version>9.1.0</mysql.version>
         <antlr4.version>4.13.2</antlr4.version>
+
+        <central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
     </properties>
 
     <url>https://github.com/dflib/dflib</url>
@@ -332,7 +334,7 @@
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
-                    <version>0.7.0</version>
+                    <version>${central.publishing.maven.plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -356,6 +358,9 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>sonatype-central</publishingServerId>
+                    <excludeArtifacts>
+                        <excludeArtifact>dflib-benchmark</excludeArtifact>
+                    </excludeArtifacts>
                 </configuration>
             </plugin>
             <plugin>

@@ -14,6 +14,10 @@
         at once.
     </description>
 
+    <properties>
+        <central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
+    </properties>
+
     <!-- Copy of parent-->
     <licenses>
         <license>
@@ -111,7 +115,7 @@
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
-                    <version>0.7.0</version>
+                    <version>${central.publishing.maven.plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
