@@ -7,6 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <name>dflib-benchmark: internal benchmarks</name>
     <artifactId>dflib-benchmark</artifactId>
 
     <properties>
