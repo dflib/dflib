@@ -177,7 +177,7 @@ public class AvroSchemaCompiler {
     }
 
     // Making sure the name corresponds to the Avro spec restrictions. Doing it here (instead of deferring to Avro)
-    // to provide a user-friendly message. See https://avro.apache.org/docs/current/spec.html#names
+    // to provide a user-friendly message. See https://avro.apache.org/docs/++version++/specification/#names
     protected void validateColumnName(String name) {
 
         int length = name.length();
