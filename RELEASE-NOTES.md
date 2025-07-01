@@ -1,3 +1,8 @@
+## Release 2.0.0-M4
+
+* #506 Exp parser: support for the scale() function 
+
+
 ## Release 2.0.0-M3
 
 * #422 "ColumnSet.expand()" as a non-terminal operation

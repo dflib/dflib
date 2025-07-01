@@ -24,6 +24,10 @@ root returns [Exp<?> exp]
     : expression EOF { $exp = $expression.exp; }
     ;
 
+//sortRoot returns [Exp<?> exp]
+//    : expression ( 'ASC' | 'DESC' )? EOF { $exp = $expression.exp; }
+//    ;
+
 /**
  * An expression, which can be of various types including null, aggregate, boolean, numeric, string, temporal, or type-agnostic functions.
  * An expression represents a single value or a combination of values, operators, and functions.
@@ -591,6 +595,7 @@ numFn returns [NumExp<?> exp] locals [Function<NumExp<?>, NumExp<?>> fn]
         : ABS { $fn = e -> e.abs(); }
         | ROUND { $fn = e -> e.round(); }
     ) '(' e=numExp ')' { $exp = $fn.apply($e.exp); }
+    | SCALE '(' e=numExp ',' s=integerScalar ')' { $exp = $e.exp.castAsDecimal().scale( $s.value.intValue() ); }
     ;
 
 /**
@@ -1378,6 +1383,9 @@ ROUND: 'round';
 
 //@ doc:inline
 ROW_NUM: 'rowNum';
+
+//@ doc:inline
+SCALE: 'scale';
 
 // *Aggregates*
 
