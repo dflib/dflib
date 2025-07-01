@@ -2,7 +2,7 @@
 
 * #506 Exp parser: support for the scale() function 
 * #507 Exp parser: concat() function should allow any argument type 
-
+* #510 String split expression for "ColumnSet.expand(..)"
 
 ## Release 2.0.0-M3
 

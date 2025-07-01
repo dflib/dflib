@@ -11,6 +11,38 @@ import static org.dflib.Exp.$val;
 public class ColumnSet_Select_ExpandTest {
 
     @Test
+    public void cols_StrSplitExp_Array() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(
+                        1, "x/y",
+                        2, "a/b")
+                .cols("a", "3", "2")
+                .expand("split(str(b), '/')")
+                .select();
+
+        new DataFrameAsserts(df, "a", "3", "2")
+                .expectHeight(2)
+                .expectRow(0, 1, "y", "x")
+                .expectRow(1, 2, "b", "a");
+    }
+
+    @Test
+    public void cols_StrSplitExp_Val() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(
+                        1, "x/y",
+                        2, "a/b")
+                .cols("a", "2")
+                .expand("'A'")
+                .select();
+
+        new DataFrameAsserts(df, "a", "2")
+                .expectHeight(2)
+                .expectRow(0, 1, "A")
+                .expectRow(1, 2, "A");
+    }
+
+    @Test
     public void fixedSize() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")

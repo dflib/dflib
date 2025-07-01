@@ -14,6 +14,20 @@ import java.util.function.UnaryOperator;
  */
 public interface ColumnSet {
 
+    default ColumnSet expand(String splitExp) {
+        Exp<?> parsed = Exp.parseExp(splitExp);
+        Class<?> type = parsed.getType();
+
+        if (Iterable.class.isAssignableFrom(type)) {
+            return expand((Exp<? extends Iterable<?>>) parsed);
+        } else if (type.isArray()) {
+            return expandArray((Exp<? extends Object[]>) parsed);
+        } else {
+            return expandArray(parsed.mapVal(v -> new Object[]{v}));
+        }
+    }
+
+
     /**
      * Generates new columns in the column set by applying the provided split expression. The expression would map each
      * row to an Iterable (e.g. a List or a Set). Each element in each Iterable goes in its own column. The total number
