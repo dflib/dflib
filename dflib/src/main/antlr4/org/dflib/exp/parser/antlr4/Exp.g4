@@ -788,7 +788,7 @@ strFn returns [StrExp exp]
     | SUBSTR '(' s=strExp ',' a=integerScalar (',' b=integerScalar)? ')' {
         $exp = $ctx.b != null ? $s.exp.substr($a.value.intValue(), $b.value.intValue()) : $s.exp.substr($a.value.intValue());
     }
-    | CONCAT ('(' (args+=strExp (',' args+=strExp)*)? ')') {
+    | CONCAT ('(' (args+=expression (',' args+=expression)*)? ')') {
         $exp = !$args.isEmpty() ? Exp.concat($args.stream().map(a -> a.exp).toArray()) : Exp.concat();
     }
     ;

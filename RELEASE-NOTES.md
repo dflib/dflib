@@ -1,6 +1,7 @@
 ## Release 2.0.0-M4
 
 * #506 Exp parser: support for the scale() function 
+* #507 Exp parser: concat() function should allow any argument type 
 
 
 ## Release 2.0.0-M3

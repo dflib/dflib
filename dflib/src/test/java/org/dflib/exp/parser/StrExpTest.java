@@ -176,6 +176,12 @@ public class StrExpTest {
                 arguments("concat(str(1))", concat($str(1))),
                 arguments("concat( )", concat()),
                 arguments("concat()", concat()),
+                arguments("concat('abc', 123, double(1), abc = 32.0)", concat(
+                        $strVal("abc"),
+                        $intVal(123),
+                        $double(1),
+                        $col("abc").eq($floatVal(32.0f))
+                )),
                 arguments("trim('  example  ')", $strVal("  example  ").trim()),
                 arguments("substr('example', 2)", $strVal("example").substr(2)),
                 arguments("substr('example', 2, 3)", $strVal("example").substr(2, 3)),
