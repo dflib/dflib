@@ -812,6 +812,36 @@ public interface ExpListener extends ParseTreeListener {
 	 */
 	void exitVConcat(ExpParser.VConcatContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ExpParser#list}.
+	 * @param ctx the parse tree
+	 */
+	void enterList(ExpParser.ListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#list}.
+	 * @param ctx the parse tree
+	 */
+	void exitList(ExpParser.ListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ExpParser#set}.
+	 * @param ctx the parse tree
+	 */
+	void enterSet(ExpParser.SetContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#set}.
+	 * @param ctx the parse tree
+	 */
+	void exitSet(ExpParser.SetContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ExpParser#array}.
+	 * @param ctx the parse tree
+	 */
+	void enterArray(ExpParser.ArrayContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#array}.
+	 * @param ctx the parse tree
+	 */
+	void exitArray(ExpParser.ArrayContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ExpParser#numAgg}.
 	 * @param ctx the parse tree
 	 */

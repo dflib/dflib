@@ -12,6 +12,7 @@ import org.dflib.StrExp;
 import org.dflib.TimeExp;
 import org.dflib.exp.flow.IfNullExp;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
@@ -372,5 +373,16 @@ class ExpParserUtils {
         }
 
         return raw.replaceAll("''", "'");
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static Exp<?> array(Exp exp, String type) {
+        Object[] array;
+        try {
+            array = (Object[]) Array.newInstance(Class.forName(type), 0);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return exp.array(array);
     }
 }

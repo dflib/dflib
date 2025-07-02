@@ -499,6 +499,24 @@ public interface ExpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVConcat(ExpParser.VConcatContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ExpParser#list}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitList(ExpParser.ListContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ExpParser#set}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSet(ExpParser.SetContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ExpParser#array}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArray(ExpParser.ArrayContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ExpParser#numAgg}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

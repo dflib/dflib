@@ -1041,6 +1041,9 @@ aggregateFn returns [Exp<?> exp]
 genericAgg returns [Exp<?> exp]
     : positionalAgg { $exp = $positionalAgg.exp; }
     | vConcat { $exp = $vConcat.exp; }
+    | list { $exp = $list.exp; }
+    | set { $exp = $set.exp; }
+    | array { $exp = $array.exp; }
     ;
 
 /**
@@ -1076,6 +1079,28 @@ vConcat returns [Exp<?> exp]
             $ctx.s == null ? "" : $ctx.s.value
         );
     }
+    ;
+
+/**
+ * Creates an aggregating expression whose "reduce" operation returns a List containing all Series values.
+ */
+list returns [Exp<?> exp]
+    : LIST '(' e=expression ')' { $exp = $e.exp.list(); }
+    ;
+
+/**
+ * Creates an aggregating expression whose "reduce" operation returns a Set containing all Series values.
+ */
+set returns [Exp<?> exp]
+    : SET '(' e=expression ')' { $exp = $e.exp.set(); }
+    ;
+
+/**
+ * Creates an aggregating expression whose "reduce" operation returns an array containing all Series values.
+ * Array component type should be provided as a fully quolified class name (e.g. 'java.lang.String').
+ */
+array returns [Exp<?> exp]
+    : ARRAY '(' e=expression ',' t=strScalar ')' { $exp = ExpParserUtils.array($e.exp, $t.value); }
     ;
 
 /**
@@ -1451,6 +1476,15 @@ LAST: 'last';
 
 //@ doc:inline
 VCONCAT: 'vConcat';
+
+//@ doc:inline
+LIST: 'list';
+
+//@ doc:inline
+SET: 'set';
+
+//@ doc:inline
+ARRAY: 'array';
 
 /// *Literals*
 

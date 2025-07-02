@@ -77,7 +77,12 @@ public class ExpTest {
                 arguments("vConcat(a, ',')", $col("a").vConcat(",", "", "")),
                 arguments("vConcat(a, int(1) > 0, ',')", $col("a").vConcat($int(1).gt(0), ",", "", "")),
                 arguments("vConcat(a, ',', 'p: ', 's: ')", $col("a").vConcat(",", "p: ", "s: ")),
-                arguments("vConcat(a, int(1) > 0, ',', 'p: ', 's: ')", $col("a").vConcat($int(1).gt(0), ",", "p: ", "s: "))
+                arguments("vConcat(a, int(1) > 0, ',', 'p: ', 's: ')", $col("a").vConcat($int(1).gt(0), ",", "p: ", "s: ")),
+
+                arguments("list(a)", $col("a").list()),
+                arguments("set(a)", $col("a").set()),
+                arguments("array(a, 'java.lang.String')", $col("a").array(new String[0])),
+                arguments("array(a, 'java.lang.Integer')", $col("a").array(new Integer[0]))
         );
     }
 }
