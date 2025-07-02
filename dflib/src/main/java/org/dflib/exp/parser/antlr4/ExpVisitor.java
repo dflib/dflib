@@ -546,4 +546,10 @@ public interface ExpVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStrAgg(ExpParser.StrAggContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ExpParser#fnName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFnName(ExpParser.FnNameContext ctx);
 }

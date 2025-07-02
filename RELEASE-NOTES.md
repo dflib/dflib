@@ -5,6 +5,7 @@
 * #508 Exp parser: support vConcat() aggregation function 
 * #510 String split expression for "ColumnSet.expand(..)"
 * #512 Exp parser: support set(), list() and array() aggregation functions 
+* #513 Exp parser: allow using function names as a column in the corresponding context 
 
 ## Release 2.0.0-M3
 

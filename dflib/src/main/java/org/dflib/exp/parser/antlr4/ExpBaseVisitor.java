@@ -635,4 +635,11 @@ public class ExpBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Ex
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitStrAgg(ExpParser.StrAggContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitFnName(ExpParser.FnNameContext ctx) { return visitChildren(ctx); }
 }

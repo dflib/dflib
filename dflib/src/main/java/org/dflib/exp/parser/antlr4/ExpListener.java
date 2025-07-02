@@ -891,4 +891,14 @@ public interface ExpListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStrAgg(ExpParser.StrAggContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ExpParser#fnName}.
+	 * @param ctx the parse tree
+	 */
+	void enterFnName(ExpParser.FnNameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#fnName}.
+	 * @param ctx the parse tree
+	 */
+	void exitFnName(ExpParser.FnNameContext ctx);
 }

@@ -388,6 +388,7 @@ columnId returns [Object id]
 identifier returns [String id]
     : IDENTIFIER { $id = $text; }
     | QUOTED_IDENTIFIER { $id = unescapeIdentifier($text.substring(1, $text.length() - 1)); }
+    | fnName { $id = $fnName.id; }
     ;
 
 /// **Relational expressions**
@@ -1203,6 +1204,87 @@ strAgg returns [StrExp exp] locals [BiFunction<StrExp, Condition, StrExp> aggFn]
         : MIN { $aggFn = (c, b) -> c.min(b); }
         | MAX { $aggFn = (c, b) -> c.max(b); }
     ) '(' c=strExp (',' b=boolExp)? ')' { $exp = $aggFn.apply($c.exp, $ctx.b != null ? $b.exp: null); }
+    ;
+
+/**
+ * Rule that consumes all function names in the context of an identifier.
+ * Any new function name should be copied here.
+ */
+//@ doc:inline
+fnName returns [String id]
+    : (
+    BOOL
+    | INT
+    | LONG
+    | BIGINT
+    | FLOAT
+    | DOUBLE
+    | DECIMAL
+    | STR
+    | COL
+    | CAST_AS_BOOL
+    | CAST_AS_INT
+    | CAST_AS_LONG
+    | CAST_AS_BIGINT
+    | CAST_AS_FLOAT
+    | CAST_AS_DOUBLE
+    | CAST_AS_DECIMAL
+    | CAST_AS_STR
+    | CAST_AS_TIME
+    | CAST_AS_DATE
+    | CAST_AS_DATETIME
+    | CAST_AS_OFFSET_DATETIME
+    | IF
+    | IF_NULL
+    | SPLIT
+    | SHIFT
+    | CONCAT
+    | SUBSTR
+    | TRIM
+    | LEN
+    | MATCHES
+    | STARTS_WITH
+    | ENDS_WITH
+    | CONTAINS
+    | DATE
+    | TIME
+    | DATETIME
+    | OFFSET_DATETIME
+    | YEAR
+    | MONTH
+    | DAY
+    | HOUR
+    | MINUTE
+    | SECOND
+    | MILLISECOND
+    | PLUS_YEARS
+    | PLUS_MONTHS
+    | PLUS_WEEKS
+    | PLUS_DAYS
+    | PLUS_HOURS
+    | PLUS_MINUTES
+    | PLUS_SECONDS
+    | PLUS_MILLISECONDS
+    | PLUS_NANOS
+    | ABS
+    | ROUND
+    | ROW_NUM
+    | SCALE
+    | COUNT
+    | SUM
+    | CUMSUM
+    | MIN
+    | MAX
+    | AVG
+    | MEDIAN
+    | QUANTILE
+    | FIRST
+    | LAST
+    | VCONCAT
+    | LIST
+    | SET
+    | ARRAY
+    ) { $id = $text; }
     ;
 
 /// **Lexer rules**
