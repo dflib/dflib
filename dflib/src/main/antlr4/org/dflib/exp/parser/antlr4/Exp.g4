@@ -1027,12 +1027,20 @@ genericShiftExp returns [Exp<?> exp]
  * Aggregates perform calculations across multiple rows of data.
  */
 aggregateFn returns [Exp<?> exp]
-    : positionalAgg { $exp = $positionalAgg.exp; }
+    : genericAgg { $exp = $genericAgg.exp; }
     | numAgg { $exp = $numAgg.exp; }
     | timeAgg { $exp = $timeAgg.exp; }
     | dateAgg { $exp = $dateAgg.exp; }
     | dateTimeAgg { $exp = $dateTimeAgg.exp; }
     | strAgg { $exp = $strAgg.exp; }
+    ;
+
+/**
+ * Generic aggregate functions that could be used with any expression type.
+ */
+genericAgg returns [Exp<?> exp]
+    : positionalAgg { $exp = $positionalAgg.exp; }
+    | vConcat { $exp = $vConcat.exp; }
     ;
 
 /**
@@ -1046,6 +1054,28 @@ aggregateFn returns [Exp<?> exp]
 positionalAgg returns [Exp<?> exp]
     : FIRST '(' e=expression (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $e.exp.first($b.exp) : $e.exp.first(); }
     | LAST '(' e=expression ')' { $exp = $e.exp.last(); } // TODO: bool condition
+    ;
+
+/**
+ * Creates an aggregating expression whose "reduce" operation returns a String of concatenated filtered Series values
+ * separated by the delimiter preceded by the prefix and followed by the suffix.
+ *
+ * Parameters:
+ *  - The expression to reduce
+ *  - [optional] filter condition
+ *  - delimiter to join values with
+ *  - [optional] prefix to add
+ *  - [optional] suffix to add
+ */
+vConcat returns [Exp<?> exp]
+    : VCONCAT '(' e=expression (',' c=boolExp)? ',' d=strScalar (',' p=strScalar ',' s=strScalar)? ')' {
+        $exp = $e.exp.vConcat(
+            $ctx.c == null ? null : $ctx.c.exp,
+            $d.value,
+            $ctx.p == null ? "" : $ctx.p.value,
+            $ctx.s == null ? "" : $ctx.s.value
+        );
+    }
     ;
 
 /**
@@ -1418,6 +1448,9 @@ FIRST: 'first';
 
 //@ doc:inline
 LAST: 'last';
+
+//@ doc:inline
+VCONCAT: 'vConcat';
 
 /// *Literals*
 

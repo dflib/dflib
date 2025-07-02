@@ -782,6 +782,16 @@ public interface ExpListener extends ParseTreeListener {
 	 */
 	void exitAggregateFn(ExpParser.AggregateFnContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ExpParser#genericAgg}.
+	 * @param ctx the parse tree
+	 */
+	void enterGenericAgg(ExpParser.GenericAggContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#genericAgg}.
+	 * @param ctx the parse tree
+	 */
+	void exitGenericAgg(ExpParser.GenericAggContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ExpParser#positionalAgg}.
 	 * @param ctx the parse tree
 	 */
@@ -791,6 +801,16 @@ public interface ExpListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPositionalAgg(ExpParser.PositionalAggContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ExpParser#vConcat}.
+	 * @param ctx the parse tree
+	 */
+	void enterVConcat(ExpParser.VConcatContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#vConcat}.
+	 * @param ctx the parse tree
+	 */
+	void exitVConcat(ExpParser.VConcatContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ExpParser#numAgg}.
 	 * @param ctx the parse tree

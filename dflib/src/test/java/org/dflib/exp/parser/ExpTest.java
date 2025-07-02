@@ -64,4 +64,20 @@ public class ExpTest {
     public void positionalAggregate_throws(String text) {
         assertThrows(ExpParserException.class, () -> parseExp(text));
     }
+
+    @ParameterizedTest
+    @MethodSource
+    public void genericAggregate(String text, Exp<?> expected) {
+        Exp<?> exp = parseExp(text);
+        assertEquals(expected, exp);
+    }
+
+    static Stream<Arguments> genericAggregate() {
+        return Stream.of(
+                arguments("vConcat(a, ',')", $col("a").vConcat(",", "", "")),
+                arguments("vConcat(a, int(1) > 0, ',')", $col("a").vConcat($int(1).gt(0), ",", "", "")),
+                arguments("vConcat(a, ',', 'p: ', 's: ')", $col("a").vConcat(",", "p: ", "s: ")),
+                arguments("vConcat(a, int(1) > 0, ',', 'p: ', 's: ')", $col("a").vConcat($int(1).gt(0), ",", "p: ", "s: "))
+        );
+    }
 }

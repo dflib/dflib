@@ -481,11 +481,23 @@ public interface ExpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAggregateFn(ExpParser.AggregateFnContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ExpParser#genericAgg}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGenericAgg(ExpParser.GenericAggContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ExpParser#positionalAgg}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitPositionalAgg(ExpParser.PositionalAggContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ExpParser#vConcat}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVConcat(ExpParser.VConcatContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ExpParser#numAgg}.
 	 * @param ctx the parse tree

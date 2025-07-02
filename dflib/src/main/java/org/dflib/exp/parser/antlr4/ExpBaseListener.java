@@ -943,6 +943,18 @@ public class ExpBaseListener implements ExpListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterGenericAgg(ExpParser.GenericAggContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGenericAgg(ExpParser.GenericAggContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterPositionalAgg(ExpParser.PositionalAggContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -950,6 +962,18 @@ public class ExpBaseListener implements ExpListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitPositionalAgg(ExpParser.PositionalAggContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVConcat(ExpParser.VConcatContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVConcat(ExpParser.VConcatContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
