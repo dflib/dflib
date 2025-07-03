@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
+import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.BiFunction;
 
@@ -142,6 +143,16 @@ public interface ExpListener extends ParseTreeListener {
 	 */
 	void exitAnyScalar(ExpParser.AnyScalarContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ExpParser#anyScalarList}.
+	 * @param ctx the parse tree
+	 */
+	void enterAnyScalarList(ExpParser.AnyScalarListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#anyScalarList}.
+	 * @param ctx the parse tree
+	 */
+	void exitAnyScalarList(ExpParser.AnyScalarListContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ExpParser#boolScalar}.
 	 * @param ctx the parse tree
 	 */
@@ -161,6 +172,16 @@ public interface ExpListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNumScalar(ExpParser.NumScalarContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ExpParser#numScalarList}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumScalarList(ExpParser.NumScalarListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#numScalarList}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumScalarList(ExpParser.NumScalarListContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ExpParser#integerScalar}.
 	 * @param ctx the parse tree
@@ -231,6 +252,16 @@ public interface ExpListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStrScalar(ExpParser.StrScalarContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ExpParser#strScalarList}.
+	 * @param ctx the parse tree
+	 */
+	void enterStrScalarList(ExpParser.StrScalarListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#strScalarList}.
+	 * @param ctx the parse tree
+	 */
+	void exitStrScalarList(ExpParser.StrScalarListContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ExpParser#numColumn}.
 	 * @param ctx the parse tree

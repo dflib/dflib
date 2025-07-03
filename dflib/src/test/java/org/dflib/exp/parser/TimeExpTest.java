@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.LocalTime;
 import java.util.stream.Stream;
 
 import static org.dflib.Exp.*;
@@ -87,9 +88,18 @@ public class TimeExpTest {
                 arguments("time(1) <= time(2)", $time(1).le($time(2))),
                 arguments("time(1) = time(2)", $time(1).eq($time(2))),
                 arguments("time(1) != time(2)", $time(1).ne($time(2))),
-                arguments("time(1) between time(2) and time(3)", $time(1).between($time(2), $time(3))),
+                arguments("time(1) between time(2) and time(3)", $time(1)
+                        .between($time(2), $time(3))),
                 arguments("time(2) = '12:00:00'", $time(2).eq("12:00:00")),
-                arguments("time(1) = plusHours(time(2), 1)", $time(1).eq($time(2).plusHours(1)))
+                arguments("time(1) = plusHours(time(2), 1)", $time(1).eq($time(2).plusHours(1))),
+                arguments("time(1) in ('12:00:00')", $time(1)
+                        .in(LocalTime.of(12, 0))),
+                arguments("time(1) in ('12:00:00', '13:00:00')", $time(1)
+                        .in(LocalTime.of(12, 0), LocalTime.of(13, 0))),
+                arguments("time(1) not in ('12:00:00')", $time(1)
+                        .notIn(LocalTime.of(12, 0))),
+                arguments("time(1) not in ('12:00:00', '13:00:00')", $time(1)
+                        .notIn(LocalTime.of(12, 0), LocalTime.of(13, 0)))
         );
     }
 
@@ -98,6 +108,14 @@ public class TimeExpTest {
             "time(1) = dateTime(2)",
             "time(1) = true",
             "time(1) = null",
+            "time(1) in ()",
+            "time(1) in ('abc')",
+            "time(1) in ('2022-10-10')",
+            "time(1) in (1, 2, 3)",
+            "time(1) not in ()",
+            "time(1) not in ('abc')",
+            "time(1) not in ('2022-10-10')",
+            "time(1) not in (1, 2, 3)",
     })
     void timeRelation_throws(String text) {
         assertThrows(ExpParserException.class, () -> parseExp(text));

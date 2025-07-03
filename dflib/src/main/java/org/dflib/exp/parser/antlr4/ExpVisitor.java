@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
+import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.BiFunction;
 
@@ -97,6 +98,12 @@ public interface ExpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAnyScalar(ExpParser.AnyScalarContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ExpParser#anyScalarList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAnyScalarList(ExpParser.AnyScalarListContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ExpParser#boolScalar}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -108,6 +115,12 @@ public interface ExpVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitNumScalar(ExpParser.NumScalarContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ExpParser#numScalarList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNumScalarList(ExpParser.NumScalarListContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ExpParser#integerScalar}.
 	 * @param ctx the parse tree
@@ -150,6 +163,12 @@ public interface ExpVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStrScalar(ExpParser.StrScalarContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ExpParser#strScalarList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStrScalarList(ExpParser.StrScalarListContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ExpParser#numColumn}.
 	 * @param ctx the parse tree

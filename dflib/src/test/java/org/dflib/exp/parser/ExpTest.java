@@ -85,4 +85,28 @@ public class ExpTest {
                 arguments("array(a, 'java.lang.Integer')", $col("a").array(new Integer[0]))
         );
     }
+
+    @ParameterizedTest
+    @MethodSource
+    public void genericRelation(String text, Exp<?> expected) {
+        Exp<?> exp = parseExp(text);
+        assertEquals(expected, exp);
+    }
+
+    static Stream<Arguments> genericRelation() {
+        return Stream.of(
+                arguments("a = 1", $col("a").eq(1)),
+                arguments("a = 'abc'", $col("a").eq("abc")),
+                arguments("a = false", $col("a").eq(false)),
+                arguments("a != 1", $col("a").ne(1)),
+                arguments("a != 'abc'", $col("a").ne("abc")),
+                arguments("a != false", $col("a").ne(false)),
+                arguments("a in (1)", $col("a").in(1)),
+                arguments("a in (1, 2, 3)", $col("a").in(1, 2, 3)),
+                arguments("a in (1, 'abc', false)", $col("a").in(1, "abc", false)),
+                arguments("a not in (1)", $col("a").notIn(1)),
+                arguments("a not in (1, 2, 3)", $col("a").notIn(1, 2, 3)),
+                arguments("a not in (1, 'abc', false)", $col("a").notIn(1, "abc", false))
+        );
+    }
 }

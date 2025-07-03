@@ -180,6 +180,7 @@ public class NumExpTest {
     static Stream<Arguments> bigintScalar() {
         return Stream.of(
                 arguments("999999999999999999999", $val(new BigInteger("999999999999999999999"))),
+                arguments("9h", $val(new BigInteger("9"))),
                 arguments("999999999999999999999h", $val(new BigInteger("999999999999999999999"))),
                 arguments("999999999999999999999H", $val(new BigInteger("999999999999999999999"))),
                 arguments("-999999999999999999999", $val(new BigInteger("-999999999999999999999"))),
@@ -389,6 +390,12 @@ public class NumExpTest {
                 arguments("5 = 5", $intVal(5).eq($val(5))),
                 arguments("5 != 3", $intVal(5).ne($val(3))),
                 arguments("5 between 3 and 7", $intVal(5).between($val(3), $val(7))),
+                arguments("int(1) in (1)", $int(1).in(1)),
+                arguments("int(1) not in (1)", $int(1).notIn(1)),
+                arguments("int(1) in (1.0)", $int(1).in(1)),
+                arguments("int(1) in (1, 2, 3)", $int(1).in(1, 2, 3)),
+                arguments("int(1) not in (1, 2, 3)", $int(1).notIn(1, 2, 3)),
+                arguments("int(1) in (1.0, 2.0, 3.0)", $int(1).in(1.0, 2.0, 3.0)),
                 arguments("int(1) > 10", $int(1).gt($val(10))),
                 arguments("abs(int(1)) > 10", $int(1).abs().gt($val(10))),
                 arguments("avg(int(1)) <= 20", $int(1).avg().le($val(20))),
@@ -398,7 +405,17 @@ public class NumExpTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"5 > '3'", "int(col1) = null", "int(col1) != false"})
+    @ValueSource(strings = {
+            "5 > '3'",
+            "int(col1) = null",
+            "int(col1) != false",
+            "int(1) in ()",
+            "int(1) in (1 2)",
+            "int(1) in ('a', 'b', 'c')",
+            "int(1) not in ()",
+            "int(1) not in (1 2)",
+            "int(1) not in ('a', 'b', 'c')",
+    })
     void relation_throws(String text) {
         assertThrows(ExpParserException.class, () -> parseExp(text));
     }

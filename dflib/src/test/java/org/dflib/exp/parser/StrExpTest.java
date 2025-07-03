@@ -113,7 +113,9 @@ public class StrExpTest {
                 arguments("'hello' = 'hello'", $val("hello").eq($val("hello"))),
                 arguments("'hello' != 'world'", $val("hello").ne($val("world"))),
                 arguments("str(1) = 'test'", $str(1).eq($val("test"))),
-                arguments("trim(str(1)) = 'test'", $str(1).trim().eq($val("test")))
+                arguments("trim(str(1)) = 'test'", $str(1).trim().eq($val("test"))),
+                arguments("str(1) in ('a')", $str(1).in("a")),
+                arguments("str(1) in ('a', 'b', 'c')", $str(1).in("a", "b", "c"))
         );
     }
 
@@ -125,6 +127,12 @@ public class StrExpTest {
             "'hello' <= 'world'",
             "'hello' between 'a' and 'z'",
             "len(str(col1)) = '4'",
+            "str(1) in ()",
+            "str(1) in ('a' 'b')",
+            "str(1) in (1, 2, 3)",
+            "str(1) not in ()",
+            "str(1) not in ('a' 'b')",
+            "str(1) not in (1, 2, 3)",
     })
     void relation_throws(String text) {
         assertThrows(ExpParserException.class, () -> parseExp(text));

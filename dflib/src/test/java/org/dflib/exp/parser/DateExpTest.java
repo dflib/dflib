@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.LocalDate;
 import java.util.stream.Stream;
 
 import static org.dflib.Exp.*;
@@ -87,9 +88,18 @@ public class DateExpTest {
                 arguments("date(1) <= date(2)", $date(1).le($date(2))),
                 arguments("date(1) = date(2)", $date(1).eq($date(2))),
                 arguments("date(1) != date(2)", $date(1).ne($date(2))),
-                arguments("date(1) between date(2) and date(3)", $date(1).between($date(2), $date(3))),
+                arguments("date(1) between date(2) and date(3)", $date(1)
+                        .between($date(2), $date(3))),
                 arguments("date(1) = plusDays(date(2), 1)", $date(1).eq($date(2).plusDays(1))),
-                arguments("date(1) = '1970-01-01'", $date(1).eq("1970-01-01"))
+                arguments("date(1) = '1970-01-01'", $date(1).eq("1970-01-01")),
+                arguments("date(1) in ('2002-01-01')", $date(1)
+                        .in(LocalDate.of(2002, 1, 1))),
+                arguments("date(1) in ('2002-01-01', '2020-01-01')", $date(1)
+                        .in(LocalDate.of(2002, 1, 1), LocalDate.of(2020, 1, 1))),
+                arguments("date(1) not in ('2002-01-01')", $date(1)
+                        .notIn(LocalDate.of(2002, 1, 1))),
+                arguments("date(1) not in ('2002-01-01', '2020-01-01')", $date(1)
+                        .notIn(LocalDate.of(2002, 1, 1), LocalDate.of(2020, 1, 1)))
         );
     }
 
@@ -98,6 +108,14 @@ public class DateExpTest {
             "date(1) = dateTime(2)",
             "date(1) = true",
             "date(1) = null",
+            "date(1) in ()",
+            "date(1) in ('abc')",
+            "date(1) in ('12:00:00')",
+            "date(1) in (1, 2, 3)",
+            "date(1) not in ()",
+            "date(1) not in ('abc')",
+            "date(1) not in ('12:00:00')",
+            "date(1) not in (1, 2, 3)",
     })
     void relation_throws(String text) {
         assertThrows(ExpParserException.class, () -> parseExp(text));

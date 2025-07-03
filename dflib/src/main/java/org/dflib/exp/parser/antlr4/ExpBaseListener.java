@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
+import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.BiFunction;
 
@@ -175,6 +176,18 @@ public class ExpBaseListener implements ExpListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterAnyScalarList(ExpParser.AnyScalarListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAnyScalarList(ExpParser.AnyScalarListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterBoolScalar(ExpParser.BoolScalarContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -194,6 +207,18 @@ public class ExpBaseListener implements ExpListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNumScalar(ExpParser.NumScalarContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNumScalarList(ExpParser.NumScalarListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNumScalarList(ExpParser.NumScalarListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -278,6 +303,18 @@ public class ExpBaseListener implements ExpListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitStrScalar(ExpParser.StrScalarContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStrScalarList(ExpParser.StrScalarListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStrScalarList(ExpParser.StrScalarListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

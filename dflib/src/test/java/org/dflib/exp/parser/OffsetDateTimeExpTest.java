@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
 import static org.dflib.Exp.*;
@@ -93,7 +94,19 @@ public class OffsetDateTimeExpTest {
                 arguments("offsetDateTime(2) = '1970-01-01T12:00:00+01:00'",
                         $offsetDateTime(2).eq("1970-01-01T12:00:00+01:00")),
                 arguments("offsetDateTime(1) = plusDays(offsetDateTime(2), 1)",
-                        $offsetDateTime(1).eq($offsetDateTime(2).plusDays(1)))
+                        $offsetDateTime(1).eq($offsetDateTime(2).plusDays(1))),
+
+                arguments("offsetDateTime(1) in ('2002-01-01T12:00:00+01:00')", $offsetDateTime(1)
+                        .in(OffsetDateTime.parse("2002-01-01T12:00:00+01:00"))),
+
+                arguments("offsetDateTime(1) in ('2002-01-01T12:00:00+01:00', '2020-01-01T12:01:01+02:00')", $offsetDateTime(1)
+                        .in(OffsetDateTime.parse("2002-01-01T12:00:00+01:00"), OffsetDateTime.parse("2020-01-01T12:01:01+02:00"))),
+
+                arguments("offsetDateTime(1) not in ('2002-01-01T12:00:00+01:00')", $offsetDateTime(1)
+                        .notIn(OffsetDateTime.parse("2002-01-01T12:00:00+01:00"))),
+
+                arguments("offsetDateTime(1) not in ('2002-01-01T12:00:00+01:00', '2020-01-01T12:01:01+02:00')", $offsetDateTime(1)
+                        .notIn(OffsetDateTime.parse("2002-01-01T12:00:00+01:00"), OffsetDateTime.parse("2020-01-01T12:01:01+02:00")))
         );
     }
 
@@ -103,6 +116,14 @@ public class OffsetDateTimeExpTest {
             "offsetDateTime(1) = date(2)",
             "offsetDateTime(1) = true",
             "offsetDateTime(1) = null",
+            "offsetDateTime(1) in ()",
+            "offsetDateTime(1) in ('abc')",
+            "offsetDateTime(1) in ('12:00:00')",
+            "offsetDateTime(1) in (1, 2, 3)",
+            "offsetDateTime(1) not in ()",
+            "offsetDateTime(1) not in ('abc')",
+            "offsetDateTime(1) not in ('12:00:00')",
+            "offsetDateTime(1) not in (1, 2, 3)",
     })
     void relation_throws(String text) {
         assertThrows(ExpParserException.class, () -> parseExp(text));
