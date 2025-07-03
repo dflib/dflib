@@ -1,11 +1,13 @@
 package org.dflib.exp.parser;
 
 import org.dflib.Exp;
+import org.dflib.exp.parser.antlr4.ExpParser;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.dflib.Exp.*;
@@ -88,84 +90,58 @@ public class ColumnTest {
         );
     }
 
-    @ParameterizedTest
-    // Using the same names as tokens in grammar for easier copy-paste
-    // should be in sync with the grammar
-    @ValueSource(strings = {
-            "BOOL",
-            "INT",
-            "LONG",
-            "BIGINT",
-            "FLOAT",
-            "DOUBLE",
-            "DECIMAL",
-            "STR",
-            "COL",
-            "CAST_AS_BOOL",
-            "CAST_AS_INT",
-            "CAST_AS_LONG",
-            "CAST_AS_BIGINT",
-            "CAST_AS_FLOAT",
-            "CAST_AS_DOUBLE",
-            "CAST_AS_DECIMAL",
-            "CAST_AS_STR",
-            "CAST_AS_TIME",
-            "CAST_AS_DATE",
-            "CAST_AS_DATETIME",
-            "CAST_AS_OFFSET_DATETIME",
-            "IF",
-            "IF_NULL",
-            "SPLIT",
-            "SHIFT",
-            "CONCAT",
-            "SUBSTR",
-            "TRIM",
-            "LEN",
-            "MATCHES",
-            "STARTS_WITH",
-            "ENDS_WITH",
-            "CONTAINS",
-            "DATE",
-            "TIME",
-            "DATETIME",
-            "OFFSET_DATETIME",
-            "YEAR",
-            "MONTH",
-            "DAY",
-            "HOUR",
-            "MINUTE",
-            "SECOND",
-            "MILLISECOND",
-            "PLUS_YEARS",
-            "PLUS_MONTHS",
-            "PLUS_WEEKS",
-            "PLUS_DAYS",
-            "PLUS_HOURS",
-            "PLUS_MINUTES",
-            "PLUS_SECONDS",
-            "PLUS_MILLISECONDS",
-            "PLUS_NANOS",
-            "ABS",
-            "ROUND",
-            "ROW_NUM",
-            "SCALE",
-            "COUNT",
-            "SUM",
-            "CUMSUM",
-            "MIN",
-            "MAX",
-            "AVG",
-            "MEDIAN",
-            "QUANTILE",
-            "FIRST",
-            "LAST",
-            "VCONCAT",
-            "LIST",
-            "SET",
-            "ARRAY",
-    })
-    public void keywordAsColumnName(String name) {
-        String keyword = name.toLowerCase();
-        assertEquals($col(keyword), parseExp(keyword));
+    /**
+     * This test checks every token in the parser if it's a valid identifier.
+     * <p>
+     * If it fails after adding new token you should either allow it in the `fnName` rule in the grammar,
+     * or add to the `RULES_TO_IGNORE` set below.
+     */
+    @Test()
+    public void keywordAsColumnName() {
+        int maxTokenType = ExpParser.VOCABULARY.getMaxTokenType();
+        for (int rule = 1; rule <= maxTokenType; rule++) {
+            if (RULES_TO_IGNORE.contains(rule)) {
+                continue;
+            }
+
+            String keyword = ExpParser.VOCABULARY.getDisplayName(rule);
+            keyword = keyword.substring(1, keyword.length() - 1);// rule name goes as 'rule'
+
+            assertEquals($col(keyword), parseExp(keyword),
+                    "Token '" + keyword + "' (" + rule + ") is not a valid identifier name. " +
+                            "Check comments of this test on how to resolve that.");
+        }
     }
+
+    static final Set<Integer> RULES_TO_IGNORE = Set.of(
+            ExpParser.LP,
+            ExpParser.RP,
+            ExpParser.COMMA,
+            ExpParser.NOT,
+            ExpParser.EQ,
+            ExpParser.NE,
+            ExpParser.LE,
+            ExpParser.GE,
+            ExpParser.LT,
+            ExpParser.GT,
+            ExpParser.BETWEEN,
+            ExpParser.IN,
+            ExpParser.ADD,
+            ExpParser.SUB,
+            ExpParser.MUL,
+            ExpParser.DIV,
+            ExpParser.MOD,
+            ExpParser.AND,
+            ExpParser.OR,
+            ExpParser.NULL,
+            ExpParser.TRUE,
+            ExpParser.FALSE,
+            ExpParser.INTEGER_LITERAL,
+            ExpParser.FLOAT_LITERAL,
+            ExpParser.STRING_LITERAL,
+            ExpParser.QUOTED_IDENTIFIER,
+            ExpParser.IDENTIFIER,
+            ExpParser.WS
+    );
+
 }
