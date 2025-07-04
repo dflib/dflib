@@ -7,7 +7,7 @@ import static org.dflib.Exp.*;
 
 public class Window_SelectPartitionedSortedTest {
 
-    static final DataFrame TEST_DF =  DataFrame.foldByRow("a", "b").of(
+    static final DataFrame TEST_DF = DataFrame.foldByRow("a", "b").of(
             1, "x",
             2, "y",
             1, "z",
@@ -44,6 +44,27 @@ public class Window_SelectPartitionedSortedTest {
                 .select(
                         $col("a"),
                         rowNum()
+                );
+
+        new DataFrameAsserts(r, "a", "rn")
+                .expectHeight(5)
+                .expectRow(0, 1, 1)
+                .expectRow(1, 2, 1)
+                .expectRow(2, 1, 3)
+                .expectRow(3, 0, 1)
+                .expectRow(4, 1, 2);
+    }
+
+    @Test
+    public void byName_RowNum_SortStr_ExpStr() {
+
+        DataFrame r = TEST_DF.over()
+                .partition("a")
+                .sort("b")
+                .cols("a", "rn")
+                .select(
+                        "a",
+                        "rowNum()"
                 );
 
         new DataFrameAsserts(r, "a", "rn")

@@ -21,7 +21,7 @@ import static org.dflib.exp.parser.antlr4.ExpParserUtils.*;
 /**
  * The root rule of the grammar.
  */
-root returns [Exp<?> exp]
+expRoot returns [Exp<?> exp]
     : expression EOF { $exp = $expression.exp; }
     ;
 
@@ -34,10 +34,6 @@ sorterRoot returns [Sorter sorter] locals [boolean desc]
         | DESC { $desc = true; }
     )? EOF { $sorter = $desc ? $expression.exp.desc() : $expression.exp.asc(); }
     ;
-
-//sortRoot returns [Exp<?> exp]
-//    : expression ( 'ASC' | 'DESC' )? EOF { $exp = $expression.exp; }
-//    ;
 
 /**
  * An expression, which can be of various types including null, aggregate, boolean, numeric, string, temporal, or type-agnostic functions.

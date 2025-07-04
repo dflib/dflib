@@ -31,7 +31,6 @@ public class DataFrame_Sort_Test {
                 .expectRow(0, -1, 2)
                 .expectRow(1, 0, 1)
                 .expectRow(2, 2, 3);
-
     }
 
     @Test
@@ -220,6 +219,23 @@ public class DataFrame_Sort_Test {
                 .expectRow(1, 0, 1)
                 .expectRow(2, 2, 2)
                 .expectRow(3, 2, 3);
+    }
+
+    @Test
+    public void sort_WithSorterStr() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                        0, 1,
+                        2, 3,
+                        2, 2,
+                        -1, 2)
+                .sort("a", "b desc");
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(4)
+                .expectRow(0, -1, 2)
+                .expectRow(1, 0, 1)
+                .expectRow(2, 2, 3)
+                .expectRow(3, 2, 2);
     }
 
     @Test

@@ -23,6 +23,7 @@ import org.dflib.series.OffsetLeadSeries;
 import org.dflib.series.SingleValueSeries;
 import org.dflib.series.TrueSeries;
 import org.dflib.sort.IntComparator;
+import org.dflib.sort.Sorters;
 
 import java.lang.reflect.Array;
 import java.util.Comparator;
@@ -571,6 +572,15 @@ public interface Series<T> extends Iterable<T> {
      * @return an IntSeries that represents positions in the Series that match the predicate.
      */
     IntSeries index(Predicate<T> predicate);
+
+    /**
+     * Parses the provided strings to sorters and calls {@link #sort(Sorter...)}.
+     *
+     * @since 2.0.0
+     */
+    default Series<T> sort(String... sorters) {
+        return sort(Sorters.asSorters(sorters));
+    }
 
     Series<T> sort(Sorter... sorters);
 

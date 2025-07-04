@@ -6,8 +6,6 @@ import org.dflib.Series;
 import org.dflib.Sorter;
 import org.dflib.sort.IntComparator;
 
-import java.util.Objects;
-
 /**
  * A Sorter based on an expression that should evaluate to Comparable.
  */

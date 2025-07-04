@@ -4,6 +4,7 @@ import org.dflib.agg.GroupByAggregator;
 import org.dflib.concat.SeriesConcat;
 import org.dflib.concat.VConcat;
 import org.dflib.exp.Exps;
+import org.dflib.sort.Sorters;
 import org.dflib.series.EmptySeries;
 import org.dflib.slice.FixedColumnSetIndex;
 import org.dflib.sort.IntComparator;
@@ -235,6 +236,22 @@ public class GroupBy {
         return new GroupBy(source, trimmed, sorter);
     }
 
+    /**
+     * A noop sort operation. Useless on its own, and primarily exists to disambiguate {@link #sort(Sorter...)} and
+     * {@link #sort(String...)} for no-arg sort call.
+     *
+     * @since 2.0.0
+     */
+    public GroupBy sort() {
+        return this;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public GroupBy sort(String... sortExps) {
+        return sort(Sorters.asSorters(sortExps));
+    }
 
     public GroupBy sort(Sorter... sorters) {
         return sorters.length == 0 ? this : sort(IntComparator.of(source, sorters));

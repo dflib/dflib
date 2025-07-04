@@ -1,6 +1,7 @@
 package org.dflib;
 
 import org.dflib.exp.Exps;
+import org.dflib.sort.Sorters;
 
 import java.util.Map;
 import java.util.function.Predicate;
@@ -100,6 +101,26 @@ public interface RowSet {
     DataFrame merge(RowMapper mapper);
 
     DataFrame merge(RowToValueMapper<?>... mappers);
+
+
+    /**
+     * A noop sort operation. Useless on its own, and primarily exists to disambiguate {@link #sort(Sorter...)} and
+     * {@link #sort(String...)} for no-arg sort call.
+     *
+     * @since 2.0.0
+     */
+    default RowSet sort() {
+        return this;
+    }
+
+    /**
+     * Parses provided Strings into Sorters and calls {@link #sort(Sorter...)}.
+     *
+     * @since 2.0.0
+     */
+    default RowSet sort(String... sortExps) {
+        return sort(Sorters.asSorters(sortExps));
+    }
 
     /**
      * Configures the RowSet to sort rows, applying provided sorters.

@@ -8,6 +8,7 @@ import org.dflib.series.LongIndexedSeries;
 import org.dflib.series.TrueSeries;
 import org.dflib.set.Diff;
 import org.dflib.set.Intersect;
+import org.dflib.sort.Sorters;
 
 import java.util.Comparator;
 import java.util.Random;
@@ -294,6 +295,11 @@ public interface LongSeries extends Series<Long> {
 
     @Override
     LongSeries sort(Comparator<? super Long> comparator);
+
+    @Override
+    default LongSeries sort(String... sorters) {
+        return sort(Sorters.asSorters(sorters));
+    }
 
     @Override
     LongSeries sort(Sorter... sorters);

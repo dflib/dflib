@@ -1,6 +1,5 @@
-package org.dflib.exp.parser;
+package org.dflib;
 
-import org.dflib.Sorter;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -11,16 +10,16 @@ import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-public class SorterTest {
+public class Sorter_ParseSorterTest {
 
     @ParameterizedTest
     @MethodSource
-    public void sorterSpec(String spec, Sorter expected) {
-        Sorter parsed = ExpParser.parseSorter(spec);
+    public void parseSorter(String spec, Sorter expected) {
+        Sorter parsed = Sorter.parseSorter(spec);
         assertEquals(expected, parsed);
     }
 
-    static Stream<Arguments> sorterSpec() {
+    static Stream<Arguments> parseSorter() {
         return Stream.of(
                 arguments("test", $col("test").asc()),
                 arguments("test asc", $col("test").asc()),

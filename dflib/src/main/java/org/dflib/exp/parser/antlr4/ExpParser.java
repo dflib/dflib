@@ -49,7 +49,7 @@ public class ExpParser extends Parser {
 		DESC=95, INTEGER_LITERAL=96, FLOAT_LITERAL=97, STRING_LITERAL=98, QUOTED_IDENTIFIER=99, 
 		IDENTIFIER=100, WS=101;
 	public static final int
-		RULE_root = 0, RULE_sorterRoot = 1, RULE_expression = 2, RULE_numExp = 3, 
+		RULE_expRoot = 0, RULE_sorterRoot = 1, RULE_expression = 2, RULE_numExp = 3, 
 		RULE_boolExp = 4, RULE_strExp = 5, RULE_temporalExp = 6, RULE_timeExp = 7, 
 		RULE_dateExp = 8, RULE_dateTimeExp = 9, RULE_offsetDateTimeExp = 10, RULE_genericExp = 11, 
 		RULE_anyScalar = 12, RULE_anyScalarList = 13, RULE_boolScalar = 14, RULE_numScalar = 15, 
@@ -77,24 +77,24 @@ public class ExpParser extends Parser {
 		RULE_dateTimeAgg = 89, RULE_strAgg = 90, RULE_fnName = 91;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"root", "sorterRoot", "expression", "numExp", "boolExp", "strExp", "temporalExp", 
-			"timeExp", "dateExp", "dateTimeExp", "offsetDateTimeExp", "genericExp", 
-			"anyScalar", "anyScalarList", "boolScalar", "numScalar", "numScalarList", 
-			"integerScalar", "floatingPointScalar", "timeStrScalar", "dateStrScalar", 
-			"dateTimeStrScalar", "offsetDateTimeStrScalar", "strScalar", "strScalarList", 
-			"numColumn", "intColumn", "longColumn", "bigintColumn", "floatColumn", 
-			"doubleColumn", "decimalColumn", "boolColumn", "strColumn", "dateColumn", 
-			"timeColumn", "dateTimeColumn", "offsetDateTimeColumn", "genericColumn", 
-			"columnId", "identifier", "relation", "numRelation", "strRelation", "timeRelation", 
-			"dateRelation", "dateTimeRelation", "offsetDateTimeRelation", "genericRelation", 
-			"numFn", "timeFieldFn", "dateFieldFn", "dateTimeFieldFn", "offsetDateTimeFieldFn", 
-			"boolFn", "timeFn", "dateFn", "dateTimeFn", "offsetDateTimeFn", "strFn", 
-			"castAsBool", "castAsInt", "castAsLong", "castAsBigint", "castAsFloat", 
-			"castAsDouble", "castAsDecimal", "castAsStr", "castAsTime", "castAsDate", 
-			"castAsDateTime", "castAsOffsetDateTime", "genericFn", "ifExp", "ifNull", 
-			"nullableExp", "split", "shift", "genericShiftExp", "aggregateFn", "genericAgg", 
-			"positionalAgg", "vConcat", "list", "set", "array", "numAgg", "timeAgg", 
-			"dateAgg", "dateTimeAgg", "strAgg", "fnName"
+			"expRoot", "sorterRoot", "expression", "numExp", "boolExp", "strExp", 
+			"temporalExp", "timeExp", "dateExp", "dateTimeExp", "offsetDateTimeExp", 
+			"genericExp", "anyScalar", "anyScalarList", "boolScalar", "numScalar", 
+			"numScalarList", "integerScalar", "floatingPointScalar", "timeStrScalar", 
+			"dateStrScalar", "dateTimeStrScalar", "offsetDateTimeStrScalar", "strScalar", 
+			"strScalarList", "numColumn", "intColumn", "longColumn", "bigintColumn", 
+			"floatColumn", "doubleColumn", "decimalColumn", "boolColumn", "strColumn", 
+			"dateColumn", "timeColumn", "dateTimeColumn", "offsetDateTimeColumn", 
+			"genericColumn", "columnId", "identifier", "relation", "numRelation", 
+			"strRelation", "timeRelation", "dateRelation", "dateTimeRelation", "offsetDateTimeRelation", 
+			"genericRelation", "numFn", "timeFieldFn", "dateFieldFn", "dateTimeFieldFn", 
+			"offsetDateTimeFieldFn", "boolFn", "timeFn", "dateFn", "dateTimeFn", 
+			"offsetDateTimeFn", "strFn", "castAsBool", "castAsInt", "castAsLong", 
+			"castAsBigint", "castAsFloat", "castAsDouble", "castAsDecimal", "castAsStr", 
+			"castAsTime", "castAsDate", "castAsDateTime", "castAsOffsetDateTime", 
+			"genericFn", "ifExp", "ifNull", "nullableExp", "split", "shift", "genericShiftExp", 
+			"aggregateFn", "genericAgg", "positionalAgg", "vConcat", "list", "set", 
+			"array", "numAgg", "timeAgg", "dateAgg", "dateTimeAgg", "strAgg", "fnName"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -190,43 +190,43 @@ public class ExpParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class RootContext extends ParserRuleContext {
+	public static class ExpRootContext extends ParserRuleContext {
 		public Exp<?> exp;
 		public ExpressionContext expression;
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
 		public TerminalNode EOF() { return getToken(ExpParser.EOF, 0); }
-		public RootContext(ParserRuleContext parent, int invokingState) {
+		public ExpRootContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_root; }
+		@Override public int getRuleIndex() { return RULE_expRoot; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ExpListener ) ((ExpListener)listener).enterRoot(this);
+			if ( listener instanceof ExpListener ) ((ExpListener)listener).enterExpRoot(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ExpListener ) ((ExpListener)listener).exitRoot(this);
+			if ( listener instanceof ExpListener ) ((ExpListener)listener).exitExpRoot(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ExpVisitor ) return ((ExpVisitor<? extends T>)visitor).visitRoot(this);
+			if ( visitor instanceof ExpVisitor ) return ((ExpVisitor<? extends T>)visitor).visitExpRoot(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final RootContext root() throws RecognitionException {
-		RootContext _localctx = new RootContext(_ctx, getState());
-		enterRule(_localctx, 0, RULE_root);
+	public final ExpRootContext expRoot() throws RecognitionException {
+		ExpRootContext _localctx = new ExpRootContext(_ctx, getState());
+		enterRule(_localctx, 0, RULE_expRoot);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(184);
-			((RootContext)_localctx).expression = expression();
+			((ExpRootContext)_localctx).expression = expression();
 			setState(185);
 			match(EOF);
-			 ((RootContext)_localctx).exp =  ((RootContext)_localctx).expression.exp; 
+			 ((ExpRootContext)_localctx).exp =  ((ExpRootContext)_localctx).expression.exp; 
 			}
 		}
 		catch (RecognitionException re) {

@@ -33,6 +33,28 @@ public class RowSet_MergeSortSorterTest {
     }
 
     @Test
+    public void all_StrSorter() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        4, "e", "k",
+                        0, "f", "g",
+                        1, "m", "n")
+                .rows()
+                .sort("a asc", "b desc")
+                .merge();
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(5)
+                .expectRow(0, 0, "f", "g")
+                .expectRow(1, 1, "x", "a")
+                .expectRow(2, 1, "m", "n")
+                .expectRow(3, 2, "y", "b")
+                .expectRow(4, 4, "e", "k");
+    }
+
+    @Test
     public void all_overTransformedColumn() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(

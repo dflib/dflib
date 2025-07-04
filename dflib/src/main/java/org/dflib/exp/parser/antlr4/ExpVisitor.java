@@ -26,11 +26,11 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface ExpVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link ExpParser#root}.
+	 * Visit a parse tree produced by {@link ExpParser#expRoot}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitRoot(ExpParser.RootContext ctx);
+	T visitExpRoot(ExpParser.ExpRootContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ExpParser#sorterRoot}.
 	 * @param ctx the parse tree

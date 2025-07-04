@@ -14,6 +14,7 @@ import org.dflib.series.IntSequenceSeries;
 import org.dflib.slice.ColumnSetMerger;
 import org.dflib.slice.FixedColumnSetIndex;
 import org.dflib.sort.IntComparator;
+import org.dflib.sort.Sorters;
 
 import java.util.Objects;
 import java.util.Set;
@@ -188,6 +189,23 @@ public class Window {
     }
 
     /**
+     * A noop sort operation. Useless on its own, and primarily exists to disambiguate {@link #sort(Sorter...)} and
+     * {@link #sort(String...)} for no-arg sort call.
+     *
+     * @since 2.0.0
+     */
+    public Window sort() {
+        return this;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Window sort(String... sortExps) {
+        return sort(Sorters.asSorters(sortExps));
+    }
+
+    /**
      * @since 2.0.0
      */
     public Window sort(Sorter... sorters) {
@@ -236,9 +254,7 @@ public class Window {
     }
 
     /**
-     * Generates a DataFrame of the same height as the source DataFrame, with columns generated with the provided
-     * expressions. Expressions can be a mix of per-row and aggregating. They are invoked per each row, and are passed
-     * the range of rows corresponding to the partitioning, sorting, and range settings.
+     * Parses the provided Strings to expressions and calls {@link #select(Exp[])}.
      *
      * @since 2.0.0
      */

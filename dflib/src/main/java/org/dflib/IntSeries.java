@@ -9,6 +9,7 @@ import org.dflib.series.TrueSeries;
 import org.dflib.set.Diff;
 import org.dflib.set.Intersect;
 import org.dflib.sort.IntComparator;
+import org.dflib.sort.Sorters;
 
 import java.util.Comparator;
 import java.util.Random;
@@ -294,6 +295,11 @@ public interface IntSeries extends Series<Integer> {
 
 
     IntSeries selectInt(IntPredicate p);
+
+    @Override
+    default IntSeries sort(String... sorters) {
+        return sort(Sorters.asSorters(sorters));
+    }
 
     @Override
     IntSeries sort(Sorter... sorters);
