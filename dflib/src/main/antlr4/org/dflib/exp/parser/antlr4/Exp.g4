@@ -25,6 +25,16 @@ root returns [Exp<?> exp]
     : expression EOF { $exp = $expression.exp; }
     ;
 
+/**
+ * The root rule for the sorting spec
+ */
+sorterRoot returns [Sorter sorter] locals [boolean desc]
+    : expression (
+        : ASC
+        | DESC { $desc = true; }
+    )? EOF { $sorter = $desc ? $expression.exp.desc() : $expression.exp.asc(); }
+    ;
+
 //sortRoot returns [Exp<?> exp]
 //    : expression ( 'ASC' | 'DESC' )? EOF { $exp = $expression.exp; }
 //    ;
@@ -1324,6 +1334,8 @@ fnName returns [String id]
     | LIST
     | SET
     | ARRAY
+    | ASC
+    | DESC
     ) { $id = $text; }
     ;
 
@@ -1620,6 +1632,12 @@ TRUE: 'true';
 
 //@ doc:inline
 FALSE: 'false';
+
+//@ doc:inline
+ASC: 'asc';
+
+//@ doc:inline
+DESC: 'desc';
 
 /**
  * Matches an integer literal in decimal, hexadecimal, octal, or binary format.

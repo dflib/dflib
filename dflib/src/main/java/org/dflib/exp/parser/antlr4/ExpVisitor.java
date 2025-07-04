@@ -32,6 +32,12 @@ public interface ExpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRoot(ExpParser.RootContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ExpParser#sorterRoot}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSorterRoot(ExpParser.SorterRootContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ExpParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
