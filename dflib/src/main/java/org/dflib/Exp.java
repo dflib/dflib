@@ -48,7 +48,7 @@ import org.dflib.exp.num.IntScalarExp;
 import org.dflib.exp.num.LongColumn;
 import org.dflib.exp.num.LongScalarExp;
 import org.dflib.ql.QLParserInvoker;
-import org.dflib.exp.sort.ExpSorter;
+import org.dflib.sort.ExpSorter;
 import org.dflib.exp.str.ConcatExp;
 import org.dflib.exp.str.StrColumn;
 import org.dflib.exp.str.StrExp1;
