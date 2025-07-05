@@ -53,6 +53,7 @@ import org.dflib.exp.str.ConcatExp;
 import org.dflib.exp.str.StrColumn;
 import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrScalarExp;
+import org.dflib.ql.antlr4.ExpParser;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -533,7 +534,7 @@ public interface Exp<T> {
      * @since 2.0.0
      */
     static Exp<?> parseExp(String exp) {
-        return QLParserInvoker.parse(exp, parser -> parser.expRoot().exp);
+        return QLParserInvoker.parse(exp, ExpParser::expRoot).exp;
     }
 
     /**
