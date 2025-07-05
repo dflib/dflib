@@ -1,6 +1,6 @@
 package org.dflib;
 
-import org.dflib.exp.parser.ExpParserInvoker;
+import org.dflib.ql.QLParserInvoker;
 import org.dflib.sort.IntComparator;
 
 /**
@@ -14,7 +14,7 @@ public interface Sorter {
      * @since 2.0.0
      */
     static Sorter parseSorter(String sorterExp) {
-        return ExpParserInvoker.parse(sorterExp, parser -> parser.sorterRoot().sorter);
+        return QLParserInvoker.parse(sorterExp, parser -> parser.sorterRoot().sorter);
     }
 
     IntComparator eval(DataFrame df);

@@ -1,4 +1,4 @@
-package org.dflib.exp.parser;
+package org.dflib.ql;
 
 import org.dflib.Condition;
 import org.dflib.Exp;
@@ -44,7 +44,7 @@ public class OffsetDateTimeExpTest {
             "offsetDateTime(-1)",
     })
     void column_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -70,7 +70,7 @@ public class OffsetDateTimeExpTest {
             "CASTASOFFSETDATETIME(1)",
     })
     void cast_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -126,7 +126,7 @@ public class OffsetDateTimeExpTest {
             "offsetDateTime(1) not in (1, 2, 3)",
     })
     void relation_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -155,7 +155,7 @@ public class OffsetDateTimeExpTest {
             "day(castAsOffsetDateTime('1970-01-01T12:00:00Z+01:00'), 2)"
     })
     void fieldFunction_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -190,6 +190,6 @@ public class OffsetDateTimeExpTest {
             "plusHours(offsetDateTime(1), null)",
     })
     void function_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 }

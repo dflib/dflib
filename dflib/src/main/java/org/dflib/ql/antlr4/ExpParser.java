@@ -1,5 +1,5 @@
-// Generated from org/dflib/exp/parser/antlr4/Exp.g4 by ANTLR 4.13.2
-package org.dflib.exp.parser.antlr4;
+// Generated from org/dflib/ql/antlr4/Exp.g4 by ANTLR 4.13.2
+package org.dflib.ql.antlr4;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -13,7 +13,7 @@ import java.util.function.BiFunction;
 
 import org.dflib.*;
 
-import static org.dflib.exp.parser.antlr4.ExpParserUtils.*;
+import static org.dflib.ql.antlr4.ExpParserUtils.*;
 
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;

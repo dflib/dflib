@@ -1,4 +1,4 @@
-package org.dflib.exp.parser;
+package org.dflib.ql;
 
 import org.dflib.Condition;
 import org.dflib.Exp;
@@ -87,7 +87,7 @@ public class NumExpTest {
             "1 ** 2",
     })
     void test_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -130,7 +130,7 @@ public class NumExpTest {
             "0b",
     })
     void integerScalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -166,7 +166,7 @@ public class NumExpTest {
             "0xFFFFFFFFFFFF1A3.5",
     })
     void longScalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -200,7 +200,7 @@ public class NumExpTest {
             "0xFFFFFFFFFFFFFFFFFF1A3.5",
     })
     void bigintScalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -248,7 +248,7 @@ public class NumExpTest {
             ".e10",
     })
     void floatScalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -291,7 +291,7 @@ public class NumExpTest {
             ".e10d",
     })
     void doubleScalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -327,7 +327,7 @@ public class NumExpTest {
             ".e10m",
     })
     void decimalScalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -417,7 +417,7 @@ public class NumExpTest {
             "int(1) not in ('a', 'b', 'c')",
     })
     void relation_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest

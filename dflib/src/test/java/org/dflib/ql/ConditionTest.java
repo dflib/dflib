@@ -1,4 +1,4 @@
-package org.dflib.exp.parser;
+package org.dflib.ql;
 
 import org.dflib.Condition;
 import org.dflib.Exp;
@@ -53,7 +53,7 @@ public class ConditionTest {
             "int(1) and int(2)",
     })
     void exp_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -146,7 +146,7 @@ public class ConditionTest {
             "bool(-1)",
     })
     void column_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -171,7 +171,7 @@ public class ConditionTest {
             "CASTASBOOL(1)",
     })
     void cast_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -203,6 +203,6 @@ public class ConditionTest {
             "endsWith('hello', null)",
     })
     void function_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 }

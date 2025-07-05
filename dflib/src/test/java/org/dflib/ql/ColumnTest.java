@@ -1,7 +1,7 @@
-package org.dflib.exp.parser;
+package org.dflib.ql;
 
 import org.dflib.Exp;
-import org.dflib.exp.parser.antlr4.ExpParser;
+import org.dflib.ql.antlr4.ExpParser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

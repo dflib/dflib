@@ -1,4 +1,4 @@
-package org.dflib.exp.parser;
+package org.dflib.ql;
 
 import org.dflib.Condition;
 import org.dflib.DateTimeExp;
@@ -44,7 +44,7 @@ public class DateTimeExpTest {
             "dateTime(-1)",
     })
     void column_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -69,7 +69,7 @@ public class DateTimeExpTest {
             "CASTASDATETIME(1)",
     })
     void cast_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -120,7 +120,7 @@ public class DateTimeExpTest {
             "dateTime(1) not in (1, 2, 3)",
     })
     void relation_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -149,7 +149,7 @@ public class DateTimeExpTest {
             "day(castAsDateTime('1970-01-01T12:00:00Z'), 2)"
     })
     void fieldFunction_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -184,7 +184,7 @@ public class DateTimeExpTest {
             "plusHours(dateTime(1), null)",
     })
     void function_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -225,6 +225,6 @@ public class DateTimeExpTest {
             "quantile(dateTime(1), dateTime(1) > 0)",
     })
     void aggregate_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 }

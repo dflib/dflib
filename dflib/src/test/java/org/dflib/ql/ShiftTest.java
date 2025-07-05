@@ -1,4 +1,4 @@
-package org.dflib.exp.parser;
+package org.dflib.ql;
 
 import org.dflib.Exp;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,6 +45,6 @@ public class ShiftTest {
             "shift(plusDays(date(1), 1), 1)",
     })
     public void shift_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 }

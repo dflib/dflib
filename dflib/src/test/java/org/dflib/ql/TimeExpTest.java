@@ -1,4 +1,4 @@
-package org.dflib.exp.parser;
+package org.dflib.ql;
 
 import org.dflib.Condition;
 import org.dflib.Exp;
@@ -44,7 +44,7 @@ public class TimeExpTest {
             "time(-1)",
     })
     void column_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -69,7 +69,7 @@ public class TimeExpTest {
             "CASTASTIME(1)",
     })
     void cast_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -118,7 +118,7 @@ public class TimeExpTest {
             "time(1) not in (1, 2, 3)",
     })
     void timeRelation_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -147,7 +147,7 @@ public class TimeExpTest {
             "hour(castAsTime('12:34:56'), 2)",
     })
     void timeFieldFn_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -180,7 +180,7 @@ public class TimeExpTest {
             "plusNanos(time(1), null)",
     })
     void timeFn_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -217,6 +217,6 @@ public class TimeExpTest {
             "quantile(time(1), time(1) > 0)",
     })
     void timeAgg_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 }

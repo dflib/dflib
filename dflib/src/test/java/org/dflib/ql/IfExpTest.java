@@ -1,4 +1,4 @@
-package org.dflib.exp.parser;
+package org.dflib.ql;
 
 import org.dflib.Exp;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,6 +46,6 @@ public class IfExpTest {
             "if(true, 1, 0, 2)",
     })
     public void testThrows(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 }

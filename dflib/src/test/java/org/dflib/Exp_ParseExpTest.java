@@ -1,6 +1,6 @@
 package org.dflib;
 
-import org.dflib.exp.parser.ExpParserException;
+import org.dflib.ql.QLParserException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -62,7 +62,7 @@ public class Exp_ParseExpTest {
             "last(int(1), int(1) > 0)",
     })
     public void positionalAggregate_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest

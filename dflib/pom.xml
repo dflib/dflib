@@ -89,7 +89,7 @@
                                     </includes>
                                 </fileset>
                                 <fileset>
-                                    <directory>${project.build.sourceDirectory}/org/dflib/exp/parser/antlr4</directory>
+                                    <directory>${project.build.sourceDirectory}/org/dflib/ql/parser/antlr4</directory>
                                     <includes>
                                         <include>*.interp</include>
                                     </includes>
@@ -115,7 +115,7 @@
                         <relocation>
                             <!-- ANTLR4 dependency -->
                             <pattern>org.antlr.v4.runtime</pattern>
-                            <shadedPattern>org.dflib.exp.parser.org.antlr.v4.runtime</shadedPattern>
+                            <shadedPattern>org.dflib.ql.org.antlr.v4.runtime</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

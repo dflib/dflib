@@ -47,7 +47,7 @@ import org.dflib.exp.num.IntColumn;
 import org.dflib.exp.num.IntScalarExp;
 import org.dflib.exp.num.LongColumn;
 import org.dflib.exp.num.LongScalarExp;
-import org.dflib.exp.parser.ExpParserInvoker;
+import org.dflib.ql.QLParserInvoker;
 import org.dflib.exp.sort.ExpSorter;
 import org.dflib.exp.str.ConcatExp;
 import org.dflib.exp.str.StrColumn;
@@ -533,7 +533,7 @@ public interface Exp<T> {
      * @since 2.0.0
      */
     static Exp<?> parseExp(String exp) {
-        return ExpParserInvoker.parse(exp, parser -> parser.expRoot().exp);
+        return QLParserInvoker.parse(exp, parser -> parser.expRoot().exp);
     }
 
     /**

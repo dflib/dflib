@@ -13,7 +13,7 @@ import java.util.function.BiFunction;
 
 import org.dflib.*;
 
-import static org.dflib.exp.parser.antlr4.ExpParserUtils.*;
+import static org.dflib.ql.antlr4.ExpParserUtils.*;
 }
 
 /// **Parser rules**

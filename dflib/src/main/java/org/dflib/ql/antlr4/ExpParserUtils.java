@@ -1,4 +1,4 @@
-package org.dflib.exp.parser.antlr4;
+package org.dflib.ql.antlr4;
 
 import org.antlr.v4.runtime.Token;
 import org.dflib.Condition;

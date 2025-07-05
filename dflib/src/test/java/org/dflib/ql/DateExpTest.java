@@ -1,4 +1,4 @@
-package org.dflib.exp.parser;
+package org.dflib.ql;
 
 import org.dflib.Condition;
 import org.dflib.DateExp;
@@ -44,7 +44,7 @@ public class DateExpTest {
             "date(-1)",
     })
     void column_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -69,7 +69,7 @@ public class DateExpTest {
             "CASTASDATE(1)",
     })
     void cast_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -118,7 +118,7 @@ public class DateExpTest {
             "date(1) not in (1, 2, 3)",
     })
     void relation_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -146,7 +146,7 @@ public class DateExpTest {
             "day(castAsDate('1970-01-01'), 2)",
     })
     void filedFunction_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -176,7 +176,7 @@ public class DateExpTest {
             "plusDays(date(1), null)",
     })
     void function_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -213,6 +213,6 @@ public class DateExpTest {
             "quantile(date(1), date(1) > 0)",
     })
     void aggregate_throws(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 }

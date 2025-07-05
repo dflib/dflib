@@ -1,4 +1,4 @@
-package org.dflib.exp.parser;
+package org.dflib.ql;
 
 import org.dflib.Exp;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,7 +46,7 @@ public class GuessedTypeConversionsTest {
     @ParameterizedTest
     @MethodSource
     void unrecognizedConversions(String text) {
-        assertThrows(ExpParserException.class, () -> parseExp(text));
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     // TODO: the eventual goal is to become smart about these.. Maybe recognize generic NumExp based on the constant.
