@@ -21,11 +21,11 @@ class DatasetBuilder {
     public static DatasetBuilder of(
             Option opt, DataFrame dataFrame) {
 
-        // a default for no series is to show empty cartesian coordinates. So "dataset" is still needed
+        // The default for no series is to show empty cartesian coordinates, so "dataset" is still needed
         boolean needsDataset = opt.seriesOpts.isEmpty() || opt.seriesOpts.stream()
                 .filter(so -> so.getType().supportsDataset())
+                .map(so -> true)
                 .findFirst()
-                .map(so -> so != null)
                 .orElse(false);
 
         if (!needsDataset) {
@@ -47,11 +47,11 @@ class DatasetBuilder {
             for (int i = 0; i < len; i++) {
                 XAxisBuilder ab = xs.get(i);
                 if (ab.columnName != null) {
-                    dsb.appendRow(dsb.dataFrame.getColumn(ab.columnName), DatasetBuilder.DatasetRowType.xAxisLabels, i);
+                    dsb.appendRow(dsb.dataFrame.getColumn(ab.columnName), DatasetRowType.xAxisLabels, i);
                 } else {
                     // TODO: appending X data as a Series to prevent column reuse which is not possible until
                     //  https://github.com/apache/echarts/issues/20330 is fixed
-                    dsb.appendRow(new IntSequenceSeries(1, dsb.dataFrame.height() + 1), DatasetBuilder.DatasetRowType.xAxisLabels, i);
+                    dsb.appendRow(new IntSequenceSeries(1, dsb.dataFrame.height() + 1), DatasetRowType.xAxisLabels, i);
                 }
             }
         }
@@ -67,11 +67,11 @@ class DatasetBuilder {
             if (opts instanceof PieSeriesOpts) {
                 PieSeriesOpts pco = (PieSeriesOpts) opts;
                 if (pco.getLabelColumn() != null) {
-                    dsb.appendRow(dsb.dataFrame.getColumn(pco.getLabelColumn()), DatasetBuilder.DatasetRowType.pieItemName, i);
+                    dsb.appendRow(dsb.dataFrame.getColumn(pco.getLabelColumn()), DatasetRowType.pieItemName, i);
                 } else {
                     // TODO: appending pie label data as a Series to prevent column reuse which is not possible until
                     //   https://github.com/apache/echarts/issues/20330 is fixed
-                    dsb.appendRow(new IntSequenceSeries(1, dsb.dataFrame.height() + 1), DatasetBuilder.DatasetRowType.pieItemName, i);
+                    dsb.appendRow(new IntSequenceSeries(1, dsb.dataFrame.height() + 1), DatasetRowType.pieItemName, i);
                 }
             }
         }
@@ -84,7 +84,7 @@ class DatasetBuilder {
             Index dataColumns = seriesDataColumns.get(i);
             if (dataColumns != null) {
                 for (String dc : dataColumns) {
-                    dsb.appendRow(dc, DatasetBuilder.DatasetRowType.seriesData, i);
+                    dsb.appendRow(dc, DatasetRowType.seriesData, i);
                 }
             }
         }
@@ -140,9 +140,9 @@ class DatasetBuilder {
 
         Supplier<String> labelMaker = new Supplier<>() {
 
-            String baseLabel = "L";
+            final String baseLabel = "L";
+            final Set<String> seen = new HashSet<>(rowPosByDataColumn.keySet());
             int labelCounter = 0;
-            Set<String> seen = new HashSet<>(rowPosByDataColumn.keySet());
 
             @Override
             public String get() {
