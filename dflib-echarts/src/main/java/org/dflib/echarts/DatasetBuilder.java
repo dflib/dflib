@@ -34,6 +34,7 @@ class DatasetBuilder {
 
         DatasetBuilder dsb = new DatasetBuilder(dataFrame);
         appendXAxesLabels(dsb, opt.xAxes);
+        appendSymbolSizes(dsb, opt.seriesOpts);
         appendPieChartLabels(dsb, opt.seriesOpts);
         appendDatasetRows(dsb, opt.seriesDataColumns);
 
@@ -52,6 +53,33 @@ class DatasetBuilder {
                     // TODO: appending X data as a Series to prevent column reuse which is not possible until
                     //  https://github.com/apache/echarts/issues/20330 is fixed
                     dsb.appendRow(new IntSequenceSeries(1, dsb.dataFrame.height() + 1), DatasetRowType.xAxisLabels, i);
+                }
+            }
+        }
+    }
+
+    private static void appendSymbolSizes(DatasetBuilder dsb, List<SeriesOpts<?>> series) {
+
+        int len = series.size();
+        for (int i = 0; i < len; i++) {
+
+            SeriesOpts<?> opts = series.get(i);
+
+            if (opts instanceof LineSeriesOpts) {
+                LineSeriesOpts sso = (LineSeriesOpts) opts;
+                if (sso.symbolSize != null && sso.symbolSize.symbolSizeColumn != null) {
+                    // TODO: appending X data as a Series to prevent column reuse. Two problems with reuse:
+                    //  1. https://github.com/apache/echarts/issues/20330
+                    //  2. The row type may change, and we won't detect that it is a label (this is fixable in DFLib by allowing multiple row types)
+                    dsb.appendRow(dsb.dataFrame.getColumn(sso.symbolSize.symbolSizeColumn), DatasetRowType.symbolSize, i);
+                }
+            } else if (opts instanceof ScatterSeriesOpts) {
+                ScatterSeriesOpts sso = (ScatterSeriesOpts) opts;
+                if (sso.symbolSize != null && sso.symbolSize.symbolSizeColumn != null) {
+                    // TODO: appending X data as a Series to prevent column reuse. Two problems with reuse:
+                    //  1. https://github.com/apache/echarts/issues/20330
+                    //  2. The row type may change, and we won't detect that it is a label (this is fixable in DFLib by allowing multiple row types)
+                    dsb.appendRow(dsb.dataFrame.getColumn(sso.symbolSize.symbolSizeColumn), DatasetRowType.symbolSize, i);
                 }
             }
         }
@@ -177,13 +205,14 @@ class DatasetBuilder {
     }
 
     enum DatasetRowType {
-        xAxisLabels, pieItemName, seriesData
+        xAxisLabels, symbolSize, pieItemName, seriesData
     }
 
     static class DatasetRow {
         final Series<?> data;
         final DatasetRowType type;
         final int xAxisIndex;
+        final int symbolSizeIndex;
         final int pieSeriesIndex;
         final int seriesIndex;
 
@@ -196,16 +225,25 @@ class DatasetBuilder {
                 case pieItemName:
                     this.pieSeriesIndex = pos;
                     this.xAxisIndex = -1;
+                    this.symbolSizeIndex = -1;
                     this.seriesIndex = -1;
                     break;
                 case seriesData:
                     this.pieSeriesIndex = -1;
                     this.xAxisIndex = -1;
+                    this.symbolSizeIndex = -1;
                     this.seriesIndex = pos;
                     break;
                 case xAxisLabels:
                     this.pieSeriesIndex = -1;
                     this.xAxisIndex = pos;
+                    this.symbolSizeIndex = -1;
+                    this.seriesIndex = -1;
+                    break;
+                case symbolSize:
+                    this.pieSeriesIndex = -1;
+                    this.xAxisIndex = -1;
+                    this.symbolSizeIndex = pos;
                     this.seriesIndex = -1;
                     break;
                 default:

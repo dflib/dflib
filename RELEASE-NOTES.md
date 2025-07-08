@@ -1,5 +1,6 @@
 ## Release 2.0.0-M4
 
+* #406 ECharts: "symbolSize" linked to a DataFrame column
 * #506 Exp parser: support for the scale() function 
 * #507 Exp parser: concat() function should allow any argument type 
 * #508 Exp parser: support vConcat() aggregation function 

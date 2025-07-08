@@ -5,7 +5,7 @@ public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
     Label label;
     Boolean areaStyle;
     Boolean showSymbol;
-    Integer symbolSize;
+    SymbolSize symbolSize;
     Boolean smooth;
     Boolean stack;
     LineItemStyle itemStyle;
@@ -35,7 +35,18 @@ public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
      * @since 1.1.0
      */
     public LineSeriesOpts symbolSize(int symbolSize) {
-        this.symbolSize = symbolSize;
+        this.symbolSize = SymbolSize.of(symbolSize);
+        return this;
+    }
+
+    /**
+     * Will generate graph symbol size using a dynamic value coming from the specified DataFrame column, essentially
+     * providing an extra visual dimension.
+     *
+     * @since 2.0.0
+     */
+    public LineSeriesOpts symbolSize(String dataColumn) {
+        this.symbolSize = SymbolSize.ofDataColumn(dataColumn);
         return this;
     }
 

@@ -4,7 +4,7 @@ public class ScatterSeriesOpts extends CartesianSeriesOpts<ScatterSeriesOpts> {
 
     Label label;
     ScatterItemStyle itemStyle;
-    Integer symbolSize;
+    SymbolSize symbolSize;
 
     @Override
     public ChartType getType() {
@@ -33,7 +33,18 @@ public class ScatterSeriesOpts extends CartesianSeriesOpts<ScatterSeriesOpts> {
      * @since 1.1.0
      */
     public ScatterSeriesOpts symbolSize(int symbolSize) {
-        this.symbolSize = symbolSize;
+        this.symbolSize = SymbolSize.of(symbolSize);
+        return this;
+    }
+
+    /**
+     * Will generate graph symbol size using a dynamic value coming from the specified DataFrame column, essentially
+     * providing an extra visual dimension.
+     *
+     * @since 2.0.0
+     */
+    public ScatterSeriesOpts symbolSize(String dataColumn) {
+        this.symbolSize = SymbolSize.ofDataColumn(dataColumn);
         return this;
     }
 }

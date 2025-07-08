@@ -19,6 +19,15 @@ public class ScatterSeriesTest {
     }
 
     @Test
+    public void symbolSizeColumn() {
+
+        String s1 = ECharts.chart()
+                .series(SeriesOpts.ofScatter().symbolSize("y2"), "y1")
+                .plot(df2, "_tid").getChartScript();
+        assertTrue(s1.contains("symbolSize: function (val) { return val[1]; },"), s1);
+    }
+
+    @Test
     public void itemStyle() {
 
         ScatterItemStyle style = ScatterItemStyle.of()

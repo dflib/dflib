@@ -23,7 +23,7 @@ public class SeriesModel {
     private final Boolean smooth;
     private final Boolean stack;
     private final String barWidth;
-    private final Integer symbolSize;
+    private final String symbolSize;
     private final Integer xAxisIndex;
     private final Integer yAxisIndex;
     private final Integer calendarIndex;
@@ -51,7 +51,7 @@ public class SeriesModel {
             Boolean stack,
             String barWidth,
             Boolean smooth,
-            Integer symbolSize,
+            String symbolSize,
             Integer xAxisIndex,
             Integer yAxisIndex,
             Integer calendarIndex,
@@ -139,7 +139,8 @@ public class SeriesModel {
             String roseType,
             ItemStyleModel itemStyle,
             LineStyleModel lineStyle) {
-        this(name, type, null, encode, label, seriesLayoutBy, null, areaStyle, showSymbol, stack, null, smooth, symbolSize,
+        this(name, type, null, encode, label, seriesLayoutBy, null, areaStyle, showSymbol, stack, null, smooth,
+                symbolSize != null ? String.valueOf(symbolSize) : null,
                 xAxisIndex, yAxisIndex, null, radius, center, startAngle, endAngle, roseType, itemStyle, lineStyle);
     }
 
@@ -219,9 +220,9 @@ public class SeriesModel {
     }
 
     /**
-     * @since 1.1.0
+     * @since 2.0.0
      */
-    public Integer getSymbolSize() {
+    public String getSymbolSize() {
         return symbolSize;
     }
 

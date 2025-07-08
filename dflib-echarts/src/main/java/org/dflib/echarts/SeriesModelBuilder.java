@@ -24,9 +24,9 @@ class SeriesModelBuilder {
     // dimensions are references to row numbers in the dataset
     Integer xDimension;
     List<Integer> yDimensions;
-    // TODO: tooltip dimension
-
     Integer pieLabelsDimension;
+    Integer symbolSizeDimension;
+    // TODO: tooltip dimension, etc.
 
     String datasetSeriesLayoutBy;
 
@@ -64,6 +64,10 @@ class SeriesModelBuilder {
         return this;
     }
 
+    public SeriesModelBuilder symbolSizeDimension(int dim) {
+        this.symbolSizeDimension = dim;
+        return this;
+    }
 
     public SeriesModelBuilder datasetSeriesLayoutBy(String layout) {
         this.datasetSeriesLayoutBy = layout;
@@ -140,7 +144,9 @@ class SeriesModelBuilder {
                 so.stack,
                 null,
                 so.smooth,
-                so.symbolSize,
+                // TODO: ugly due to possible dimension linking
+                symbolSizeDimension != null ? SymbolSize.resolveAsFunction(symbolSizeDimension)
+                        : (so.symbolSize != null ? SymbolSize.resolveAsFixedSize(so.symbolSize.symbolSize) : null),
                 so.xAxisIndex,
                 so.yAxisIndex,
                 null,
@@ -168,7 +174,9 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
-                so.symbolSize,
+                // TODO: ugly due to possible dimension linking
+                symbolSizeDimension != null ? SymbolSize.resolveAsFunction(symbolSizeDimension)
+                        : (so.symbolSize != null ? SymbolSize.resolveAsFixedSize(so.symbolSize.symbolSize) : null),
                 so.xAxisIndex,
                 so.yAxisIndex,
                 null,

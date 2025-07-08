@@ -92,6 +92,9 @@ class SeriesModelBuilders {
                         }
                     }
                     break;
+                case symbolSize:
+                    series.get(row.symbolSizeIndex).symbolSizeDimension(i);
+                    break;
                 case pieItemName:
                     series.get(row.pieSeriesIndex).pieLabelsDimension(i);
                     break;
