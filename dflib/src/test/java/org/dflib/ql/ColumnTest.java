@@ -90,6 +90,22 @@ public class ColumnTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource
+    public void expAlias(String exp, Exp<?> expected) {
+        assertEquals(expected, parseExp(exp));
+    }
+
+    static Stream<Arguments> expAlias() {
+        return Stream.of(
+                arguments("a as b", $col("a").as("b")),
+                arguments("a as `new column`", $col("a").as("new column")),
+                arguments("`old column` as `new column`", $col("old column").as("new column")),
+                arguments("int(a) * 8 as int", $int("a").mul(8).as("int")),
+                arguments("int(a) = int(b) as bool", $int("a").eq($int("b")).as("bool"))
+        );
+    }
+
     /**
      * This test checks every token in the parser if it's a valid identifier.
      * <p>
@@ -136,6 +152,7 @@ public class ColumnTest {
             ExpParser.NULL,
             ExpParser.TRUE,
             ExpParser.FALSE,
+            ExpParser.AS,
             ExpParser.INTEGER_LITERAL,
             ExpParser.FLOAT_LITERAL,
             ExpParser.STRING_LITERAL,

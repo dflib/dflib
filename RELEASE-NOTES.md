@@ -9,6 +9,7 @@
 * #513 Exp parser: allow using function names as a column in the corresponding context 
 * #514 Exp parser: support in and not in operators
 * #515 String sorter parser 
+* #518 QL Parser: column alias support 
 
 ## Release 2.0.0-M3
 

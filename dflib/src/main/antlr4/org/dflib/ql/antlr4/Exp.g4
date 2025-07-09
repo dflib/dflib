@@ -21,8 +21,12 @@ import static org.dflib.ql.antlr4.ExpParserUtils.*;
 /**
  * The root rule of the grammar.
  */
-expRoot returns [Exp<?> exp]
-    : expression EOF { $exp = $expression.exp; }
+expRoot returns [Exp<?> exp] locals [String alias]
+    : expression
+    (
+       AS identifier { $alias = $identifier.id; }
+    )?
+    EOF { $exp = $alias == null ? $expression.exp : $expression.exp.as($alias); }
     ;
 
 /**
@@ -1634,6 +1638,9 @@ ASC: 'asc';
 
 //@ doc:inline
 DESC: 'desc';
+
+//@ doc:inline
+AS: 'as';
 
 /**
  * Matches an integer literal in decimal, hexadecimal, octal, or binary format.
