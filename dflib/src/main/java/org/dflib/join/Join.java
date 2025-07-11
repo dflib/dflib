@@ -9,7 +9,6 @@ import org.dflib.IntSeries;
 import org.dflib.JoinType;
 import org.dflib.Series;
 import org.dflib.builder.ObjectAccum;
-import org.dflib.exp.Exps;
 import org.dflib.series.IndexedSeries;
 import org.dflib.series.SingleValueSeries;
 

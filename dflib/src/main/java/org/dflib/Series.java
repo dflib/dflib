@@ -4,7 +4,6 @@ import org.dflib.agg.SeriesAggregator;
 import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.SeriesByElementBuilder;
 import org.dflib.builder.ValueCompactor;
-import org.dflib.exp.Exps;
 import org.dflib.op.ReplaceOp;
 import org.dflib.series.ArraySeries;
 import org.dflib.series.ColumnMappedSeries;
