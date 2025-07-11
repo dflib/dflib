@@ -98,11 +98,8 @@ public class RowColumnSet_Select_ExpTest {
                         2, "y", "b",
                         -1, "m", "n")
                 .rows(Series.ofBool(true, false, true))
-                .cols("b", "a")
-                .select(
-                        "concat(str(1), str(2))",
-                        "int(0) * 3"
-                );
+                .cols()
+                .select("concat(str(1), str(2)) as b, int(0) * 3 as a");
 
         new DataFrameAsserts(df, "b", "a")
                 .expectHeight(2)

@@ -52,9 +52,7 @@ public class Series_AggTest {
     public void aggMultiple_StrExp(SeriesType type) {
 
         DataFrame aggregated = type.createSeries("a", "b", "cd", "e", "fg")
-                .aggMultiple(
-                        "a",
-                        "count()");
+                .aggMultiple("a, count()");
 
         new DataFrameAsserts(aggregated, "a", "count")
                 .expectRow(0, "a", 5);

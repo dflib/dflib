@@ -746,8 +746,8 @@ public interface Series<T> extends Iterable<T> {
      * Returns a DataFrame, with each column corresponding to the result of aggregation with each aggregator. The number
      * of columns will be equal to the number of passed aggregators.
      */
-    default DataFrame aggMultiple(String... aggregatingExps) {
-        return aggMultiple(Exps.asExps(aggregatingExps));
+    default DataFrame aggMultiple(String aggregatingExps) {
+        return aggMultiple(Exp.parseExpArray(aggregatingExps));
     }
 
     /**

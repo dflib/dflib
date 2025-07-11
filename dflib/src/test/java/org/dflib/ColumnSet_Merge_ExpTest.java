@@ -37,9 +37,8 @@ public class ColumnSet_Merge_ExpTest {
     public void byName_StrExp() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
-                .cols("b", "c").merge(
-                        "int(0) * 100",
-                        "int(0) * 10");
+                .cols()
+                .merge("int(0) * 100 as b, int(0) * 10 as c");
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(2)

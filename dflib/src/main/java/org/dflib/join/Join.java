@@ -164,13 +164,13 @@ public class Join {
     }
 
     /**
-     * Parses String arguments into an array of expressions and returns a DataFrame with columns produced by those
+     * Parses String argument into an array of expressions and returns a DataFrame with columns produced by those
      * expressions from the join.
      *
      * @since 2.0.0
      */
-    public DataFrame select(String... exps) {
-        return select(Exps.asExps(exps));
+    public DataFrame select(String exps) {
+        return select(Exp.parseExpArray(exps));
     }
 
     public DataFrame select(Exp<?>... exps) {

@@ -75,14 +75,7 @@ public class Window_SelectTest {
     public void byName_MultiExp_StrExp() {
 
         DataFrame r = TEST_DF.over()
-                .cols("a", "la", "s", "rn", "cs")
-                .select(
-                        "a",
-                        "first(a)",
-                        "sum(int(a))",
-                        "rowNum()",
-                        "cumSum(int(a))"
-                );
+                .select("a, first(a) as la, sum(int(a)) as s, rowNum() as rn, cumSum(int(a)) as cs");
 
         new DataFrameAsserts(r, "a", "la", "s", "rn", "cs")
                 .expectHeight(5)

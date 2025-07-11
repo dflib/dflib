@@ -50,18 +50,4 @@ public class Exps {
         }
     }
 
-
-    /**
-     * @since 2.0.0
-     */
-    public static Exp<?>[] asExps(String[] exps) {
-        int len = exps.length;
-        Exp[] cs = new Exp[len];
-
-        for (int i = 0; i < len; i++) {
-            cs[i] = Exp.parseExp(exps[i]);
-        }
-
-        return cs;
-    }
 }

@@ -216,14 +216,14 @@ public interface ColumnSet {
     DataFrame merge();
 
     /**
-     * Parses String arguments into an array of expressions and returns a transformed DataFrame that contains columns
+     * Parses String argument into an array of expressions and returns a transformed DataFrame that contains columns
      * from this DataFrame and added / replaced columns produced by the expressions. Expressions are matched with the
      * result columns using the algorithm defined in this specific ColumnSet.
      *
      * @since 2.0.0
      */
-    default DataFrame merge(String... exps) {
-        return merge(Exps.asExps(exps));
+    default DataFrame merge(String exps) {
+        return merge(Exp.parseExpArray(exps));
     }
 
     /**
@@ -288,14 +288,14 @@ public interface ColumnSet {
     DataFrame selectAs(Map<String, String> oldToNewNames);
 
     /**
-     * Parses String arguments into an array of expressions and returns a DataFrame with columns produced by those
+     * Parses String argument into an array of expressions and returns a DataFrame with columns produced by those
      * expressions. Expressions are matched with the result columns using the algorithm defined in this specific
      * ColumnSet.
      *
      * @since 2.0.0
      */
-    default DataFrame select(String... exps) {
-        return select(Exps.asExps(exps));
+    default DataFrame select(String exps) {
+        return select(Exp.parseExpArray(exps));
     }
 
     /**
@@ -342,13 +342,13 @@ public interface ColumnSet {
     //  "select()" and "merge()", unclear what should the behavior be
 
     /**
-     * Parses String arguments into expressions and returns a single-row DataFrame with columns from this ColumnSet
+     * Parses String argument into expressions and returns a single-row DataFrame with columns from this ColumnSet
      * "reduced" by those expressions.
      *
      * @since 2.0.0
      */
-    default DataFrame agg(String... aggregatingExps) {
-        return agg(Exps.asExps(aggregatingExps));
+    default DataFrame agg(String aggregatingExps) {
+        return agg(Exp.parseExpArray(aggregatingExps));
     }
 
     /**

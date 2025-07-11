@@ -257,11 +257,9 @@ public class RowColumnSet_Merge_ExpTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rows(Series.ofBool(true, false, true)).cols("b", "a")
-                .merge(
-                        "concat(str(1), str(2))",
-                        "int(0) * 3"
-                );
+                .rows(Series.ofBool(true, false, true))
+                .cols()
+                .merge("concat(str(1), str(2)) as b, int(0) * 3 as a");
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(3)

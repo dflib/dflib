@@ -113,9 +113,8 @@ public class GroupBy_AggTest {
                 0, "a",
                 1, "x");
 
-        DataFrame df = df1.group("a").cols("A", "B").agg(
-                "sum(long(a))",
-                "min(str(1))");
+        DataFrame df = df1.group("a")
+                .agg("sum(long(a)) as A, min(str(1)) as B");
 
         new DataFrameAsserts(df, "A", "B")
                 .expectHeight(3)

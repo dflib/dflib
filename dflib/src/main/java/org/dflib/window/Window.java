@@ -254,12 +254,12 @@ public class Window {
     }
 
     /**
-     * Parses the provided Strings to expressions and calls {@link #select(Exp[])}.
+     * Parses the provided String to expressions and calls {@link #select(Exp[])}.
      *
      * @since 2.0.0
      */
-    public DataFrame select(String... exps) {
-        return select(Exps.asExps(exps));
+    public DataFrame select(String exps) {
+        return select(Exp.parseExpArray(exps));
     }
 
     /**
@@ -274,15 +274,15 @@ public class Window {
     }
 
     /**
-     * Parses String arguments into expressions and generates a DataFrame of the same height as the source DataFrame,
+     * Parses String argument into expressions and generates a DataFrame of the same height as the source DataFrame,
      * combining columns generated with those expressions from the original DataFrame columns. Expressions can be a mix
      * of per-row and aggregating. They are invoked per each row, and are passed the range of rows corresponding to the
      * partitioning, sorting, and range settings.
      *
      * @since 2.0.0
      */
-    public DataFrame merge(String... exps) {
-        return merge(Exps.asExps(exps));
+    public DataFrame merge(String exps) {
+        return merge(Exp.parseExpArray(exps));
     }
 
     /**

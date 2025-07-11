@@ -75,13 +75,7 @@ public class Window_MergeTest {
     public void byName_MultiExp_StrExp() {
 
         DataFrame r = TEST_DF.over()
-                .cols("a", "s", "rn", "cs")
-                .merge(
-                        "a",
-                        "sum(int(a))",
-                        "rowNum()",
-                        "cumSum(int(a))"
-                );
+                .merge("a, sum(int(a)) as s, rowNum() as rn, cumSum(int(a)) as cs");
 
         new DataFrameAsserts(r, "a", "b", "s", "rn", "cs")
                 .expectHeight(5)

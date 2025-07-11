@@ -70,11 +70,7 @@ public class Join_SelectExpTest {
                 "c", 3, 30);
 
         DataFrame df = df1.join(df2).on(0, 1)
-                .cols("X", "Y")
-                .select(
-                        "concat(str(a_), str(b))",
-                        "int(a) + int(d)"
-                );
+                .select("concat(str(a_), str(b)) as X, int(a) + int(d) as Y");
 
         new DataFrameAsserts(df, "X", "Y")
                 .expectHeight(2)

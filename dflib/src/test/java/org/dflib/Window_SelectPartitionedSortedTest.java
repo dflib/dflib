@@ -61,11 +61,7 @@ public class Window_SelectPartitionedSortedTest {
         DataFrame r = TEST_DF.over()
                 .partition("a")
                 .sort("b")
-                .cols("a", "rn")
-                .select(
-                        "a",
-                        "rowNum()"
-                );
+                .select("a, rowNum() as rn");
 
         new DataFrameAsserts(r, "a", "rn")
                 .expectHeight(5)

@@ -47,7 +47,8 @@ public class ColumnSet_Select_ExpTest {
     public void byName_StrExp() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
-                .cols("b", "c").select("int(0) * 100", "int(a) * 10");
+                .cols()
+                .select("int(0) * 100 as b, int(a) * 10 as c");
 
         new DataFrameAsserts(df, "b", "c")
                 .expectHeight(2)

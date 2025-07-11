@@ -40,13 +40,13 @@ public interface RowColumnSet {
     DataFrame merge();
 
     /**
-     * Parses String arguments into an array of expressions and then applies row merge operation with those expressions
+     * Parses String argument into an array of expressions and then applies row merge operation with those expressions
      * transforming RowColumnSet column data.
      *
      * @since 2.0.0
      */
-    default DataFrame merge(String... exps) {
-        return merge(Exps.asExps(exps));
+    default DataFrame merge(String exps) {
+        return merge(Exp.parseExpArray(exps));
     }
 
     DataFrame merge(Exp<?>... exps);
@@ -64,13 +64,13 @@ public interface RowColumnSet {
 
 
     /**
-     * Parses String arguments into an array of expressions and then applies select operation with those expressions
+     * Parses String argument into an array of expressions and then applies select operation with those expressions
      * transforming RowColumnSet column data.
      *
      * @since 2.0.0
      */
-    default DataFrame select(String... exps) {
-        return select(Exps.asExps(exps));
+    default DataFrame select(String exps) {
+        return select(Exp.parseExpArray(exps));
     }
 
     DataFrame select(Exp<?>... exps);

@@ -53,11 +53,8 @@ public class ColumnSet_AggTest {
                 0, "a", "z", 0.001);
 
         DataFrame agg = df
-                .cols("sum_a", "count", "sum_d")
-                .agg(
-                        "sum(long(a))",
-                        "count()",
-                        "sum(double(d))");
+                .cols()
+                .agg("sum(long(a)) as sum_a, count() as count, sum(double(d)) as sum_d");
 
         new DataFrameAsserts(agg, "sum_a", "count", "sum_d")
                 .expectHeight(1)

@@ -213,11 +213,7 @@ public class RowSet_Select_ExpTest {
                         2, "y", "b",
                         -1, "m", "n")
                 .rows("int(a) % 2 != 0")
-                .select(
-                        "int(0) * 3",
-                        "concat(str(1), str(2))",
-                        "c"
-                );
+                .select("int(0) * 3, concat(str(1), str(2)), c");
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(2)
