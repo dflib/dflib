@@ -18,6 +18,15 @@ public interface Sorter {
         return QLParserInvoker.parse(sorterExp, ExpParser::sorterRoot).sorter;
     }
 
+    /**
+     * Parses the provided sort expression String into an array of sorters.
+     *
+     * @since 2.0.0
+     */
+    static Sorter[] parseSorterArray(String sorterArrayExp) {
+        return QLParserInvoker.parse(sorterArrayExp, ExpParser::sorterArray).sorters;
+    }
+
     IntComparator eval(DataFrame df);
 
     IntComparator eval(Series<?> s);

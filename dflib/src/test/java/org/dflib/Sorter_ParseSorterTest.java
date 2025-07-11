@@ -33,4 +33,22 @@ public class Sorter_ParseSorterTest {
                 arguments("int(1) > 0 desc", $int(1).gt(0).desc())
         );
     }
+
+    @ParameterizedTest
+    @MethodSource
+    public void parseSorterList(String spec, Sorter[] expected) {
+        assertArrayEquals(expected, Sorter.parseSorterArray(spec));
+    }
+
+    static Stream<Arguments> parseSorterList() {
+        return Stream.of(
+                arguments("test", new Sorter[]{$col("test").asc()}),
+                arguments("a, b, c", new Sorter[]{$col("a").asc(), $col("b").asc(), $col("c").asc()}),
+                arguments("a, b desc, c asc", new Sorter[]{$col("a").asc(), $col("b").desc(), $col("c").asc()}),
+                arguments("test asc", new Sorter[]{$col("test").asc()}),
+                arguments("test desc", new Sorter[]{$col("test").desc()}),
+                arguments("asc, desc desc, asc asc", new Sorter[]{$col("asc").asc(),  $col("desc").desc(), $col("asc").asc()}),
+                arguments("a, b desc, int(1) > 0 asc", new Sorter[]{$col("a").asc(), $col("b").desc(), $int(1).gt(0).asc()})
+        );
+    }
 }

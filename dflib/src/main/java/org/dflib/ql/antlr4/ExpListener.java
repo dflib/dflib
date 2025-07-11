@@ -33,6 +33,26 @@ public interface ExpListener extends ParseTreeListener {
 	 */
 	void exitExpRoot(ExpParser.ExpRootContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ExpParser#expSingle}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpSingle(ExpParser.ExpSingleContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#expSingle}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpSingle(ExpParser.ExpSingleContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ExpParser#expArray}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpArray(ExpParser.ExpArrayContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#expArray}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpArray(ExpParser.ExpArrayContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ExpParser#sorterRoot}.
 	 * @param ctx the parse tree
 	 */
@@ -42,6 +62,26 @@ public interface ExpListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSorterRoot(ExpParser.SorterRootContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ExpParser#sorterSingle}.
+	 * @param ctx the parse tree
+	 */
+	void enterSorterSingle(ExpParser.SorterSingleContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#sorterSingle}.
+	 * @param ctx the parse tree
+	 */
+	void exitSorterSingle(ExpParser.SorterSingleContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ExpParser#sorterArray}.
+	 * @param ctx the parse tree
+	 */
+	void enterSorterArray(ExpParser.SorterArrayContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#sorterArray}.
+	 * @param ctx the parse tree
+	 */
+	void exitSorterArray(ExpParser.SorterArrayContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ExpParser#expression}.
 	 * @param ctx the parse tree

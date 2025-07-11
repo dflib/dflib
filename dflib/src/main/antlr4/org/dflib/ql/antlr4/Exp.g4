@@ -21,22 +21,40 @@ import static org.dflib.ql.antlr4.ExpParserUtils.*;
 /**
  * The root rule of the grammar.
  */
-expRoot returns [Exp<?> exp] locals [String alias]
+expRoot returns [Exp<?> exp]
+    : expSingle EOF { $exp = $expSingle.exp; }
+    ;
+
+expSingle returns [Exp<?> exp] locals [String alias]
     : expression
     (
        AS identifier { $alias = $identifier.id; }
     )?
-    EOF { $exp = $alias == null ? $expression.exp : $expression.exp.as($alias); }
+    { $exp = $alias == null ? $expression.exp : $expression.exp.as($alias); }
+    ;
+
+expArray returns [Exp[] expressions]
+    : args += expSingle (',' args += expSingle )* EOF
+    { $expressions = $args.stream().map(e -> e.exp).toArray(Exp[]::new); }
     ;
 
 /**
  * The root rule for the sorting spec
  */
-sorterRoot returns [Sorter sorter] locals [boolean desc]
+sorterRoot returns [Sorter sorter]
+    : sorterSingle EOF { $sorter = $sorterSingle.sorter; }
+    ;
+
+sorterSingle returns [Sorter sorter] locals [boolean desc]
     : expression (
         : ASC
         | DESC { $desc = true; }
-    )? EOF { $sorter = $desc ? $expression.exp.desc() : $expression.exp.asc(); }
+    )? { $sorter = $desc ? $expression.exp.desc() : $expression.exp.asc(); }
+    ;
+
+sorterArray returns [Sorter[] sorters]
+    : args += sorterSingle (',' args += sorterSingle)* EOF
+    { $sorters = $args.stream().map(s -> s.sorter).toArray(Sorter[]::new); }
     ;
 
 /**

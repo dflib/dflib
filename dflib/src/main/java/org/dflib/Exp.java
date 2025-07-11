@@ -538,6 +538,17 @@ public interface Exp<T> {
     }
 
     /**
+     * Parses the provided String into an expression list.
+     *
+     * @param expArray an expression string to parse
+     * @return array of expression objects parsed from the string
+     * @since 2.0.0
+     */
+    static Exp<?>[] parseExpArray(String expArray) {
+        return QLParserInvoker.parse(expArray, ExpParser::expArray).expressions;
+    }
+
+    /**
      * Returns the type of the evaluation result. The type is used internally by the DBLib expression engine to compile
      * the most optimal evaluation path.
      *
