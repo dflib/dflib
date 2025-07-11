@@ -1,8 +1,5 @@
 package org.dflib;
 
-import org.dflib.exp.Exps;
-import org.dflib.sort.Sorters;
-
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -114,12 +111,12 @@ public interface RowSet {
     }
 
     /**
-     * Parses provided Strings into Sorters and calls {@link #sort(Sorter...)}.
+     * Parses provided String into Sorters and calls {@link #sort(Sorter...)}.
      *
      * @since 2.0.0
      */
-    default RowSet sort(String... sortExps) {
-        return sort(Sorters.asSorters(sortExps));
+    default RowSet sort(String sortExps) {
+        return sort(Sorter.parseSorterArray(sortExps));
     }
 
     /**

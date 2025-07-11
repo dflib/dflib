@@ -4,7 +4,6 @@ import org.dflib.agg.GroupByAggregator;
 import org.dflib.concat.SeriesConcat;
 import org.dflib.concat.VConcat;
 import org.dflib.exp.Exps;
-import org.dflib.sort.Sorters;
 import org.dflib.series.EmptySeries;
 import org.dflib.slice.FixedColumnSetIndex;
 import org.dflib.sort.IntComparator;
@@ -249,8 +248,8 @@ public class GroupBy {
     /**
      * @since 2.0.0
      */
-    public GroupBy sort(String... sortExps) {
-        return sort(Sorters.asSorters(sortExps));
+    public GroupBy sort(String sortExps) {
+        return sort(Sorter.parseSorterArray(sortExps));
     }
 
     public GroupBy sort(Sorter... sorters) {

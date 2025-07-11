@@ -5,7 +5,6 @@ import org.dflib.builder.DataFrameByColumnBuilder;
 import org.dflib.builder.DataFrameByRowBuilder;
 import org.dflib.builder.DataFrameFoldByColumnBuilder;
 import org.dflib.builder.DataFrameFoldByRowBuilder;
-import org.dflib.sort.Sorters;
 import org.dflib.join.Join;
 import org.dflib.pivot.PivotBuilder;
 import org.dflib.row.RowProxy;
@@ -253,12 +252,12 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Parses the provided Strings into sorters and calls {@link #sort(Sorter...)}.
+     * Parses the provided String into sorters and calls {@link #sort(Sorter...)}.
      *
      * @since 2.0.0
      */
-    default DataFrame sort(String... sortExps) {
-        return sort(Sorters.asSorters(sortExps));
+    default DataFrame sort(String sortExps) {
+        return sort(Sorter.parseSorterArray(sortExps));
     }
 
     default DataFrame sort(Sorter... sorters) {

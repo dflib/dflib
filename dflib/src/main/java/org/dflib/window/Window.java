@@ -14,7 +14,6 @@ import org.dflib.series.IntSequenceSeries;
 import org.dflib.slice.ColumnSetMerger;
 import org.dflib.slice.FixedColumnSetIndex;
 import org.dflib.sort.IntComparator;
-import org.dflib.sort.Sorters;
 
 import java.util.Objects;
 import java.util.Set;
@@ -201,8 +200,8 @@ public class Window {
     /**
      * @since 2.0.0
      */
-    public Window sort(String... sortExps) {
-        return sort(Sorters.asSorters(sortExps));
+    public Window sort(String sortExps) {
+        return sort(Sorter.parseSorterArray(sortExps));
     }
 
     /**

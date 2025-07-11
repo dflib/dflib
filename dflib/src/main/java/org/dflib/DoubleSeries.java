@@ -8,7 +8,6 @@ import org.dflib.series.FalseSeries;
 import org.dflib.series.TrueSeries;
 import org.dflib.set.Diff;
 import org.dflib.set.Intersect;
-import org.dflib.sort.Sorters;
 
 import java.util.Comparator;
 import java.util.Random;
@@ -296,8 +295,8 @@ public interface DoubleSeries extends Series<Double> {
     DoubleSeries selectDouble(DoublePredicate p);
 
     @Override
-    default DoubleSeries sort(String... sorters) {
-        return sort(Sorters.asSorters(sorters));
+    default DoubleSeries sort(String sorters) {
+        return sort(Sorter.parseSorterArray(sorters));
     }
 
     @Override

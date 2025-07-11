@@ -42,7 +42,7 @@ public class RowSet_MergeSortSorterTest {
                         0, "f", "g",
                         1, "m", "n")
                 .rows()
-                .sort("a asc", "b desc")
+                .sort("a asc, b desc")
                 .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")

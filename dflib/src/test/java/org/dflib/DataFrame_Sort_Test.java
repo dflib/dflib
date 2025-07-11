@@ -228,7 +228,7 @@ public class DataFrame_Sort_Test {
                         2, 3,
                         2, 2,
                         -1, 2)
-                .sort("a", "b desc");
+                .sort("a, b desc");
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(4)
