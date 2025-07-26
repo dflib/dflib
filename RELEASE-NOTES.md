@@ -11,7 +11,7 @@
 * #515 String sorter parser 
 * #516 Parse lists of Exp and Sorters 
 * #518 QL Parser: column alias support 
-* #519 "FSFolder.includePaths(..)" filter
+* #519 "FSFolder.include(..)" filter
 * #520 Zip source to exclude hidden files by default
 * #521 ZipEntry name extension filter for Zip
 

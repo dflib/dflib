@@ -81,7 +81,7 @@ public class FSFolder {
      * Returns an instance of FSFolder that will only include files that match the provided predicate. Any other
      * preconfigured filters (specific extensions or inclusion of hidden files) are also applied.
      */
-    public FSFolder includePaths(Predicate<Path> filter) {
+    public FSFolder include(Predicate<Path> filter) {
         Objects.requireNonNull(filter);
         return new FSFolder(folderPath, includeSubfolders, filter, extFilter, notHiddenFilter);
     }
