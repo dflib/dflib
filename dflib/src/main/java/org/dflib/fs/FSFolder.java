@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Represents a folder on a locally-available filesystem. Allows to work with multiple files in the folder as
- * {@link ByteSources}, list and filter folder contents, etc.
+ * Represents a folder in a local filesystem. Allows to work with multiple files in the folder as {@link ByteSources},
+ * list and filter folder contents, etc.
  *
  * @since 2.0.0
  */
@@ -37,7 +37,7 @@ public class FSFolder {
                 false,
                 null,
                 null,
-                FSFolder::notHiddenFilter);
+                notHiddenFilter());
     }
 
     private final Path folderPath;
@@ -94,17 +94,11 @@ public class FSFolder {
      * Returns an instance of FSFolder that will filter folder files by extension.
      */
     public FSFolder includeExtension(String ext) {
-        Objects.requireNonNull(ext);
-        if (ext.isEmpty()) {
-            throw new IllegalArgumentException("Empty extension");
-        }
-
-        String normalizedExt = ext.startsWith(".") ? ext : "." + ext;
         return new FSFolder(
                 folderPath,
                 includeSubfolders,
                 filter,
-                p -> matchesExtension(p, normalizedExt),
+                extensionFilter(ext),
                 notHiddenFilter);
     }
 
@@ -162,15 +156,9 @@ public class FSFolder {
         // TODO: configurable symlink option
         // The defaults are to allow symlinks for files but not for directories
 
-        Predicate<Path> pathTypeFilter = includeFolders ? p -> true : Files::isRegularFile;
-        Predicate<Path> combinedFilter = Stream.of(filter, extFilter, notHiddenFilter)
-                .filter(f -> f != null)
-                .reduce(pathTypeFilter, Predicate::and);
-
         try {
             return Files.walk(folderPath, includeSubfolders ? Integer.MAX_VALUE : 1)
-                    .filter(combinedFilter)
-
+                    .filter(combinedFilter(includeFolders))
                     // ensure stable, predictable processing order
                     .sorted()
 
@@ -180,12 +168,27 @@ public class FSFolder {
         }
     }
 
-    private static boolean notHiddenFilter(Path path) {
-        String name = path.getFileName().toString();
-        return name.length() > 1 && name.charAt(0) != '.';
+    private Predicate<Path> combinedFilter(boolean includeFolders) {
+        Predicate<Path> pathTypeFilter = includeFolders ? p -> true : Files::isRegularFile;
+        return Stream.of(filter, extFilter, notHiddenFilter)
+                .filter(f -> f != null)
+                .reduce(pathTypeFilter, Predicate::and);
     }
 
-    private static boolean matchesExtension(Path path, String ext) {
-        return path.getFileName().toString().endsWith(ext);
+    static Predicate<Path> extensionFilter(String ext) {
+        Objects.requireNonNull(ext);
+        if (ext.isEmpty()) {
+            throw new IllegalArgumentException("Empty extension");
+        }
+
+        String normalizedExt = ext.startsWith(".") ? ext : "." + ext;
+        return p -> p.getFileName().toString().endsWith(normalizedExt);
+    }
+
+    static Predicate<Path> notHiddenFilter() {
+        return p -> {
+            String name = p.getFileName().toString();
+            return name.length() > 1 && name.charAt(0) != '.';
+        };
     }
 }

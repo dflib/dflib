@@ -22,7 +22,7 @@ class SequentialZip extends Zip {
 
     @Override
     public List<ZipEntry> list(boolean includeFolders) {
-        Predicate<ZipEntry> filter = entryFilter(includeFolders);
+        Predicate<ZipEntry> filter = combinedFilter(includeFolders);
         return source.processStream(in -> extractEntries(in, filter));
     }
 
@@ -48,7 +48,7 @@ class SequentialZip extends Zip {
 
     @Override
     public ByteSources sources() {
-        return new ZipStreamByteSources(source, entryFilter(false));
+        return new ZipStreamByteSources(source, combinedFilter(false));
     }
 
     private List<ZipEntry> extractEntries(InputStream in, Predicate<ZipEntry> filter) {

@@ -40,36 +40,6 @@ public abstract class Zip {
         return new SequentialZip(parentSource, null, notHiddenFilter());
     }
 
-    static Predicate<ZipEntry> extensionFilter(String ext) {
-        Objects.requireNonNull(ext);
-        if (ext.isEmpty()) {
-            throw new IllegalArgumentException("Empty extension");
-        }
-
-        String normalizedExt = ext.startsWith(".") ? ext : "." + ext;
-        return e -> e.getName().endsWith(normalizedExt);
-    }
-
-    static Predicate<ZipEntry> notHiddenFilter() {
-        return e -> {
-            String name = e.getName();
-            if (name.length() == 0) {
-                return true;
-            }
-
-            // TODO: presumably some Windows tools may use backslashes for separators
-            String[] parts = name.split("/");
-            int len = parts.length;
-            for (int i = 0; i < len; i++) {
-                if (parts[i].length() > 0 && parts[i].charAt(0) == '.') {
-                    return false;
-                }
-            }
-
-            return true;
-        };
-    }
-
     protected final Predicate<ZipEntry> extFilter;
     protected final Predicate<ZipEntry> notHiddenFilter;
 
@@ -98,10 +68,40 @@ public abstract class Zip {
 
     public abstract ByteSources sources();
 
-    protected Predicate<ZipEntry> entryFilter(boolean includeFolders) {
+    protected Predicate<ZipEntry> combinedFilter(boolean includeFolders) {
         Predicate<ZipEntry> entryTypeFilter = includeFolders ? p -> true : e -> !e.isDirectory();
         return Stream.of(extFilter, notHiddenFilter)
                 .filter(f -> f != null)
                 .reduce(entryTypeFilter, Predicate::and);
+    }
+
+    static Predicate<ZipEntry> extensionFilter(String ext) {
+        Objects.requireNonNull(ext);
+        if (ext.isEmpty()) {
+            throw new IllegalArgumentException("Empty extension");
+        }
+
+        String normalizedExt = ext.startsWith(".") ? ext : "." + ext;
+        return e -> e.getName().endsWith(normalizedExt);
+    }
+
+    static Predicate<ZipEntry> notHiddenFilter() {
+        return e -> {
+            String name = e.getName();
+            if (name.length() == 0) {
+                return true;
+            }
+
+            // TODO: presumably some Windows tools may use backslashes for separators
+            String[] parts = name.split("/");
+            int len = parts.length;
+            for (int i = 0; i < len; i++) {
+                if (parts[i].length() > 0 && parts[i].charAt(0) == '.') {
+                    return false;
+                }
+            }
+
+            return true;
+        };
     }
 }

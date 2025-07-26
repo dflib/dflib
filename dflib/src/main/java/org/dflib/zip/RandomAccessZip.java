@@ -23,7 +23,7 @@ class RandomAccessZip extends Zip {
     @Override
     public List<ZipEntry> list(boolean includeFolders) {
         return zipFile.stream()
-                .filter(entryFilter(includeFolders))
+                .filter(combinedFilter(includeFolders))
                 .collect(Collectors.toList());
     }
 
