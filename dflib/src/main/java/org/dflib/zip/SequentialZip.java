@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -15,8 +16,8 @@ class SequentialZip extends Zip {
 
     private final ByteSource source;
 
-    public SequentialZip(ByteSource source, Predicate<ZipEntry> extFilter, Predicate<ZipEntry> notHiddenFilter) {
-        super(extFilter, notHiddenFilter);
+    public SequentialZip(ByteSource source, Predicate<ZipEntry> filter, Predicate<ZipEntry> extFilter, Predicate<ZipEntry> notHiddenFilter) {
+        super(filter, extFilter, notHiddenFilter);
         this.source = source;
     }
 
@@ -27,13 +28,19 @@ class SequentialZip extends Zip {
     }
 
     @Override
+    public Zip include(Predicate<ZipEntry> filter) {
+        Objects.requireNonNull(filter);
+        return new SequentialZip(source, filter, extFilter, notHiddenFilter);
+    }
+
+    @Override
     public Zip includeHidden() {
-        return new SequentialZip(source, extFilter, null);
+        return new SequentialZip(source, filter, extFilter, null);
     }
 
     @Override
     public Zip includeExtension(String ext) {
-        return new SequentialZip(source, extensionFilter(ext), notHiddenFilter);
+        return new SequentialZip(source, filter, extensionFilter(ext), notHiddenFilter);
     }
 
     @Override

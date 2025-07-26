@@ -60,4 +60,30 @@ public class Zip_ListTest {
         assertEquals(List.of("__MACOSX/test/._.DS_Store", "test/.DS_Store"), names);
     }
 
+    @ParameterizedTest
+    @MethodSource(value = "org.dflib.zip.TestZips#one")
+    void list_include_predicate(Zip zip) {
+        List<String> names = zip
+                .include(e -> e.getName().contains("test2") || e.getName().contains("test4"))
+                .list()
+                .stream().map(ZipEntry::getName).sorted().collect(Collectors.toList());
+
+        assertEquals(List.of("a/test2.txt", "b/c/test4.txt"), names);
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "org.dflib.zip.TestZips#two")
+    void list_include_predicate_withHidden(Zip zip) {
+        List<String> names = zip
+                .includeHidden()
+                .include(e -> e.getName().startsWith("__MACOSX"))
+                .list()
+                .stream().map(ZipEntry::getName).sorted().collect(Collectors.toList());
+
+        assertEquals(List.of(
+                "__MACOSX/._test",
+                "__MACOSX/test/._.DS_Store",
+                "__MACOSX/test/sub/._f2.csv"), names);
+    }
+
 }

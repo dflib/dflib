@@ -30,23 +30,31 @@ public abstract class Zip {
 
     public static Zip of(File file) {
         try {
-            return new RandomAccessZip(new ZipFile(file), null, notHiddenFilter());
+            return new RandomAccessZip(new ZipFile(file), null, null, notHiddenFilter());
         } catch (IOException e) {
             throw new RuntimeException("Error opening ZIP file: " + file, e);
         }
     }
 
     public static Zip of(ByteSource parentSource) {
-        return new SequentialZip(parentSource, null, notHiddenFilter());
+        return new SequentialZip(parentSource, null, null, notHiddenFilter());
     }
 
+    protected final Predicate<ZipEntry> filter;
     protected final Predicate<ZipEntry> extFilter;
     protected final Predicate<ZipEntry> notHiddenFilter;
 
-    protected Zip(Predicate<ZipEntry> extFilter, Predicate<ZipEntry> notHiddenFilter) {
+    protected Zip(Predicate<ZipEntry> filter, Predicate<ZipEntry> extFilter, Predicate<ZipEntry> notHiddenFilter) {
+        this.filter = filter;
         this.extFilter = extFilter;
         this.notHiddenFilter = notHiddenFilter;
     }
+
+    /**
+     * Returns an instance of Zip that will only include entries that match the provided predicate. Any other
+     * preconfigured filters (specific extensions or inclusion of hidden files) are also applied.
+     */
+    public abstract Zip include(Predicate<ZipEntry> filter);
 
     public abstract Zip includeHidden();
 
@@ -70,7 +78,7 @@ public abstract class Zip {
 
     protected Predicate<ZipEntry> combinedFilter(boolean includeFolders) {
         Predicate<ZipEntry> entryTypeFilter = includeFolders ? p -> true : e -> !e.isDirectory();
-        return Stream.of(extFilter, notHiddenFilter)
+        return Stream.of(filter, extFilter, notHiddenFilter)
                 .filter(f -> f != null)
                 .reduce(entryTypeFilter, Predicate::and);
     }
