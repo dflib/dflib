@@ -96,15 +96,13 @@ public abstract class Zip {
     static Predicate<ZipEntry> notHiddenFilter() {
         return e -> {
             String name = e.getName();
-            if (name.length() == 0) {
+            if (name.isEmpty()) {
                 return true;
             }
 
             // TODO: presumably some Windows tools may use backslashes for separators
-            String[] parts = name.split("/");
-            int len = parts.length;
-            for (int i = 0; i < len; i++) {
-                if (parts[i].length() > 0 && parts[i].charAt(0) == '.') {
+            for (String part : name.split("/")) {
+                if (!part.isEmpty() && part.charAt(0) == '.') {
                     return false;
                 }
             }
