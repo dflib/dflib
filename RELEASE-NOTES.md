@@ -13,6 +13,7 @@
 * #518 QL Parser: column alias support 
 * #519 "FSFolder.includePaths(..)" filter
 * #520 Zip source to exclude hidden files by default
+* #521 ZipEntry name extension filter for Zip
 
 ## Release 2.0.0-M3
 

@@ -78,9 +78,8 @@ public class FSFolder {
     }
 
     /**
-     * Returns an instance of FSFolder that will filter folder files using the provided predicate. All the other filters
-     * (such as specific extensions or inclusion of hidden files) are still preserved and will be applied together with
-     * this filter.
+     * Returns an instance of FSFolder that will only include files that match the provided predicate. Any other
+     * preconfigured filters (specific extensions or inclusion of hidden files) are also applied.
      */
     public FSFolder includePaths(Predicate<Path> filter) {
         Objects.requireNonNull(filter);

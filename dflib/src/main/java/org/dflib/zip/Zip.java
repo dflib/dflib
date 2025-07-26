@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -29,41 +30,60 @@ public abstract class Zip {
 
     public static Zip of(File file) {
         try {
-            return new RandomAccessZip(org.dflib.zip.Zip::notHidden, new ZipFile(file));
+            return new RandomAccessZip(new ZipFile(file), null, notHiddenFilter());
         } catch (IOException e) {
             throw new RuntimeException("Error opening ZIP file: " + file, e);
         }
     }
 
     public static Zip of(ByteSource parentSource) {
-        return new SequentialZip(org.dflib.zip.Zip::notHidden, parentSource);
+        return new SequentialZip(parentSource, null, notHiddenFilter());
     }
 
-    static boolean notHidden(ZipEntry entry) {
-        String name = entry.getName();
-        if (name.length() == 0) {
-            return true;
+    static Predicate<ZipEntry> extensionFilter(String ext) {
+        Objects.requireNonNull(ext);
+        if (ext.isEmpty()) {
+            throw new IllegalArgumentException("Empty extension");
         }
 
-        // TODO: presumably some Windows tools may use backslashes for separators
-        String[] parts = name.split("/");
-        int len = parts.length;
-        for (int i = 0; i < len; i++) {
-            if (parts[i].length() > 0 && parts[i].charAt(0) == '.') {
-                return false;
+        String normalizedExt = ext.startsWith(".") ? ext : "." + ext;
+        return e -> e.getName().endsWith(normalizedExt);
+    }
+
+    static Predicate<ZipEntry> notHiddenFilter() {
+        return e -> {
+            String name = e.getName();
+            if (name.length() == 0) {
+                return true;
             }
-        }
 
-        return true;
+            // TODO: presumably some Windows tools may use backslashes for separators
+            String[] parts = name.split("/");
+            int len = parts.length;
+            for (int i = 0; i < len; i++) {
+                if (parts[i].length() > 0 && parts[i].charAt(0) == '.') {
+                    return false;
+                }
+            }
+
+            return true;
+        };
     }
 
+    protected final Predicate<ZipEntry> extFilter;
     protected final Predicate<ZipEntry> notHiddenFilter;
 
-    protected Zip(Predicate<ZipEntry> notHiddenFilter) {
+    protected Zip(Predicate<ZipEntry> extFilter, Predicate<ZipEntry> notHiddenFilter) {
+        this.extFilter = extFilter;
         this.notHiddenFilter = notHiddenFilter;
     }
 
     public abstract Zip includeHidden();
+
+    /**
+     * Returns an instance of Zip that will filter archive files by extension.
+     */
+    public abstract Zip includeExtension(String ext);
 
     public List<ZipEntry> list() {
         return list(false);
@@ -80,7 +100,7 @@ public abstract class Zip {
 
     protected Predicate<ZipEntry> entryFilter(boolean includeFolders) {
         Predicate<ZipEntry> entryTypeFilter = includeFolders ? p -> true : e -> !e.isDirectory();
-        return Stream.of(notHiddenFilter)
+        return Stream.of(extFilter, notHiddenFilter)
                 .filter(f -> f != null)
                 .reduce(entryTypeFilter, Predicate::and);
     }

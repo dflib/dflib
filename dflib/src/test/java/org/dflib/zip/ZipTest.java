@@ -2,6 +2,7 @@ package org.dflib.zip;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,17 +12,18 @@ public class ZipTest {
 
     @Test
     void notHidden() {
-        assertTrue(Zip.notHidden(new ZipEntry("")));
-        assertTrue(Zip.notHidden(new ZipEntry("a")));
-        assertTrue(Zip.notHidden(new ZipEntry("a/")));
-        assertTrue(Zip.notHidden(new ZipEntry("a/b/c")));
+        Predicate<ZipEntry> filter = Zip.notHiddenFilter();
+        assertTrue(filter.test(new ZipEntry("")));
+        assertTrue(filter.test(new ZipEntry("a")));
+        assertTrue(filter.test(new ZipEntry("a/")));
+        assertTrue(filter.test(new ZipEntry("a/b/c")));
 
-        assertFalse(Zip.notHidden(new ZipEntry(".")));
-        assertFalse(Zip.notHidden(new ZipEntry(".a")));
-        assertFalse(Zip.notHidden(new ZipEntry(".a/")));
-        assertFalse(Zip.notHidden(new ZipEntry(".b/a/")));
-        assertFalse(Zip.notHidden(new ZipEntry(".b/a/c")));
-        assertFalse(Zip.notHidden(new ZipEntry("b/.a")));
-        assertFalse(Zip.notHidden(new ZipEntry("b/.a/")));
+        assertFalse(filter.test(new ZipEntry(".")));
+        assertFalse(filter.test(new ZipEntry(".a")));
+        assertFalse(filter.test(new ZipEntry(".a/")));
+        assertFalse(filter.test(new ZipEntry(".b/a/")));
+        assertFalse(filter.test(new ZipEntry(".b/a/c")));
+        assertFalse(filter.test(new ZipEntry("b/.a")));
+        assertFalse(filter.test(new ZipEntry("b/.a/")));
     }
 }

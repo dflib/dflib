@@ -15,8 +15,8 @@ class RandomAccessZip extends Zip {
 
     private final ZipFile zipFile;
 
-    public RandomAccessZip(Predicate<ZipEntry> notHiddenFilter, ZipFile zipFile) {
-        super(notHiddenFilter);
+    public RandomAccessZip(ZipFile zipFile, Predicate<ZipEntry> extFilter, Predicate<ZipEntry> notHiddenFilter) {
+        super(extFilter, notHiddenFilter);
         this.zipFile = Objects.requireNonNull(zipFile);
     }
 
@@ -29,7 +29,12 @@ class RandomAccessZip extends Zip {
 
     @Override
     public Zip includeHidden() {
-        return new RandomAccessZip(null, zipFile);
+        return new RandomAccessZip(zipFile, extFilter, null);
+    }
+
+    @Override
+    public Zip includeExtension(String ext) {
+        return new RandomAccessZip(zipFile, extensionFilter(ext), notHiddenFilter);
     }
 
     @Override

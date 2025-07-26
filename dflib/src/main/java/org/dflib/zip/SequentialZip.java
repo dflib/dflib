@@ -15,8 +15,8 @@ class SequentialZip extends Zip {
 
     private final ByteSource source;
 
-    public SequentialZip(Predicate<ZipEntry> notHiddenFilter, ByteSource source) {
-        super(notHiddenFilter);
+    public SequentialZip(ByteSource source, Predicate<ZipEntry> extFilter, Predicate<ZipEntry> notHiddenFilter) {
+        super(extFilter, notHiddenFilter);
         this.source = source;
     }
 
@@ -28,7 +28,12 @@ class SequentialZip extends Zip {
 
     @Override
     public Zip includeHidden() {
-        return new SequentialZip(null, source);
+        return new SequentialZip(source, extFilter, null);
+    }
+
+    @Override
+    public Zip includeExtension(String ext) {
+        return new SequentialZip(source, extensionFilter(ext), notHiddenFilter);
     }
 
     @Override

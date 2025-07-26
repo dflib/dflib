@@ -15,7 +15,7 @@ public class Zip_ListTest {
     @MethodSource(value = "org.dflib.zip.TestZips#one")
     void list(Zip zip) {
         List<String> names = zip.list().stream().map(ZipEntry::getName).sorted().collect(Collectors.toList());
-        assertEquals(List.of("a/test2.txt", "a/test3.txt",  "b/c/test4.txt", "test.txt"), names);
+        assertEquals(List.of("a/test2.txt", "a/test3.txt", "b/c/test4.txt", "test.txt"), names);
     }
 
     @ParameterizedTest
@@ -34,7 +34,7 @@ public class Zip_ListTest {
 
     @ParameterizedTest
     @MethodSource(value = "org.dflib.zip.TestZips#two")
-    void list_includeHidden(Zip zip) {
+    void list_hidden(Zip zip) {
         List<String> names = zip.includeHidden()
                 .list()
                 .stream().map(ZipEntry::getName).sorted().collect(Collectors.toList());
@@ -43,7 +43,21 @@ public class Zip_ListTest {
                 "__MACOSX/._test",
                 "__MACOSX/test/._.DS_Store",
                 "__MACOSX/test/sub/._f2.csv",
-                "test/.DS_Store", "test/f1.csv",
+                "test/.DS_Store",
+                "test/f1.csv",
                 "test/sub/f2.csv"), names);
     }
+
+    @ParameterizedTest
+    @MethodSource(value = "org.dflib.zip.TestZips#two")
+    void list_hidden_Ext(Zip zip) {
+        List<String> names = zip
+                .includeHidden()
+                .includeExtension("DS_Store")
+                .list()
+                .stream().map(ZipEntry::getName).sorted().collect(Collectors.toList());
+
+        assertEquals(List.of("__MACOSX/test/._.DS_Store", "test/.DS_Store"), names);
+    }
+
 }
