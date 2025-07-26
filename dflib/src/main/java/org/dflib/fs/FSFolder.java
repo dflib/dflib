@@ -36,22 +36,26 @@ public class FSFolder {
                 path,
                 false,
                 null,
+                null,
                 FSFolder::notHiddenFilter);
     }
 
     private final Path folderPath;
     private final boolean includeSubfolders;
+    private final Predicate<Path> filter;
     private final Predicate<Path> extFilter;
     private final Predicate<Path> notHiddenFilter;
 
     private FSFolder(
             Path folderPath,
             boolean includeSubfolders,
+            Predicate<Path> filter,
             Predicate<Path> extFilter,
             Predicate<Path> notHiddenFilter) {
 
         this.folderPath = Objects.requireNonNull(folderPath);
         this.includeSubfolders = includeSubfolders;
+        this.filter = filter;
         this.extFilter = extFilter;
         this.notHiddenFilter = notHiddenFilter;
     }
@@ -70,11 +74,21 @@ public class FSFolder {
         }
 
         Path subfolderPath = folderPath.resolve(other);
-        return new FSFolder(subfolderPath, includeSubfolders, extFilter, notHiddenFilter);
+        return new FSFolder(subfolderPath, includeSubfolders, filter, extFilter, notHiddenFilter);
+    }
+
+    /**
+     * Returns an instance of FSFolder that will filter folder files using the provided predicate. All the other filters
+     * (such as specific extensions or inclusion of hidden files) are still preserved and will be applied together with
+     * this filter.
+     */
+    public FSFolder includePaths(Predicate<Path> filter) {
+        Objects.requireNonNull(filter);
+        return new FSFolder(folderPath, includeSubfolders, filter, extFilter, notHiddenFilter);
     }
 
     public FSFolder includeHidden() {
-        return new FSFolder(folderPath, includeSubfolders, extFilter, null);
+        return new FSFolder(folderPath, includeSubfolders, filter, extFilter, null);
     }
 
     /**
@@ -90,6 +104,7 @@ public class FSFolder {
         return new FSFolder(
                 folderPath,
                 includeSubfolders,
+                filter,
                 p -> matchesExtension(p, normalizedExt),
                 notHiddenFilter);
     }
@@ -98,7 +113,7 @@ public class FSFolder {
      * Returns an instance of FSFolder that will include files in subfolders.
      */
     public FSFolder includeSubfolders() {
-        return this.includeSubfolders ? this : new FSFolder(folderPath, true, extFilter, notHiddenFilter);
+        return this.includeSubfolders ? this : new FSFolder(folderPath, true, filter, extFilter, notHiddenFilter);
     }
 
     /**
@@ -149,13 +164,13 @@ public class FSFolder {
         // The defaults are to allow symlinks for files but not for directories
 
         Predicate<Path> pathTypeFilter = includeFolders ? p -> true : Files::isRegularFile;
-        Predicate<Path> filter = Stream.of(extFilter, notHiddenFilter)
+        Predicate<Path> combinedFilter = Stream.of(filter, extFilter, notHiddenFilter)
                 .filter(f -> f != null)
                 .reduce(pathTypeFilter, Predicate::and);
 
         try {
             return Files.walk(folderPath, includeSubfolders ? Integer.MAX_VALUE : 1)
-                    .filter(filter)
+                    .filter(combinedFilter)
 
                     // ensure stable, predictable processing order
                     .sorted()

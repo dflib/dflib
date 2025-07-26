@@ -38,6 +38,13 @@ public class FSFolder_ListTest {
         assertEquals(List.of(p.resolve(".test_hidden.txt"), p.resolve("test1.txt"), p.resolve("test2.md")), f.list());
     }
 
+    @Test
+    void noSubfolders_path() throws URISyntaxException {
+        Path p = Path.of(getClass().getResource("test1").toURI());
+        FSFolder f = FSFolder.of(p).includePaths(ip -> ip.endsWith("test1.txt"));
+        assertEquals(List.of(p.resolve("test1.txt")), f.list());
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"md", ".md"})
     void noSubfolders_ext(String ext) throws URISyntaxException {
@@ -68,5 +75,15 @@ public class FSFolder_ListTest {
                 p.resolve(Path.of("subtest2", "subsubtest2", "subsubtest2.md")),
                 p.resolve("test2.md")
         ), f.list());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"md", ".md"})
+    void subfolders_ext_path(String ext) throws URISyntaxException {
+        Path p = Path.of(getClass().getResource("test1").toURI());
+        FSFolder f = FSFolder.of(p).includeSubfolders().includeExtension(ext).includePaths(ip -> !ip.endsWith("test2.md"));
+        assertEquals(
+                List.of(p.resolve(Path.of("subtest2", "subsubtest2", "subsubtest2.md"))),
+                f.list());
     }
 }

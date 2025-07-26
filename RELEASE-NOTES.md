@@ -11,6 +11,7 @@
 * #515 String sorter parser 
 * #516 Parse lists of Exp and Sorters 
 * #518 QL Parser: column alias support 
+* #519 "FSFolder.includePaths(..)" filter
 
 ## Release 2.0.0-M3
 
