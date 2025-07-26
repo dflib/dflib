@@ -64,7 +64,7 @@ public class ByteSourceTest {
 
     @Test
     void unzip() {
-        ByteSources srcs = ByteSource.ofUrl(getClass().getResource("zip/test.zip")).unzip();
+        ByteSources srcs = ByteSource.ofUrl(getClass().getResource("zip/test1.zip")).unzip();
 
         Map<String, String> texts = new HashMap<>();
         srcs.processStreams((n, st) -> {

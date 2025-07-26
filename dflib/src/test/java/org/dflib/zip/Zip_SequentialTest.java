@@ -9,10 +9,10 @@ public class Zip_SequentialTest {
 
     @Test
     void of() {
-        Zip zip = Zip.of(ByteSource.ofUrl(getClass().getResource("test.zip")));
+        Zip zip = Zip.of(ByteSource.ofUrl(getClass().getResource("test1.zip")));
 
         // TODO: this will work until DFLib becomes smart enough to distinguish file-based URLs
         //  then we'll need to switch to something like a web URL to produce a sequential access source
-        assertTrue(zip instanceof Zip.SequentialZip);
+        assertTrue(zip instanceof SequentialZip);
     }
 }

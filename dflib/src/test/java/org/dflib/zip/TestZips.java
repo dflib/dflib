@@ -10,8 +10,15 @@ class TestZips {
 
     public static List<Zip> one() throws URISyntaxException {
         return List.of(
-                Zip.of(ByteSource.ofUrl(Zip_SourcesTest.class.getResource("test.zip"))),
-                Zip.of(Path.of(Zip_SourcesTest.class.getResource("test.zip").toURI()))
+                Zip.of(ByteSource.ofUrl(Zip_SourcesTest.class.getResource("test1.zip"))),
+                Zip.of(Path.of(Zip_SourcesTest.class.getResource("test1.zip").toURI()))
+        );
+    }
+
+    public static List<Zip> two() throws URISyntaxException {
+        return List.of(
+                Zip.of(ByteSource.ofUrl(Zip_SourcesTest.class.getResource("test2.zip"))),
+                Zip.of(Path.of(Zip_SourcesTest.class.getResource("test2.zip").toURI()))
         );
     }
 }

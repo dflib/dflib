@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -16,9 +17,11 @@ import java.util.zip.ZipInputStream;
 class ZipStreamByteSources implements ByteSources {
 
     private final ByteSource zipSource;
+    private final Predicate<ZipEntry> filter;
 
-    public ZipStreamByteSources(ByteSource zipSource) {
+    public ZipStreamByteSources(ByteSource zipSource, Predicate<ZipEntry> filter) {
         this.zipSource = zipSource;
+        this.filter = filter;
     }
 
     @Override
@@ -35,6 +38,10 @@ class ZipStreamByteSources implements ByteSources {
             while ((entry = in.getNextEntry()) != null) {
 
                 if (entry.isDirectory()) {
+                    continue;
+                }
+
+                if (!filter.test(entry)) {
                     continue;
                 }
 

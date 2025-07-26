@@ -28,4 +28,19 @@ public class Zip_SourcesTest {
                 "b/c/test4.txt", "b/c/test4.txt:test 4 file contents"), labeledTexts);
 
     }
+
+    @ParameterizedTest
+    @MethodSource(value = "org.dflib.zip.TestZips#two")
+    void sources_hidden(Zip zip) {
+        ByteSources srcs = zip.sources();
+        assertNotNull(srcs);
+
+        // capturing both source names and contents
+        Map<String, String> labeledTexts = srcs.process((n, s) -> s.uri().orElse("") + ":" + new String(s.asBytes()));
+
+        // directories must be skipped
+        assertEquals(Map.of(
+                "test/f1.csv", "test/f1.csv:A,B\n1,s1\n4,s2",
+                "test/sub/f2.csv", "test/sub/f2.csv:C,D\n1,s1\n4,s2"), labeledTexts);
+    }
 }

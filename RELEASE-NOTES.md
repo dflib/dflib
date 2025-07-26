@@ -12,6 +12,7 @@
 * #516 Parse lists of Exp and Sorters 
 * #518 QL Parser: column alias support 
 * #519 "FSFolder.includePaths(..)" filter
+* #520 Zip source to exclude hidden files by default
 
 ## Release 2.0.0-M3
 
