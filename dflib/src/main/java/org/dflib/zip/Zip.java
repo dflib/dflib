@@ -101,6 +101,12 @@ public abstract class Zip {
             }
 
             // TODO: presumably some Windows tools may use backslashes for separators
+
+            // "./" is not an indicator of a hidden file
+            if (name.startsWith("./")) {
+                name = name.substring(2);
+            }
+
             for (String part : name.split("/")) {
                 if (!part.isEmpty() && part.charAt(0) == '.') {
                     return false;

@@ -2,6 +2,7 @@ package org.dflib;
 
 import org.dflib.codec.Codec;
 import org.dflib.http.Http;
+import org.dflib.tar.Tar;
 import org.dflib.zip.Zip;
 
 import java.io.ByteArrayInputStream;
@@ -60,6 +61,15 @@ public interface ByteSource {
      */
     default ByteSources unzip() {
         return Zip.of(this).sources();
+    }
+
+    /**
+     * Assuming this source represents a TAR archive, returns a {@link ByteSources} catalog of the archive entries.
+     *
+     * @since 2.0.0
+     */
+    default ByteSources untar() {
+        return Tar.of(this).sources();
     }
 
     /**

@@ -1,0 +1,304 @@
+package org.dflib.tar.format;
+
+/**
+ * @since 2.0.0
+ */
+interface TarConstants {
+
+    int DEFAULT_RCDSIZE = 512;
+    int DEFAULT_BLKSIZE = DEFAULT_RCDSIZE * 20;
+
+    /**
+     * GNU format as per before tar 1.12.
+     */
+    int FORMAT_OLDGNU = 2;
+    int FORMAT_POSIX = 3;
+
+    /**
+     * xstar format used by Jörg Schilling's star.
+     */
+    int FORMAT_XSTAR = 4;
+
+    /**
+     * The length of the name field in a header buffer.
+     */
+    int NAMELEN = 100;
+
+    /**
+     * The length of the mode field in a header buffer.
+     */
+    int MODELEN = 8;
+
+    /**
+     * The length of the user id field in a header buffer.
+     */
+    int UIDLEN = 8;
+
+    /**
+     * The length of the group id field in a header buffer.
+     */
+    int GIDLEN = 8;
+
+    /**
+     * The length of the checksum field in a header buffer.
+     */
+    int CHKSUMLEN = 8;
+
+    /**
+     * Offset of the checksum field within header record.
+     */
+    int CHKSUM_OFFSET = 148;
+
+    /**
+     * The length of the size field in a header buffer. Includes the trailing space or NUL.
+     */
+    int SIZELEN = 12;
+
+    /**
+     * Offset of start of magic field within header record
+     */
+    int MAGIC_OFFSET = 257;
+
+    /**
+     * The length of the magic field in a header buffer.
+     */
+    int MAGICLEN = 6;
+
+    /**
+     * Previously this was regarded as part of "magic" field, but it is separate.
+     */
+    int VERSIONLEN = 2;
+
+    /**
+     * The length of the modification time field in a header buffer.
+     */
+    int MODTIMELEN = 12;
+
+    /**
+     * The length of the user name field in a header buffer.
+     */
+    int UNAMELEN = 32;
+
+    /**
+     * The length of the group name field in a header buffer.
+     */
+    int GNAMELEN = 32;
+
+    /**
+     * The length of each of the device fields (major and minor) in a header buffer.
+     */
+    int DEVLEN = 8;
+
+    /**
+     * Length of the prefix field.
+     */
+    int PREFIXLEN = 155;
+
+    /**
+     * The length of the access time field in an old GNU header buffer.
+     */
+    int ATIMELEN_GNU = 12;
+
+    /**
+     * The length of the created time field in an old GNU header buffer.
+     */
+    int CTIMELEN_GNU = 12;
+
+    /**
+     * The length of the multivolume start offset field in an old GNU header buffer.
+     */
+    int OFFSETLEN_GNU = 12;
+
+    /**
+     * The length of the long names field in an old GNU header buffer.
+     */
+    int LONGNAMESLEN_GNU = 4;
+
+    /**
+     * The length of the padding field in an old GNU header buffer.
+     */
+    int PAD2LEN_GNU = 1;
+
+    /**
+     * The sum of the length of all sparse headers in an old GNU header buffer.
+     */
+    int SPARSELEN_GNU = 96;
+
+    /**
+     * The length of the is extension field in an old GNU header buffer.
+     */
+    int ISEXTENDEDLEN_GNU = 1;
+
+    /**
+     * The length of the real size field in an old GNU header buffer.
+     */
+    int REALSIZELEN_GNU = 12;
+
+    /**
+     * The length of offset in struct sparse
+     */
+    int SPARSE_OFFSET_LEN = 12;
+
+    /**
+     * The length of numbytes in struct sparse
+     */
+    int SPARSE_NUMBYTES_LEN = 12;
+
+    /**
+     * The number of sparse headers in an old GNU header
+     */
+    int SPARSE_HEADERS_IN_OLDGNU_HEADER = 4;
+
+    /**
+     * The number of sparse headers in an extension header
+     */
+    int SPARSE_HEADERS_IN_EXTENSION_HEADER = 21;
+
+    /**
+     * The sum of the length of all sparse headers in a sparse header buffer.
+     */
+    int SPARSELEN_GNU_SPARSE = 504;
+
+    /**
+     * LF_ constants represent the "link flag" of an entry, or more commonly, the "entry type". This is the "old way" of indicating a normal file.
+     */
+    byte LF_OLDNORM = 0;
+
+    /**
+     * Offset inside the header for the "link flag" field.
+     */
+    int LF_OFFSET = 156;
+
+    /**
+     * Normal file type.
+     */
+    byte LF_NORMAL = (byte) '0';
+
+    /**
+     * Link file type.
+     */
+    byte LF_LINK = (byte) '1';
+
+    /**
+     * Symbolic link file type.
+     */
+    byte LF_SYMLINK = (byte) '2';
+
+    /**
+     * Character device file type.
+     */
+    byte LF_CHR = (byte) '3';
+
+    /**
+     * Block device file type.
+     */
+    byte LF_BLK = (byte) '4';
+
+    /**
+     * Directory file type.
+     */
+    byte LF_DIR = (byte) '5';
+
+    /**
+     * FIFO (pipe) file type.
+     */
+    byte LF_FIFO = (byte) '6';
+
+    /**
+     * Identifies the *next* file on the tape as having a long link name.
+     */
+    byte LF_GNUTYPE_LONGLINK = (byte) 'K';
+
+    /**
+     * Identifies the *next* file on the tape as having a long name.
+     */
+    byte LF_GNUTYPE_LONGNAME = (byte) 'L';
+
+    /**
+     * Sparse file type.
+     */
+    byte LF_GNUTYPE_SPARSE = (byte) 'S';
+
+    /**
+     * Identifies the entry as a Pax extended header.
+     */
+    byte LF_PAX_EXTENDED_HEADER_LC = (byte) 'x';
+
+    /**
+     * Identifies the entry as a Pax extended header (SunOS tar -E).
+     */
+    byte LF_PAX_EXTENDED_HEADER_UC = (byte) 'X';
+
+    /**
+     * Identifies the entry as a Pax global extended header.
+     */
+    byte LF_PAX_GLOBAL_EXTENDED_HEADER = (byte) 'g';
+
+    /**
+     * Identifies the entry as a multi-volume past volume #0
+     */
+    byte LF_MULTIVOLUME = (byte) 'M';
+
+    /**
+     * The magic tag representing a POSIX tar archive.
+     * <p>
+     * "ustar" and a null.
+     * </p>
+     */
+    String MAGIC_POSIX = "ustar\0";
+
+    /**
+     * The magic tag representing a GNU tar archive.
+     */
+    String MAGIC_GNU = "ustar ";
+
+    /**
+     * The magix string used in the last four bytes of the header to identify the xstar format.
+     */
+    String MAGIC_XSTAR = "tar\0";
+
+    /**
+     * Offset inside the header for the xtar multivolume data
+     */
+    int XSTAR_MULTIVOLUME_OFFSET = 464;
+
+    /**
+     * Offset inside the header for the xstar magic bytes.
+     */
+    int XSTAR_MAGIC_OFFSET = 508;
+
+    /**
+     * Length of the XSTAR magic.
+     */
+    int XSTAR_MAGIC_LEN = 4;
+
+    /**
+     * Length of the prefix field in xstar archives.
+     */
+    int PREFIXLEN_XSTAR = 131;
+
+    /**
+     * Offset inside the header for the prefix field in xstar archives.
+     */
+    int XSTAR_PREFIX_OFFSET = 345;
+
+    /**
+     * Offset inside the header for the atime field in xstar archives.
+     */
+    int XSTAR_ATIME_OFFSET = 476;
+
+    /**
+     * The length of the access time field in a xstar header buffer.
+     */
+    int ATIMELEN_XSTAR = 12;
+
+    /**
+     * Offset inside the header for the ctime field in xstar archives.
+     */
+    int XSTAR_CTIME_OFFSET = 488;
+
+    /**
+     * The length of the created time field in a xstar header buffer.
+     */
+    int CTIMELEN_XSTAR = 12;
+}

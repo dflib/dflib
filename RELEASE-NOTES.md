@@ -15,6 +15,7 @@
 * #520 Zip source to exclude hidden files by default
 * #521 ZipEntry name extension filter for Zip
 * #522 "Zip.include(..)" filter
+* #523 Tar ByteSource(s)
 
 ## Release 2.0.0-M3
 
