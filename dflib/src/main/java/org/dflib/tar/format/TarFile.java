@@ -1,7 +1,6 @@
 package org.dflib.tar.format;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -15,12 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Provides random access to TAR archives.
- *
- * @since 2.0.0
- */
-public class TarFile implements AutoCloseable {
+// TODO: unused, work in progress. If we can make this class reentrant,
+//  we should be able to implement an efficient RandomAccessTar
+class TarFile implements AutoCloseable {
 
     private final byte[] smallBuf = new byte[256];
     private final ZipEncoding zipEncoding;
@@ -38,10 +34,6 @@ public class TarFile implements AutoCloseable {
     private TarEntry currentEntry;
     private Map<String, String> globalPaxHeaders;
     private final Map<String, List<InputStream>> sparseInputStreams;
-
-    public TarFile(File channel) throws IOException {
-        this(channel.toPath());
-    }
 
     public TarFile(Path archivePath) throws IOException {
         this(Files.newByteChannel(archivePath), TarConstants.DEFAULT_BLKSIZE, TarConstants.DEFAULT_RCDSIZE, Charset.defaultCharset(), false);

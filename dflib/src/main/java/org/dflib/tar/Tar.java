@@ -22,12 +22,14 @@ public abstract class Tar {
         return of(new File(fileName));
     }
 
+    // until we can create a reentrant TarFile, we'll process every source sequentially via a stream
+
     public static Tar of(Path path) {
-        return of(path.toFile());
+        return of(ByteSource.ofPath(path));
     }
 
     public static Tar of(File file) {
-        return new RandomAccessTar(file, null, null, notHiddenFilter());
+        return of(ByteSource.ofFile(file));
     }
 
     public static Tar of(ByteSource parentSource) {
