@@ -8,7 +8,6 @@ import org.dflib.tar.format.TarFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -81,11 +80,11 @@ class RandomAccessTar extends Tar {
 
     @Override
     public ByteSources sources() {
-        Map<String, ByteSource> sources = list(false)
-                .stream()
-                .collect(Collectors.toMap(TarEntry::getName, e -> new TarFileByteSource(file, e)));
 
-        return ByteSources.of(sources);
+        // TODO: Performance!! Since reopening TarFile every time is expensive, until #524 is fixed, using a streaming
+        //  processor instead of random access
+
+        return new TarStreamByteSources(ByteSource.ofFile(file), combinedFilter(false));
     }
 
     private static TarFile createTarFile(File file) {
