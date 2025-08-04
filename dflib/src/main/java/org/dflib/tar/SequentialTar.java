@@ -2,6 +2,7 @@ package org.dflib.tar;
 
 import org.dflib.ByteSource;
 import org.dflib.ByteSources;
+import org.dflib.codec.Codec;
 import org.dflib.tar.format.TarInputStream;
 import org.dflib.tar.format.TarEntry;
 
@@ -21,8 +22,13 @@ class SequentialTar extends Tar {
 
     private final ByteSource source;
 
-    public SequentialTar(ByteSource source, Predicate<TarEntry> filter, Predicate<TarEntry> extFilter, Predicate<TarEntry> notHiddenFilter) {
-        super(filter, extFilter, notHiddenFilter);
+    public SequentialTar(
+            ByteSource source,
+            Predicate<TarEntry> filter,
+            Predicate<TarEntry> extFilter,
+            Predicate<TarEntry> notHiddenFilter,
+            Codec compressionCodec) {
+        super(filter, extFilter, notHiddenFilter, compressionCodec);
         this.source = source;
     }
 
@@ -35,17 +41,22 @@ class SequentialTar extends Tar {
     @Override
     public Tar include(Predicate<TarEntry> filter) {
         Objects.requireNonNull(filter);
-        return new SequentialTar(source, filter, extFilter, notHiddenFilter);
+        return new SequentialTar(source, filter, extFilter, notHiddenFilter, compressionCodec);
     }
 
     @Override
     public Tar includeHidden() {
-        return new SequentialTar(source, filter, extFilter, null);
+        return new SequentialTar(source, filter, extFilter, null, compressionCodec);
     }
 
     @Override
     public Tar includeExtension(String ext) {
-        return new SequentialTar(source, filter, extensionFilter(ext), notHiddenFilter);
+        return new SequentialTar(source, filter, extensionFilter(ext), notHiddenFilter, compressionCodec);
+    }
+
+    @Override
+    public Tar compression(Codec codec) {
+        return new SequentialTar(source, filter, extFilter, notHiddenFilter, codec);
     }
 
     @Override
@@ -54,12 +65,12 @@ class SequentialTar extends Tar {
             throw new IllegalArgumentException("TAR entry is a directory and cannot be used to create a ByteSource: " + tarPath);
         }
 
-        return new TarStreamSeekByteSource(source, tarPath);
+        return new TarStreamSeekByteSource(source, tarPath, compressionCodec);
     }
 
     @Override
     public ByteSources sources() {
-        return new TarStreamByteSources(source, combinedFilter(false));
+        return new TarStreamByteSources(source, combinedFilter(false), compressionCodec);
     }
 
     private List<TarEntry> extractEntries(InputStream in, Predicate<TarEntry> filter) {

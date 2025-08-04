@@ -1,6 +1,7 @@
 package org.dflib.tar;
 
 import org.dflib.ByteSource;
+import org.dflib.codec.Codec;
 import org.dflib.tar.format.TarInputStream;
 import org.dflib.tar.format.TarEntry;
 
@@ -16,12 +17,14 @@ import java.util.Optional;
  */
 class TarStreamSeekByteSource implements ByteSource {
 
-    private final ByteSource tarSource;
+    private final ByteSource src;
     private final String tarEntryName;
+    private final Codec compressionCodec;
 
-    public TarStreamSeekByteSource(ByteSource tarSource, String tarEntryName) {
+    public TarStreamSeekByteSource(ByteSource src, String tarEntryName, Codec compressionCodec) {
+        this.src = Objects.requireNonNull(src);
         this.tarEntryName = Objects.requireNonNull(tarEntryName);
-        this.tarSource = Objects.requireNonNull(tarSource);
+        this.compressionCodec = compressionCodec;
     }
 
     @Override
@@ -32,7 +35,13 @@ class TarStreamSeekByteSource implements ByteSource {
 
     @Override
     public InputStream stream() {
-        TarInputStream in = new TarInputStream(tarSource.stream());
+        Codec codec = this.compressionCodec != null
+                ? this.compressionCodec
+                : Codec.ofUri(src.uri().orElse("")).orElse(null);
+
+        ByteSource plainSrc = codec != null ? src.decompress(codec) : src;
+
+        TarInputStream in = new TarInputStream(plainSrc.stream());
         TarEntry entry;
 
         try {

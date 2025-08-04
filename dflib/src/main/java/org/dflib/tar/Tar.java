@@ -2,6 +2,7 @@ package org.dflib.tar;
 
 import org.dflib.ByteSource;
 import org.dflib.ByteSources;
+import org.dflib.codec.Codec;
 import org.dflib.tar.format.TarEntry;
 
 import java.io.File;
@@ -33,17 +34,24 @@ public abstract class Tar {
     }
 
     public static Tar of(ByteSource parentSource) {
-        return new SequentialTar(parentSource, null, null, notHiddenFilter());
+        return new SequentialTar(parentSource, null, null, notHiddenFilter(), null);
     }
 
     protected final Predicate<TarEntry> filter;
     protected final Predicate<TarEntry> extFilter;
     protected final Predicate<TarEntry> notHiddenFilter;
+    protected final Codec compressionCodec;
 
-    protected Tar(Predicate<TarEntry> filter, Predicate<TarEntry> extFilter, Predicate<TarEntry> notHiddenFilter) {
+    protected Tar(
+            Predicate<TarEntry> filter,
+            Predicate<TarEntry> extFilter,
+            Predicate<TarEntry> notHiddenFilter,
+            Codec compressionCodec) {
+
         this.filter = filter;
         this.extFilter = extFilter;
         this.notHiddenFilter = notHiddenFilter;
+        this.compressionCodec = compressionCodec;
     }
 
     /**
@@ -58,6 +66,12 @@ public abstract class Tar {
      * Returns an instance of Tar that will filter archive files by extension.
      */
     public abstract Tar includeExtension(String ext);
+
+    /**
+     * Sets a compression codec for the archive source. If not set, the saver will try to determine compression
+     * preferences using the file extension. So this method is especially useful if the target is not a file.
+     */
+    public abstract Tar compression(Codec codec);
 
     public List<TarEntry> list() {
         return list(false);

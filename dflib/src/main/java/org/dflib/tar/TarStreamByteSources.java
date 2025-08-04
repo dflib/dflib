@@ -2,6 +2,7 @@ package org.dflib.tar;
 
 import org.dflib.ByteSource;
 import org.dflib.ByteSources;
+import org.dflib.codec.Codec;
 import org.dflib.tar.format.TarInputStream;
 import org.dflib.tar.format.TarEntry;
 
@@ -18,22 +19,31 @@ import java.util.function.Predicate;
  */
 class TarStreamByteSources implements ByteSources {
 
-    private final ByteSource tarSource;
+    private final ByteSource src;
     private final Predicate<TarEntry> filter;
+    private final Codec compressionCodec;
 
-    public TarStreamByteSources(ByteSource tarSource, Predicate<TarEntry> filter) {
-        this.tarSource = tarSource;
+    public TarStreamByteSources(ByteSource src, Predicate<TarEntry> filter, Codec compressionCodec) {
+        this.src = src;
         this.filter = filter;
+        this.compressionCodec = compressionCodec;
     }
 
     @Override
     public <T> Map<String, T> process(BiFunction<String, ByteSource, T> processor) {
+
+        Codec codec = this.compressionCodec != null
+                ? this.compressionCodec
+                : Codec.ofUri(src.uri().orElse("")).orElse(null);
+
+        ByteSource plainSrc = codec != null ? src.decompress(codec) : src;
+
         // Have to process TarArchiveInputStream sequentially
         // TODO: does it make sense in certain situations to open multiple streams, and scan through to specific entries
         //  to do parallel loading?
 
         Map<String, T> result = new HashMap<>();
-        try (TarInputStream in = new TarInputStream(tarSource.stream())) {
+        try (TarInputStream in = new TarInputStream(plainSrc.stream())) {
 
             TarEntry entry;
             while ((entry = in.getNextEntry()) != null) {

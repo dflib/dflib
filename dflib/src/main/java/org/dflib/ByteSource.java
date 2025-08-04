@@ -64,7 +64,7 @@ public interface ByteSource {
     }
 
     /**
-     * Assuming this source represents a TAR archive, returns a {@link ByteSources} catalog of the archive entries.
+     * Assuming this source represents a TAR (or a ".tar.gz") archive, returns a {@link ByteSources} catalog of the archive entries.
      *
      * @since 2.0.0
      */
