@@ -21,4 +21,8 @@ class TestZips {
                 Zip.of(Path.of(Zip_SourcesTest.class.getResource("test2.zip").toURI()))
         );
     }
+
+    public static Zip threeWin() {
+        return Zip.of(ByteSource.ofUrl(Zip_SourcesTest.class.getResource("test3-win.zip")));
+    }
 }

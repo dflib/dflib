@@ -1,6 +1,7 @@
 package org.dflib.zip;
 
 import org.dflib.ByteSources;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -15,7 +16,7 @@ public class Zip_SourcesTest {
 
     @ParameterizedTest
     @MethodSource(value = "org.dflib.zip.TestZips#one")
-    void sources(Zip zip) {
+    public void sources(Zip zip) {
         ByteSources srcs = zip.sources();
         assertNotNull(srcs);
 
@@ -33,7 +34,7 @@ public class Zip_SourcesTest {
 
     @ParameterizedTest
     @MethodSource(value = "org.dflib.zip.TestZips#two")
-    void sources_noHidden(Zip zip) {
+    public void sources_noHidden(Zip zip) {
         ByteSources srcs = zip.sources();
         assertNotNull(srcs);
 
@@ -48,7 +49,7 @@ public class Zip_SourcesTest {
 
     @ParameterizedTest
     @MethodSource(value = "org.dflib.zip.TestZips#two")
-    void sources_hidden_ext(Zip zip) {
+    public void sources_hidden_ext(Zip zip) {
         ByteSources srcs = zip.includeHidden().includeExtension("DS_Store").sources();
         assertNotNull(srcs);
 
@@ -56,5 +57,17 @@ public class Zip_SourcesTest {
         assertEquals(
                 List.of("__MACOSX/test/._.DS_Store", "test/.DS_Store"),
                 processed.keySet().stream().sorted().collect(Collectors.toList()));
+    }
+
+    @Test
+    public void sources_WindowsZip() {
+        ByteSources srcs = TestZips.threeWin().sources();
+        assertNotNull(srcs);
+
+        Map<String, String> processed = srcs.process((n, s) -> s.uri().orElse("") + ":" + new String(s.asBytes()));
+
+        assertEquals(Map.of(
+                "test/f1.csv", "test/f1.csv:A,B\n1,s1\n4,s2",
+                "test/sub/f2.csv", "test/sub/f2.csv:C,D\n1,s1\n4,s2"), processed);
     }
 }
