@@ -14,6 +14,7 @@ import org.dflib.slice.DeferredColumnSet;
 import org.dflib.slice.EmptyRowSet;
 import org.dflib.slice.IndexedRowSet;
 import org.dflib.slice.RangeRowSet;
+import org.dflib.stack.StackBuilder;
 import org.dflib.stack.Stacker;
 
 import java.util.Arrays;
@@ -277,16 +278,6 @@ public class ColumnDataFrame implements DataFrame {
         if (h != ah) {
             throw new IllegalArgumentException("Another DataFrame height is not the same as this height (" + ah + " vs " + h + ")");
         }
-    }
-
-    @Override
-    public DataFrame stack() {
-        return Stacker.stackExcludeNulls(this);
-    }
-
-    @Override
-    public DataFrame stackIncludeNulls() {
-        return Stacker.stackIncludeNulls(this);
     }
 
     @Override

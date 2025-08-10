@@ -11,6 +11,7 @@ import org.dflib.row.RowProxy;
 import org.dflib.sample.Sampler;
 import org.dflib.select.RowIndexer;
 import org.dflib.slice.FixedColumnSet;
+import org.dflib.stack.StackBuilder;
 import org.dflib.window.Window;
 
 import java.util.Iterator;
@@ -460,15 +461,21 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @return a new DataFrame with columns called "row", "column", "value".
      */
-    DataFrame stack();
+    default StackBuilder stack() {
+        return new StackBuilder(this);
+    }
 
     /**
      * Returns a new DataFrame with 3 columns "row", "column", "value" containing values from all columns of
      * this DataFrame. Null values are included.
      *
      * @return a new DataFrame with columns called "row", "column", "value".
+     * @deprecated with the introduction of non-terminal {@link #stack()}, this method is no longer needed
      */
-    DataFrame stackIncludeNulls();
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default DataFrame stackIncludeNulls() {
+        return stack().includeNulls().select();
+    }
 
     /**
      * Returns a mutable builder of a "pivot" transformation.

@@ -16,6 +16,7 @@
 * #521 ZipEntry name extension filter for Zip
 * #522 "Zip.include(..)" filter
 * #523 Tar ByteSource(s)
+* #525 Configurable "stack()" operation
 
 ## Release 2.0.0-M3
 

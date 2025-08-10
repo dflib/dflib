@@ -40,6 +40,9 @@ other primitive compaction methods became "non-terminal", so they no longer retu
 
 * [dflib #503](https://github.com/dflib/dflib/issues/503): If you are using DFLib in Jupyter with [JJava kernel](https://github.com/dflib/jjava/), DFLib starting from version 2.0.0-M3 would require JJava kernel version [1.0-a5](https://github.com/dflib/jjava/releases/tag/1.0-a5) or newer.
 
+* [dflib #525](https://github.com/dflib/dflib/issues/525): `DataFrame.stack()` method is now non-terminal, so you
+will need to change it to `DataFrame.stack().select()`.
+
 ## 1.1.0
 
 * [dflib #362](https://github.com/dflib/dflib/issues/362): Due to the changes in the aggregated column name generation algorithm, default aggregated column names are no longer equal to aggregation source column names. E.g. `$int("a").first()` would previously be called `a`, and now is called `first(a)`. This may cause an exception like the following: `java.lang.IllegalArgumentException: Value 'my_column' is not present in the Index`. To address this, you will need to either explicitly name your columns when specifying a column set (e.g., `df.group("a").cols("a", ...)`) or use `as` on a column-generating  expression  (e.g., `$int("a").first().as("a")`)

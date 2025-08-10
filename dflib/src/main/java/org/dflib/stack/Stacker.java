@@ -10,6 +10,10 @@ import org.dflib.series.IndexedSeries;
 import org.dflib.series.IntSequenceSeries;
 import org.dflib.series.SingleValueSeries;
 
+/**
+ * @deprecated no longer used internally, replaced with {@link StackBuilder}
+ */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class Stacker {
 
     private static final String ROW_LABEL = "row";
