@@ -533,8 +533,11 @@ public interface Exp<T> {
      * @return expression object parsed from the string
      * @since 2.0.0
      */
-    static Exp<?> parseExp(String exp) {
-        return QLParserInvoker.parse(exp, ExpParser::expRoot).exp;
+    static Exp<?> parseExp(String exp, Object... params) {
+        return QLParserInvoker.parse(exp, expParser -> {
+            expParser.setParameters(params);
+            return expParser.expRoot();
+        }).exp;
     }
 
     /**
@@ -544,8 +547,11 @@ public interface Exp<T> {
      * @return array of expression objects parsed from the string
      * @since 2.0.0
      */
-    static Exp<?>[] parseExpArray(String expArray) {
-        return QLParserInvoker.parse(expArray, ExpParser::expArray).expressions;
+    static Exp<?>[] parseExpArray(String expArray, Object... params) {
+        return QLParserInvoker.parse(expArray, expParser -> {
+            expParser.setParameters(params);
+            return expParser.expArray();
+        }).expressions;
     }
 
     /**

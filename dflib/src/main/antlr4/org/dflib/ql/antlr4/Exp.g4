@@ -16,6 +16,15 @@ import org.dflib.*;
 import static org.dflib.ql.antlr4.ExpParserUtils.*;
 }
 
+@members {
+// global state of the parser
+PositionalParamSource paramSource = new PositionalParamSource();
+
+public void setParameters(Object... params) {
+    paramSource.setData(params);
+}
+}
+
 /// **Parser rules**
 
 /**
@@ -81,6 +90,7 @@ expression returns [Exp<?> exp]
  */
 numExp returns [NumExp<?> exp]
     : numScalar { $exp = (NumExp<?>) val($numScalar.value); }
+    | PARAMETER { $exp = numParam(paramSource); }
     | numColumn { $exp = $numColumn.exp; }
     | numFn { $exp = $numFn.exp; }
     | numAgg { $exp = $numAgg.exp; }
@@ -98,6 +108,7 @@ numExp returns [NumExp<?> exp]
  */
 boolExp returns [Condition exp]
     : boolScalar { $exp = Exp.\$boolVal($boolScalar.value); }
+    | PARAMETER { $exp = boolParam(paramSource); }
     | boolColumn { $exp = $boolColumn.exp; }
     | boolFn { $exp = $boolFn.exp; }
     | relation { $exp = $relation.exp; }
@@ -117,6 +128,7 @@ boolExp returns [Condition exp]
  */
 strExp returns [StrExp exp]
     : strScalar { $exp = Exp.\$strVal($strScalar.value); }
+    | PARAMETER { $exp = strParam(paramSource); }
     | strColumn { $exp = $strColumn.exp; }
     | strFn { $exp = $strFn.exp; }
     | '(' strExp ')' { $exp = $strExp.exp; }
@@ -142,6 +154,7 @@ temporalExp returns [Exp<? extends Temporal> exp]
 timeExp returns [TimeExp exp]
     : timeColumn { $exp = $timeColumn.exp; }
     | timeFn { $exp = $timeFn.exp; }
+    | PARAMETER { $exp = timeParam(paramSource); }
     ;
 
 /**
@@ -150,6 +163,7 @@ timeExp returns [TimeExp exp]
 dateExp returns [DateExp exp]
     : dateColumn { $exp = $dateColumn.exp; }
     | dateFn { $exp = $dateFn.exp; }
+    | PARAMETER { $exp = dateParam(paramSource); }
     ;
 
 /**
@@ -158,6 +172,7 @@ dateExp returns [DateExp exp]
 dateTimeExp returns [DateTimeExp exp]
     : dateTimeColumn { $exp = $dateTimeColumn.exp; }
     | dateTimeFn { $exp = $dateTimeFn.exp; }
+    | PARAMETER { $exp = dateTimeParam(paramSource); }
     ;
 
 /**
@@ -168,6 +183,7 @@ dateTimeExp returns [DateTimeExp exp]
 offsetDateTimeExp returns [OffsetDateTimeExp exp]
     : offsetDateTimeColumn { $exp = $offsetDateTimeColumn.exp; }
     | offsetDateTimeFn { $exp = $offsetDateTimeFn.exp; }
+    | PARAMETER { $exp = offsetDateTimeParam(paramSource); }
     ;
 
 /// **Generic expressions**
@@ -192,7 +208,8 @@ anyScalar returns [Object value]
  * List of a comma-sperated scalars
  */
 anyScalarList returns [Object[] value]
-    : '(' values+=anyScalar (',' values+=anyScalar)* ')'{ $value = $values.stream().map(a -> a.value).toArray(); }
+    : '(' values+=anyScalar (',' values+=anyScalar)* ')' { $value = $values.stream().map(a -> a.value).toArray(); }
+    | '(' PARAMETER ')' { $value = objArrayParam(paramSource); }
     ;
 
 /**
@@ -216,6 +233,7 @@ numScalar returns [Number value]
  */
 numScalarList returns [Number[] value]
     : '(' values+=numScalar (',' values+=numScalar)* ')'{ $value = $values.stream().map(a -> a.value).toArray(Number[]::new); }
+    | '(' PARAMETER ')' { $value = numArrayParam(paramSource); }
     ;
 
 /**
@@ -276,6 +294,7 @@ strScalar returns [String value]
  */
 strScalarList returns [String[] value]
     : '(' values+=strScalar (',' values+=strScalar)* ')'{ $value = $values.stream().map(a -> a.value).toArray(String[]::new); }
+    | '(' PARAMETER ')' { $value = strArrayParam(paramSource); }
     ;
 
 /// **Column expressions**
@@ -1076,7 +1095,7 @@ shift returns [Exp<?> exp]
             $exp = $ctx.ss != null ? $se.exp.shift($i.value.intValue(), $ss.value) : $se.exp.shift($i.value.intValue());
         }
         | ge=genericShiftExp ',' i=integerScalar (',' s=anyScalar)? {
-            $exp = $ctx.ss != null ? ((Exp)$ge.exp).shift($i.value.intValue(), (Object)$s.value) : $ge.exp.shift($i.value.intValue());
+            $exp = $ctx.s != null ? ((Exp)$ge.exp).shift($i.value.intValue(), (Object)$s.value) : $ge.exp.shift($i.value.intValue());
         }
     ) ')'
     ;
@@ -1659,6 +1678,9 @@ DESC: 'desc';
 
 //@ doc:inline
 AS: 'as';
+
+//@ doc:inline
+PARAMETER: '?';
 
 /**
  * Matches an integer literal in decimal, hexadecimal, octal, or binary format.
