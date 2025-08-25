@@ -2,10 +2,10 @@ package org.dflib.ql.antlr4;
 
 public class PositionalParamSource {
 
-    Object[] data;
+    final Object[] data;
     int idx;
 
-    void setData(Object... data) {
+    public PositionalParamSource(Object[] data) {
         this.data = data;
     }
 

@@ -534,10 +534,9 @@ public interface Exp<T> {
      * @since 2.0.0
      */
     static Exp<?> parseExp(String exp, Object... params) {
-        return QLParserInvoker.parse(exp, expParser -> {
-            expParser.setParameters(params);
-            return expParser.expRoot();
-        }).exp;
+        return QLParserInvoker
+                .parse(exp, expParser -> expParser.expRoot(params))
+                .exp;
     }
 
     /**
@@ -548,10 +547,9 @@ public interface Exp<T> {
      * @since 2.0.0
      */
     static Exp<?>[] parseExpArray(String expArray, Object... params) {
-        return QLParserInvoker.parse(expArray, expParser -> {
-            expParser.setParameters(params);
-            return expParser.expArray();
-        }).expressions;
+        return QLParserInvoker
+                .parse(expArray, expParser -> expParser.expArray(params))
+                .expressions;
     }
 
     /**

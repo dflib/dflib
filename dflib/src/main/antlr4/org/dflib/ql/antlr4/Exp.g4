@@ -18,11 +18,7 @@ import static org.dflib.ql.antlr4.ExpParserUtils.*;
 
 @members {
 // global state of the parser
-PositionalParamSource paramSource = new PositionalParamSource();
-
-public void setParameters(Object... params) {
-    paramSource.setData(params);
-}
+PositionalParamSource paramSource;
 }
 
 /// **Parser rules**
@@ -30,8 +26,9 @@ public void setParameters(Object... params) {
 /**
  * The root rule of the grammar.
  */
-expRoot returns [Exp<?> exp]
-    : expSingle EOF { $exp = $expSingle.exp; }
+expRoot[Object[] params] returns [Exp<?> exp]
+    : { paramSource = new PositionalParamSource(params); }
+    expSingle EOF { $exp = $expSingle.exp; }
     ;
 
 expSingle returns [Exp<?> exp] locals [String alias]
@@ -42,8 +39,9 @@ expSingle returns [Exp<?> exp] locals [String alias]
     { $exp = $alias == null ? $expression.exp : $expression.exp.as($alias); }
     ;
 
-expArray returns [Exp[] expressions]
-    : args += expSingle (',' args += expSingle )* EOF
+expArray[Object[] params] returns [Exp[] expressions]
+    : { paramSource = new PositionalParamSource(params); }
+    args += expSingle (',' args += expSingle )* EOF
     { $expressions = $args.stream().map(e -> e.exp).toArray(Exp[]::new); }
     ;
 
