@@ -16,13 +16,19 @@ import org.dflib.*;
 import static org.dflib.ql.antlr4.ExpParserUtils.*;
 }
 
+@members {
+// global state of the parser
+PositionalParamSource paramSource;
+}
+
 /// **Parser rules**
 
 /**
  * The root rule of the grammar.
  */
-expRoot returns [Exp<?> exp]
-    : expSingle EOF { $exp = $expSingle.exp; }
+expRoot[Object[] params] returns [Exp<?> exp]
+    : { paramSource = new PositionalParamSource(params); }
+    expSingle EOF { $exp = $expSingle.exp; }
     ;
 
 expSingle returns [Exp<?> exp] locals [String alias]
@@ -33,8 +39,9 @@ expSingle returns [Exp<?> exp] locals [String alias]
     { $exp = $alias == null ? $expression.exp : $expression.exp.as($alias); }
     ;
 
-expArray returns [Exp[] expressions]
-    : args += expSingle (',' args += expSingle )* EOF
+expArray[Object[] params] returns [Exp[] expressions]
+    : { paramSource = new PositionalParamSource(params); }
+    args += expSingle (',' args += expSingle )* EOF
     { $expressions = $args.stream().map(e -> e.exp).toArray(Exp[]::new); }
     ;
 
@@ -81,6 +88,7 @@ expression returns [Exp<?> exp]
  */
 numExp returns [NumExp<?> exp]
     : numScalar { $exp = (NumExp<?>) val($numScalar.value); }
+    | PARAMETER { $exp = numParam(paramSource); }
     | numColumn { $exp = $numColumn.exp; }
     | numFn { $exp = $numFn.exp; }
     | numAgg { $exp = $numAgg.exp; }
@@ -98,6 +106,7 @@ numExp returns [NumExp<?> exp]
  */
 boolExp returns [Condition exp]
     : boolScalar { $exp = Exp.\$boolVal($boolScalar.value); }
+    | PARAMETER { $exp = boolParam(paramSource); }
     | boolColumn { $exp = $boolColumn.exp; }
     | boolFn { $exp = $boolFn.exp; }
     | relation { $exp = $relation.exp; }
@@ -117,6 +126,7 @@ boolExp returns [Condition exp]
  */
 strExp returns [StrExp exp]
     : strScalar { $exp = Exp.\$strVal($strScalar.value); }
+    | PARAMETER { $exp = strParam(paramSource); }
     | strColumn { $exp = $strColumn.exp; }
     | strFn { $exp = $strFn.exp; }
     | '(' strExp ')' { $exp = $strExp.exp; }
@@ -142,6 +152,7 @@ temporalExp returns [Exp<? extends Temporal> exp]
 timeExp returns [TimeExp exp]
     : timeColumn { $exp = $timeColumn.exp; }
     | timeFn { $exp = $timeFn.exp; }
+    | PARAMETER { $exp = timeParam(paramSource); }
     ;
 
 /**
@@ -150,6 +161,7 @@ timeExp returns [TimeExp exp]
 dateExp returns [DateExp exp]
     : dateColumn { $exp = $dateColumn.exp; }
     | dateFn { $exp = $dateFn.exp; }
+    | PARAMETER { $exp = dateParam(paramSource); }
     ;
 
 /**
@@ -158,6 +170,7 @@ dateExp returns [DateExp exp]
 dateTimeExp returns [DateTimeExp exp]
     : dateTimeColumn { $exp = $dateTimeColumn.exp; }
     | dateTimeFn { $exp = $dateTimeFn.exp; }
+    | PARAMETER { $exp = dateTimeParam(paramSource); }
     ;
 
 /**
@@ -168,6 +181,7 @@ dateTimeExp returns [DateTimeExp exp]
 offsetDateTimeExp returns [OffsetDateTimeExp exp]
     : offsetDateTimeColumn { $exp = $offsetDateTimeColumn.exp; }
     | offsetDateTimeFn { $exp = $offsetDateTimeFn.exp; }
+    | PARAMETER { $exp = offsetDateTimeParam(paramSource); }
     ;
 
 /// **Generic expressions**
@@ -186,13 +200,15 @@ anyScalar returns [Object value]
     : boolScalar { $value = $boolScalar.value; }
     | numScalar { $value = $numScalar.value; }
     | strScalar { $value = $strScalar.value; }
+    | PARAMETER { $value = paramSource.next(); }
     ;
 
 /**
  * List of a comma-sperated scalars
  */
 anyScalarList returns [Object[] value]
-    : '(' values+=anyScalar (',' values+=anyScalar)* ')'{ $value = $values.stream().map(a -> a.value).toArray(); }
+    : '(' values+=anyScalar (',' values+=anyScalar)* ')' { $value = $values.stream().map(a -> a.value).toArray(); }
+    | PARAMETER { $value = objArrayParam(paramSource); }
     ;
 
 /**
@@ -214,8 +230,18 @@ numScalar returns [Number value]
 /**
  * List of a comma-sperated numeric scalars
  */
-numScalarList returns [Number[] value]
-    : '(' values+=numScalar (',' values+=numScalar)* ')'{ $value = $values.stream().map(a -> a.value).toArray(Number[]::new); }
+numScalarList returns [Number[] value] locals [List<Number> values = new ArrayList<>()]
+    :
+    '('
+        numScalarOrParamter { $values.add($numScalarOrParamter.value); }
+        (',' numScalarOrParamter { $values.add($numScalarOrParamter.value); })*
+    ')'
+        { $value = $values.toArray(Number[]::new); }
+    | PARAMETER { $value = numArrayParam(paramSource); }
+    ;
+
+numScalarOrParamter returns [Number value]
+    : numScalar { $value = $numScalar.value; } | PARAMETER { $value = paramSource.next(Number.class); }
     ;
 
 /**
@@ -274,8 +300,18 @@ strScalar returns [String value]
 /**
  * List of a comma-sperated string literals
  */
-strScalarList returns [String[] value]
-    : '(' values+=strScalar (',' values+=strScalar)* ')'{ $value = $values.stream().map(a -> a.value).toArray(String[]::new); }
+strScalarList returns [String[] value] locals [List<String> values = new ArrayList<>()]
+    :
+    '('
+        strScalarOrParameter { $values.add($strScalarOrParameter.value); }
+        (',' strScalarOrParameter { $values.add($strScalarOrParameter.value); })*
+    ')'
+        { $value = $values.toArray(String[]::new); }
+    | PARAMETER { $value = strArrayParam(paramSource); }
+    ;
+
+strScalarOrParameter returns [String value]
+    : strScalar { $value = $strScalar.value; } | PARAMETER { $value = paramSource.next(String.class); }
     ;
 
 /// **Column expressions**
@@ -1076,7 +1112,7 @@ shift returns [Exp<?> exp]
             $exp = $ctx.ss != null ? $se.exp.shift($i.value.intValue(), $ss.value) : $se.exp.shift($i.value.intValue());
         }
         | ge=genericShiftExp ',' i=integerScalar (',' s=anyScalar)? {
-            $exp = $ctx.ss != null ? ((Exp)$ge.exp).shift($i.value.intValue(), (Object)$s.value) : $ge.exp.shift($i.value.intValue());
+            $exp = $ctx.s != null ? ((Exp)$ge.exp).shift($i.value.intValue(), (Object)$s.value) : $ge.exp.shift($i.value.intValue());
         }
     ) ')'
     ;
@@ -1659,6 +1695,9 @@ DESC: 'desc';
 
 //@ doc:inline
 AS: 'as';
+
+//@ doc:inline
+PARAMETER: '?';
 
 /**
  * Matches an integer literal in decimal, hexadecimal, octal, or binary format.

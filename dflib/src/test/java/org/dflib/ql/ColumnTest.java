@@ -153,6 +153,7 @@ public class ColumnTest {
             ExpParser.TRUE,
             ExpParser.FALSE,
             ExpParser.AS,
+            ExpParser.PARAMETER,
             ExpParser.INTEGER_LITERAL,
             ExpParser.FLOAT_LITERAL,
             ExpParser.STRING_LITERAL,

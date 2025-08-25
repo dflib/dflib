@@ -10,7 +10,9 @@ import org.dflib.NumExp;
 import org.dflib.OffsetDateTimeExp;
 import org.dflib.StrExp;
 import org.dflib.TimeExp;
+import org.dflib.exp.bool.BoolScalarExp;
 import org.dflib.exp.flow.IfNullExp;
+import org.dflib.exp.str.StrScalarExp;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
@@ -21,7 +23,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -384,5 +389,102 @@ class ExpParserUtils {
             throw new RuntimeException(e);
         }
         return exp.array(array);
+    }
+
+    @SuppressWarnings("unchecked")
+    static <T extends Exp<?>> T param(PositionalParamSource source, BiConsumer<Object, Exp<?>> validator) {
+        Object next = source.next();
+        Exp<?> exp = val(next);
+        validator.accept(next, exp);
+        return (T) exp;
+    }
+
+    public static NumExp<?> numParam(PositionalParamSource source) {
+        return param(source, (o, e) -> {
+            if(!(e instanceof NumExp)) {
+                throw new RuntimeException("Invalid value for a numeric parameter: " + o);
+            }
+        });
+    }
+
+    public static StrExp strParam(PositionalParamSource source) {
+        return param(source, (o, e) -> {
+            if(!(e instanceof StrScalarExp)) {
+                throw new RuntimeException("Invalid value for a string parameter: " + o);
+            }
+        });
+    }
+
+    public static Condition boolParam(PositionalParamSource source) {
+        return param(source, (o, e) -> {
+            if(!(e instanceof BoolScalarExp)) {
+                throw new RuntimeException("Invalid value for a boolean parameter: " + o);
+            }
+        });
+    }
+
+    public static DateExp dateParam(PositionalParamSource source) {
+        return param(source, (o, e) -> {
+            if(!(e instanceof DateExp)) {
+                throw new RuntimeException("Invalid value for a date parameter: " + o);
+            }
+        });
+    }
+
+    public static TimeExp timeParam(PositionalParamSource source) {
+        return param(source, (o, e) -> {
+            if(!(e instanceof TimeExp)) {
+                throw new RuntimeException("Invalid value for a time parameter: " + o);
+            }
+        });
+    }
+
+    public static DateTimeExp dateTimeParam(PositionalParamSource source) {
+        return param(source, (o, e) -> {
+            if(!(e instanceof DateTimeExp)) {
+                throw new RuntimeException("Invalid value for a datetime parameter: " + o);
+            }
+        });
+    }
+
+    public static OffsetDateTimeExp offsetDateTimeParam(PositionalParamSource source) {
+        return param(source, (o, e) -> {
+            if(!(e instanceof OffsetDateTimeExp)) {
+                throw new RuntimeException("Invalid value for a offset datetime parameter: " + o);
+            }
+        });
+    }
+
+    public static Object[] objArrayParam(PositionalParamSource source) {
+        Object next = source.next();
+        if(next instanceof Collection) {
+            return ((Collection<?>) next).toArray();
+        } else if(next instanceof Object[]) {
+            return (Object[]) next;
+        }
+        throw new RuntimeException("Expected array or collection parameter");
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T[] arrayParam(PositionalParamSource source, IntFunction<T[]> arrayGenerator) {
+        Object next = source.next();
+        if(next instanceof Collection) {
+            return ((Collection<?>) next).toArray(arrayGenerator);
+        } else if(next instanceof Object[]) {
+            Object[] data = (Object[]) next;
+            T[] result = arrayGenerator.apply(data.length);
+            for(int i=0; i<data.length; i++) {
+                result[i] = (T)data[i]; // unsafe cast here
+            }
+        }
+        throw new RuntimeException("Expected array or collection parameter");
+    }
+
+    public static Number[] numArrayParam(PositionalParamSource source) {
+        return arrayParam(source, Number[]::new);
+    }
+
+    public static String[] strArrayParam(PositionalParamSource source) {
+        return arrayParam(source, String[]::new);
     }
 }
