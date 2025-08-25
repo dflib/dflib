@@ -82,18 +82,38 @@ public class ExpParamsTest {
                 ),
 
                 arguments(
-                        "int(1) in (?)",
+                        "int(1) in ?",
                         new Object[]{List.of(1, 2, 3)},
                         $int(1).in(1, 2, 3)
                 ),
                 arguments(
-                        "str(1) in (?)",
+                        "int(1) in (1, ?, 3)",
+                        new Object[]{2},
+                        $int(1).in(1, 2, 3)
+                ),
+                arguments(
+                        "int(1) in (?, ?, ?)",
+                        new Object[]{1, 2, 3},
+                        $int(1).in(1, 2, 3)
+                ),
+                arguments(
+                        "str(1) in ?",
                         new Object[]{List.of("a", "b", "c")},
                         $str(1).in("a", "b", "c")
                 ),
                 arguments(
-                        "a in (?)",
+                        "str(1) in (?, 'b', 'c')",
+                        new Object[]{"a"},
+                        $str(1).in("a", "b", "c")
+                ),
+                arguments(
+                        "a in ?",
                         new Object[]{List.of("a", 1, .4)},
+                        $col("a").in("a", 1, .4)
+                ),
+                arguments(
+                        "a in ('a', 1, ?)",
+                        new Object[]{0.4},
                         $col("a").in("a", 1, .4)
                 ),
 

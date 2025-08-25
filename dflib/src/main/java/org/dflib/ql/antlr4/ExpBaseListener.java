@@ -284,6 +284,18 @@ public class ExpBaseListener implements ExpListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterNumScalarOrParamter(ExpParser.NumScalarOrParamterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNumScalarOrParamter(ExpParser.NumScalarOrParamterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterIntegerScalar(ExpParser.IntegerScalarContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -375,6 +387,18 @@ public class ExpBaseListener implements ExpListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitStrScalarList(ExpParser.StrScalarListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStrScalarOrParameter(ExpParser.StrScalarOrParameterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStrScalarOrParameter(ExpParser.StrScalarOrParameterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

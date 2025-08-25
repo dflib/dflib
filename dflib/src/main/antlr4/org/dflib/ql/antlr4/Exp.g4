@@ -200,6 +200,7 @@ anyScalar returns [Object value]
     : boolScalar { $value = $boolScalar.value; }
     | numScalar { $value = $numScalar.value; }
     | strScalar { $value = $strScalar.value; }
+    | PARAMETER { $value = paramSource.next(); }
     ;
 
 /**
@@ -207,7 +208,7 @@ anyScalar returns [Object value]
  */
 anyScalarList returns [Object[] value]
     : '(' values+=anyScalar (',' values+=anyScalar)* ')' { $value = $values.stream().map(a -> a.value).toArray(); }
-    | '(' PARAMETER ')' { $value = objArrayParam(paramSource); }
+    | PARAMETER { $value = objArrayParam(paramSource); }
     ;
 
 /**
@@ -229,9 +230,18 @@ numScalar returns [Number value]
 /**
  * List of a comma-sperated numeric scalars
  */
-numScalarList returns [Number[] value]
-    : '(' values+=numScalar (',' values+=numScalar)* ')'{ $value = $values.stream().map(a -> a.value).toArray(Number[]::new); }
-    | '(' PARAMETER ')' { $value = numArrayParam(paramSource); }
+numScalarList returns [Number[] value] locals [List<Number> values = new ArrayList<>()]
+    :
+    '('
+        numScalarOrParamter { $values.add($numScalarOrParamter.value); }
+        (',' numScalarOrParamter { $values.add($numScalarOrParamter.value); })*
+    ')'
+        { $value = $values.toArray(Number[]::new); }
+    | PARAMETER { $value = numArrayParam(paramSource); }
+    ;
+
+numScalarOrParamter returns [Number value]
+    : numScalar { $value = $numScalar.value; } | PARAMETER { $value = paramSource.next(Number.class); }
     ;
 
 /**
@@ -290,9 +300,18 @@ strScalar returns [String value]
 /**
  * List of a comma-sperated string literals
  */
-strScalarList returns [String[] value]
-    : '(' values+=strScalar (',' values+=strScalar)* ')'{ $value = $values.stream().map(a -> a.value).toArray(String[]::new); }
-    | '(' PARAMETER ')' { $value = strArrayParam(paramSource); }
+strScalarList returns [String[] value] locals [List<String> values = new ArrayList<>()]
+    :
+    '('
+        strScalarOrParameter { $values.add($strScalarOrParameter.value); }
+        (',' strScalarOrParameter { $values.add($strScalarOrParameter.value); })*
+    ')'
+        { $value = $values.toArray(String[]::new); }
+    | PARAMETER { $value = strArrayParam(paramSource); }
+    ;
+
+strScalarOrParameter returns [String value]
+    : strScalar { $value = $strScalar.value; } | PARAMETER { $value = paramSource.next(String.class); }
     ;
 
 /// **Column expressions**

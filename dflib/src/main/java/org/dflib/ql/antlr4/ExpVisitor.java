@@ -152,6 +152,12 @@ public interface ExpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNumScalarList(ExpParser.NumScalarListContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ExpParser#numScalarOrParamter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNumScalarOrParamter(ExpParser.NumScalarOrParamterContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ExpParser#integerScalar}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -199,6 +205,12 @@ public interface ExpVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStrScalarList(ExpParser.StrScalarListContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ExpParser#strScalarOrParameter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStrScalarOrParameter(ExpParser.StrScalarOrParameterContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ExpParser#numColumn}.
 	 * @param ctx the parse tree

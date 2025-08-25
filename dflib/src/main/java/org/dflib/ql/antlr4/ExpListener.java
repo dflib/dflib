@@ -233,6 +233,16 @@ public interface ExpListener extends ParseTreeListener {
 	 */
 	void exitNumScalarList(ExpParser.NumScalarListContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ExpParser#numScalarOrParamter}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumScalarOrParamter(ExpParser.NumScalarOrParamterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#numScalarOrParamter}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumScalarOrParamter(ExpParser.NumScalarOrParamterContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ExpParser#integerScalar}.
 	 * @param ctx the parse tree
 	 */
@@ -312,6 +322,16 @@ public interface ExpListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStrScalarList(ExpParser.StrScalarListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ExpParser#strScalarOrParameter}.
+	 * @param ctx the parse tree
+	 */
+	void enterStrScalarOrParameter(ExpParser.StrScalarOrParameterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#strScalarOrParameter}.
+	 * @param ctx the parse tree
+	 */
+	void exitStrScalarOrParameter(ExpParser.StrScalarOrParameterContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ExpParser#numColumn}.
 	 * @param ctx the parse tree
