@@ -43,8 +43,8 @@ public interface RowColumnSet {
      *
      * @since 2.0.0
      */
-    default DataFrame merge(String exps) {
-        return merge(Exp.parseExpArray(exps));
+    default DataFrame merge(String exps, Object... params) {
+        return merge(Exp.parseExpArray(exps, params));
     }
 
     DataFrame merge(Exp<?>... exps);
@@ -67,8 +67,8 @@ public interface RowColumnSet {
      *
      * @since 2.0.0
      */
-    default DataFrame select(String exps) {
-        return select(Exp.parseExpArray(exps));
+    default DataFrame select(String exps, Object... params) {
+        return select(Exp.parseExpArray(exps, params));
     }
 
     DataFrame select(Exp<?>... exps);

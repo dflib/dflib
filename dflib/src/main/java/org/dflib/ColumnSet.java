@@ -20,8 +20,8 @@ public interface ColumnSet {
      *
      * @since 2.0.0
      */
-    default ColumnSet expand(String splitExp) {
-        Exp<?> parsed = Exp.parseExp(splitExp);
+    default ColumnSet expand(String splitExp, Object... params) {
+        Exp<?> parsed = Exp.parseExp(splitExp, params);
         Class<?> type = parsed.getType();
 
         if (Iterable.class.isAssignableFrom(type)) {
@@ -65,8 +65,8 @@ public interface ColumnSet {
      *                     the {@link RowColumnSet}
      * @since 2.0.0
      */
-    default RowColumnSet rows(String rowCondition) {
-        return rows(Exp.parseExp(rowCondition).castAsBool());
+    default RowColumnSet rows(String rowCondition, Object... params) {
+        return rows(Exp.parseExp(rowCondition, params).castAsBool());
     }
 
     RowColumnSet rows(Condition rowCondition);
@@ -106,8 +106,8 @@ public interface ColumnSet {
      * @param replacementValuesExp a String parsed to an expression that generates a column with null replacement values
      * @since 2.0.0
      */
-    default DataFrame fillNullsWithExp(String replacementValuesExp) {
-        return fillNullsWithExp(Exp.parseExp(replacementValuesExp));
+    default DataFrame fillNullsWithExp(String replacementValuesExp, Object... params) {
+        return fillNullsWithExp(Exp.parseExp(replacementValuesExp, params));
     }
 
     DataFrame fillNullsWithExp(Exp<?> replacementValuesExp);
@@ -220,8 +220,8 @@ public interface ColumnSet {
      *
      * @since 2.0.0
      */
-    default DataFrame merge(String exps) {
-        return merge(Exp.parseExpArray(exps));
+    default DataFrame merge(String exps, Object... params) {
+        return merge(Exp.parseExpArray(exps, params));
     }
 
     /**
@@ -292,8 +292,8 @@ public interface ColumnSet {
      *
      * @since 2.0.0
      */
-    default DataFrame select(String exps) {
-        return select(Exp.parseExpArray(exps));
+    default DataFrame select(String exps, Object... params) {
+        return select(Exp.parseExpArray(exps, params));
     }
 
     /**
@@ -345,8 +345,8 @@ public interface ColumnSet {
      *
      * @since 2.0.0
      */
-    default DataFrame agg(String aggregatingExps) {
-        return agg(Exp.parseExpArray(aggregatingExps));
+    default DataFrame agg(String aggregatingExps, Object... params) {
+        return agg(Exp.parseExpArray(aggregatingExps, params));
     }
 
     /**

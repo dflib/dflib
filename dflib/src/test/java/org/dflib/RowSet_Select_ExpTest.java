@@ -222,6 +222,22 @@ public class RowSet_Select_ExpTest {
     }
 
     @Test
+    public void byConditionExpString_SelectExpString_Params() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .rows("int(a) % 2 != 0")
+                .select("int(0) * ?, concat(str(1), str(2)), c", 3);
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(2)
+                .expectRow(0, 3, "xa", "a")
+                .expectRow(1, -3, "mn", "n");
+    }
+
+    @Test
     public void byRowPredicate() {
         DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(

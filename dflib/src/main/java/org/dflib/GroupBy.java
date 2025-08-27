@@ -248,8 +248,8 @@ public class GroupBy {
     /**
      * @since 2.0.0
      */
-    public GroupBy sort(String sortExps) {
-        return sort(Sorter.parseSorterArray(sortExps));
+    public GroupBy sort(String sortExps, Object... params) {
+        return sort(Sorter.parseSorterArray(sortExps, params));
     }
 
     public GroupBy sort(Sorter... sorters) {
@@ -309,8 +309,8 @@ public class GroupBy {
      * @return a new DataFrame made from recombined groups after applying provided expressions
      * @since 2.0.0
      */
-    public DataFrame select(String exps) {
-        return select(Exp.parseExpArray(exps));
+    public DataFrame select(String exps, Object... params) {
+        return select(Exp.parseExpArray(exps, params));
     }
 
     /**
@@ -349,8 +349,8 @@ public class GroupBy {
      * @return a new DataFrame made from recombined groups after applying provided expressions
      * @since 2.0.0
      */
-    public DataFrame merge(String exps) {
-        return merge(Exp.parseExpArray(exps));
+    public DataFrame merge(String exps, Object... params) {
+        return merge(Exp.parseExpArray(exps, params));
     }
 
     /**
@@ -388,8 +388,8 @@ public class GroupBy {
     /**
      * @since 2.0.0
      */
-    public DataFrame agg(String aggregatingExps) {
-        return agg(Exp.parseExpArray(aggregatingExps));
+    public DataFrame agg(String aggregatingExps, Object... params) {
+        return agg(Exp.parseExpArray(aggregatingExps, params));
     }
 
     public DataFrame agg(Exp<?>... aggregatingExps) {

@@ -582,8 +582,8 @@ public interface DataFrame extends Iterable<RowProxy> {
      *                     the {@link RowSet}
      * @since 2.0.0
      */
-    default RowSet rows(String rowCondition) {
-        return rows(Exp.parseExp(rowCondition).castAsBool());
+    default RowSet rows(String rowCondition, Object... params) {
+        return rows(Exp.parseExp(rowCondition, params).castAsBool());
     }
 
     /**
@@ -632,8 +632,8 @@ public interface DataFrame extends Iterable<RowProxy> {
      *                            the {@link RowSet}
      * @since 2.0.0
      */
-    default RowSet rowsExcept(String rowExcludeCondition) {
-        return rowsExcept(Exp.parseExp(rowExcludeCondition).castAsBool());
+    default RowSet rowsExcept(String rowExcludeCondition, Object... params) {
+        return rowsExcept(Exp.parseExp(rowExcludeCondition, params).castAsBool());
     }
 
     default RowSet rowsExcept(Condition rowExcludeCondition) {
