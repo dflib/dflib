@@ -157,6 +157,10 @@ public class ExpLexer extends Lexer {
 	// global state of the parser
 	PositionalParamSource paramSource;
 
+	public void setParameters(Object... params) {
+	    this.paramSource = new PositionalParamSource(params);
+	}
+
 
 	public ExpLexer(CharStream input) {
 		super(input);

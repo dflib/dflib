@@ -10,6 +10,7 @@
 * #514 Exp parser: support in and not in operators
 * #515 String sorter parser 
 * #516 Parse lists of Exp and Sorters 
+* #517 Parameters in the QL parser
 * #518 QL Parser: column alias support 
 * #519 "FSFolder.include(..)" filter
 * #520 Zip source to exclude hidden files by default

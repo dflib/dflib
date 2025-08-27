@@ -47,13 +47,13 @@ import org.dflib.exp.num.IntColumn;
 import org.dflib.exp.num.IntScalarExp;
 import org.dflib.exp.num.LongColumn;
 import org.dflib.exp.num.LongScalarExp;
-import org.dflib.ql.QLParserInvoker;
-import org.dflib.sort.ExpSorter;
 import org.dflib.exp.str.ConcatExp;
 import org.dflib.exp.str.StrColumn;
 import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrScalarExp;
+import org.dflib.ql.QLParserInvoker;
 import org.dflib.ql.antlr4.ExpParser;
+import org.dflib.sort.ExpSorter;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -535,7 +535,7 @@ public interface Exp<T> {
      */
     static Exp<?> parseExp(String exp, Object... params) {
         return QLParserInvoker
-                .parse(exp, expParser -> expParser.expRoot(params))
+                .parse(exp, ExpParser::expRoot, params)
                 .exp;
     }
 
@@ -548,7 +548,7 @@ public interface Exp<T> {
      */
     static Exp<?>[] parseExpArray(String expArray, Object... params) {
         return QLParserInvoker
-                .parse(expArray, expParser -> expParser.expArray(params))
+                .parse(expArray, ExpParser::expArray, params)
                 .expressions;
     }
 

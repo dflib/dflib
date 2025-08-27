@@ -25,11 +25,12 @@ public class QLParserInvoker {
      * Invokes the expression parser for a given String input and a function that selects a proper parser root.
      * Implements common approach to lexer creation and error handling.
      */
-    public static <T> T parse(String expStr, Function<ExpParser, T> parserFunction) {
+    public static <T> T parse(String expStr, Function<ExpParser, T> parserFunction, Object... params) {
         ExpLexer lexer = new ExpStrictLexer(CharStreams.fromString(expStr));
         ExpParser parser = new ExpParser(new CommonTokenStream(lexer));
         parser.removeErrorListeners(); // remove logging to std.err
         parser.addErrorListener(new ErrorListener());
+        parser.setParameters(params);
 
         try {
             return parserFunction.apply(parser);
