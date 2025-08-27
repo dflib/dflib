@@ -296,8 +296,8 @@ public interface BooleanSeries extends Series<Boolean> {
     }
 
     @Override
-    default BooleanSeries sort(String sorters) {
-        return sort(Sorter.parseSorterArray(sorters));
+    default BooleanSeries sort(String sorters, Object... params) {
+        return sort(Sorter.parseSorterArray(sorters, params));
     }
 
     @Override

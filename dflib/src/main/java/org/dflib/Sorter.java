@@ -14,8 +14,8 @@ public interface Sorter {
      *
      * @since 2.0.0
      */
-    static Sorter parseSorter(String sorterExp) {
-        return QLParserInvoker.parse(sorterExp, ExpParser::sorterRoot).sorter;
+    static Sorter parseSorter(String sorterExp, Object... params) {
+        return QLParserInvoker.parse(sorterExp, ExpParser::sorterRoot, params).sorter;
     }
 
     /**
@@ -23,8 +23,8 @@ public interface Sorter {
      *
      * @since 2.0.0
      */
-    static Sorter[] parseSorterArray(String sorterArrayExp) {
-        return QLParserInvoker.parse(sorterArrayExp, ExpParser::sorterArray).sorters;
+    static Sorter[] parseSorterArray(String sorterArrayExp, Object... params) {
+        return QLParserInvoker.parse(sorterArrayExp, ExpParser::sorterArray, params).sorters;
     }
 
     IntComparator eval(DataFrame df);

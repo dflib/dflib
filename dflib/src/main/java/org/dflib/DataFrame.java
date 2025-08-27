@@ -244,7 +244,7 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * A noop sort operation. Useless on its own, and primarily exists to disambiguate {@link #sort(Sorter...)} and
-     * {@link #sort(String)} for no-arg sort call.
+     * {@link #sort(String, Object...)} for no-arg sort call.
      *
      * @since 2.0.0
      */
@@ -257,8 +257,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @since 2.0.0
      */
-    default DataFrame sort(String sortSpec) {
-        return sort(Sorter.parseSorterArray(sortSpec));
+    // TODO: this signature results in ambiguity with "sort(String column, boolean ascending)" for certain parameters
+    default DataFrame sort(String sortSpec, Object... params) {
+        return sort(Sorter.parseSorterArray(sortSpec, params));
     }
 
     default DataFrame sort(Sorter... sorters) {

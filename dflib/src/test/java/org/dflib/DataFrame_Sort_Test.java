@@ -5,8 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.dflib.Exp.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.dflib.Exp.$decimal;
+import static org.dflib.Exp.$int;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 public class DataFrame_Sort_Test {
 
@@ -236,6 +237,23 @@ public class DataFrame_Sort_Test {
                 .expectRow(1, 0, 1)
                 .expectRow(2, 2, 3)
                 .expectRow(3, 2, 2);
+    }
+
+    @Test
+    public void sort_WithSorterStr_Params() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                        0, 1,
+                        2, 3,
+                        2, 2,
+                        -1, 2)
+                .sort("int(a) < ? desc, b", 1);
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(4)
+                .expectRow(0, 0, 1)
+                .expectRow(1, -1, 2)
+                .expectRow(2, 2, 2)
+                .expectRow(3, 2, 3);
     }
 
     @Test

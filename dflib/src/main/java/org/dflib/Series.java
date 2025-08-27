@@ -576,8 +576,8 @@ public interface Series<T> extends Iterable<T> {
      *
      * @since 2.0.0
      */
-    default Series<T> sort(String sorters) {
-        return sort(Sorter.parseSorterArray(sorters));
+    default Series<T> sort(String sorters, Object... params) {
+        return sort(Sorter.parseSorterArray(sorters, params));
     }
 
     Series<T> sort(Sorter... sorters);

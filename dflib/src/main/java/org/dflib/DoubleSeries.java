@@ -295,8 +295,8 @@ public interface DoubleSeries extends Series<Double> {
     DoubleSeries selectDouble(DoublePredicate p);
 
     @Override
-    default DoubleSeries sort(String sorters) {
-        return sort(Sorter.parseSorterArray(sorters));
+    default DoubleSeries sort(String sorters, Object... params) {
+        return sort(Sorter.parseSorterArray(sorters, params));
     }
 
     @Override

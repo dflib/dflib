@@ -296,8 +296,8 @@ public interface LongSeries extends Series<Long> {
     LongSeries sort(Comparator<? super Long> comparator);
 
     @Override
-    default LongSeries sort(String sorters) {
-        return sort(Sorter.parseSorterArray(sorters));
+    default LongSeries sort(String sorters, Object... params) {
+        return sort(Sorter.parseSorterArray(sorters, params));
     }
 
     @Override

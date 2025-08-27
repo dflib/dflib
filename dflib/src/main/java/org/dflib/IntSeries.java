@@ -296,8 +296,8 @@ public interface IntSeries extends Series<Integer> {
     IntSeries selectInt(IntPredicate p);
 
     @Override
-    default IntSeries sort(String sorters) {
-        return sort(Sorter.parseSorterArray(sorters));
+    default IntSeries sort(String sorters, Object... params) {
+        return sort(Sorter.parseSorterArray(sorters, params));
     }
 
     @Override
