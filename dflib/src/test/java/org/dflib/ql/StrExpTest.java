@@ -20,7 +20,7 @@ public class StrExpTest {
 
     @ParameterizedTest
     @MethodSource
-    void scalar(String text, Exp<?> expected) {
+    public void scalar(String text, Exp<?> expected) {
         Exp<?> exp = parseExp(text);
         assertInstanceOf(StrExp.class, exp);
         assertEquals(expected, exp);
@@ -42,13 +42,13 @@ public class StrExpTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"'missing ' escape'", "'missing quote", "'mismatched quotes\""})
-    void scalar_throws(String text) {
+    public void scalar_throws(String text) {
         assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
-    void column(String text, Exp<?> expected) {
+    public void column(String text, Exp<?> expected) {
         Exp<?> exp = parseExp(text);
         assertInstanceOf(StrExp.class, exp);
         assertEquals(expected, exp);
@@ -71,13 +71,13 @@ public class StrExpTest {
             "str(int(1))",
             "str(-1)",
     })
-    void column_throws(String text) {
+    public void column_throws(String text) {
         assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
-    void cast(String text, Exp<?> expected) {
+    public void cast(String text, Exp<?> expected) {
         Exp<?> exp = parseExp(text);
         assertInstanceOf(StrExp.class, exp);
         assertEquals(expected, exp);
@@ -96,13 +96,13 @@ public class StrExpTest {
     @ValueSource(strings = {
             "CASTASSTR(1)",
     })
-    void cast_throws(String text) {
+    public void cast_throws(String text) {
         assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
-    void relation(String text, Exp<?> expected) {
+    public void relation(String text, Exp<?> expected) {
         Exp<?> exp = parseExp(text);
         assertInstanceOf(Condition.class, exp);
         assertEquals(expected, exp);
@@ -134,7 +134,7 @@ public class StrExpTest {
             "str(1) not in ('a' 'b')",
             "str(1) not in (1, 2, 3)",
     })
-    void relation_throws(String text) {
+    public void relation_throws(String text) {
         assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
@@ -166,13 +166,13 @@ public class StrExpTest {
             "startsWith(true, 'prefix')",
             "endsWith('hello', null)",
     })
-    void function_returnsCondition_throws(String text) {
+    public void function_returnsCondition_throws(String text) {
         assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
-    void function_returnsStrExp(String text, Exp<?> expected) {
+    public void function_returnsStrExp(String text, Exp<?> expected) {
         Exp<?> exp = parseExp(text);
         assertInstanceOf(StrExp.class, exp);
         assertEquals(expected, exp);
@@ -195,7 +195,11 @@ public class StrExpTest {
                 arguments("substr('example', 2, 3)", $strVal("example").substr(2, 3)),
                 arguments("substr('example', -2, 3)", $strVal("example").substr(-2, 3)),
                 arguments("trim(str(1))", $str(1).trim()),
-                arguments("trim(castAsStr(3))", $intVal(3).castAsStr().trim())
+                arguments("trim(castAsStr(3))", $intVal(3).castAsStr().trim()),
+                arguments("lower(str(a))", $str("a").lower()),
+                arguments("lower('AbCd')", $strVal("AbCd").lower()),
+                arguments("upper(str(a))", $str("a").upper()),
+                arguments("upper('AbCd')", $strVal("AbCd").upper())
         );
     }
 
@@ -209,13 +213,13 @@ public class StrExpTest {
             "substr('example', 2, null)",
             "substr('example', 2, -1)",
     })
-    void function_returnsStrExp_throws(String text) {
+    public void function_returnsStrExp_throws(String text) {
         assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
-    void split(String text, Exp<?> expected) {
+    public void split(String text, Exp<?> expected) {
         Exp<?> exp = parseExp(text);
         assertEquals(expected, exp);
     }
@@ -237,13 +241,13 @@ public class StrExpTest {
             "split(, ',')",
             "split(time(1), ':')",
     })
-    void split_throws(String text) {
+    public void split_throws(String text) {
         assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
     @MethodSource
-    void aggregate(String text, Exp<?> expected) {
+    public void aggregate(String text, Exp<?> expected) {
         Exp<?> exp = parseExp(text);
         assertInstanceOf(StrExp.class, exp);
         assertEquals(expected, exp);
@@ -266,7 +270,7 @@ public class StrExpTest {
             "min(str(1), )",
             "max(str(1), 0)",
     })
-    void aggregate_throws(String text) {
+    public void aggregate_throws(String text) {
         assertThrows(QLParserException.class, () -> parseExp(text));
     }
 }

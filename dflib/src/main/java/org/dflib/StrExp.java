@@ -139,12 +139,25 @@ public interface StrExp extends Exp<String> {
         }
     }
 
-
     default StrExp trim() {
         return StrExp1.mapVal("trim", this, s -> {
             String trimmed = s.trim();
             return trimmed.isEmpty() ? null : trimmed;
         });
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default StrExp lower() {
+        return StrExp1.mapVal("lower", this, String::toLowerCase);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default StrExp upper() {
+        return StrExp1.mapVal("upper", this, String::toUpperCase);
     }
 
     /**

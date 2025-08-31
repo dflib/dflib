@@ -892,6 +892,8 @@ offsetDateTimeFn returns [OffsetDateTimeExp exp] locals [BiFunction<OffsetDateTi
 strFn returns [StrExp exp]
     : castAsStr { $exp = $castAsStr.exp; }
     | TRIM '(' strExp ')' { $exp = $strExp.exp.trim(); }
+    | LOWER '(' strExp ')' { $exp = $strExp.exp.lower(); }
+    | UPPER '(' strExp ')' { $exp = $strExp.exp.upper(); }
     | SUBSTR '(' s=strExp ',' a=integerScalar (',' b=integerScalar)? ')' {
         $exp = $ctx.b != null ? $s.exp.substr($a.value.intValue(), $b.value.intValue()) : $s.exp.substr($a.value.intValue());
     }
@@ -1347,6 +1349,8 @@ fnName returns [String id]
     | CONCAT
     | SUBSTR
     | TRIM
+    | LOWER
+    | UPPER
     | LEN
     | MATCHES
     | STARTS_WITH
@@ -1546,6 +1550,12 @@ SUBSTR: 'substr';
 
 //@ doc:inline
 TRIM: 'trim';
+
+//@ doc:inline
+LOWER: 'lower';
+
+//@ doc:inline
+UPPER: 'upper';
 
 //@ doc:inline
 LEN: 'len';

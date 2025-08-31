@@ -18,7 +18,7 @@ public class ConcatExpTest extends BaseExpTest {
     }
 
     @Test
-    public void test() {
+    public void eval() {
         StrExp exp1 = concat($str("b"), $int("a"));
         StrExp exp2 = concat("_", $str("b"), "]");
 

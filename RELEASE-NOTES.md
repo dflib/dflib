@@ -18,6 +18,7 @@
 * #522 "Zip.include(..)" filter
 * #523 Tar ByteSource(s)
 * #525 Configurable "stack()" operation
+* #527 StrExp.lower(), upper()
 
 ## Release 2.0.0-M3
 
