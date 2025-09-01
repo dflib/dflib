@@ -259,7 +259,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     // TODO: this signature results in ambiguity with "sort(String column, boolean ascending)" for certain parameters
     default DataFrame sort(String sortSpec, Object... params) {
-        return sort(Sorter.parseSorterArray(sortSpec, params));
+        return sort(Sorter.parseSorters(sortSpec, params));
     }
 
     default DataFrame sort(Sorter... sorters) {

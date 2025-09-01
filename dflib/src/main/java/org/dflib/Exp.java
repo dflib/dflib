@@ -529,26 +529,28 @@ public interface Exp<T> {
     /**
      * Parses the provided String into an expression.
      *
-     * @param exp an expression string to parse
+     * @param ql     a QL String to parse representing a single expression
+     * @param params an optional list of parameters to substitute into the parsed expression
      * @return expression object parsed from the string
      * @since 2.0.0
      */
-    static Exp<?> parseExp(String exp, Object... params) {
+    static Exp<?> parseExp(String ql, Object... params) {
         return QLParserInvoker
-                .parse(exp, ExpParser::expRoot, params)
+                .parse(ql, ExpParser::expRoot, params)
                 .exp;
     }
 
     /**
-     * Parses the provided String into an expression list.
+     * Parses the provided String into an array of expressions.
      *
-     * @param expArray an expression string to parse
-     * @return array of expression objects parsed from the string
+     * @param ql     a QL String to parse representing one or more comma-separated expressions
+     * @param params an optional list of parameters to substitute into the parsed expressions
+     * @return array of expressions parsed from the string
      * @since 2.0.0
      */
-    static Exp<?>[] parseExpArray(String expArray, Object... params) {
+    static Exp<?>[] parseExps(String ql, Object... params) {
         return QLParserInvoker
-                .parse(expArray, ExpParser::expArray, params)
+                .parse(ql, ExpParser::expArray, params)
                 .expressions;
     }
 

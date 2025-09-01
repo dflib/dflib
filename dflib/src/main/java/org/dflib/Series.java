@@ -577,7 +577,7 @@ public interface Series<T> extends Iterable<T> {
      * @since 2.0.0
      */
     default Series<T> sort(String sorters, Object... params) {
-        return sort(Sorter.parseSorterArray(sorters, params));
+        return sort(Sorter.parseSorters(sorters, params));
     }
 
     Series<T> sort(Sorter... sorters);
@@ -745,7 +745,7 @@ public interface Series<T> extends Iterable<T> {
      * of columns will be equal to the number of passed aggregators.
      */
     default DataFrame aggMultiple(String aggregatingExps, Object... params) {
-        return aggMultiple(Exp.parseExpArray(aggregatingExps, params));
+        return aggMultiple(Exp.parseExps(aggregatingExps, params));
     }
 
     /**

@@ -169,7 +169,7 @@ public class Join {
      * @since 2.0.0
      */
     public DataFrame select(String exps, Object... params) {
-        return select(Exp.parseExpArray(exps, params));
+        return select(Exp.parseExps(exps, params));
     }
 
     public DataFrame select(Exp<?>... exps) {

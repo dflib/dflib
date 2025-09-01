@@ -297,7 +297,7 @@ public interface IntSeries extends Series<Integer> {
 
     @Override
     default IntSeries sort(String sorters, Object... params) {
-        return sort(Sorter.parseSorterArray(sorters, params));
+        return sort(Sorter.parseSorters(sorters, params));
     }
 
     @Override

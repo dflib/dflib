@@ -221,7 +221,7 @@ public interface ColumnSet {
      * @since 2.0.0
      */
     default DataFrame merge(String exps, Object... params) {
-        return merge(Exp.parseExpArray(exps, params));
+        return merge(Exp.parseExps(exps, params));
     }
 
     /**
@@ -293,7 +293,7 @@ public interface ColumnSet {
      * @since 2.0.0
      */
     default DataFrame select(String exps, Object... params) {
-        return select(Exp.parseExpArray(exps, params));
+        return select(Exp.parseExps(exps, params));
     }
 
     /**
@@ -346,7 +346,7 @@ public interface ColumnSet {
      * @since 2.0.0
      */
     default DataFrame agg(String aggregatingExps, Object... params) {
-        return agg(Exp.parseExpArray(aggregatingExps, params));
+        return agg(Exp.parseExps(aggregatingExps, params));
     }
 
     /**

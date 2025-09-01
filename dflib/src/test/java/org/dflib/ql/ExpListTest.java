@@ -16,7 +16,7 @@ public class ExpListTest {
     @ParameterizedTest
     @MethodSource
     public void list(String exp, Exp<?>[] result) {
-        assertArrayEquals(result, parseExpArray(exp));
+        assertArrayEquals(result, parseExps(exp));
     }
 
     static Stream<Arguments> list() {

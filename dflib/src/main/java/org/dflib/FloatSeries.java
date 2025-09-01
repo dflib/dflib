@@ -297,7 +297,7 @@ public interface FloatSeries extends Series<Float> {
 
     @Override
     default FloatSeries sort(String sorters, Object... params) {
-        return sort(Sorter.parseSorterArray(sorters, params));
+        return sort(Sorter.parseSorters(sorters, params));
     }
 
     @Override

@@ -201,7 +201,7 @@ public class Window {
      * @since 2.0.0
      */
     public Window sort(String sortExps, Object... params) {
-        return sort(Sorter.parseSorterArray(sortExps, params));
+        return sort(Sorter.parseSorters(sortExps, params));
     }
 
     /**
@@ -258,7 +258,7 @@ public class Window {
      * @since 2.0.0
      */
     public DataFrame select(String exps, Object... params) {
-        return select(Exp.parseExpArray(exps, params));
+        return select(Exp.parseExps(exps, params));
     }
 
     /**
@@ -281,7 +281,7 @@ public class Window {
      * @since 2.0.0
      */
     public DataFrame merge(String exps, Object... params) {
-        return merge(Exp.parseExpArray(exps, params));
+        return merge(Exp.parseExps(exps, params));
     }
 
     /**

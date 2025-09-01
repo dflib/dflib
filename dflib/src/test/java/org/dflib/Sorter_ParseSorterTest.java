@@ -37,7 +37,7 @@ public class Sorter_ParseSorterTest {
     @ParameterizedTest
     @MethodSource
     public void parseSorterList(String spec, Sorter[] expected) {
-        assertArrayEquals(expected, Sorter.parseSorterArray(spec));
+        assertArrayEquals(expected, Sorter.parseSorters(spec));
     }
 
     static Stream<Arguments> parseSorterList() {
