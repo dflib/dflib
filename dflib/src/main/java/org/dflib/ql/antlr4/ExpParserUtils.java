@@ -399,6 +399,10 @@ class ExpParserUtils {
         return (T) exp;
     }
 
+    public static Exp<?> param(PositionalParamSource source) {
+        return param(source, (o, e) -> {});
+    }
+
     public static NumExp<?> numParam(PositionalParamSource source) {
         return param(source, (o, e) -> {
             if(!(e instanceof NumExp)) {

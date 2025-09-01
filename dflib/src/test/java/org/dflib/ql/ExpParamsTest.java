@@ -31,6 +31,17 @@ public class ExpParamsTest {
                 ),
 
                 arguments(
+                        "a = ?",
+                        new Object[]{'c'},
+                        $col("a").eq($val('c'))
+                ),
+                arguments(
+                        "a != ?",
+                        new Object[]{'c'},
+                        $col("a").ne($val('c'))
+                ),
+
+                arguments(
                         "int(1) > ?",
                         new Object[]{1L},
                         $int(1).gt($longVal(1L))

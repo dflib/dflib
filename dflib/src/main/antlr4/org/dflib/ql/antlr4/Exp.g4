@@ -672,7 +672,10 @@ genericRelation returns [Condition exp] locals [BiFunction<Exp<?>, Exp<?>, Condi
         :(
             : EQ { $rel = (a, b) -> a.eq(b); }
             | NE { $rel = (a, b) -> a.ne(b); }
-        ) b=expression { $exp = $rel.apply($a.exp, $b.exp); }
+        ) (
+            : PARAMETER { $exp = $rel.apply($a.exp, param(paramSource)); }
+            | b=expression { $exp = $rel.apply($a.exp, $b.exp); }
+        )
         | IN l=anyScalarList { $exp = $a.exp.in($l.value); }
         | NOT IN l=anyScalarList { $exp = $a.exp.notIn($l.value); }
     )
