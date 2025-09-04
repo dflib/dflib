@@ -19,6 +19,7 @@
 * #523 Tar ByteSource(s)
 * #525 Configurable "stack()" operation
 * #527 StrExp.lower(), upper()
+* #528 Add notBetween() operator
 
 ## Release 2.0.0-M3
 
