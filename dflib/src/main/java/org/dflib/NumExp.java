@@ -208,6 +208,20 @@ public interface NumExp<N extends Number> extends Exp<N> {
     }
 
     /**
+     * @since 2.0.0
+     */
+    default Condition notBetween(Exp<? extends Number> from, Exp<? extends Number> to) {
+        return NumericExpFactory.factory(this.getType(), from.getType(), to.getType()).notBetween(this, from, to);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default Condition notBetween(Number from, Number to) {
+        return notBetween(Exp.$val(from), Exp.$val(to));
+    }
+
+    /**
      * A "running total" function that produces a cumulative sum of each row from the beginning of the DataFrame or
      * Series.
      */

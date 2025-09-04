@@ -289,6 +289,40 @@ public class OffsetDateTimeColumnTest {
     }
 
     @Test
+    public void notBetweenVal() {
+        assertTrue(LocalDateTime.of(2012, 1, 1, 1, 2).isAfter(LocalDateTime.of(2012, 1, 1, 1, 1)));
+
+        Condition le = $offsetDateTime(0).notBetween(
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2012, 1, 1, 1, 1), ZoneOffset.ofHours(2)));
+
+        Series<OffsetDateTime> s = Series.of(
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 0), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2008, 5, 8, 5, 6), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2012, 1, 1, 1, 1), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2012, 1, 1, 1, 1), ZoneOffset.ofHours(-1)));
+
+        new BoolSeriesAsserts(le.eval(s)).expectData(true, false, false, false, true);
+    }
+
+    @Test
+    public void notBetweenStrVal() {
+        assertTrue(LocalDateTime.of(2012, 1, 1, 1, 2).isAfter(LocalDateTime.of(2012, 1, 1, 1, 1)));
+
+        Condition le = $offsetDateTime(0).notBetween("2008-01-01T01:01+02", "2012-01-01T01:01+02");
+
+        Series<OffsetDateTime> s = Series.of(
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 0), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2008, 5, 8, 5, 6), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2012, 1, 1, 1, 1), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2012, 1, 1, 1, 1), ZoneOffset.ofHours(-1)));
+
+        new BoolSeriesAsserts(le.eval(s)).expectData(true, false, false, false, true);
+    }
+
+    @Test
     public void plusDays() {
         OffsetDateTimeExp exp = $offsetDateTime(0).plusDays(4);
 

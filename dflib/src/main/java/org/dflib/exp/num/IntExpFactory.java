@@ -167,4 +167,16 @@ public class IntExpFactory extends NumericExpFactory {
                 (n1, n2, n3) -> n1 >= n2 && n1 <= n3,
                 IntSeries::between);
     }
+
+    @Override
+    public Condition notBetween(Exp<? extends Number> left, Exp<? extends Number> from, Exp<? extends Number> to) {
+        return IntCondition3.mapVal(
+                "notBetween",
+                "and",
+                cast(left),
+                cast(from),
+                cast(to),
+                (n1, n2, n3) -> n1 < n2 || n1 > n3,
+                IntSeries::notBetween);
+    }
 }

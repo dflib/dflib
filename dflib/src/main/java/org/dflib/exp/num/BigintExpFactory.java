@@ -205,4 +205,9 @@ public class BigintExpFactory extends NumericExpFactory {
     public Condition between(Exp<? extends Number> left, Exp<? extends Number> from, Exp<? extends Number> to) {
         return MapCondition3.mapVal("between", "and", cast(left), cast(from), cast(to), (n1, n2, n3) -> n1.compareTo(n2) >= 0 && n1.compareTo(n3) <= 0);
     }
+
+    @Override
+    public Condition notBetween(Exp<? extends Number> left, Exp<? extends Number> from, Exp<? extends Number> to) {
+        return MapCondition3.mapVal("notBetween", "and", cast(left), cast(from), cast(to), (n1, n2, n3) -> n1.compareTo(n2) < 0 || n1.compareTo(n3) > 0);
+    }
 }

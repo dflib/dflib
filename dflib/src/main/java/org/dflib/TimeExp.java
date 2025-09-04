@@ -167,12 +167,49 @@ public interface TimeExp extends Exp<LocalTime> {
     /**
      * @param from a time value in ISO-8601 format (HH:mm:ss)
      * @param to a time value in ISO-8601 format (HH:mm:ss)
-     * @return `between` condition
+     * @return `not between` condition
      * @since 2.0.0
      */
     default Condition between(String from, String to) {
         return between(LocalTime.parse(from), LocalTime.parse(to));
     }
+
+    /**
+     * @param from a time expression
+     * @param to a time expression
+     * @return `not between` condition
+     * @since 2.0.0
+     */
+    default Condition notBetween(Exp<LocalTime> from, Exp<LocalTime> to) {
+        return MapCondition3.mapVal(
+                "notBetween",
+                "and",
+                this,
+                from.castAsTime(),
+                to.castAsTime(),
+                (t1, t2, t3) -> t1.isBefore(t2) || t1.isAfter(t3));
+    }
+
+    /**
+     * @param from a time value
+     * @param to a time value
+     * @return `not between` condition
+     * @since 2.0.0
+     */
+    default Condition notBetween(LocalTime from, LocalTime to) {
+        return notBetween(Exp.$val(from), Exp.$val(to));
+    }
+
+    /**
+     * @param from a time value in ISO-8601 format (HH:mm:ss)
+     * @param to a time value in ISO-8601 format (HH:mm:ss)
+     * @return `between` condition
+     * @since 2.0.0
+     */
+    default Condition notBetween(String from, String to) {
+        return notBetween(LocalTime.parse(from), LocalTime.parse(to));
+    }
+
 
     /**
      * @param val a time value in ISO-8601 format (HH:mm:ss)

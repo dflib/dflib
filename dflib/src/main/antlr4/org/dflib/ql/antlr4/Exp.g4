@@ -516,6 +516,7 @@ numRelation returns [Condition exp] locals [BiFunction<NumExp<?>, NumExp<?>, Con
             | NE { $rel = (a, b) -> a.ne(b); }
         ) b=numExp { $exp = $rel.apply($a.exp, $b.exp); }
         | BETWEEN b=numExp AND c=numExp { $exp = $a.exp.between($b.exp, $c.exp); }
+        | NOT BETWEEN b=numExp AND c=numExp { $exp = $a.exp.notBetween($b.exp, $c.exp); }
         | IN l=numScalarList { $exp = $a.exp.in($l.value); }
         | NOT IN l=numScalarList { $exp = $a.exp.notIn($l.value); }
     )
@@ -565,6 +566,10 @@ timeRelation returns [Condition exp] locals [BiFunction<TimeExp, TimeExp, Condit
             b=timeExp AND c=timeExp { $exp = $a.exp.between($b.exp, $c.exp); }
             | s1=timeStrScalar AND s2=timeStrScalar { $exp = $a.exp.between($s1.value, $s2.value); }
         )
+        | NOT BETWEEN (
+            b=timeExp AND c=timeExp { $exp = $a.exp.notBetween($b.exp, $c.exp); }
+            | s1=timeStrScalar AND s2=timeStrScalar { $exp = $a.exp.notBetween($s1.value, $s2.value); }
+        )
         | IN l=strScalarList { $exp = $a.exp.in(Arrays.stream($l.value).map(LocalTime::parse).toArray(LocalTime[]::new)); }
         | NOT IN l=strScalarList { $exp = $a.exp.notIn(Arrays.stream($l.value).map(LocalTime::parse).toArray(LocalTime[]::new)); }
     )
@@ -594,6 +599,10 @@ dateRelation returns [Condition exp] locals [BiFunction<DateExp, DateExp, Condit
         | BETWEEN (
             b=dateExp AND c=dateExp { $exp = $a.exp.between($b.exp, $c.exp); }
             | s1=dateStrScalar AND s2=dateStrScalar { $exp = $a.exp.between($s1.value, $s2.value); }
+        )
+        | NOT BETWEEN (
+            b=dateExp AND c=dateExp { $exp = $a.exp.notBetween($b.exp, $c.exp); }
+            | s1=dateStrScalar AND s2=dateStrScalar { $exp = $a.exp.notBetween($s1.value, $s2.value); }
         )
         | IN l=strScalarList { $exp = $a.exp.in(Arrays.stream($l.value).map(LocalDate::parse).toArray(LocalDate[]::new)); }
         | NOT IN l=strScalarList { $exp = $a.exp.notIn(Arrays.stream($l.value).map(LocalDate::parse).toArray(LocalDate[]::new)); }
@@ -625,6 +634,10 @@ dateTimeRelation returns [Condition exp] locals [BiFunction<DateTimeExp, DateTim
             b=dateTimeExp AND c=dateTimeExp { $exp = $a.exp.between($b.exp, $c.exp); }
             | s1=dateTimeStrScalar AND s2=dateTimeStrScalar { $exp = $a.exp.between($s1.value, $s2.value); }
         )
+        | NOT BETWEEN (
+            b=dateTimeExp AND c=dateTimeExp { $exp = $a.exp.notBetween($b.exp, $c.exp); }
+            | s1=dateTimeStrScalar AND s2=dateTimeStrScalar { $exp = $a.exp.notBetween($s1.value, $s2.value); }
+        )
         | IN l=strScalarList { $exp = $a.exp.in(Arrays.stream($l.value).map(LocalDateTime::parse).toArray(LocalDateTime[]::new)); }
         | NOT IN l=strScalarList { $exp = $a.exp.notIn(Arrays.stream($l.value).map(LocalDateTime::parse).toArray(LocalDateTime[]::new)); }
     )
@@ -654,6 +667,10 @@ offsetDateTimeRelation returns [Condition exp] locals [BiFunction<OffsetDateTime
         | BETWEEN (
             : b=offsetDateTimeExp AND c=offsetDateTimeExp { $exp = $a.exp.between($b.exp, $c.exp); }
             | s1=offsetDateTimeStrScalar AND s2=offsetDateTimeStrScalar { $exp = $a.exp.between($s1.value, $s2.value); }
+        )
+        | NOT BETWEEN (
+            : b=offsetDateTimeExp AND c=offsetDateTimeExp { $exp = $a.exp.notBetween($b.exp, $c.exp); }
+            | s1=offsetDateTimeStrScalar AND s2=offsetDateTimeStrScalar { $exp = $a.exp.notBetween($s1.value, $s2.value); }
         )
         | IN l=strScalarList { $exp = $a.exp.in(Arrays.stream($l.value).map(OffsetDateTime::parse).toArray(OffsetDateTime[]::new)); }
         | NOT IN l=strScalarList { $exp = $a.exp.notIn(Arrays.stream($l.value).map(OffsetDateTime::parse).toArray(OffsetDateTime[]::new)); }

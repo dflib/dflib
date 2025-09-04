@@ -1,16 +1,13 @@
 package org.dflib.exp.num;
 
-import org.dflib.DataFrame;
-import org.dflib.DecimalExp;
-import org.dflib.DoubleSeries;
-import org.dflib.FloatSeries;
-import org.dflib.NumExp;
-import org.dflib.Series;
+import org.dflib.*;
 import org.dflib.exp.BaseExpTest;
+import org.dflib.unit.BoolSeriesAsserts;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.stream.IntStream;
 
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -166,6 +163,38 @@ public class FloatColumnTest extends BaseExpTest {
 
         Series<? extends Number> s = $float("a").abs().eval(df);
         new SeriesAsserts(s).expectData(5.1f, 0.0f, 11.5f);
+    }
+
+    @Test
+    public void between_FloatPrimitive() {
+        Condition c = $float("a").between($float("b"), $val(5.f));
+
+        DataFrame df = DataFrame.foldByRow("a", "b").ofFloats(
+                0.0f,
+                0, 1,
+                1, 1,
+                2, 1,
+                5, 2,
+                6, 2);
+
+        // run and verify the calculation
+        new BoolSeriesAsserts(c.eval(df)).expectData(false, true, true, true, false);
+    }
+
+    @Test
+    public void notBetween_FloatPrimitive() {
+        Condition c = $float("a").notBetween($float("b"), $val(5.f));
+
+        DataFrame df = DataFrame.foldByRow("a", "b").ofFloats(
+                0.0f,
+                0, 1,
+                1, 1,
+                2, 1,
+                5, 2,
+                6, 2);
+
+        // run and verify the calculation
+        new BoolSeriesAsserts(c.eval(df)).expectData(true, false, false, false, true);
     }
 
     @Test

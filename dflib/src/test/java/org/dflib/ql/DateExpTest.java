@@ -90,6 +90,8 @@ public class DateExpTest {
                 arguments("date(1) != date(2)", $date(1).ne($date(2))),
                 arguments("date(1) between date(2) and date(3)", $date(1)
                         .between($date(2), $date(3))),
+                arguments("date(1) not between date(2) and date(3)", $date(1)
+                        .notBetween($date(2), $date(3))),
                 arguments("date(1) = plusDays(date(2), 1)", $date(1).eq($date(2).plusDays(1))),
                 arguments("date(1) = '1970-01-01'", $date(1).eq("1970-01-01")),
                 arguments("date(1) in ('2002-01-01')", $date(1)

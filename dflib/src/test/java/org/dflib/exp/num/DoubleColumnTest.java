@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.stream.DoubleStream;
+import java.util.stream.LongStream;
 
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -155,6 +156,36 @@ public class DoubleColumnTest extends BaseExpTest {
 
         Series<? extends Number> s = $double("a").abs().eval(df);
         new SeriesAsserts(s).expectData(5.1, 0.0, 11.5);
+    }
+
+    @Test
+    public void between_DoublePrimitive() {
+        Condition c = $double("a").between($double("b"), $val(5.));
+
+        DataFrame df = DataFrame.foldByRow("a", "b").ofStream(DoubleStream.of(
+                0, 1,
+                1, 1,
+                2, 1,
+                5, 2,
+                6, 2));
+
+        // run and verify the calculation
+        new BoolSeriesAsserts(c.eval(df)).expectData(false, true, true, true, false);
+    }
+
+    @Test
+    public void notBetween_DoublePrimitive() {
+        Condition c = $double("a").notBetween($double("b"), $val(5.));
+
+        DataFrame df = DataFrame.foldByRow("a", "b").ofStream(DoubleStream.of(
+                0, 1,
+                1, 1,
+                2, 1,
+                5, 2,
+                6, 2));
+
+        // run and verify the calculation
+        new BoolSeriesAsserts(c.eval(df)).expectData(true, false, false, false, true);
     }
 
     @Test

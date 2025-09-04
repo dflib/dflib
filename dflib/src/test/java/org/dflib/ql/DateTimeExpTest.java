@@ -90,6 +90,8 @@ public class DateTimeExpTest {
                 arguments("dateTime(1) != dateTime(2)", $dateTime(1).ne($dateTime(2))),
                 arguments("dateTime(1) between dateTime(2) and dateTime(3)",
                         $dateTime(1).between($dateTime(2), $dateTime(3))),
+                arguments("dateTime(1) not between dateTime(2) and dateTime(3)",
+                        $dateTime(1).notBetween($dateTime(2), $dateTime(3))),
                 arguments("dateTime(2) = '1970-01-01T12:00:00'",
                         $dateTime(2).eq("1970-01-01T12:00:00")),
                 arguments("dateTime(1) = plusDays(dateTime(2), 1)", $dateTime(1).eq($dateTime(2).plusDays(1))),

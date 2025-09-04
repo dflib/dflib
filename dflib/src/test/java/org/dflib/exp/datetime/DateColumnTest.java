@@ -206,6 +206,32 @@ public class DateColumnTest {
     }
 
     @Test
+    public void notBetweenVal() {
+        Condition le = $date(0).notBetween(LocalDate.of(2008, 1, 1), LocalDate.of(2012, 1, 1));
+        Series<LocalDate> s = Series.of(
+                LocalDate.of(2007, 12, 31),
+                LocalDate.of(2008, 1, 1),
+                LocalDate.of(2008, 5, 8),
+                LocalDate.of(2012, 1, 1),
+                LocalDate.of(2012, 1, 2));
+
+        new BoolSeriesAsserts(le.eval(s)).expectData(true, false, false, false, true);
+    }
+
+    @Test
+    public void notBetweenStrVal() {
+        Condition le = $date(0).notBetween("2008-01-01", "2012-01-01");
+        Series<LocalDate> s = Series.of(
+                LocalDate.of(2007, 12, 31),
+                LocalDate.of(2008, 1, 1),
+                LocalDate.of(2008, 5, 8),
+                LocalDate.of(2012, 1, 1),
+                LocalDate.of(2012, 1, 2));
+
+        new BoolSeriesAsserts(le.eval(s)).expectData(true, false, false, false, true);
+    }
+
+    @Test
     public void plusDays() {
         DateExp exp = $date(0).plusDays(4);
 

@@ -162,6 +162,42 @@ public interface OffsetDateTimeExp extends Exp<OffsetDateTime> {
     }
 
     /**
+     * @param from a date-time with an offset expression
+     * @param to a date-time with an offset expression
+     * @return `not between` condition
+     * @since 2.0.0
+     */
+    default Condition notBetween(Exp<OffsetDateTime> from, Exp<OffsetDateTime> to) {
+        return MapCondition3.mapVal(
+                "notBetween",
+                "and",
+                this,
+                from.castAsOffsetDateTime(),
+                to.castAsOffsetDateTime(),
+                (d1, d2, d3) -> d1.isBefore(d2) || d1.isAfter(d3));
+    }
+
+    /**
+     * @param from a date-time with an offset value
+     * @param to a date-time with an offset value
+     * @return `not between` condition
+     * @since 2.0.0
+     */
+    default Condition notBetween(OffsetDateTime from, OffsetDateTime to) {
+        return notBetween(Exp.$val(from), Exp.$val(to));
+    }
+
+    /**
+     * @param from a date-time with an offset value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss±Z)
+     * @param to a date-time with an offset value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss±Z)
+     * @return `not between` condition
+     * @since 2.0.0
+     */
+    default Condition notBetween(String from, String to) {
+        return notBetween(OffsetDateTime.parse(from), OffsetDateTime.parse(to));
+    }
+
+    /**
      * @param val a date-time with an offset value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss±Z)
      * @return `equals to` condition
      * @since 2.0.0

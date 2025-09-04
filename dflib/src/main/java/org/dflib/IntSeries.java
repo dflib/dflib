@@ -627,4 +627,21 @@ public interface IntSeries extends Series<Integer> {
             return v >= from.getInt(i) && v <= to.getInt(i);
         }, len);
     }
+
+    /**
+     * @since 2.0.0
+     */
+    default BooleanSeries notBetween(IntSeries from, IntSeries to) {
+        int len = size();
+        if (len != from.size()) {
+            throw new IllegalArgumentException("'from' Series size " + from.size() + " is not the same as this size " + len);
+        } else if (len != to.size()) {
+            throw new IllegalArgumentException("'to' Series size " + to.size() + " is not the same as this size " + len);
+        }
+
+        return BoolBuilder.buildSeries(i -> {
+            int v = this.getInt(i);
+            return v < from.getInt(i) || v > to.getInt(i);
+        }, len);
+    }
 }

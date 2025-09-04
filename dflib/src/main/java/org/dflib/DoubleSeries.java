@@ -612,4 +612,21 @@ public interface DoubleSeries extends Series<Double> {
             return v >= from.getDouble(i) && v <= to.getDouble(i);
         }, len);
     }
+
+    /**
+     * @since 2.0.0
+     */
+    default BooleanSeries notBetween(DoubleSeries from, DoubleSeries to) {
+        int len = size();
+        if (len != from.size()) {
+            throw new IllegalArgumentException("'from' Series size " + from.size() + " is not the same as this size " + len);
+        } else if (len != to.size()) {
+            throw new IllegalArgumentException("'to' Series size " + to.size() + " is not the same as this size " + len);
+        }
+
+        return BoolBuilder.buildSeries(i -> {
+            double v = this.getDouble(i);
+            return v < from.getDouble(i) || v > to.getDouble(i);
+        }, len);
+    }
 }

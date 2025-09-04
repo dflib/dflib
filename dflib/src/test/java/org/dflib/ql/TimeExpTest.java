@@ -90,6 +90,8 @@ public class TimeExpTest {
                 arguments("time(1) != time(2)", $time(1).ne($time(2))),
                 arguments("time(1) between time(2) and time(3)", $time(1)
                         .between($time(2), $time(3))),
+                arguments("time(1) not between time(2) and time(3)", $time(1)
+                        .notBetween($time(2), $time(3))),
                 arguments("time(2) = '12:00:00'", $time(2).eq("12:00:00")),
                 arguments("time(1) = plusHours(time(2), 1)", $time(1).eq($time(2).plusHours(1))),
                 arguments("time(1) in ('12:00:00')", $time(1)

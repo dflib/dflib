@@ -252,6 +252,32 @@ public class DateTimeColumnTest {
     }
 
     @Test
+    public void notBetweenVal() {
+        Condition le = $dateTime(0).notBetween(LocalDateTime.of(2008, 1, 1, 1, 1), LocalDateTime.of(2012, 1, 1, 1, 1));
+        Series<LocalDateTime> s = Series.of(
+                LocalDateTime.of(2008, 1, 1, 1, 0),
+                LocalDateTime.of(2008, 1, 1, 1, 1),
+                LocalDateTime.of(2008, 5, 8, 5, 6),
+                LocalDateTime.of(2012, 1, 1, 1, 1),
+                LocalDateTime.of(2012, 1, 1, 1, 2));
+
+        new BoolSeriesAsserts(le.eval(s)).expectData(true, false, false, false, true);
+    }
+
+    @Test
+    public void notBetweenStrVal() {
+        Condition le = $dateTime(0).notBetween("2008-01-01T01:01", "2012-01-01T01:01");
+        Series<LocalDateTime> s = Series.of(
+                LocalDateTime.of(2008, 1, 1, 1, 0),
+                LocalDateTime.of(2008, 1, 1, 1, 1),
+                LocalDateTime.of(2008, 5, 8, 5, 6),
+                LocalDateTime.of(2012, 1, 1, 1, 1),
+                LocalDateTime.of(2012, 1, 1, 1, 2));
+
+        new BoolSeriesAsserts(le.eval(s)).expectData(true, false, false, false, true);
+    }
+
+    @Test
     public void plusDays() {
         DateTimeExp exp = $dateTime(0).plusDays(4);
 

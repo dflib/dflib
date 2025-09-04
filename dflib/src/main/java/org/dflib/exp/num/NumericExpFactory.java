@@ -291,4 +291,10 @@ public abstract class NumericExpFactory {
 
 
     public abstract Condition between(Exp<? extends Number> left, Exp<? extends Number> from, Exp<? extends Number> to);
+
+    /**
+     * @since 2.0.0
+     */
+    public abstract Condition notBetween(Exp<? extends Number> left, Exp<? extends Number> from, Exp<? extends Number> to);
+
 }

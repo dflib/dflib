@@ -390,6 +390,7 @@ public class NumExpTest {
                 arguments("5 = 5", $intVal(5).eq($val(5))),
                 arguments("5 != 3", $intVal(5).ne($val(3))),
                 arguments("5 between 3 and 7", $intVal(5).between($val(3), $val(7))),
+                arguments("5 not between 3 and 7", $intVal(5).notBetween($val(3), $val(7))),
                 arguments("int(1) in (1)", $int(1).in(1)),
                 arguments("int(1) not in (1)", $int(1).notIn(1)),
                 arguments("int(1) in (1.0)", $int(1).in(1)),

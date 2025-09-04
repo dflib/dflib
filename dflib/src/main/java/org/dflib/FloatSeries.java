@@ -603,4 +603,21 @@ public interface FloatSeries extends Series<Float> {
             return v >= from.getFloat(i) && v <= to.getFloat(i);
         }, len);
     }
+
+    /**
+     * @since 2.0.0
+     */
+    default BooleanSeries notBetween(FloatSeries from, FloatSeries to) {
+        int len = size();
+        if (len != from.size()) {
+            throw new IllegalArgumentException("'from' Series size " + from.size() + " is not the same as this size " + len);
+        } else if (len != to.size()) {
+            throw new IllegalArgumentException("'to' Series size " + to.size() + " is not the same as this size " + len);
+        }
+
+        return BoolBuilder.buildSeries(i -> {
+            float v = this.getFloat(i);
+            return v < from.getFloat(i) || v > to.getFloat(i);
+        }, len);
+    }
 }

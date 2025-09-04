@@ -91,6 +91,8 @@ public class OffsetDateTimeExpTest {
                 arguments("offsetDateTime(1) != offsetDateTime(2)", $offsetDateTime(1).ne($offsetDateTime(2))),
                 arguments("offsetDateTime(1) between offsetDateTime(2) and offsetDateTime(3)",
                         $offsetDateTime(1).between($offsetDateTime(2), $offsetDateTime(3))),
+                arguments("offsetDateTime(1) not between offsetDateTime(2) and offsetDateTime(3)",
+                        $offsetDateTime(1).notBetween($offsetDateTime(2), $offsetDateTime(3))),
                 arguments("offsetDateTime(2) = '1970-01-01T12:00:00+01:00'",
                         $offsetDateTime(2).eq("1970-01-01T12:00:00+01:00")),
                 arguments("offsetDateTime(1) = plusDays(offsetDateTime(2), 1)",

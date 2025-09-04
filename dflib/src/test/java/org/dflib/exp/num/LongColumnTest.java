@@ -167,6 +167,21 @@ public class LongColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void notBetween_LongPrimitive() {
+        Condition c = $long("a").notBetween($long("b"), $val(5));
+
+        DataFrame df = DataFrame.foldByRow("a", "b").ofStream(LongStream.of(
+                0L, 1L,
+                1L, 1L,
+                2L, 1L,
+                5L, 2L,
+                6L, 2L));
+
+        // run and verify the calculation
+        new BoolSeriesAsserts(c.eval(df)).expectData(true, false, false, false, true);
+    }
+
+    @Test
     public void eq_IntVal() {
 
         Condition c = $long("a").eq(3);

@@ -376,6 +376,21 @@ public class BigintColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void notBetween() {
+        Condition c = $bigint("a").notBetween(new BigInteger("1"), new BigInteger("3"));
+
+        Series<BigInteger> s = Series.of(
+                new BigInteger("0"),
+                new BigInteger("1"),
+                new BigInteger("2"),
+                new BigInteger("3"),
+                new BigInteger("4"));
+
+        // run and verify the calculation
+        new BoolSeriesAsserts(c.eval(s)).expectData(true, false, false, false, true);
+    }
+
+    @Test
     public void testEquals() {
         assertExpEquals(
                 $bigint("a"),

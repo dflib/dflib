@@ -136,6 +136,43 @@ public interface DateExp extends Exp<LocalDate> {
     }
 
     /**
+     * @param from a date expression
+     * @param to   a date expression
+     * @return `not between` condition
+     * @since 2.0.0
+     */
+    default Condition notBetween(Exp<LocalDate> from, Exp<LocalDate> to) {
+        return MapCondition3.mapVal(
+                "notBetween",
+                "and",
+                this,
+                from.castAsDate(),
+                to.castAsDate(),
+                (d1, d2, d3) -> d1.isBefore(d2) || d1.isAfter(d3));
+    }
+
+    /**
+     * @param from a date value
+     * @param to   a date value
+     * @return `not between` condition
+     * @since 2.0.0
+     */
+    default Condition notBetween(LocalDate from, LocalDate to) {
+        return notBetween(Exp.$val(from), Exp.$val(to));
+    }
+
+    /**
+     * @param from a date value in ISO-8601 format (YYYY-MM-DD)
+     * @param to   a date value in ISO-8601 format (YYYY-MM-DD)
+     * @return `not between` condition
+     * @since 2.0.0
+     */
+    default Condition notBetween(String from, String to) {
+        return notBetween(LocalDate.parse(from), LocalDate.parse(to));
+    }
+
+
+    /**
      * @param val a date value in ISO-8601 format (YYYY-MM-DD)
      * @return `equals to` condition
      * @since 2.0.0

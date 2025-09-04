@@ -277,6 +277,34 @@ public class TimeColumnTest {
     }
 
     @Test
+    public void notBetweenVal() {
+        Condition le = $time("b").notBetween(LocalTime.of(4, 10, 0), LocalTime.of(8, 10, 0));
+
+        Series<LocalTime> s = Series.of(
+                LocalTime.of(3, 12, 11),
+                LocalTime.of(4, 10, 1),
+                LocalTime.of(6, 10, 1),
+                LocalTime.of(8, 10, 1),
+                LocalTime.of(14, 59, 59));
+
+        new BoolSeriesAsserts(le.eval(s)).expectData(true, false, false, true, true);
+    }
+
+    @Test
+    public void notBetweenStrVal() {
+        Condition le = $time("b").notBetween("04:10", "08:10");
+
+        Series<LocalTime> s = Series.of(
+                LocalTime.of(3, 12, 11),
+                LocalTime.of(4, 10, 1),
+                LocalTime.of(6, 10, 1),
+                LocalTime.of(8, 10, 1),
+                LocalTime.of(14, 59, 59));
+
+        new BoolSeriesAsserts(le.eval(s)).expectData(true, false, false, true, true);
+    }
+
+    @Test
     public void shift_plus() {
         TimeExp e = $time("b").shift(-1).shift(-1).plusHours(3);
 

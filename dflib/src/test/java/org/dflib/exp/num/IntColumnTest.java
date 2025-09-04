@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -302,6 +303,36 @@ public class IntColumnTest extends BaseExpTest {
                 3);
 
         new BoolSeriesAsserts(c.eval(df)).expectData(true, false, false);
+    }
+
+    @Test
+    public void between_IntPrimitive() {
+        Condition c = $int("a").between($int("b"), $val(5));
+
+        DataFrame df = DataFrame.foldByRow("a", "b").ofStream(IntStream.of(
+                0, 1,
+                1, 1,
+                2, 1,
+                5, 2,
+                6, 2));
+
+        // run and verify the calculation
+        new BoolSeriesAsserts(c.eval(df)).expectData(false, true, true, true, false);
+    }
+
+    @Test
+    public void notBetween_IntPrimitive() {
+        Condition c = $int("a").notBetween($int("b"), $val(5));
+
+        DataFrame df = DataFrame.foldByRow("a", "b").ofStream(IntStream.of(
+                0, 1,
+                1, 1,
+                2, 1,
+                5, 2,
+                6, 2));
+
+        // run and verify the calculation
+        new BoolSeriesAsserts(c.eval(df)).expectData(true, false, false, false, true);
     }
 
     @Test

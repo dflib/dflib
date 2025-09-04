@@ -1,6 +1,5 @@
 package org.dflib.ql.antlr4;
 
-import org.dflib.ql.antlr4.ExpParserUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
