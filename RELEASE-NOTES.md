@@ -20,6 +20,7 @@
 * #525 Configurable "stack()" operation
 * #527 StrExp.lower(), upper()
 * #528 Add notBetween() operator
+* #530 StrExp.len()
 
 ## Release 2.0.0-M3
 

@@ -440,7 +440,8 @@ public class NumExpTest {
                 arguments("abs(-5)", $intVal(-5).abs()),
                 arguments("round(3.14)", $floatVal(3.14f).round()),
                 arguments("scale(decimal(1), 3)", $decimal(1).scale(3)),
-                arguments("scale(double(1), 3)", $double(1).castAsDecimal().scale(3))
+                arguments("scale(double(1), 3)", $double(1).castAsDecimal().scale(3)),
+                arguments("len(str(a))", $str("a").len())
         );
     }
 

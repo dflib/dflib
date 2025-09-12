@@ -8,6 +8,7 @@ import org.dflib.exp.map.MapExp1;
 import org.dflib.exp.num.DecimalExp1;
 import org.dflib.exp.num.DoubleExp1;
 import org.dflib.exp.num.FloatExp1;
+import org.dflib.exp.num.IntExp1;
 import org.dflib.exp.str.StrAsExp;
 import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrShiftExp;
@@ -158,6 +159,13 @@ public interface StrExp extends Exp<String> {
      */
     default StrExp upper() {
         return StrExp1.mapVal("upper", this, String::toUpperCase);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default NumExp<Integer> len() {
+        return IntExp1.mapVal("len", this, String::length);
     }
 
     /**

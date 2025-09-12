@@ -715,7 +715,7 @@ numFn returns [NumExp<?> exp] locals [Function<NumExp<?>, NumExp<?>> fn]
     | dateFieldFn { $exp = $dateFieldFn.exp; }
     | dateTimeFieldFn { $exp = $dateTimeFieldFn.exp; }
     | offsetDateTimeFieldFn { $exp = $offsetDateTimeFieldFn.exp; }
-    // TODO: check out COUNT and ROW_NUM functions
+    | LEN '(' strExp ')' { $exp = $strExp.exp.len(); }
     | COUNT ('(' b=boolExp? ')') { $exp = $ctx.b != null ? Exp.count($b.exp) : Exp.count(); }
     | ROW_NUM ('(' ')') { $exp = Exp.rowNum(); }
     | (
@@ -1369,9 +1369,9 @@ fnName returns [String id]
     | CONCAT
     | SUBSTR
     | TRIM
+    | LEN
     | LOWER
     | UPPER
-    | LEN
     | MATCHES
     | STARTS_WITH
     | ENDS_WITH
@@ -1572,13 +1572,13 @@ SUBSTR: 'substr';
 TRIM: 'trim';
 
 //@ doc:inline
+LEN: 'len';
+
+//@ doc:inline
 LOWER: 'lower';
 
 //@ doc:inline
 UPPER: 'upper';
-
-//@ doc:inline
-LEN: 'len';
 
 //@ doc:inline
 MATCHES: 'matches';
