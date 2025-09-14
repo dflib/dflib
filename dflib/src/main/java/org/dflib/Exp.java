@@ -51,6 +51,8 @@ import org.dflib.exp.str.ConcatExp;
 import org.dflib.exp.str.StrColumn;
 import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrScalarExp;
+import org.dflib.exp.str.SubstrFromExp;
+import org.dflib.exp.str.SubstrFromLenExp;
 import org.dflib.ql.QLParserInvoker;
 import org.dflib.ql.antlr4.ExpParser;
 import org.dflib.sort.ExpSorter;
@@ -506,6 +508,31 @@ public interface Exp<T> {
      */
     static StrExp concat(Object... valuesOrExps) {
         return ConcatExp.of(valuesOrExps);
+    }
+
+    /**
+     * A substring expression. Unlike Java "substring" methods, this expression does not throw out of bounds exceptions
+     * if the String is shorter than the start index, and simply returns an empty string.
+     *
+     * @param fromInclusive a zero-based substring starting position. Can be negative, in which case the index is counted
+     *                      from the end of the String.
+     * @since 2.0.0
+     */
+    default StrExp substr(int fromInclusive) {
+        return SubstrFromExp.of(this, fromInclusive);
+    }
+
+    /**
+     * A substring expression. Unlike Java "substring" methods, this expression does not throw out of bounds exceptions
+     * if the String is shorter than the start index, or the substring is shorter than "len", and simply returns an
+     * empty string.
+     *
+     * @param fromInclusive a zero-based substring starting position
+     * @param len           a max length of the substring.
+     * @since 2.0.0
+     */
+    default StrExp substr(int fromInclusive, int len) {
+        return SubstrFromLenExp.of(this, fromInclusive, len);
     }
 
     /**

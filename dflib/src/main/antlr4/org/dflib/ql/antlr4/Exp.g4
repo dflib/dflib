@@ -914,7 +914,7 @@ strFn returns [StrExp exp]
     | TRIM '(' strExp ')' { $exp = $strExp.exp.trim(); }
     | LOWER '(' strExp ')' { $exp = $strExp.exp.lower(); }
     | UPPER '(' strExp ')' { $exp = $strExp.exp.upper(); }
-    | SUBSTR '(' s=strExp ',' a=integerScalar (',' b=integerScalar)? ')' {
+    | SUBSTR '(' s=expression ',' a=integerScalar (',' b=integerScalar)? ')' {
         $exp = $ctx.b != null ? $s.exp.substr($a.value.intValue(), $b.value.intValue()) : $s.exp.substr($a.value.intValue());
     }
     | CONCAT ('(' (args+=expression (',' args+=expression)*)? ')') {

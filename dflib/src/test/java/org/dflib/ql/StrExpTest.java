@@ -194,6 +194,8 @@ public class StrExpTest {
                 arguments("substr('example', 2)", $strVal("example").substr(2)),
                 arguments("substr('example', 2, 3)", $strVal("example").substr(2, 3)),
                 arguments("substr('example', -2, 3)", $strVal("example").substr(-2, 3)),
+                arguments("substr(a, 2)", $col("a").substr(2)),
+                arguments("substr(a, 2, 1)", $col("a").substr(2, 1)),
                 arguments("trim(str(1))", $str(1).trim()),
                 arguments("trim(castAsStr(3))", $intVal(3).castAsStr().trim()),
                 arguments("lower(str(a))", $str("a").lower()),

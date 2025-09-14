@@ -7115,7 +7115,7 @@ public class ExpParser extends Parser {
 		public StrExp exp;
 		public CastAsStrContext castAsStr;
 		public StrExpContext strExp;
-		public StrExpContext s;
+		public ExpressionContext s;
 		public IntegerScalarContext a;
 		public IntegerScalarContext b;
 		public ExpressionContext expression;
@@ -7136,6 +7136,12 @@ public class ExpParser extends Parser {
 		public TerminalNode COMMA(int i) {
 			return getToken(ExpParser.COMMA, i);
 		}
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
 		public List<IntegerScalarContext> integerScalar() {
 			return getRuleContexts(IntegerScalarContext.class);
 		}
@@ -7143,12 +7149,6 @@ public class ExpParser extends Parser {
 			return getRuleContext(IntegerScalarContext.class,i);
 		}
 		public TerminalNode CONCAT() { return getToken(ExpParser.CONCAT, 0); }
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
 		public StrFnContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -7234,7 +7234,7 @@ public class ExpParser extends Parser {
 				setState(1338);
 				match(LP);
 				setState(1339);
-				((StrFnContext)_localctx).s = strExp();
+				((StrFnContext)_localctx).s = expression();
 				setState(1340);
 				match(COMMA);
 				setState(1341);
@@ -11180,8 +11180,8 @@ public class ExpParser extends Parser {
 		"\u0534\u00052\u0000\u0000\u0534\u0535\u0005\u0001\u0000\u0000\u0535\u0536"+
 		"\u0003\u0012\t\u0000\u0536\u0537\u0005\u0002\u0000\u0000\u0537\u0538\u0006"+
 		"A\uffff\uffff\u0000\u0538\u0555\u0001\u0000\u0000\u0000\u0539\u053a\u0005"+
-		".\u0000\u0000\u053a\u053b\u0005\u0001\u0000\u0000\u053b\u053c\u0003\u0012"+
-		"\t\u0000\u053c\u053d\u0005\u0003\u0000\u0000\u053d\u0540\u0003,\u0016"+
+		".\u0000\u0000\u053a\u053b\u0005\u0001\u0000\u0000\u053b\u053c\u0003\f"+
+		"\u0006\u0000\u053c\u053d\u0005\u0003\u0000\u0000\u053d\u0540\u0003,\u0016"+
 		"\u0000\u053e\u053f\u0005\u0003\u0000\u0000\u053f\u0541\u0003,\u0016\u0000"+
 		"\u0540\u053e\u0001\u0000\u0000\u0000\u0540\u0541\u0001\u0000\u0000\u0000"+
 		"\u0541\u0542\u0001\u0000\u0000\u0000\u0542\u0543\u0005\u0002\u0000\u0000"+

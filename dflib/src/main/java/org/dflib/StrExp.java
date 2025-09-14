@@ -97,49 +97,6 @@ public interface StrExp extends Exp<String> {
         return MapCondition2.mapVal("contains", this, $val(substring), (s, p) -> s.contains(substring));
     }
 
-    /**
-     * A substring expression. Unlike Java "substring" methods, this expression does not throw out of bounds exceptions
-     * if the String is shorter than the start index, and simply returns an empty string.
-     *
-     * @param fromInclusive a zero-based substring starting position. Can be negative, in which case the index is counted
-     *                      from the end of the String.
-     */
-    default StrExp substr(int fromInclusive) {
-        if (fromInclusive == 0) {
-            return StrExp1.mapVal("substr", this, s -> s);
-        } else if (fromInclusive < 0) {
-            int endOffset = -fromInclusive;
-            return StrExp1.mapVal("substr", this, s -> s.length() <= endOffset ? "" : s.substring(s.length() - endOffset));
-        } else {
-            return StrExp1.mapVal("substr", this, s -> s.length() <= fromInclusive ? "" : s.substring(fromInclusive));
-        }
-    }
-
-    /**
-     * A substring expression. Unlike Java "substring" methods, this expression does not throw out of bounds exceptions
-     * if the String is shorter than the start index, or the substring is shorter than "len", and simply returns an
-     * empty string.
-     *
-     * @param fromInclusive a zero-based substring starting position
-     * @param len           a max length of the substring.
-     */
-    default StrExp substr(int fromInclusive, int len) {
-        if (len < 0) {
-            throw new IllegalArgumentException("'len' must be non-negative: " + len);
-        } else if (len == 0) {
-            return StrExp1.mapVal("substr", this, s -> "");
-        }
-
-        if (fromInclusive < 0) {
-            int endOffset = -fromInclusive;
-            return StrExp1.mapVal("substr", this, s ->
-                    s.length() <= endOffset ? "" : s.substring(s.length() - endOffset, Math.min(s.length(), s.length() - endOffset + len)));
-        } else {
-            return StrExp1.mapVal("substr", this, s ->
-                    s.length() <= fromInclusive ? "" : s.substring(fromInclusive, Math.min(s.length(), fromInclusive + len)));
-        }
-    }
-
     default StrExp trim() {
         return StrExp1.mapVal("trim", this, s -> {
             String trimmed = s.trim();
