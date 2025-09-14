@@ -1,3 +1,7 @@
+## Release 2.0.0-M5
+
+* #532 Can not expand collections with QL
+
 ## Release 2.0.0-M4
 
 * #406 ECharts: "symbolSize" linked to a DataFrame column

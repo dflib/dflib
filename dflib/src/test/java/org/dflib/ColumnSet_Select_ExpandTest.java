@@ -5,13 +5,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.dflib.Exp.$int;
-import static org.dflib.Exp.$val;
+import static org.dflib.Exp.*;
 
 public class ColumnSet_Select_ExpandTest {
 
     @Test
-    public void cols_StrSplitExp_Array() {
+    public void splitQL_Array() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(
                         1, "x/y",
@@ -27,19 +26,67 @@ public class ColumnSet_Select_ExpandTest {
     }
 
     @Test
-    public void cols_StrSplitExp_Val() {
+    public void ql_listCol() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(
-                        1, "x/y",
-                        2, "a/b")
-                .cols("a", "2")
-                .expand("'A'")
+                        1, List.of("x", "y"),
+                        2, List.of("a", "b"))
+                .cols("a", "2", "3")
+                .expand("b")
                 .select();
 
-        new DataFrameAsserts(df, "a", "2")
+        new DataFrameAsserts(df, "a", "2", "3")
                 .expectHeight(2)
-                .expectRow(0, 1, "A")
-                .expectRow(1, 2, "A");
+                .expectRow(0, 1, "x", "y")
+                .expectRow(1, 2, "a", "b");
+    }
+
+    @Test
+    public void allCols_ql_listCol() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(
+                        1, List.of("x", "y"),
+                        2, List.of("a", "b"))
+                .cols()
+                .expand("b")
+                .select();
+
+        new DataFrameAsserts(df, "a", "b", "2", "3")
+                .expectHeight(2)
+                .expectRow(0, 1, List.of("x", "y"), "x", "y")
+                .expectRow(1, 2, List.of("a", "b"), "a", "b");
+    }
+
+    @Test
+    public void listCol() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(
+                        1, List.of("x", "y"),
+                        2, List.of("a", "b"))
+                .cols("a", "2", "3")
+                .expand($col("b"))
+                .select();
+
+        new DataFrameAsserts(df, "a", "2", "3")
+                .expectHeight(2)
+                .expectRow(0, 1, "x", "y")
+                .expectRow(1, 2, "a", "b");
+    }
+
+    @Test
+    public void allCols_listCol() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(
+                        1, List.of("x", "y"),
+                        2, List.of("a", "b"))
+                .cols()
+                .expand($col("b"))
+                .select();
+
+        new DataFrameAsserts(df, "a", "b", "2", "3")
+                .expectHeight(2)
+                .expectRow(0, 1, List.of("x", "y"), "x", "y")
+                .expectRow(1, 2, List.of("a", "b"), "a", "b");
     }
 
     @Test
@@ -58,7 +105,8 @@ public class ColumnSet_Select_ExpandTest {
     public void list_VaryingSize() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
-                .cols("a", "2", "3").expand($int("a").mapVal(i -> {
+                .cols("a", "2", "3")
+                .expand($int("a").mapVal(i -> {
                     switch (i) {
                         case 1:
                             return List.of("one");
@@ -82,7 +130,8 @@ public class ColumnSet_Select_ExpandTest {
     public void list_WithNulls() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
-                .cols("a", "2", "3").expand($int("a").mapVal(i -> {
+                .cols("a", "2", "3")
+                .expand($int("a").mapVal(i -> {
                     switch (i) {
                         case 1:
                             return List.of("one");

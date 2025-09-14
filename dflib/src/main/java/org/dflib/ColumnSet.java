@@ -24,12 +24,13 @@ public interface ColumnSet {
         Exp<?> parsed = Exp.parseExp(splitExp, params);
         Class<?> type = parsed.getType();
 
-        if (Iterable.class.isAssignableFrom(type)) {
-            return expand((Exp<? extends Iterable<?>>) parsed);
-        } else if (type.isArray()) {
+        if (type.isArray()) {
             return expandArray((Exp<? extends Object[]>) parsed);
         } else {
-            return expandArray(parsed.mapVal(v -> new Object[]{v}));
+            // "Iterable" nature of an expression can not be determined from QL syntax alone without looking at the
+            // DataFrame or Series. So this cast is very optimistic and does not match the "type". Not sure we can do
+            // anything smarter here?
+            return expand((Exp<? extends Iterable<?>>) parsed);
         }
     }
 

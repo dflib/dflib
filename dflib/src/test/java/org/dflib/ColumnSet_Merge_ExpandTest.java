@@ -50,6 +50,22 @@ public class ColumnSet_Merge_ExpandTest {
     }
 
     @Test
+    public void cols_ql_listCol() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(
+                        1, List.of("x", "y"),
+                        2, List.of("a", "b"))
+                .cols("2", "3")
+                .expand("b")
+                .merge();
+
+        new DataFrameAsserts(df, "a", "b", "2", "3")
+                .expectHeight(2)
+                .expectRow(0, 1, List.of("x", "y"), "x", "y")
+                .expectRow(1, 2, List.of("a", "b"), "a", "b");
+    }
+
+    @Test
     public void cols_Transform() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
