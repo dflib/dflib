@@ -1,9 +1,6 @@
 package org.dflib.agg;
 
-import org.dflib.Condition;
-import org.dflib.DoubleSeries;
 import org.dflib.Exp;
-import org.dflib.FloatSeries;
 import org.dflib.Series;
 import org.dflib.Sorter;
 
@@ -20,7 +17,6 @@ import java.util.Arrays;
  */
 public class Percentiles {
 
-    private static final Condition notNullExp = Exp.$col(0).isNotNull();
     private static final Sorter asc = Exp.$col(0).asc();
 
     private static void checkIsPercentile(double quantile) {
@@ -148,19 +144,11 @@ public class Percentiles {
     }
 
     public static double ofDoubles(Series<? extends Number> s, double quantile) {
-        DoubleSeries ds = (s instanceof DoubleSeries)
-                ? (DoubleSeries) s
-                : s.select(notNullExp).compactDouble(Number::doubleValue);
-
-        return ds.quantile(quantile);
+        return SeriesCompactor.toDoubleSeries(s).quantile(quantile);
     }
 
     public static float ofFloats(Series<? extends Number> s, double quantile) {
-        FloatSeries ps = (s instanceof FloatSeries)
-                ? (FloatSeries) s
-                : s.select(notNullExp).compactFloat(Number::floatValue);
-
-        return ps.quantile(quantile);
+        return SeriesCompactor.toFloatSeries(s).quantile(quantile);
     }
 
     /**
@@ -170,7 +158,7 @@ public class Percentiles {
 
         Percentiles.checkIsPercentile(quantile);
 
-        Series<BigInteger> noNulls = s.select(notNullExp);
+        Series<BigInteger> noNulls = SeriesCompactor.noNullsSeries(s);
 
         int len = noNulls.size();
         switch (len) {
@@ -202,7 +190,7 @@ public class Percentiles {
 
         Percentiles.checkIsPercentile(quantile);
 
-        Series<BigDecimal> noNulls = s.select(notNullExp);
+        Series<BigDecimal> noNulls = SeriesCompactor.noNullsSeries(s);
 
         int len = noNulls.size();
         switch (len) {
@@ -234,7 +222,7 @@ public class Percentiles {
 
         checkIsPercentile(quantile);
 
-        Series<LocalDate> noNulls = s.select(notNullExp);
+        Series<LocalDate> noNulls = SeriesCompactor.noNullsSeries(s);
 
         int len = noNulls.size();
 
@@ -266,7 +254,7 @@ public class Percentiles {
 
         checkIsPercentile(quantile);
 
-        Series<LocalTime> noNulls = s.select(notNullExp);
+        Series<LocalTime> noNulls = SeriesCompactor.noNullsSeries(s);
 
         int len = noNulls.size();
 
@@ -298,8 +286,8 @@ public class Percentiles {
 
         checkIsPercentile(quantile);
 
-        Series<LocalDateTime> noNulls = s.select(notNullExp);
-
+        Series<LocalDateTime> noNulls = SeriesCompactor.noNullsSeries(s);
+        
         int len = noNulls.size();
 
         switch (len) {
