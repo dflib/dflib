@@ -112,29 +112,28 @@ public class Variance {
             return usePopulationVariance ? BigDecimal.ZERO : null;
         }
 
-        BigDecimal avg = Average.ofBigints_NullsNotExpected(noNulls);
+        BigDecimal avg = Average.ofBigintsNoNullChecks(noNulls);
         MathContext mc = DecimalOps.op1Context(avg);
-        BigDecimal denominator = new BigDecimal(usePopulationVariance ? len : len - 1);
-
         BigDecimal acc = BigDecimal.ZERO;
+
         for (int i = 0; i < len; i++) {
 
-            // TODO: I suspect "avg(..)" above already does BigInteger -> BigDecimal conversion, so maybe worth
-            //  implementing this whole thing as "castToDecimal().variance()" ?
-            BigDecimal x = new BigDecimal(s.get(i));
-
+            BigDecimal x = new BigDecimal(noNulls.get(i));
             BigDecimal dev = x.subtract(avg, mc);
             BigDecimal square = dev.multiply(dev, mc);
 
             acc = acc.add(square, mc);
         }
 
+        BigDecimal denominator = new BigDecimal(usePopulationVariance ? len : len - 1);
         return acc.divide(denominator, mc);
     }
 
     public static BigDecimal ofDecimals(Series<BigDecimal> s, boolean usePopulationVariance) {
 
-        int len = s.size();
+        Series<BigDecimal> noNulls = SeriesCompactor.noNullsSeries(s);
+
+        int len = noNulls.size();
         if (len == 0) {
             return null;
         } else if (len == 1) {
@@ -143,24 +142,18 @@ public class Variance {
 
         BigDecimal avg = Average.ofDecimals(s);
         MathContext mc = DecimalOps.op1Context(avg);
-
         BigDecimal acc = BigDecimal.ZERO;
-        int nonNullSize = len;
 
         for (int i = 0; i < len; i++) {
-            BigDecimal x = s.get(i);
-            if (x == null) {
-                nonNullSize--;
-                continue;
-            }
 
+            BigDecimal x = noNulls.get(i);
             BigDecimal dev = x.subtract(avg, mc);
             BigDecimal square = dev.multiply(dev, mc);
 
             acc = acc.add(square, mc);
         }
 
-        BigDecimal denominator = new BigDecimal(usePopulationVariance ? nonNullSize : nonNullSize - 1);
+        BigDecimal denominator = new BigDecimal(usePopulationVariance ? len : len - 1);
         return acc.divide(denominator, mc);
     }
 }

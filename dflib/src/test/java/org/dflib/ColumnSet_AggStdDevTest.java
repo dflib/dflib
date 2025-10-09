@@ -107,4 +107,27 @@ public class ColumnSet_AggStdDevTest {
                 .expectHeight(1)
                 .expectRow(0, 11.325487480310358d, 11.856695555676549d, new BigDecimal("11.8566955556765"));
     }
+
+    @Test
+    public void population_nulls() {
+
+        DataFrame agg = DataFrame.foldByRow("a", "b", "c").of(
+                        null, null, null,
+                        3, 3.55, new BigDecimal("3.55"),
+                        28, 28.9, new BigDecimal("28.9"),
+                        15, 15.1, new BigDecimal("15.1"),
+                        null, null, null,
+                        -4, -4.7, new BigDecimal("-4.7"),
+                        3, 2.01, new BigDecimal("2.01"),
+                        11, 11.003, new BigDecimal("11.003"),
+                        null, null, null)
+                .cols().agg(
+                        $int("a").stdDev(),
+                        $double(1).stdDev(),
+                        $decimal(2).stdDev());
+
+        new DataFrameAsserts(agg, "stdDev(a)", "stdDev(b)", "stdDev(c)")
+                .expectHeight(1)
+                .expectRow(0, 10.338708279513881d, 10.823632688858826, new BigDecimal("10.8236326888588"));
+    }
 }

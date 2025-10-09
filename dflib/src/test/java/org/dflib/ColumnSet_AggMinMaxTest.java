@@ -3,6 +3,7 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -17,6 +18,25 @@ public class ColumnSet_AggMinMaxTest {
                 1, 1,
                 -1, 1,
                 8, 1);
+
+        DataFrame agg = df.cols().agg(
+                $int("a").min(),
+                $int("a").max());
+
+        new DataFrameAsserts(agg, "min(a)", "max(a)")
+                .expectHeight(1)
+                .expectRow(0, -1, 8);
+    }
+
+    @Test
+    public void ints_Nulls() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                null, null,
+                1, 1,
+                null, null,
+                -1, 1,
+                8, 1,
+                null, null);
 
         DataFrame agg = df.cols().agg(
                 $int("a").min(),
@@ -86,6 +106,25 @@ public class ColumnSet_AggMinMaxTest {
         new DataFrameAsserts(agg, "max(b)", "min(b)", "max(a)", "min(a)")
                 .expectHeight(1)
                 .expectRow(0, 15.7, 2.0, 6.5, -1.2);
+    }
+
+    @Test
+    public void decimal_Nulls() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                null, null,
+                new BigDecimal("1"),
+                null,
+                new BigDecimal("-1"),
+                new BigDecimal("8"),
+                null);
+
+        DataFrame agg = df.cols().agg(
+                $decimal("a").min(),
+                $decimal("a").max());
+
+        new DataFrameAsserts(agg, "min(a)", "max(a)")
+                .expectHeight(1)
+                .expectRow(0, new BigDecimal("-1"), new BigDecimal("8"));
     }
 
     @Test

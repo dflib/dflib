@@ -24,6 +24,24 @@ public class ColumnSet_AggSumTest {
     }
 
     @Test
+    public void int_nulls() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                null, null,
+                1, 1,
+                null, null,
+                -1, 5L,
+                null, null);
+
+        DataFrame agg = df.cols().agg(
+                $int("a").sum(),
+                $long(1).sum());
+
+        new DataFrameAsserts(agg, "sum(a)", "sum(b)")
+                .expectHeight(1)
+                .expectRow(0, 0L, 6L);
+    }
+
+    @Test
     public void intFiltered() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 1,

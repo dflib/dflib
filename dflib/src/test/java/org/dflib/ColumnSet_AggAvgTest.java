@@ -29,6 +29,24 @@ public class ColumnSet_AggAvgTest {
     }
 
     @Test
+    public void intDoubleNulls() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                null, null,
+                1, 4L,
+                null, null,
+                0, 55.5,
+                null, null);
+
+        DataFrame agg = df.cols().agg(
+                $int("a").avg(),
+                $double(1).avg());
+
+        new DataFrameAsserts(agg, "avg(a)", "avg(b)")
+                .expectHeight(1)
+                .expectRow(0, 0.5, 29.75);
+    }
+
+    @Test
     public void doubleFiltered() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 4L,
@@ -68,6 +86,27 @@ public class ColumnSet_AggAvgTest {
                 new BigDecimal("10223372036854775807.12"),
                 new BigDecimal("-3000"),
                 new BigDecimal("10000001"));
+
+        DataFrame agg = df.cols().agg(
+                $decimal("a").avg(),
+                $decimal(0).avg($decimal(0).ne(-3000)));
+
+        new DataFrameAsserts(agg, "avg(a)", "avg(a)_")
+                .expectHeight(1)
+                .expectRow(0,
+                        new BigDecimal("3407790678954924269.3733"),
+                        new BigDecimal("5111686018432387904.06"));
+    }
+
+    @Test
+    public void decimalNulls() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                null,
+                new BigDecimal("10223372036854775807.12"),
+                null,
+                new BigDecimal("-3000"),
+                new BigDecimal("10000001"),
+                null);
 
         DataFrame agg = df.cols().agg(
                 $decimal("a").avg(),

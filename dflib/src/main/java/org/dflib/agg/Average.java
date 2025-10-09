@@ -52,83 +52,87 @@ public class Average {
     }
 
     public static BigDecimal ofBigints(Series<BigInteger> s) {
-        // TODO: exclude nulls before the calc?
-        return ofBigints_NullsNotExpected(s);
+        return ofBigintsNoNullChecks(SeriesCompactor.noNullsSeries(s));
     }
 
-    static BigDecimal ofBigints_NullsNotExpected(Series<BigInteger> s) {
+    static BigDecimal ofBigintsNoNullChecks(Series<BigInteger> s) {
         return s.size() == 0 ? BigDecimal.ZERO : bigintAvg.reduce(s);
     }
 
     public static BigDecimal ofDecimals(Series<BigDecimal> s) {
-        // TODO: exclude nulls before the calc?
-        return ofDecimals_NullsNotExpected(s);
+        return ofDecimalsNoNullChecks(SeriesCompactor.noNullsSeries(s));
     }
 
-    static BigDecimal ofDecimals_NullsNotExpected(Series<BigDecimal> s) {
+    static BigDecimal ofDecimalsNoNullChecks(Series<BigDecimal> s) {
         return s.size() == 0 ? BigDecimal.ZERO : decimalAvg.reduce(s);
     }
 
     public static LocalDate ofDates(Series<LocalDate> s) {
-        int size = s.size();
 
-        switch (size) {
+        Series<LocalDate> noNulls = SeriesCompactor.noNullsSeries(s);
+        int len = noNulls.size();
+
+        switch (len) {
             case 0:
                 return null;
             case 1:
-                return s.get(0);
+                return noNulls.get(0);
             default:
 
                 long days = 0;
-                LocalDate first = s.first();
+                LocalDate first = noNulls.first();
 
-                for (int i = 1; i < size; i++) {
-                    days += ChronoUnit.DAYS.between(first, s.get(i));
+                for (int i = 1; i < len; i++) {
+                    days += ChronoUnit.DAYS.between(first, noNulls.get(i));
                 }
 
-                return first.plusDays(Math.round(days / (double) size));
+                return first.plusDays(Math.round(days / (double) len));
         }
     }
 
     public static LocalDateTime ofDateTimes(Series<LocalDateTime> s) {
-        int size = s.size();
+        Series<LocalDateTime> noNulls = SeriesCompactor.noNullsSeries(s);
 
-        switch (size) {
+        int len = noNulls.size();
+
+        switch (len) {
             case 0:
                 return null;
             case 1:
-                return s.get(0);
+                return noNulls.get(0);
             default:
 
                 long nanos = 0;
-                LocalDateTime first = s.first();
+                LocalDateTime first = noNulls.first();
 
-                for (int i = 1; i < size; i++) {
-                    nanos += ChronoUnit.NANOS.between(first, s.get(i));
+                for (int i = 1; i < len; i++) {
+                    nanos += ChronoUnit.NANOS.between(first, noNulls.get(i));
                 }
 
-                return first.plusNanos(Math.round(nanos / (double) size));
+                return first.plusNanos(Math.round(nanos / (double) len));
         }
     }
 
     public static LocalTime ofTimes(Series<LocalTime> s) {
-        int size = s.size();
+        Series<LocalTime> noNulls = SeriesCompactor.noNullsSeries(s);
 
-        switch (size) {
+        int len = noNulls.size();
+
+        switch (len) {
             case 0:
                 return null;
             case 1:
-                return s.get(0);
+                return noNulls.get(0);
             default:
 
                 long nanos = 0;
-                LocalTime first = s.first();
+                LocalTime first = noNulls.first();
 
-                for (int i = 1; i < size; i++) {
-                    nanos += ChronoUnit.NANOS.between(first, s.get(i));
+                for (int i = 1; i < len; i++) {
+                    nanos += ChronoUnit.NANOS.between(first, noNulls.get(i));
                 }
 
-                return first.plusNanos(Math.round(nanos / (double) size));
+                return first.plusNanos(Math.round(nanos / (double) len));
         }
     }
 }

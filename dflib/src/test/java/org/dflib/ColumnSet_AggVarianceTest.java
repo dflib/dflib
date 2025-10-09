@@ -111,4 +111,26 @@ public class ColumnSet_AggVarianceTest {
                 .expectRow(0, 128.26666666666665, 140.5812295, new BigDecimal("140.58122950"));
     }
 
+    @Test
+    public void populationNulls() {
+        DataFrame agg = DataFrame.foldByRow("a", "b", "c").of(
+                        null, null, null,
+                        3, 3.55, new BigDecimal("3.55"),
+                        28, 28.9, new BigDecimal("28.9"),
+                        null, null, null,
+                        15, 15.1, new BigDecimal("15.1"),
+                        -4, -4.7, new BigDecimal("-4.7"),
+                        3, 2.01, new BigDecimal("2.01"),
+                        11, 11.003, new BigDecimal("11.003"),
+                        null, null, null)
+                .cols().agg(
+                        $int("a").variance(),
+                        $double(1).variance(),
+                        $decimal(2).variance());
+
+        new DataFrameAsserts(agg, "variance(a)", "variance(b)", "variance(c)")
+                .expectHeight(1)
+                .expectRow(0, 106.88888888888887d, 117.15102458333335d, new BigDecimal("117.151024583333"));
+    }
+
 }
