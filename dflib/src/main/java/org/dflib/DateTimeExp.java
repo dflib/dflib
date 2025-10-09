@@ -1,8 +1,9 @@
 package org.dflib;
 
+import org.dflib.agg.Average;
+import org.dflib.agg.Max;
+import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
-import org.dflib.exp.agg.ComparableAggregators;
-import org.dflib.exp.agg.DateTimeAggregators;
 import org.dflib.exp.agg.DateTimeReduceExp1;
 import org.dflib.exp.datetime.DateExp1;
 import org.dflib.exp.datetime.DateTimeAsExp;
@@ -282,7 +283,7 @@ public interface DateTimeExp extends Exp<LocalDateTime> {
      * @since 2.0.0
      */
     default DateTimeExp min(Condition filter) {
-        return new DateTimeReduceExp1<>("min", this, s -> (LocalDateTime) ComparableAggregators.min(s), filter);
+        return new DateTimeReduceExp1<>("min", this, s -> (LocalDateTime) Min.ofComparables(s), filter);
     }
 
     /**
@@ -296,7 +297,7 @@ public interface DateTimeExp extends Exp<LocalDateTime> {
      * @since 2.0.0
      */
     default DateTimeExp max(Condition filter) {
-        return new DateTimeReduceExp1<>("max", this, s -> (LocalDateTime) ComparableAggregators.max(s), filter);
+        return new DateTimeReduceExp1<>("max", this, s -> (LocalDateTime) Max.ofComparables(s), filter);
     }
 
     /**
@@ -310,7 +311,7 @@ public interface DateTimeExp extends Exp<LocalDateTime> {
      * @since 2.0.0
      */
     default DateTimeExp avg(Condition filter) {
-        return new DateTimeReduceExp1<>("avg", this, DateTimeAggregators::avg, filter);
+        return new DateTimeReduceExp1<>("avg", this, Average::ofDateTimes, filter);
     }
 
     /**

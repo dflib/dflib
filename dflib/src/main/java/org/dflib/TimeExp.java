@@ -1,8 +1,9 @@
 package org.dflib;
 
+import org.dflib.agg.Average;
+import org.dflib.agg.Max;
+import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
-import org.dflib.exp.agg.ComparableAggregators;
-import org.dflib.exp.agg.TimeAggregators;
 import org.dflib.exp.agg.TimeReduceExp1;
 import org.dflib.exp.datetime.TimeAsExp;
 import org.dflib.exp.datetime.TimeExp2;
@@ -240,7 +241,7 @@ public interface TimeExp extends Exp<LocalTime> {
      * @since 2.0.0
      */
     default TimeExp min(Condition filter) {
-        return new TimeReduceExp1<>("min", this, s -> ComparableAggregators.min(s), filter);
+        return new TimeReduceExp1<>("min", this, Min::ofComparables, filter);
     }
 
     /**
@@ -254,7 +255,7 @@ public interface TimeExp extends Exp<LocalTime> {
      * @since 2.0.0
      */
     default TimeExp max(Condition filter) {
-        return new TimeReduceExp1<>("max", this, s -> ComparableAggregators.max(s), filter);
+        return new TimeReduceExp1<>("max", this, Max::ofComparables, filter);
     }
 
     /**
@@ -268,7 +269,7 @@ public interface TimeExp extends Exp<LocalTime> {
      * @since 2.0.0
      */
     default TimeExp avg(Condition filter) {
-        return new TimeReduceExp1<>("avg", this, TimeAggregators::avg, filter);
+        return new TimeReduceExp1<>("avg", this, Average::ofTimes, filter);
     }
 
     /**

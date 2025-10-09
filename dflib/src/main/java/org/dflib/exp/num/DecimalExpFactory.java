@@ -4,9 +4,14 @@ import org.dflib.Condition;
 import org.dflib.DecimalExp;
 import org.dflib.Exp;
 import org.dflib.NumExp;
+import org.dflib.agg.Average;
+import org.dflib.agg.CumSum;
+import org.dflib.agg.Max;
+import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
-import org.dflib.exp.agg.ComparableAggregators;
-import org.dflib.exp.agg.DecimalAggregators;
+import org.dflib.agg.StandardDeviation;
+import org.dflib.agg.Sum;
+import org.dflib.agg.Variance;
 import org.dflib.exp.agg.DecimalReduceExp1;
 import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.map.MapCondition3;
@@ -127,7 +132,7 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp cumSum(Exp<? extends Number> exp) {
-        return DecimalExp1.map("cumSum", cast(exp), DecimalAggregators::cumSum);
+        return DecimalExp1.map("cumSum", cast(exp), CumSum::ofDecimals);
     }
 
     @Deprecated
@@ -138,7 +143,7 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp sum(Exp<? extends Number> exp, Condition filter) {
-        return new DecimalReduceExp1<>("sum", cast(exp), DecimalAggregators::sum, filter);
+        return new DecimalReduceExp1<>("sum", cast(exp), Sum::ofDecimals, filter);
     }
 
     @Deprecated
@@ -149,7 +154,7 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp min(Exp<? extends Number> exp, Condition filter) {
-        return new DecimalReduceExp1<>("min", cast(exp), ComparableAggregators::min, filter);
+        return new DecimalReduceExp1<>("min", cast(exp), Min::ofComparables, filter);
     }
 
     @Deprecated
@@ -160,7 +165,7 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp max(Exp<? extends Number> exp, Condition filter) {
-        return new DecimalReduceExp1<>("max", cast(exp), ComparableAggregators::max, filter);
+        return new DecimalReduceExp1<>("max", cast(exp), Max::ofComparables, filter);
     }
 
     @Deprecated
@@ -171,7 +176,7 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp avg(Exp<? extends Number> exp, Condition filter) {
-        return new DecimalReduceExp1<>("avg", cast(exp), DecimalAggregators::avg, filter);
+        return new DecimalReduceExp1<>("avg", cast(exp), Average::ofDecimals, filter);
     }
 
     @Deprecated
@@ -192,12 +197,12 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<?> variance(Exp<? extends Number> exp, boolean usePopulationVariance) {
-        return new DecimalReduceExp1<>("variance", cast(exp), s -> DecimalAggregators.variance(s, usePopulationVariance), null);
+        return new DecimalReduceExp1<>("variance", cast(exp), s -> Variance.ofDecimals(s, usePopulationVariance), null);
     }
 
     @Override
     public NumExp<?> stdDev(Exp<? extends Number> exp, boolean usePopulationStdDev) {
-        return new DecimalReduceExp1<>("stdDev", cast(exp), s -> DecimalAggregators.stdDev(s, usePopulationStdDev), null);
+        return new DecimalReduceExp1<>("stdDev", cast(exp), s -> StandardDeviation.ofDecimals(s, usePopulationStdDev), null);
     }
 
     @Override

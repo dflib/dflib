@@ -1,5 +1,6 @@
 package org.dflib;
 
+import org.dflib.agg.VConcatAgg;
 import org.dflib.exp.AsExp;
 import org.dflib.exp.Column;
 import org.dflib.exp.RowNumExp;
@@ -11,7 +12,6 @@ import org.dflib.exp.agg.LastExp;
 import org.dflib.exp.agg.ReduceExp1;
 import org.dflib.exp.agg.ReduceExp2;
 import org.dflib.exp.agg.ReduceExpN;
-import org.dflib.exp.agg.StringAggregators;
 import org.dflib.exp.bool.AndCondition;
 import org.dflib.exp.bool.BoolColumn;
 import org.dflib.exp.bool.BoolScalarExp;
@@ -821,13 +821,11 @@ public interface Exp<T> {
      * separated by the delimiter.
      */
     default Exp<String> vConcat(String delimiter) {
-        Function f = StringAggregators.vConcat(delimiter);
-        return new ReduceExp2<>("vConcat", String.class, this, $val(delimiter), (s, d) -> (String) f.apply(s), null);
+        return new ReduceExp2<>("vConcat", String.class, this, $val(delimiter), (s, d) -> VConcatAgg.ofStrings(s, delimiter), null);
     }
 
     default Exp<String> vConcat(Condition filter, String delimiter) {
-        Function f = StringAggregators.vConcat(delimiter);
-        return new ReduceExp2<>("vConcat", String.class, this, $val(delimiter), (s, d) -> (String) f.apply(s), filter);
+        return new ReduceExp2<>("vConcat", String.class, this, $val(delimiter), (s, d) -> VConcatAgg.ofStrings(s, delimiter), filter);
     }
 
     /**
@@ -835,22 +833,20 @@ public interface Exp<T> {
      * separated by the delimiter preceded by the prefix and followed by the suffix.
      */
     default Exp<String> vConcat(String delimiter, String prefix, String suffix) {
-        Function f = StringAggregators.vConcat(delimiter, prefix, suffix);
         return new ReduceExpN<>(
                 "vConcat",
                 String.class,
                 new Exp[]{this, $val(delimiter), $val(prefix), $val(suffix)},
-                ss -> (String) f.apply(ss[0]),
+                ss -> VConcatAgg.ofStrings(ss[0], delimiter, prefix, suffix),
                 null);
     }
 
     default Exp<String> vConcat(Condition filter, String delimiter, String prefix, String suffix) {
-        Function f = StringAggregators.vConcat(delimiter, prefix, suffix);
         return new ReduceExpN<>(
                 "vConcat",
                 String.class,
                 new Exp[]{this, $val(delimiter), $val(prefix), $val(suffix)},
-                ss -> (String) f.apply(ss[0]),
+                ss -> VConcatAgg.ofStrings(ss[0], delimiter, prefix, suffix),
                 filter);
     }
 

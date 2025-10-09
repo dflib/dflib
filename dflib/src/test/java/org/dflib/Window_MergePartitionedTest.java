@@ -20,11 +20,11 @@ public class Window_MergePartitionedTest {
         DataFrame r = TEST_DF.over().partition("a").merge($int("a").sum());
         new DataFrameAsserts(r, "a", "b", "sum(a)")
                 .expectHeight(5)
-                .expectRow(0, 1, "x", 3)
-                .expectRow(1, 2, "y", 2)
-                .expectRow(2, 1, "z", 3)
-                .expectRow(3, 0, "a", 0)
-                .expectRow(4, 1, "x", 3);
+                .expectRow(0, 1, "x", 3L)
+                .expectRow(1, 2, "y", 2L)
+                .expectRow(2, 1, "z", 3L)
+                .expectRow(3, 0, "a", 0L)
+                .expectRow(4, 1, "x", 3L);
     }
 
     @Test
@@ -41,10 +41,10 @@ public class Window_MergePartitionedTest {
 
         new DataFrameAsserts(r, "a", "b", "rn", "s")
                 .expectHeight(5)
-                .expectRow(0, 1, "x", 1, 3)
-                .expectRow(1, 2, "y", 1, 2)
-                .expectRow(2, 1, "z", 2, 3)
-                .expectRow(3, 0, "a", 1, 0)
-                .expectRow(4, 1, "x", 3, 3);
+                .expectRow(0, 1, "x", 1, 3L)
+                .expectRow(1, 2, "y", 1, 2L)
+                .expectRow(2, 1, "z", 2, 3L)
+                .expectRow(3, 0, "a", 1, 0L)
+                .expectRow(4, 1, "x", 3, 3L);
     }
 }

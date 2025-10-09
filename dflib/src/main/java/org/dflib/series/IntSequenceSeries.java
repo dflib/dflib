@@ -3,9 +3,11 @@ package org.dflib.series;
 import org.dflib.IntSeries;
 import org.dflib.LongSeries;
 import org.dflib.Series;
+import org.dflib.agg.Average;
+import org.dflib.agg.CumSum;
 import org.dflib.agg.Percentiles;
-import org.dflib.agg.PrimitiveSeriesAvg;
 import org.dflib.agg.PrimitiveSeriesSum;
+import org.dflib.agg.Sum;
 import org.dflib.range.Range;
 
 /**
@@ -126,12 +128,12 @@ public class IntSequenceSeries extends IntBaseSeries {
 
     @Override
     public long sum() {
-        return PrimitiveSeriesSum.sumOfRange(seqFromInclusive, seqToExclusive);
+        return Sum.ofRange(seqFromInclusive, seqToExclusive);
     }
 
     @Override
     public double avg() {
-        return PrimitiveSeriesAvg.avgOfRange(seqFromInclusive, seqToExclusive);
+        return Average.ofRange(seqFromInclusive, seqToExclusive);
     }
 
     @Override
@@ -141,7 +143,7 @@ public class IntSequenceSeries extends IntBaseSeries {
 
     @Override
     public LongSeries cumSum() {
-        long[] cumSum = PrimitiveSeriesSum.cumSumOfRange(seqFromInclusive, seqToExclusive);
+        long[] cumSum = CumSum.ofRange(seqFromInclusive, seqToExclusive);
         return new LongArraySeries(cumSum);
     }
 }

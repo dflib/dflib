@@ -2,11 +2,13 @@ package org.dflib.series;
 
 import org.dflib.DoubleSeries;
 import org.dflib.FloatSeries;
+import org.dflib.agg.Average;
+import org.dflib.agg.CumSum;
 import org.dflib.agg.Max;
 import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
-import org.dflib.agg.PrimitiveSeriesAvg;
 import org.dflib.agg.PrimitiveSeriesSum;
+import org.dflib.agg.Sum;
 
 /**
  * @since 1.1.0
@@ -187,12 +189,12 @@ public class FloatArraySeries extends FloatBaseSeries {
 
     @Override
     public double sum() {
-        return PrimitiveSeriesSum.sumOfArray(data, 0, size());
+        return Sum.ofArray(data, 0, size());
     }
 
     @Override
     public float avg() {
-        return PrimitiveSeriesAvg.avgOfArray(data, 0, size());
+        return Average.ofArray(data, 0, size());
     }
 
     @Override
@@ -202,7 +204,7 @@ public class FloatArraySeries extends FloatBaseSeries {
 
     @Override
     public DoubleSeries cumSum() {
-        double[] cumSum = PrimitiveSeriesSum.cumSumOfArray(data, 0, size());
+        double[] cumSum = CumSum.ofArray(data, 0, size());
         return new DoubleArraySeries(cumSum);
     }
 }

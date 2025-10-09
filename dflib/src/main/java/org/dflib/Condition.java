@@ -1,6 +1,6 @@
 package org.dflib;
 
-import org.dflib.exp.agg.BoolAggregators;
+import org.dflib.agg.CumSum;
 import org.dflib.exp.bool.AndCondition;
 import org.dflib.exp.bool.AsCondition;
 import org.dflib.exp.bool.NotCondition;
@@ -57,7 +57,7 @@ public interface Condition extends Exp<Boolean> {
      * @since 1.1.0
      */
     default NumExp<Integer> cumSum() {
-        return IntExp1.map("cumSum", this, BoolAggregators::cumSum);
+        return IntExp1.map("cumSum", this, CumSum::ofBools);
     }
 
     @Override

@@ -23,7 +23,7 @@ public class LongArraySeries_ReduceTest {
     @Test
     public void reduce_SumInt() {
         LongArraySeries s = new LongArraySeries(1, 2);
-        assertEquals(3, s.reduce(Exp.$int("").sum()));
+        assertEquals(3L, s.reduce(Exp.$int("").sum()));
     }
 
     @Test

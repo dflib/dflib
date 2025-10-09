@@ -46,20 +46,20 @@ public class Window_SelectRangeTest {
         DataFrame r = TWO_COL_TEST_DF.over().range(WindowRange.all).select($int(0).sum());
         new DataFrameAsserts(r, "sum(order)")
                 .expectHeight(4)
-                .expectRow(0, 10)
-                .expectRow(1, 10)
-                .expectRow(2, 10)
-                .expectRow(3, 10);
+                .expectRow(0, 10L)
+                .expectRow(1, 10L)
+                .expectRow(2, 10L)
+                .expectRow(3, 10L);
     }
 
     @Test
     public void preceding() {
         DataFrame r = SINGLE_COL_TEST_DF.over().range(WindowRange.allPreceding).select($int("val").sum());
         new DataFrameAsserts(r, "sum(val)").expectHeight(4)
-                .expectRow(0, 1)
-                .expectRow(1, 23)
-                .expectRow(2, 38)
-                .expectRow(3, 40);
+                .expectRow(0, 1L)
+                .expectRow(1, 23L)
+                .expectRow(2, 38L)
+                .expectRow(3, 40L);
     }
 
     @Test
@@ -71,10 +71,10 @@ public class Window_SelectRangeTest {
 
         new DataFrameAsserts(r, "sum(val)", "max(val)", "rowNum()")
                 .expectHeight(4)
-                .expectRow(0, 1, 1, 1)
-                .expectRow(1, 23, 22, 2)
-                .expectRow(2, 38, 22, 3)
-                .expectRow(3, 40, 22, 4);
+                .expectRow(0, 1L, 1, 1)
+                .expectRow(1, 23L, 22, 2)
+                .expectRow(2, 38L, 22, 3)
+                .expectRow(3, 40L, 22, 4);
     }
 
     @Test
@@ -82,10 +82,10 @@ public class Window_SelectRangeTest {
         DataFrame r = SINGLE_COL_TEST_DF.over().range(WindowRange.allFollowing).select($int("val").sum());
         new DataFrameAsserts(r, "sum(val)")
                 .expectHeight(4)
-                .expectRow(0, 40)
-                .expectRow(1, 39)
-                .expectRow(2, 17)
-                .expectRow(3, 2);
+                .expectRow(0, 40L)
+                .expectRow(1, 39L)
+                .expectRow(2, 17L)
+                .expectRow(3, 2L);
     }
 
     @Test
@@ -98,10 +98,10 @@ public class Window_SelectRangeTest {
 
         new DataFrameAsserts(r, "val", "sum(val)", "max(val)", "rowNum()")
                 .expectHeight(4)
-                .expectRow(0, 1, 40, 22, 1)
-                .expectRow(1, 22, 39, 22, 1)
-                .expectRow(2, 15, 17, 15, 1)
-                .expectRow(3, 2, 2, 2, 1);
+                .expectRow(0, 1, 40L, 22, 1)
+                .expectRow(1, 22, 39L, 22, 1)
+                .expectRow(2, 15, 17L, 15, 1)
+                .expectRow(3, 2, 2L, 2, 1);
     }
 
     @Test
@@ -113,10 +113,10 @@ public class Window_SelectRangeTest {
                 .select($int("val").sum());
 
         new DataFrameAsserts(r, "sum(val)").expectHeight(4)
-                .expectRow(0, 15)
-                .expectRow(1, 16)
-                .expectRow(2, 18)
-                .expectRow(3, 40);
+                .expectRow(0, 15L)
+                .expectRow(1, 16L)
+                .expectRow(2, 18L)
+                .expectRow(3, 40L);
     }
 
     @Test
@@ -128,10 +128,10 @@ public class Window_SelectRangeTest {
                 .select($int("val").sum());
 
         new DataFrameAsserts(r, "sum(val)").expectHeight(4)
-                .expectRow(0, 40)
-                .expectRow(1, 25)
-                .expectRow(2, 24)
-                .expectRow(3, 22);
+                .expectRow(0, 40L)
+                .expectRow(1, 25L)
+                .expectRow(2, 24L)
+                .expectRow(3, 22L);
     }
 
     @Test
@@ -153,12 +153,12 @@ public class Window_SelectRangeTest {
                         $str("label").first());
 
         new DataFrameAsserts(r, "sum(val)", "first(label)").expectHeight(6)
-                .expectRow(0, 3, "a")
-                .expectRow(1, 25, "a")
-                .expectRow(2, 15, "b")
-                .expectRow(3, 2, "a")
-                .expectRow(4, 77, "c")
-                .expectRow(5, 27, "b");
+                .expectRow(0, 3L, "a")
+                .expectRow(1, 25L, "a")
+                .expectRow(2, 15L, "b")
+                .expectRow(3, 2L, "a")
+                .expectRow(4, 77L, "c")
+                .expectRow(5, 27L, "b");
     }
 
 }

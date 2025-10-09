@@ -26,11 +26,11 @@ public class Window_SelectTest {
         DataFrame r = TEST_DF.over().select($int("a").sum());
         new DataFrameAsserts(r, "sum(a)")
                 .expectHeight(5)
-                .expectRow(0, 5)
-                .expectRow(1, 5)
-                .expectRow(2, 5)
-                .expectRow(3, 5)
-                .expectRow(4, 5);
+                .expectRow(0, 5L)
+                .expectRow(1, 5L)
+                .expectRow(2, 5L)
+                .expectRow(3, 5L)
+                .expectRow(4, 5L);
     }
 
     @Test
@@ -42,11 +42,11 @@ public class Window_SelectTest {
 
         new DataFrameAsserts(r, "a")
                 .expectHeight(5)
-                .expectRow(0, 5)
-                .expectRow(1, 5)
-                .expectRow(2, 5)
-                .expectRow(3, 5)
-                .expectRow(4, 5);
+                .expectRow(0, 5L)
+                .expectRow(1, 5L)
+                .expectRow(2, 5L)
+                .expectRow(3, 5L)
+                .expectRow(4, 5L);
     }
 
     @Test
@@ -64,11 +64,11 @@ public class Window_SelectTest {
 
         new DataFrameAsserts(r, "a", "la", "s", "rn", "cs")
                 .expectHeight(5)
-                .expectRow(0, 1, 1, 5, 1, 1L)
-                .expectRow(1, 2, 1, 5, 2, 3L)
-                .expectRow(2, 1, 1, 5, 3, 4L)
-                .expectRow(3, 0, 1, 5, 4, 4L)
-                .expectRow(4, 1, 1, 5, 5, 5L);
+                .expectRow(0, 1, 1, 5L, 1, 1L)
+                .expectRow(1, 2, 1, 5L, 2, 3L)
+                .expectRow(2, 1, 1, 5L, 3, 4L)
+                .expectRow(3, 0, 1, 5L, 4, 4L)
+                .expectRow(4, 1, 1, 5L, 5, 5L);
     }
 
     @Test
@@ -79,11 +79,11 @@ public class Window_SelectTest {
 
         new DataFrameAsserts(r, "a", "la", "s", "rn", "cs")
                 .expectHeight(5)
-                .expectRow(0, 1, 1, 5, 1, 1L)
-                .expectRow(1, 2, 1, 5, 2, 3L)
-                .expectRow(2, 1, 1, 5, 3, 4L)
-                .expectRow(3, 0, 1, 5, 4, 4L)
-                .expectRow(4, 1, 1, 5, 5, 5L);
+                .expectRow(0, 1, 1, 5L, 1, 1L)
+                .expectRow(1, 2, 1, 5L, 2, 3L)
+                .expectRow(2, 1, 1, 5L, 3, 4L)
+                .expectRow(3, 0, 1, 5L, 4, 4L)
+                .expectRow(4, 1, 1, 5L, 5, 5L);
     }
 
     @Test
@@ -97,11 +97,11 @@ public class Window_SelectTest {
 
         new DataFrameAsserts(r, "a", "b")
                 .expectHeight(5)
-                .expectRow(0, 5, "x")
-                .expectRow(1, 5, "x")
-                .expectRow(2, 5, "x")
-                .expectRow(3, 5, "x")
-                .expectRow(4, 5, "x");
+                .expectRow(0, 5L, "x")
+                .expectRow(1, 5L, "x")
+                .expectRow(2, 5L, "x")
+                .expectRow(3, 5L, "x")
+                .expectRow(4, 5L, "x");
     }
 
     @Test
@@ -112,11 +112,11 @@ public class Window_SelectTest {
 
         new DataFrameAsserts(r, "a")
                 .expectHeight(5)
-                .expectRow(0, 5)
-                .expectRow(1, 5)
-                .expectRow(2, 5)
-                .expectRow(3, 5)
-                .expectRow(4, 5);
+                .expectRow(0, 5L)
+                .expectRow(1, 5L)
+                .expectRow(2, 5L)
+                .expectRow(3, 5L)
+                .expectRow(4, 5L);
     }
 
     @Test
@@ -127,11 +127,11 @@ public class Window_SelectTest {
 
         new DataFrameAsserts(r, "a")
                 .expectHeight(5)
-                .expectRow(0, 5)
-                .expectRow(1, 5)
-                .expectRow(2, 5)
-                .expectRow(3, 5)
-                .expectRow(4, 5);
+                .expectRow(0, 5L)
+                .expectRow(1, 5L)
+                .expectRow(2, 5L)
+                .expectRow(3, 5L)
+                .expectRow(4, 5L);
     }
 
     @Test
@@ -142,11 +142,11 @@ public class Window_SelectTest {
 
         new DataFrameAsserts(r, "a")
                 .expectHeight(5)
-                .expectRow(0, 5)
-                .expectRow(1, 5)
-                .expectRow(2, 5)
-                .expectRow(3, 5)
-                .expectRow(4, 5);
+                .expectRow(0, 5L)
+                .expectRow(1, 5L)
+                .expectRow(2, 5L)
+                .expectRow(3, 5L)
+                .expectRow(4, 5L);
     }
 
     @Test
@@ -158,11 +158,11 @@ public class Window_SelectTest {
 
         new DataFrameAsserts(r, "a")
                 .expectHeight(5)
-                .expectRow(0, 5)
-                .expectRow(1, 5)
-                .expectRow(2, 5)
-                .expectRow(3, 5)
-                .expectRow(4, 5);
+                .expectRow(0, 5L)
+                .expectRow(1, 5L)
+                .expectRow(2, 5L)
+                .expectRow(3, 5L)
+                .expectRow(4, 5L);
     }
 
 }

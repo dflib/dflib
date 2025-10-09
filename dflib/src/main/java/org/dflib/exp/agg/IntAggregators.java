@@ -1,80 +1,32 @@
 package org.dflib.exp.agg;
 
-import org.dflib.IntSeries;
 import org.dflib.Series;
+import org.dflib.agg.CumSum;
 import org.dflib.agg.Max;
 import org.dflib.agg.Min;
-import org.dflib.builder.ObjectAccum;
+import org.dflib.agg.Sum;
 
 
+/**
+ * @deprecated in favor of individual aggregating operations like {@link Sum}, {@link Min}, etc.
+ */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class IntAggregators {
 
-
+    /**
+     * @deprecated in favor of {@link CumSum#ofInts(Series)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static Series<Long> cumSum(Series<? extends Number> s) {
-
-        int h = s.size();
-        if (h == 0) {
-            return Series.ofLong();
-        }
-
-        if (s instanceof IntSeries) {
-            return ((IntSeries) s).cumSum();
-        }
-
-        ObjectAccum<Long> accum = new ObjectAccum<>(h);
-
-        int i = 0;
-        long runningTotal = 0;
-
-        // rewind nulls,and find the first non-null total
-        for (; i < h; i++) {
-            Number next = s.get(i);
-            if (next == null) {
-                accum.push(null);
-            } else {
-                runningTotal = next.intValue();
-                accum.push(runningTotal);
-                i++;
-                break;
-            }
-        }
-
-        for (; i < h; i++) {
-
-            Number next = s.get(i);
-            if (next == null) {
-                accum.push(null);
-            } else {
-                runningTotal += next.intValue();
-                accum.push(runningTotal);
-            }
-        }
-
-        return accum.toSeries();
+        return CumSum.ofInts(s);
     }
 
+    /**
+     * @deprecated in favor of {@link Sum#ofInts(Series)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static int sum(Series<? extends Number> s) {
-        int h = s.size();
-        if (h == 0) {
-            return 0;
-        }
-
-        if (s instanceof IntSeries) {
-            // TODO: must return long like IntSeries.sum does
-            return (int) ((IntSeries) s).sum();
-        }
-
-        int sum = 0;
-        for (int i = 0; i < h; i++) {
-            Number n = s.get(i);
-
-            if (n != null) {
-                sum += n.intValue();
-            }
-        }
-
-        // TODO: must return long like IntSeries.sum does
-        return sum;
+        return (int) Sum.ofInts(s);
     }
 
     /**

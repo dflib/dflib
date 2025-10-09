@@ -52,10 +52,10 @@ public class DataFrame_PivotTest {
 
         new DataFrameAsserts(df, "a", "x", "y", "z", "t")
                 .expectHeight(4)
-                .expectRow(0, 1, 1, 10, null, 8)
-                .expectRow(1, 2, null, 10, 5, 6)
-                .expectRow(2, 3, null, 2, null, null)
-                .expectRow(3, 4, 9, 4, null, null);
+                .expectRow(0, 1, 1L, 10L, null, 8L)
+                .expectRow(1, 2, null, 10L, 5L, 6L)
+                .expectRow(2, 3, null, 2L, null, null)
+                .expectRow(3, 4, 9L, 4L, null, null);
     }
 
     @Test

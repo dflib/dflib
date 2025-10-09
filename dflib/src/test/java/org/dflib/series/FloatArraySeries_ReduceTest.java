@@ -16,7 +16,7 @@ public class FloatArraySeries_ReduceTest {
     @Test
     public void reduce_SumInt() {
         FloatArraySeries s = new FloatArraySeries(1f, 2.55f);
-        assertEquals(3, s.reduce(Exp.$int("").sum()));
+        assertEquals(3L, s.reduce(Exp.$int("").sum()));
     }
 
     @Test

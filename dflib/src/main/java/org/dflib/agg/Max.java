@@ -206,4 +206,31 @@ public class Max {
 
         return max;
     }
+
+    public static <T extends Comparable<T>> T ofComparables(Series<? extends T> s) {
+
+        int size = s.size();
+        if (size == 0) {
+            return null;
+        }
+
+        T max = s.get(0);
+
+        int i = 1;
+        for (; max == null && i < size; i++) {
+            max = s.get(i);
+        }
+
+        for (; i < size; i++) {
+
+            T t = s.get(i);
+            if (t != null) {
+                if (max.compareTo(t) < 0) {
+                    max = t;
+                }
+            }
+        }
+
+        return max;
+    }
 }

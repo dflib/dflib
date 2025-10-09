@@ -1,6 +1,9 @@
 package org.dflib.agg;
 
-
+/**
+ * @deprecated no replacement needed, only used by other deprecated classes.
+ */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class PrimitiveSeriesCount {
 
     public static int countTrueInArray(boolean[] booleans, int start, int len) {

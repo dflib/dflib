@@ -3,6 +3,7 @@ package org.dflib.series;
 import org.dflib.IntSeries;
 import org.dflib.LongSeries;
 import org.dflib.Series;
+import org.dflib.agg.CumSum;
 import org.dflib.agg.PrimitiveSeriesSum;
 import org.dflib.range.Range;
 
@@ -100,7 +101,7 @@ public class IntSingleValueSeries extends IntBaseSeries {
 
     @Override
     public LongSeries cumSum() {
-        long[] cumSum = PrimitiveSeriesSum.cumSumOfValue(value, size);
+        long[] cumSum = CumSum.ofValue(value, size);
         return new LongArraySeries(cumSum);
     }
 

@@ -4,10 +4,13 @@ import org.dflib.Condition;
 import org.dflib.DecimalExp;
 import org.dflib.Exp;
 import org.dflib.NumExp;
+import org.dflib.agg.Average;
+import org.dflib.agg.CumSum;
+import org.dflib.agg.Max;
+import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
-import org.dflib.exp.agg.BigintAggregators;
+import org.dflib.agg.Sum;
 import org.dflib.exp.agg.BigintReduceExp1;
-import org.dflib.exp.agg.ComparableAggregators;
 import org.dflib.exp.agg.DecimalReduceExp1;
 import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.map.MapCondition3;
@@ -104,7 +107,7 @@ public class BigintExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<BigInteger> cumSum(Exp<? extends Number> exp) {
-        return BigintExp1.map("cumSum", cast(exp), BigintAggregators::cumSum);
+        return BigintExp1.map("cumSum", cast(exp), CumSum::ofBigints);
     }
 
     @Deprecated
@@ -115,7 +118,7 @@ public class BigintExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<BigInteger> sum(Exp<? extends Number> exp, Condition filter) {
-        return new BigintReduceExp1<>("sum", cast(exp), BigintAggregators::sum, filter);
+        return new BigintReduceExp1<>("sum", cast(exp), Sum::ofBigints, filter);
     }
 
     @Deprecated
@@ -126,7 +129,7 @@ public class BigintExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<BigInteger> min(Exp<? extends Number> exp, Condition filter) {
-        return new BigintReduceExp1<>("min", cast(exp), ComparableAggregators::min, filter);
+        return new BigintReduceExp1<>("min", cast(exp), Min::ofComparables, filter);
     }
 
     @Deprecated
@@ -137,12 +140,12 @@ public class BigintExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<BigInteger> max(Exp<? extends Number> exp, Condition filter) {
-        return new BigintReduceExp1<>("max", cast(exp), ComparableAggregators::max, filter);
+        return new BigintReduceExp1<>("max", cast(exp), Max::ofComparables, filter);
     }
 
     @Override
     public NumExp<BigDecimal> avg(Exp<? extends Number> exp, Condition filter) {
-        return new DecimalReduceExp1<>("avg", cast(exp), BigintAggregators::avg, filter);
+        return new DecimalReduceExp1<>("avg", cast(exp), Average::ofBigints, filter);
     }
 
     @Override

@@ -27,11 +27,11 @@ public class Window_SelectPartitionedSortedTest {
 
         new DataFrameAsserts(r, "sum(a)", "first(b)")
                 .expectHeight(5)
-                .expectRow(0, 3, "x")
-                .expectRow(1, 2, "y")
-                .expectRow(2, 3, "x")
-                .expectRow(3, 0, "a")
-                .expectRow(4, 3, "x");
+                .expectRow(0, 3L, "x")
+                .expectRow(1, 2L, "y")
+                .expectRow(2, 3L, "x")
+                .expectRow(3, 0L, "a")
+                .expectRow(4, 3L, "x");
     }
 
     @Test

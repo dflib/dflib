@@ -17,7 +17,7 @@ public class IntSequenceSeries_ReduceTest {
     @Test
     public void reduce_SumInt() {
         IntSequenceSeries s = new IntSequenceSeries(1, 3);
-        assertEquals(3, s.reduce(Exp.$int("").sum()));
+        assertEquals(3L, s.reduce(Exp.$int("").sum()));
     }
 
     @Test

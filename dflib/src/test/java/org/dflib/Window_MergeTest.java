@@ -28,11 +28,11 @@ public class Window_MergeTest {
         DataFrame r = TEST_DF.over().merge($int("a").sum());
         new DataFrameAsserts(r, "a", "b", "sum(a)")
                 .expectHeight(5)
-                .expectRow(0, 1, "x", 5)
-                .expectRow(1, 2, "y", 5)
-                .expectRow(2, 1, "z", 5)
-                .expectRow(3, 0, "a", 5)
-                .expectRow(4, 1, "x", 5);
+                .expectRow(0, 1, "x", 5L)
+                .expectRow(1, 2, "y", 5L)
+                .expectRow(2, 1, "z", 5L)
+                .expectRow(3, 0, "a", 5L)
+                .expectRow(4, 1, "x", 5L);
     }
 
     @Test
@@ -43,11 +43,11 @@ public class Window_MergeTest {
 
         new DataFrameAsserts(r, "a", "b", "c")
                 .expectHeight(5)
-                .expectRow(0, 1, "x", 5)
-                .expectRow(1, 2, "y", 5)
-                .expectRow(2, 1, "z", 5)
-                .expectRow(3, 0, "a", 5)
-                .expectRow(4, 1, "x", 5);
+                .expectRow(0, 1, "x", 5L)
+                .expectRow(1, 2, "y", 5L)
+                .expectRow(2, 1, "z", 5L)
+                .expectRow(3, 0, "a", 5L)
+                .expectRow(4, 1, "x", 5L);
     }
 
     @Test
@@ -64,11 +64,11 @@ public class Window_MergeTest {
 
         new DataFrameAsserts(r, "a", "b", "s", "rn", "cs")
                 .expectHeight(5)
-                .expectRow(0, 1, "x", 5, 1, 1L)
-                .expectRow(1, 2, "y", 5, 2, 3L)
-                .expectRow(2, 1, "z", 5, 3, 4L)
-                .expectRow(3, 0, "a", 5, 4, 4L)
-                .expectRow(4, 1, "x", 5, 5, 5L);
+                .expectRow(0, 1, "x", 5L, 1, 1L)
+                .expectRow(1, 2, "y", 5L, 2, 3L)
+                .expectRow(2, 1, "z", 5L, 3, 4L)
+                .expectRow(3, 0, "a", 5L, 4, 4L)
+                .expectRow(4, 1, "x", 5L, 5, 5L);
     }
 
     @Test
@@ -79,11 +79,11 @@ public class Window_MergeTest {
 
         new DataFrameAsserts(r, "a", "b", "s", "rn", "cs")
                 .expectHeight(5)
-                .expectRow(0, 1, "x", 5, 1, 1L)
-                .expectRow(1, 2, "y", 5, 2, 3L)
-                .expectRow(2, 1, "z", 5, 3, 4L)
-                .expectRow(3, 0, "a", 5, 4, 4L)
-                .expectRow(4, 1, "x", 5, 5, 5L);
+                .expectRow(0, 1, "x", 5L, 1, 1L)
+                .expectRow(1, 2, "y", 5L, 2, 3L)
+                .expectRow(2, 1, "z", 5L, 3, 4L)
+                .expectRow(3, 0, "a", 5L, 4, 4L)
+                .expectRow(4, 1, "x", 5L, 5, 5L);
     }
 
     @Test
@@ -98,11 +98,11 @@ public class Window_MergeTest {
 
         new DataFrameAsserts(r, "a", "b", "2")
                 .expectHeight(5)
-                .expectRow(0, 1, "x", 5)
-                .expectRow(1, 2, "x", 5)
-                .expectRow(2, 1, "x", 5)
-                .expectRow(3, 0, "x", 5)
-                .expectRow(4, 1, "x", 5);
+                .expectRow(0, 1, "x", 5L)
+                .expectRow(1, 2, "x", 5L)
+                .expectRow(2, 1, "x", 5L)
+                .expectRow(3, 0, "x", 5L)
+                .expectRow(4, 1, "x", 5L);
     }
 
     @Test
@@ -114,11 +114,11 @@ public class Window_MergeTest {
 
         new DataFrameAsserts(r, "a", "b")
                 .expectHeight(5)
-                .expectRow(0, 5, "x")
-                .expectRow(1, 5, "y")
-                .expectRow(2, 5, "z")
-                .expectRow(3, 5, "a")
-                .expectRow(4, 5, "x");
+                .expectRow(0, 5L, "x")
+                .expectRow(1, 5L, "y")
+                .expectRow(2, 5L, "z")
+                .expectRow(3, 5L, "a")
+                .expectRow(4, 5L, "x");
     }
 
     @Test
@@ -130,11 +130,11 @@ public class Window_MergeTest {
 
         new DataFrameAsserts(r, "a", "b")
                 .expectHeight(5)
-                .expectRow(0, 5, "x")
-                .expectRow(1, 5, "y")
-                .expectRow(2, 5, "z")
-                .expectRow(3, 5, "a")
-                .expectRow(4, 5, "x");
+                .expectRow(0, 5L, "x")
+                .expectRow(1, 5L, "y")
+                .expectRow(2, 5L, "z")
+                .expectRow(3, 5L, "a")
+                .expectRow(4, 5L, "x");
     }
 
     @Test
@@ -145,11 +145,11 @@ public class Window_MergeTest {
 
         new DataFrameAsserts(r, "a", "b")
                 .expectHeight(5)
-                .expectRow(0, 5, "x")
-                .expectRow(1, 5, "y")
-                .expectRow(2, 5, "z")
-                .expectRow(3, 5, "a")
-                .expectRow(4, 5, "x");
+                .expectRow(0, 5L, "x")
+                .expectRow(1, 5L, "y")
+                .expectRow(2, 5L, "z")
+                .expectRow(3, 5L, "a")
+                .expectRow(4, 5L, "x");
     }
 
     @Test
@@ -161,11 +161,11 @@ public class Window_MergeTest {
 
         new DataFrameAsserts(r, "a", "b")
                 .expectHeight(5)
-                .expectRow(0, 5, "x")
-                .expectRow(1, 5, "y")
-                .expectRow(2, 5, "z")
-                .expectRow(3, 5, "a")
-                .expectRow(4, 5, "x");
+                .expectRow(0, 5L, "x")
+                .expectRow(1, 5L, "y")
+                .expectRow(2, 5L, "z")
+                .expectRow(3, 5L, "a")
+                .expectRow(4, 5L, "x");
     }
 
 }

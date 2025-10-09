@@ -2,6 +2,7 @@ package org.dflib.series;
 
 import org.dflib.BooleanSeries;
 import org.dflib.IntSeries;
+import org.dflib.agg.CumSum;
 import org.dflib.agg.PrimitiveSeriesCount;
 import org.dflib.agg.PrimitiveSeriesSum;
 
@@ -97,7 +98,7 @@ public class BooleanArrayRangeSeries extends BooleanBaseSeries {
 
     @Override
     public IntSeries cumSum() {
-        int[] cumSum = PrimitiveSeriesSum.cumSumOfArray(data, offset, size);
+        int[] cumSum = CumSum.ofArray(data, offset, size);
         return new IntArraySeries(cumSum);
     }
 }

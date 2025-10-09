@@ -11,7 +11,7 @@ public class IntArraySeries_AggTest {
     @Test
     public void agg_SumInt() {
         IntArraySeries s = new IntArraySeries(1, 2);
-        assertEquals(3, s.agg(Exp.$int("").sum()).get(0));
+        assertEquals(3L, s.agg(Exp.$int("").sum()).get(0));
     }
 
     @Test

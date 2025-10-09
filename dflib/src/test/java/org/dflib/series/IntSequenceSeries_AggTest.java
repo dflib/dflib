@@ -11,7 +11,7 @@ public class IntSequenceSeries_AggTest {
     @Test
     public void agg_SumInt() {
         IntSequenceSeries s = new IntSequenceSeries(1, 3);
-        assertEquals(3, s.agg(Exp.$int("").sum()).get(0));
+        assertEquals(3L, s.agg(Exp.$int("").sum()).get(0));
     }
 
     @Test

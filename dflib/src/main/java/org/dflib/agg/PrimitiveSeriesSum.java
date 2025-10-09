@@ -1,189 +1,74 @@
 package org.dflib.agg;
 
 
+/**
+ * @deprecated in favor of {@link Sum} and {@link CumSum}.
+ */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class PrimitiveSeriesSum {
 
     public static long sumOfRange(int first, int lastExclusive) {
-
-        long s = 0;
-        for (int i = first; i < lastExclusive; i++) {
-            s += i;
-        }
-
-        return s;
+        return Sum.ofRange(first, lastExclusive);
     }
 
     public static long[] cumSumOfRange(int first, int lastExclusive) {
-
-        int len = lastExclusive - first;
-        long[] cumSum = new long[len];
-
-        long s = 0;
-        for (int i = 0; i < len; i++) {
-            s += i + first;
-            cumSum[i] = s;
-        }
-
-        return cumSum;
+        return CumSum.ofRange(first, lastExclusive);
     }
-
 
     public static long[] cumSumOfArray(int[] ints, int start, int len) {
-
-        long[] cumSum = new long[len];
-
-        long s = 0;
-        for (int i = 0; i < len; i++) {
-            s += ints[i + start];
-            cumSum[i] = s;
-        }
-
-        return cumSum;
+        return CumSum.ofArray(ints, start, len);
     }
-
 
     public static long[] cumSumOfValue(int val, int len) {
-
-        long[] cumSum = new long[len];
-
-        for (int i = 0; i < len; i++) {
-            cumSum[i] = val * (i + 1);
-        }
-
-        return cumSum;
+        return CumSum.ofValue(val, len);
     }
-
 
     public static long[] cumSumOfValue(long val, int len) {
-
-        long[] cumSum = new long[len];
-
-        for (int i = 0; i < len; i++) {
-            cumSum[i] = val * (i + 1);
-        }
-
-        return cumSum;
+        return CumSum.ofValue(val, len);
     }
 
-
     public static double[] cumSumOfValue(double val, int len) {
-
-        // TODO: deal with rounding errors...
-
-        double[] cumSum = new double[len];
-
-        for (int i = 0; i < len; i++) {
-            cumSum[i] = val * (i + 1);
-        }
-
-        return cumSum;
+        return CumSum.ofValue(val, len);
     }
 
     public static long sumOfArray(int[] ints, int start, int len) {
-
-        long s = 0;
-        for (int i = 0; i < len; i++) {
-            s += ints[i + start];
-        }
-
-        return s;
+        return Sum.ofArray(ints, start, len);
     }
 
-
     public static long[] cumSumOfArray(long[] longs, int start, int len) {
-
-        long[] cumSum = new long[len];
-
-        long s = 0;
-        for (int i = 0; i < len; i++) {
-            s += longs[i + start];
-            cumSum[i] = s;
-        }
-
-        return cumSum;
+        return CumSum.ofArray(longs, start, len);
     }
 
     public static long sumOfArray(long[] longs, int start, int len) {
-
-        long s = 0L;
-        for (int i = 0; i < len; i++) {
-            s += longs[i + start];
-        }
-
-        return s;
+        return Sum.ofArray(longs, start, len);
     }
 
     /**
      * @since 1.1.0
      */
     public static double[] cumSumOfArray(float[] values, int start, int len) {
-
-        double[] cumSum = new double[len];
-
-        double s = 0.;
-        for (int i = 0; i < len; i++) {
-            s += values[i + start];
-            cumSum[i] = s;
-        }
-
-        return cumSum;
+        return CumSum.ofArray(values, start, len);
     }
 
     public static double[] cumSumOfArray(double[] doubles, int start, int len) {
-
-        double[] cumSum = new double[len];
-
-        double s = 0.;
-        for (int i = 0; i < len; i++) {
-            s += doubles[i + start];
-            cumSum[i] = s;
-        }
-
-        return cumSum;
+        return CumSum.ofArray(doubles, start, len);
     }
 
     /**
      * @since 1.1.0
      */
     public static double sumOfArray(float[] vals, int start, int len) {
-
-        // TODO: deal with rounding errors... convert to BigDecimal?
-        //   Is this method any worse than Collectors.summingDouble() as far as rounding?
-
-        double s = 0;
-        for (int i = 0; i < len; i++) {
-            s += vals[i + start];
-        }
-
-        return s;
+        return Sum.ofArray(vals, start, len);
     }
 
     public static double sumOfArray(double[] doubles, int start, int len) {
-
-        // TODO: deal with rounding errors... convert to BigDecimal?
-        //   Is this method any worse than Collectors.summingDouble() as far as rounding?
-
-        double s = 0;
-        for (int i = 0; i < len; i++) {
-            s += doubles[i + start];
-        }
-
-        return s;
+        return Sum.ofArray(doubles, start, len);
     }
 
     /**
      * @since 1.1.0
      */
     public static int[] cumSumOfArray(boolean[] bools, int start, int len) {
-
-        int[] cumSum = new int[len];
-
-        int s = 0;
-        for (int i = 0; i < len; i++) {
-            s += bools[i + start] ? 1 : 0;
-            cumSum[i] = s;
-        }
-
-        return cumSum;
+        return CumSum.ofArray(bools, start, len);
     }
 }

@@ -20,11 +20,11 @@ public class Window_SelectPartitionedTest {
         DataFrame r = TEST_DF.over().partition("a").select($int("a").sum());
         new DataFrameAsserts(r, "sum(a)")
                 .expectHeight(5)
-                .expectRow(0, 3)
-                .expectRow(1, 2)
-                .expectRow(2, 3)
-                .expectRow(3, 0)
-                .expectRow(4, 3);
+                .expectRow(0, 3L)
+                .expectRow(1, 2L)
+                .expectRow(2, 3L)
+                .expectRow(3, 0L)
+                .expectRow(4, 3L);
     }
 
     @Test

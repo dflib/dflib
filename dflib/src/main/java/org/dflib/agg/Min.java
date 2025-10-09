@@ -205,4 +205,31 @@ public class Min {
 
         return min;
     }
+
+    public static <T extends Comparable<T>> T ofComparables(Series<? extends T> s) {
+
+        int size = s.size();
+        if (size == 0) {
+            return null;
+        }
+
+        T min = s.get(0);
+
+        int i = 1;
+        for (; min == null && i < size; i++) {
+            min = s.get(i);
+        }
+
+        for (; i < size; i++) {
+
+            T t = s.get(i);
+            if (t != null) {
+                if (t.compareTo(min) < 0) {
+                    min = t;
+                }
+            }
+        }
+
+        return min;
+    }
 }

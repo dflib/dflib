@@ -1,6 +1,7 @@
 ## Release 2.0.0-M5
 
 * #532 Can not expand collections with QL
+* #539 Consistently return "long" when summing ints
 
 ## Release 2.0.0-M4
 

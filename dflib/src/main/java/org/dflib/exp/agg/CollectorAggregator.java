@@ -12,7 +12,10 @@ import java.util.stream.Collector;
 
 /**
  * An adapter between Java {@link Collector} and an aggregation function.
+ *
+ * @deprecated unused
  */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class CollectorAggregator<S, A, T> implements Function<Series<S>, T> {
 
     private final Collector<S, A, T> collector;
@@ -23,7 +26,7 @@ public class CollectorAggregator<S, A, T> implements Function<Series<S>, T> {
 
     public static <S, M, A, T> Function<Series<S>, T> create(Collector<M, A, T> collector, ValueMapper<S, M> mapper) {
 
-        Collector<S, A, T> mapped = new Collector<S, A, T>() {
+        Collector<S, A, T> mapped = new Collector<>() {
             @Override
             public Supplier<A> supplier() {
                 return collector.supplier();

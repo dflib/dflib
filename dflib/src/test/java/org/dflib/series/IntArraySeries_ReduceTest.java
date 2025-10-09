@@ -26,7 +26,7 @@ public class IntArraySeries_ReduceTest {
     @Test
     public void reduce_SumInt() {
         IntArraySeries s = new IntArraySeries(1, 2);
-        assertEquals(3, s.reduce(Exp.$int("").sum()));
+        assertEquals(3L, s.reduce(Exp.$int("").sum()));
     }
 
     @Test

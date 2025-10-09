@@ -5,10 +5,14 @@ import org.dflib.DecimalExp;
 import org.dflib.DoubleSeries;
 import org.dflib.Exp;
 import org.dflib.NumExp;
+import org.dflib.agg.Average;
+import org.dflib.agg.CumSum;
 import org.dflib.agg.Max;
 import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
-import org.dflib.exp.agg.DoubleAggregators;
+import org.dflib.agg.StandardDeviation;
+import org.dflib.agg.Sum;
+import org.dflib.agg.Variance;
 import org.dflib.exp.agg.DoubleReduceExp1;
 
 import java.math.BigDecimal;
@@ -95,12 +99,12 @@ public class DoubleExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<Double> cumSum(Exp<? extends Number> exp) {
-        return DoubleExp1.map("cumSum", exp, DoubleAggregators::cumSum);
+        return DoubleExp1.map("cumSum", exp, CumSum::ofDoubles);
     }
 
     @Override
     public NumExp<Double> sum(Exp<? extends Number> exp, Condition filter) {
-        return new DoubleReduceExp1<>("sum", exp, DoubleAggregators::sum, filter);
+        return new DoubleReduceExp1<>("sum", exp, Sum::ofDoubles, filter);
     }
 
     @Override
@@ -115,7 +119,7 @@ public class DoubleExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<?> avg(Exp<? extends Number> exp, Condition filter) {
-        return new DoubleReduceExp1<>("avg", exp, DoubleAggregators::avg, filter);
+        return new DoubleReduceExp1<>("avg", exp, Average::ofDoubles, filter);
     }
 
     @Override
@@ -131,12 +135,12 @@ public class DoubleExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<?> variance(Exp<? extends Number> exp, boolean usePopulationVariance) {
-        return new DoubleReduceExp1<>("variance", exp, s -> DoubleAggregators.variance(s, usePopulationVariance), null);
+        return new DoubleReduceExp1<>("variance", exp, s -> Variance.ofDoubles(s, usePopulationVariance), null);
     }
 
     @Override
     public NumExp<?> stdDev(Exp<? extends Number> exp, boolean usePopulationStdDev) {
-        return new DoubleReduceExp1<>("stdDev", exp, s -> DoubleAggregators.stdDev(s, usePopulationStdDev), null);
+        return new DoubleReduceExp1<>("stdDev", exp, s -> StandardDeviation.ofDoubles(s, usePopulationStdDev), null);
     }
 
     @Override

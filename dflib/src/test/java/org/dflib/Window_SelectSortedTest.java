@@ -26,10 +26,10 @@ public class Window_SelectSortedTest {
 
         new DataFrameAsserts(r, "sum(a)", "first(b)")
                 .expectHeight(5)
-                .expectRow(0, 5, "a")
-                .expectRow(1, 5, "a")
-                .expectRow(2, 5, "a")
-                .expectRow(3, 5, "a")
-                .expectRow(4, 5, "a");
+                .expectRow(0, 5L, "a")
+                .expectRow(1, 5L, "a")
+                .expectRow(2, 5L, "a")
+                .expectRow(3, 5L, "a")
+                .expectRow(4, 5L, "a");
     }
 }

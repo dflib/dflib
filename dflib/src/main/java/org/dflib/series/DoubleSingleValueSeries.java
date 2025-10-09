@@ -2,6 +2,7 @@ package org.dflib.series;
 
 import org.dflib.DoubleSeries;
 import org.dflib.Series;
+import org.dflib.agg.CumSum;
 import org.dflib.agg.PrimitiveSeriesSum;
 import org.dflib.range.Range;
 
@@ -100,7 +101,7 @@ public class DoubleSingleValueSeries extends DoubleBaseSeries {
 
     @Override
     public DoubleSeries cumSum() {
-        double[] cumSum = PrimitiveSeriesSum.cumSumOfValue(value, size);
+        double[] cumSum = CumSum.ofValue(value, size);
         return new DoubleArraySeries(cumSum);
     }
 

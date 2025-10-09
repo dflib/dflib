@@ -20,7 +20,7 @@ public class ColumnSet_AggSumTest {
 
         new DataFrameAsserts(agg, "sum(a)", "sum(b)")
                 .expectHeight(1)
-                .expectRow(0, 0, 6L);
+                .expectRow(0, 0L, 6L);
     }
 
     @Test
@@ -39,7 +39,7 @@ public class ColumnSet_AggSumTest {
 
         new DataFrameAsserts(agg, "sum(b)", "sum(a)")
                 .expectHeight(1)
-                .expectRow(0, 11, -4);
+                .expectRow(0, 11L, -4L);
     }
 
     @Test
@@ -92,9 +92,9 @@ public class ColumnSet_AggSumTest {
                 $int("a").sum().div(2),
                 $long(1).sum().mul(2));
 
-        new DataFrameAsserts(agg, "sum(a) / 2", "sum(b) * castAsLong(2)")
+        new DataFrameAsserts(agg, "sum(a) / castAsLong(2)", "sum(b) * castAsLong(2)")
                 .expectHeight(1)
-                .expectRow(0, -1, 12L);
+                .expectRow(0, -1L, 12L);
     }
 
     @Test

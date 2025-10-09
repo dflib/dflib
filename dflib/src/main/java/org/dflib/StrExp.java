@@ -1,6 +1,7 @@
 package org.dflib;
 
-import org.dflib.exp.agg.ComparableAggregators;
+import org.dflib.agg.Max;
+import org.dflib.agg.Min;
 import org.dflib.exp.agg.StrReduceExp1;
 import org.dflib.exp.map.MapCondition1;
 import org.dflib.exp.map.MapCondition2;
@@ -172,7 +173,7 @@ public interface StrExp extends Exp<String> {
      * @since 2.0.0
      */
     default StrExp min(Condition filter) {
-        return new StrReduceExp1<>("min", this, s -> ComparableAggregators.min(s), filter);
+        return new StrReduceExp1<>("min", this, Min::ofComparables, filter);
     }
 
     /**
@@ -186,7 +187,7 @@ public interface StrExp extends Exp<String> {
      * @since 2.0.0
      */
     default StrExp max(Condition filter) {
-        return new StrReduceExp1<>("max", this, s -> ComparableAggregators.max(s), filter);
+        return new StrReduceExp1<>("max", this, Max::ofComparables, filter);
     }
 
     @Override
