@@ -3,6 +3,7 @@
 * #532 Can not expand collections with QL
 * #539 Consistently return "long" when summing ints
 * #540 Edge conditions for variance and stdDev
+* #541 Support for variance and stdDev functions for $bigint
 
 ## Release 2.0.0-M4
 

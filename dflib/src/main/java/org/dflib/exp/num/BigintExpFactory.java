@@ -9,7 +9,9 @@ import org.dflib.agg.CumSum;
 import org.dflib.agg.Max;
 import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
+import org.dflib.agg.StandardDeviation;
 import org.dflib.agg.Sum;
+import org.dflib.agg.Variance;
 import org.dflib.exp.agg.BigintReduceExp1;
 import org.dflib.exp.agg.DecimalReduceExp1;
 import org.dflib.exp.map.MapCondition2;
@@ -160,12 +162,12 @@ public class BigintExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<?> variance(Exp<? extends Number> exp, boolean usePopulationVariance) {
-        throw new UnsupportedOperationException("TODO");
+        return new DecimalReduceExp1<>("variance", cast(exp), s -> Variance.ofBigints(s, usePopulationVariance), null);
     }
 
     @Override
     public NumExp<?> stdDev(Exp<? extends Number> exp, boolean usePopulationStdDev) {
-        throw new UnsupportedOperationException("TODO");
+        return new DecimalReduceExp1<>("stdDev", cast(exp), s -> StandardDeviation.ofBigints(s, usePopulationStdDev), null);
     }
 
     @Override
