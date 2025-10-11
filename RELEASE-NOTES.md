@@ -1,6 +1,7 @@
 ## Release 2.0.0-M5
 
 * #532 Can not expand collections with QL
+* #538 Allow nulls in numeric aggregation functions
 * #539 Consistently return "long" when summing ints
 * #540 Edge conditions for variance and stdDev
 * #541 Support for variance and stdDev functions for $bigint
