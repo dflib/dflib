@@ -17,11 +17,11 @@ public class StandardDeviation {
 
     public static BigDecimal ofBigints(Series<BigInteger> s, boolean usePopulationStdDev) {
         BigDecimal variance = Variance.ofBigints(s, usePopulationStdDev);
-        return variance.sqrt(DecimalOps.op1Context(variance));
+        return variance != null ? variance.sqrt(DecimalOps.op1Context(variance)) : null;
     }
 
     public static BigDecimal ofDecimals(Series<BigDecimal> s, boolean usePopulationStdDev) {
         BigDecimal variance = Variance.ofDecimals(s, usePopulationStdDev);
-        return variance.sqrt(DecimalOps.op1Context(variance));
+        return variance != null ? variance.sqrt(DecimalOps.op1Context(variance)) : null;
     }
 }

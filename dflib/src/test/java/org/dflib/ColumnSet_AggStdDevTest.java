@@ -18,6 +18,58 @@ public class ColumnSet_AggStdDevTest {
             11, 11.003, new BigDecimal("11.003"));
 
     @Test
+    public void sample_empty() {
+        DataFrame agg = DataFrame.empty("a", "b", "c")
+                .cols().agg(
+                        $int("a").stdDev(false),
+                        $double("b").stdDev(false),
+                        $decimal("c").stdDev(false));
+
+        new DataFrameAsserts(agg, "stdDev(a)", "stdDev(b)", "stdDev(c)")
+                .expectHeight(1)
+                .expectRow(0, Double.NaN, Double.NaN, null);
+    }
+
+    @Test
+    public void population_empty() {
+        DataFrame agg = DataFrame.empty("a", "b", "c")
+                .cols().agg(
+                        $int("a").stdDev(true),
+                        $double("b").stdDev(true),
+                        $decimal("c").stdDev(true));
+
+        new DataFrameAsserts(agg, "stdDev(a)", "stdDev(b)", "stdDev(c)")
+                .expectHeight(1)
+                .expectRow(0, Double.NaN, Double.NaN, null);
+    }
+
+    @Test
+    public void sample_one() {
+        DataFrame agg = DataFrame.foldByRow("a", "b", "c").of(20, 10.1, new BigDecimal("12.34"))
+                .cols().agg(
+                        $int("a").stdDev(false),
+                        $double("b").stdDev(false),
+                        $decimal("c").stdDev(false));
+
+        new DataFrameAsserts(agg, "stdDev(a)", "stdDev(b)", "stdDev(c)")
+                .expectHeight(1)
+                .expectRow(0, Double.NaN, Double.NaN, null);
+    }
+
+    @Test
+    public void population_one() {
+        DataFrame agg = DataFrame.foldByRow("a", "b", "c").of(20, 10.1, new BigDecimal("12.34"))
+                .cols().agg(
+                        $int("a").stdDev(true),
+                        $double("b").stdDev(true),
+                        $decimal("c").stdDev(true));
+
+        new DataFrameAsserts(agg, "stdDev(a)", "stdDev(b)", "stdDev(c)")
+                .expectHeight(1)
+                .expectRow(0, 0., 0., BigDecimal.ZERO);
+    }
+
+    @Test
     public void population_implicit() {
 
         DataFrame agg = df.cols().agg(

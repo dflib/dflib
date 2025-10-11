@@ -18,6 +18,58 @@ public class ColumnSet_AggVarianceTest {
             11, 11.003, new BigDecimal("11.003"));
 
     @Test
+    public void sample_empty() {
+        DataFrame agg = DataFrame.empty("a", "b", "c")
+                .cols().agg(
+                        $int("a").variance(false),
+                        $double("b").variance(false),
+                        $decimal("c").variance(false));
+
+        new DataFrameAsserts(agg, "variance(a)", "variance(b)", "variance(c)")
+                .expectHeight(1)
+                .expectRow(0, Double.NaN, Double.NaN, null);
+    }
+
+    @Test
+    public void population_empty() {
+        DataFrame agg = DataFrame.empty("a", "b", "c")
+                .cols().agg(
+                        $int("a").variance(true),
+                        $double("b").variance(true),
+                        $decimal("c").variance(true));
+
+        new DataFrameAsserts(agg, "variance(a)", "variance(b)", "variance(c)")
+                .expectHeight(1)
+                .expectRow(0, Double.NaN, Double.NaN, null);
+    }
+
+    @Test
+    public void sample_one() {
+        DataFrame agg = DataFrame.foldByRow("a", "b", "c").of(20, 10.1, new BigDecimal("12.34"))
+                .cols().agg(
+                        $int("a").variance(false),
+                        $double("b").variance(false),
+                        $decimal("c").variance(false));
+
+        new DataFrameAsserts(agg, "variance(a)", "variance(b)", "variance(c)")
+                .expectHeight(1)
+                .expectRow(0, Double.NaN, Double.NaN, null);
+    }
+
+    @Test
+    public void population_one() {
+        DataFrame agg = DataFrame.foldByRow("a", "b", "c").of(20, 10.1, new BigDecimal("12.34"))
+                .cols().agg(
+                        $int("a").variance(true),
+                        $double("b").variance(true),
+                        $decimal("c").variance(true));
+
+        new DataFrameAsserts(agg, "variance(a)", "variance(b)", "variance(c)")
+                .expectHeight(1)
+                .expectRow(0, 0., 0., BigDecimal.ZERO);
+    }
+
+    @Test
     public void population_implicit() {
         DataFrame agg = df.cols().agg(
                 $int("a").variance(),

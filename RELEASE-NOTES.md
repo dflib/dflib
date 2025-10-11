@@ -2,6 +2,7 @@
 
 * #532 Can not expand collections with QL
 * #539 Consistently return "long" when summing ints
+* #540 Edge conditions for variance and stdDev
 
 ## Release 2.0.0-M4
 

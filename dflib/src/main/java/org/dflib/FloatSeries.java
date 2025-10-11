@@ -1,5 +1,6 @@
 package org.dflib;
 
+import org.dflib.agg.Variance;
 import org.dflib.builder.BoolBuilder;
 import org.dflib.f.FloatPredicate;
 import org.dflib.op.ReplaceOp;
@@ -369,7 +370,7 @@ public interface FloatSeries extends Series<Float> {
     float quantile(double q);
 
     /**
-     * Compute the standard deviation
+     * Computes the standard deviation
      *
      * @param usePopulationStdDev Use the Population variant if true, Sample variant if false
      */
@@ -379,33 +380,23 @@ public interface FloatSeries extends Series<Float> {
     }
 
     /**
-     * Compute the standard deviation, using the population variant
+     * Computes the standard deviation, using the population variant
      */
     default double stdDev() {
         return stdDev(true);
     }
 
     /**
-     * Compute the variance
+     * Computes the variance
      *
      * @param usePopulationVariance Use the Population variant if true, Sample variant if false
      */
     default double variance(boolean usePopulationVariance) {
-        int len = size();
-        float avg = avg();
-        double denominator = usePopulationVariance ? len : len - 1;
-
-        double acc = 0;
-        for (int i = 0; i < len; i++) {
-            float x = this.getFloat(i);
-            acc += (x - avg) * (x - avg);
-        }
-
-        return acc / denominator;
+        return Variance.ofFloatSeries(this, usePopulationVariance);
     }
 
     /**
-     * Compute the variance, using the population variant.
+     * Computes the variance, using the population variant.
      */
     default double variance() {
         return variance(true);

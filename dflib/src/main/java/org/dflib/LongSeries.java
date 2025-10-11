@@ -1,5 +1,6 @@
 package org.dflib;
 
+import org.dflib.agg.Variance;
 import org.dflib.builder.BoolBuilder;
 import org.dflib.op.ReplaceOp;
 import org.dflib.series.FalseSeries;
@@ -400,17 +401,7 @@ public interface LongSeries extends Series<Long> {
      * @param usePopulationVariance Use the Population variant if true, Sample variant if false
      */
     default double variance(boolean usePopulationVariance) {
-        int len = size();
-        double avg = avg();
-        double denominator = usePopulationVariance ? len : len - 1;
-
-        double acc = 0;
-        for (int i = 0; i < len; i++) {
-            final double x = this.getLong(i);
-            acc += (x - avg) * (x - avg);
-        }
-
-        return acc / denominator;
+        return Variance.ofLongSeries(this, usePopulationVariance);
     }
 
     /**
