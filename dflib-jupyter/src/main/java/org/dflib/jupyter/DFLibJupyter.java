@@ -74,6 +74,7 @@ public class DFLibJupyter {
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public static void setMaxDisplayColumnWidth(int w) {
+        System.err.println("'DFLibJupyter.setMaxDisplayColumnWidth(int)' is deprecated in favor of 'setMaxDisplayValueWidth(int)'");
         instance.printer.setMaxDisplayValueWidth(w);
     }
 
