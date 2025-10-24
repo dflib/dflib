@@ -71,7 +71,8 @@ sorterArray returns [Sorter[] sorters]
  * An expression represents a single value or a combination of values, operators, and functions.
  */
 expression returns [Exp<?> exp]
-    : boolExp { $exp = $boolExp.exp; }
+    : PARAMETER { $exp = val(paramSource.next()); }
+    | boolExp { $exp = $boolExp.exp; }
     | numExp { $exp = $numExp.exp; }
     | strExp { $exp = $strExp.exp; }
     | temporalExp { $exp = $temporalExp.exp; }

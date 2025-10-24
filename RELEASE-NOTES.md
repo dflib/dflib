@@ -5,6 +5,7 @@
 * #539 Consistently return "long" when summing ints
 * #540 Edge conditions for variance and stdDev
 * #541 Support for variance and stdDev functions for $bigint
+* #544 QL: can not use parameter where a single column or val 
 
 ## Release 2.0.0-M4
 

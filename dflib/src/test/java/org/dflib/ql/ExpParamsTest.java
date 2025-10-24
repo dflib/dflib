@@ -22,6 +22,12 @@ public class ExpParamsTest {
         assertEquals(expected, exp);
     }
 
+    @ParameterizedTest
+    @MethodSource
+    void invalidParameterizedExpression(String text, Object[] args) {
+        assertThrows(QLParserException.class, () -> parseExp(text, args));
+    }
+
     static Stream<Arguments> parameterizedExpression() {
         return Stream.of(
                 arguments(
@@ -29,7 +35,48 @@ public class ExpParamsTest {
                         new Object[]{true},
                         $boolVal(true)
                 ),
+                arguments(
+                        "?",
+                        new Object[]{1},
+                        $intVal(1)
+                ),
+                arguments(
+                        "?",
+                        new Object[]{"abc"},
+                        $strVal("abc")
+                ),
 
+                arguments(
+                        "? = 1",
+                        new Object[]{1},
+                        $intVal(1).eq($intVal(1))
+                ),
+                arguments(
+                        "? = true",
+                        new Object[]{true},
+                        $boolVal(true).eq($boolVal(true))
+                ),
+                arguments(
+                        "? = 'bca'",
+                        new Object[]{"abc"},
+                        $strVal("abc").eq($strVal("bca"))
+                ),
+
+                arguments(
+                        "? as col",
+                        new Object[]{false},
+                        $boolVal(false).as("col")
+                ),
+                arguments(
+                        "? as col",
+                        new Object[]{1},
+                        $intVal(1).as("col")
+                ),
+                arguments(
+                        "? as col",
+                        new Object[]{'c'},
+                        $val('c').as("col")
+                ),
                 arguments(
                         "a = ?",
                         new Object[]{'c'},
@@ -46,6 +93,17 @@ public class ExpParamsTest {
                         new Object[]{1L},
                         $int(1).gt($longVal(1L))
                 ),
+                arguments(
+                        "int(1) > ?",
+                        new Object[]{1.1f},
+                        $int(1).gt($floatVal(1.1f))
+                ),
+                arguments(
+                        "float(1) > ?",
+                        new Object[]{1.1f},
+                        $float(1).gt($floatVal(1.1f))
+                ),
+
                 arguments(
                         "str(b) != ?",
                         new Object[]{"abc"},
@@ -134,6 +192,29 @@ public class ExpParamsTest {
                         $int(1).gt($longVal(1L))
                                 .and($str("b").ne($strVal("abc")))
                                 .or($bool("c").ne($boolVal(true)))
+                )
+        );
+    }
+
+    public static Stream<Arguments> invalidParameterizedExpression() {
+        return Stream.of(
+                // unsupported dynamic column name
+                arguments(
+                        "int(?) > 1",
+                        new Object[]{"abc"}
+                ),
+                // relations with the wrong type
+                arguments(
+                        "? = 1",
+                        new Object[]{true}
+                ),
+                arguments(
+                        "? = true",
+                        new Object[]{1}
+                ),
+                arguments(
+                        "? = 'abc'",
+                        new Object[]{123}
                 )
         );
     }
