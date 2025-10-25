@@ -46,6 +46,9 @@ will need to change it to `DataFrame.stack().select()`.
 * [dflib #539](https://github.com/dflib/dflib/issues/539): `sum(int(col))` expression now produces a `long` instead of
 an `int`. This may change the type of numeric return values in group by and window expressions. 
 
+* [dflib #546](https://github.com/dflib/dflib/issues/546): If you are using DFLib in Jupyter with JJava kernel, the
+minimal supported kernel version is `1.0-a6`. You will need to upgrade the kernel if you are on an earlier version.
+
 ## 1.1.0
 
 * [dflib #362](https://github.com/dflib/dflib/issues/362): Due to the changes in the aggregated column name generation algorithm, default aggregated column names are no longer equal to aggregation source column names. E.g. `$int("a").first()` would previously be called `a`, and now is called `first(a)`. This may cause an exception like the following: `java.lang.IllegalArgumentException: Value 'my_column' is not present in the Index`. To address this, you will need to either explicitly name your columns when specifying a column set (e.g., `df.group("a").cols("a", ...)`) or use `as` on a column-generating  expression  (e.g., `$int("a").first().as("a")`)

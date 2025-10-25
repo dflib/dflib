@@ -3,6 +3,7 @@ package org.dflib.jupyter;
 import org.dflib.DataFrame;
 import org.dflib.Series;
 import org.dflib.echarts.EChartHtml;
+import org.dflib.jjava.jupyter.Extension;
 import org.dflib.jjava.jupyter.kernel.BaseKernel;
 import org.dflib.jjava.jupyter.kernel.display.RenderFunction;
 import org.dflib.jjava.jupyter.kernel.display.Renderer;
@@ -12,52 +13,60 @@ import org.dflib.jupyter.render.EChartRenderer;
 import org.dflib.jupyter.render.MutableTabularPrinter;
 import org.dflib.jupyter.render.SeriesRenderer;
 
+import java.util.Objects;
+
 /**
- * A bridge between DFLib and Jupyter notebook environment. Bootstraps DFLib renderers into a Jupyter notebook under
- * one of the "jupyter-jvm-basekernel" kernels, like JJava. Usage:
- *
- * <pre>
- * %maven org.dflib:dflib-jupyter:x.x
- * DFLibJupyter.init(getKernelInstance());
- * </pre>
+ * A bridge between DFLib and Jupyter notebook environment, specifically JJava (or compatible) kernel. It should be
+ * automatically loaded by JJava kernel using the {@link Extension} loading mechanism and will initialize DFLib
+ * renderers into a notebook. It also provide explicit API to control notebook display defaults for DataFrames and
+ * Series.
  */
-public class DFLibJupyter {
+public class DFLibJupyter implements Extension {
+
+    private static final String STARTUP_SCRIPT = "" +
+            "import org.dflib.*;\n" +
+            "import org.dflib.http.*;\n" +
+            "import org.dflib.fs.*;\n" +
+            "import org.dflib.zip.*;\n" +
+            "import org.dflib.avro.*;\n" +
+            "import org.dflib.csv.*;\n" +
+            "import org.dflib.echarts.*;\n" +
+            "import org.dflib.excel.*;\n" +
+            "import org.dflib.jdbc.*;\n" +
+            "import org.dflib.json.*;\n" +
+            "import org.dflib.jupyter .*;\n" +
+            "import org.dflib.parquet.*;" +
+            "import static org.dflib.Exp.*;\n";
 
     private static DFLibJupyter instance;
 
-    private MutableTabularPrinter printer;
+    private final MutableTabularPrinter printer;
 
-    public DFLibJupyter(MutableTabularPrinter printer) {
-        this.printer = printer;
+    public DFLibJupyter() {
+        // not passing explicit display parameters, relying on DFLib defaults instead
+        this.printer = new MutableTabularPrinter();
     }
 
     /**
-     * This method should be explicitly invoked in the notebook to connect DFLib extensions to Jupyter environment.
+     * @deprecated in favor of Jupyter lifecycle-aware {@link #install(BaseKernel)}
      */
-    // While this method may show as unused in an IDE, it is called inside the script in DFLibJupyterExtension
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static void init(BaseKernel kernel) {
-
-        // not passing explicit display parameters, relying on DFLib defaults instead
-        MutableTabularPrinter printer = new MutableTabularPrinter();
-
-        DFLibJupyter jupyterBridge = new DFLibJupyter(printer);
-        jupyterBridge.doInit(kernel);
-
-        DFLibJupyter.instance = jupyterBridge;
+        System.err.println("'DFLibJupyter.init(BaseKernel)' is deprecated and does nothing. DFLibJupyter should be loaded as a JJava Extension");
     }
 
     /**
      * Configures notebook DFLib printer's max number of display rows for a DataFrame or Series.
      */
     public static void setMaxDisplayRows(int rows) {
-        instance.printer.setMaxDisplayRows(rows);
+        nonNullInstance().printer.setMaxDisplayRows(rows);
     }
 
     /**
      * Configures notebook DFLib printer's max number of display rows for a DataFrame or Series.
      */
     public static void setMaxDisplayCols(int cols) {
-        instance.printer.setMaxDisplayCols(cols);
+        nonNullInstance().printer.setMaxDisplayCols(cols);
     }
 
     /**
@@ -66,7 +75,7 @@ public class DFLibJupyter {
      * @since 2.0.0
      */
     public static void setMaxDisplayValueWidth(int w) {
-        instance.printer.setMaxDisplayValueWidth(w);
+        nonNullInstance().printer.setMaxDisplayValueWidth(w);
     }
 
     /**
@@ -75,10 +84,35 @@ public class DFLibJupyter {
     @Deprecated(since = "2.0.0", forRemoval = true)
     public static void setMaxDisplayColumnWidth(int w) {
         System.err.println("'DFLibJupyter.setMaxDisplayColumnWidth(int)' is deprecated in favor of 'setMaxDisplayValueWidth(int)'");
-        instance.printer.setMaxDisplayValueWidth(w);
+        nonNullInstance().printer.setMaxDisplayValueWidth(w);
     }
 
-    private void doInit(BaseKernel kernel) {
+    private static DFLibJupyter nonNullInstance() {
+        return Objects.requireNonNull(
+                DFLibJupyter.instance,
+                "DFLibJupyter was not initialized. It was either called outside of the notebook lifecycle, or kernel extension loading is disabled");
+    }
+
+    @Override
+    public void install(BaseKernel kernel) {
+
+        if (DFLibJupyter.instance != null) {
+            throw new IllegalStateException("DFLibJupyter was already initialized within the notebook");
+        }
+
+        installRenderers(kernel);
+        DFLibJupyter.instance = this;
+        kernel.eval(STARTUP_SCRIPT);
+    }
+
+    @Override
+    public void uninstall(BaseKernel kernel) {
+        // TODO: remove renderers from the kernel?
+        DFLibJupyter.instance = null;
+    }
+
+    private void installRenderers(BaseKernel kernel) {
+
         RenderFunction<EChartHtml> echartHtmlRenderer = new EChartRenderer();
         RenderFunction<DataFrame> dfRenderer = new DataFrameRenderer(printer);
         RenderFunction<Series> seriesRenderer = new SeriesRenderer(printer);

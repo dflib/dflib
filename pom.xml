@@ -62,7 +62,8 @@
         <mustache.version>0.9.10</mustache.version>
         <parquet.version>1.15.2</parquet.version>
         <hadoop.version>3.4.1</hadoop.version>
-        <jjava.version>1.0-a5</jjava.version>
+
+        <jjava.version>1.0-a6</jjava.version>
         <mysql.version>9.1.0</mysql.version>
         <antlr4.version>4.13.2</antlr4.version>
 
@@ -89,7 +90,7 @@
         <dependencies>
             <dependency>
                 <groupId>org.dflib.jjava</groupId>
-                <artifactId>jupyter-jvm-basekernel</artifactId>
+                <artifactId>jjava-jupyter</artifactId>
                 <version>${jjava.version}</version>
             </dependency>
             <dependency>

@@ -65,7 +65,7 @@
         <!-- Provided dependencies -->
         <dependency>
             <groupId>org.dflib.jjava</groupId>
-            <artifactId>jupyter-jvm-basekernel</artifactId>
+            <artifactId>jjava-jupyter</artifactId>
             <scope>provided</scope>
         </dependency>
 

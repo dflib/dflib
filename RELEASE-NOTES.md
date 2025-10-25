@@ -6,6 +6,7 @@
 * #540 Edge conditions for variance and stdDev
 * #541 Support for variance and stdDev functions for $bigint
 * #544 QL: can not use parameter where a single column or val 
+* #546 Upgrade to JJava 1.0-a6
 
 ## Release 2.0.0-M4
 
