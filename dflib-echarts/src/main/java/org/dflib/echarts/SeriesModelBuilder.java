@@ -26,6 +26,8 @@ class SeriesModelBuilder {
     List<Integer> yDimensions;
     Integer pieLabelsDimension;
     Integer symbolSizeDimension;
+    Integer itemStyleColorDimension;
+
     // TODO: tooltip dimension, etc.
 
     String datasetSeriesLayoutBy;
@@ -66,6 +68,11 @@ class SeriesModelBuilder {
 
     public SeriesModelBuilder symbolSizeDimension(int dim) {
         this.symbolSizeDimension = dim;
+        return this;
+    }
+
+    public SeriesModelBuilder itemStyleColorDimension(int dim) {
+        this.itemStyleColorDimension = dim;
         return this;
     }
 
@@ -125,7 +132,7 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
-                so.itemStyle != null ? so.itemStyle.resolve() : null,
+                so.itemStyle != null ? so.itemStyle.resolve(itemStyleColorDimension) : null,
                 null
         );
     }
@@ -145,7 +152,7 @@ class SeriesModelBuilder {
                 null,
                 so.smooth,
                 // TODO: ugly due to possible dimension linking
-                symbolSizeDimension != null ? ValOrColumn.resolveAsFunction(symbolSizeDimension)
+                symbolSizeDimension != null ? ValOrColumn.jsFunctionWithArrayParam(symbolSizeDimension)
                         : (so.symbolSize != null ? ValOrColumn.resolveAsVal(so.symbolSize.val) : null),
                 so.xAxisIndex,
                 so.yAxisIndex,
@@ -155,7 +162,7 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
-                so.itemStyle != null ? so.itemStyle.resolve() : null,
+                so.itemStyle != null ? so.itemStyle.resolve(itemStyleColorDimension) : null,
                 so.lineStyle != null ? so.lineStyle.resolve() : null
         );
     }
@@ -175,7 +182,7 @@ class SeriesModelBuilder {
                 null,
                 null,
                 // TODO: ugly due to possible dimension linking
-                symbolSizeDimension != null ? ValOrColumn.resolveAsFunction(symbolSizeDimension)
+                symbolSizeDimension != null ? ValOrColumn.jsFunctionWithArrayParam(symbolSizeDimension)
                         : (so.symbolSize != null ? ValOrColumn.resolveAsVal(so.symbolSize.val) : null),
                 so.xAxisIndex,
                 so.yAxisIndex,
@@ -185,7 +192,7 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
-                so.itemStyle != null ? so.itemStyle.resolve() : null,
+                so.itemStyle != null ? so.itemStyle.resolve(itemStyleColorDimension) : null,
                 null
         );
     }

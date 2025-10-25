@@ -35,6 +35,7 @@ class DatasetBuilder {
         DatasetBuilder dsb = new DatasetBuilder(dataFrame);
         appendXAxesLabels(dsb, opt.xAxes);
         appendSymbolSizes(dsb, opt.seriesOpts);
+        appendItemStyleColors(dsb, opt.seriesOpts);
         appendPieChartLabels(dsb, opt.seriesOpts);
         appendDatasetRows(dsb, opt.seriesDataColumns);
 
@@ -82,6 +83,35 @@ class DatasetBuilder {
                     dsb.appendExtraRow(dsb.dataFrame.getColumn(sso.symbolSize.column), DatasetRowType.symbolSize, i);
                 }
             }
+        }
+    }
+
+    private static void appendItemStyleColors(DatasetBuilder dsb, List<SeriesOpts<?>> series) {
+        int len = series.size();
+        for (int i = 0; i < len; i++) {
+
+            ValOrColumn<String> color = itemStyleColor(series.get(i));
+            if (color != null && color.column != null) {
+                // TODO: appending X data as a Series to prevent column reuse. Two problems with reuse:
+                //  1. https://github.com/apache/echarts/issues/20330
+                //  2. The row type may change, and we won't detect that it is a label (this is fixable in DFLib by allowing multiple row types)
+                dsb.appendExtraRow(dsb.dataFrame.getColumn(color.column), DatasetRowType.itemStyleColor, i);
+            }
+        }
+    }
+
+    private static ValOrColumn<String> itemStyleColor(SeriesOpts<?> opts) {
+        if (opts instanceof LineSeriesOpts) {
+            LineSeriesOpts so = (LineSeriesOpts) opts;
+            return so.itemStyle != null ? so.itemStyle.color : null;
+        } else if (opts instanceof BarSeriesOpts) {
+            BarSeriesOpts so = (BarSeriesOpts) opts;
+            return so.itemStyle != null ? so.itemStyle.color : null;
+        } else if (opts instanceof ScatterSeriesOpts) {
+            ScatterSeriesOpts so = (ScatterSeriesOpts) opts;
+            return so.itemStyle != null ? so.itemStyle.color : null;
+        } else {
+            return null;
         }
     }
 
@@ -200,7 +230,7 @@ class DatasetBuilder {
     }
 
     enum DatasetRowType {
-        xAxisLabels, symbolSize, pieItemName, seriesData
+        xAxisLabels, symbolSize, itemStyleColor, pieItemName, seriesData
     }
 
     static class DatasetRow {

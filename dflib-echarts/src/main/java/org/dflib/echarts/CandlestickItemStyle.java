@@ -56,7 +56,7 @@ public class CandlestickItemStyle {
 
     ItemStyleModel resolve() {
         return new ItemStyleModel(
-                color,
+                color != null ? "'" + color + "'" : null,
                 color0,
                 borderColor,
                 borderColor0,

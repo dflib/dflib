@@ -66,4 +66,30 @@ public class BarSeriesTest {
         assertTrue(s2.contains("borderType: 'dotted'"), s2);
         assertTrue(s2.contains("opacity: 0.55"), s2);
     }
+
+    @Test
+    public void itemStyleDynamicColor() {
+
+        BarItemStyle style = BarItemStyle.of()
+                .colorData("y2")
+                .borderColor("#eeeeeee")
+                .borderWidth(2)
+                .borderRadius(6, 5, 4, 7)
+                .borderType(LineType.dotted)
+                .opacity(0.55);
+
+        String s1 = ECharts.chart().series(SeriesOpts.ofBar(), "y1").plot(df2, "_tid").getChartScript();
+        assertFalse(s1.contains("itemStyle"), s1);
+
+        String s2 = ECharts.chart().series(SeriesOpts.ofBar().itemStyle(style), "y1").plot(df2, "_tid").getChartScript();
+
+        assertTrue(s2.contains("type: 'bar'"), s2);
+        assertTrue(s2.contains("itemStyle"), s2);
+        assertTrue(s2.contains("color: function (o) { return o.data[1]; },"), s2);
+        assertTrue(s2.contains("borderColor: '#eeeeeee',"), s2);
+        assertTrue(s2.contains("borderRadius: [6,5,4,7],"), s2);
+        assertTrue(s2.contains("borderWidth: 2,"), s2);
+        assertTrue(s2.contains("borderType: 'dotted'"), s2);
+        assertTrue(s2.contains("opacity: 0.55"), s2);
+    }
 }

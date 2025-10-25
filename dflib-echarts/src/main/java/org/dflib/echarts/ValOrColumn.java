@@ -19,9 +19,14 @@ public class ValOrColumn<T> {
         return new ValOrColumn<>(null, dataColumn);
     }
 
-    static String resolveAsFunction(Integer dimension) {
-        return "function (val) { return val[" + dimension + "]; }";
+    static String jsFunctionWithArrayParam(Integer dimension) {
+        return "function (vals) { return vals[" + dimension + "]; }";
     }
+
+    static String jsFunctionWithObjectParam(Integer dimension) {
+        return "function (o) { return o.data[" + dimension + "]; }";
+    }
+
 
     static <T> String resolveAsVal(T val) {
         return val != null ? String.valueOf(val) : null;

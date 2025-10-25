@@ -95,6 +95,9 @@ class SeriesModelBuilders {
                 case symbolSize:
                     series.get(row.pos).symbolSizeDimension(i);
                     break;
+                case itemStyleColor:
+                    series.get(row.pos).itemStyleColorDimension(i);
+                    break;
                 case pieItemName:
                     series.get(row.pos).pieLabelsDimension(i);
                     break;

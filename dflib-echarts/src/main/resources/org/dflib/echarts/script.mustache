@@ -358,7 +358,7 @@ var chart_{{id}} = echarts.init(
             {{#itemStyle}}
                 itemStyle: {
                 {{#color}}
-                    color: '{{.}}',
+                    color: {{{.}}},
                 {{/color}}
                 {{#color0}}
                     color0: '{{.}}',

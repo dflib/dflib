@@ -24,7 +24,7 @@ public class ScatterSeriesTest {
         String s1 = ECharts.chart()
                 .series(SeriesOpts.ofScatter().symbolSize("y2"), "y1")
                 .plot(df2, "_tid").getChartScript();
-        assertTrue(s1.contains("symbolSize: function (val) { return val[1]; },"), s1);
+        assertTrue(s1.contains("symbolSize: function (vals) { return vals[1]; },"), s1);
     }
 
     @Test
@@ -44,6 +44,29 @@ public class ScatterSeriesTest {
 
         assertTrue(s2.contains("itemStyle"), s2);
         assertTrue(s2.contains("color: '#ffffff',"), s2);
+        assertTrue(s2.contains("borderColor: '#eeeeeee',"), s2);
+        assertTrue(s2.contains("borderWidth: 2,"), s2);
+        assertTrue(s2.contains("borderType: 'dotted'"), s2);
+        assertTrue(s2.contains("opacity: 0.55"), s2);
+    }
+
+    @Test
+    public void itemStyleDynamicColor() {
+
+        ScatterItemStyle style = ScatterItemStyle.of()
+                .colorData("y2")
+                .borderColor("#eeeeeee")
+                .borderWidth(2)
+                .borderType(LineType.dotted)
+                .opacity(0.55);
+
+        String s1 = ECharts.chart().series(SeriesOpts.ofScatter(), "y1").plot(df2, "_tid").getChartScript();
+        assertFalse(s1.contains("itemStyle"), s1);
+
+        String s2 = ECharts.chart().series(SeriesOpts.ofScatter().itemStyle(style), "y1").plot(df2, "_tid").getChartScript();
+
+        assertTrue(s2.contains("itemStyle"), s2);
+        assertTrue(s2.contains("color: function (o) { return o.data[1]; },"), s2);
         assertTrue(s2.contains("borderColor: '#eeeeeee',"), s2);
         assertTrue(s2.contains("borderWidth: 2,"), s2);
         assertTrue(s2.contains("borderType: 'dotted'"), s2);

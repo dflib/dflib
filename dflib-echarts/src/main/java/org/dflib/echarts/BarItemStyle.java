@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
  */
 public class BarItemStyle {
 
-    private String color;
+    ValOrColumn<String> color;
     private String borderColor;
     private Integer borderWidth;
     private LineType borderType;
@@ -23,7 +23,18 @@ public class BarItemStyle {
     }
 
     public BarItemStyle color(String color) {
-        this.color = color;
+        this.color = ValOrColumn.ofVal(color);
+        return this;
+    }
+
+    /**
+     * Will generate style color using a dynamic value coming from the specified DataFrame column, essentially
+     * providing an extra visual dimension.
+     *
+     * @since 2.0.0
+     */
+    public BarItemStyle colorData(String colorDataColumn) {
+        this.color = ValOrColumn.ofDataColumn(colorDataColumn);
         return this;
     }
 
@@ -59,11 +70,15 @@ public class BarItemStyle {
         return this;
     }
 
-    ItemStyleModel resolve() {
+    ItemStyleModel resolve(Integer symbolSizeColorDimension) {
 
         String borderRadius = singleBorderRadius != null
                 ? String.valueOf(singleBorderRadius)
                 : (fourBorderRadius != null ? IntStream.of(fourBorderRadius).mapToObj(String::valueOf).collect(Collectors.joining(",", "[", "]")) : null);
+
+        String color = this.color != null
+                ? (this.color.val != null ? "'" + this.color.val + "'" : ValOrColumn.jsFunctionWithObjectParam(symbolSizeColorDimension))
+                : null;
 
         return new ItemStyleModel(
                 color,

@@ -7,7 +7,7 @@ import org.dflib.echarts.render.option.series.ItemStyleModel;
  */
 public class ScatterItemStyle {
 
-    private String color;
+    ValOrColumn<String> color;
     private String borderColor;
     private Integer borderWidth;
     private LineType borderType;
@@ -18,7 +18,18 @@ public class ScatterItemStyle {
     }
 
     public ScatterItemStyle color(String color) {
-        this.color = color;
+        this.color = ValOrColumn.ofVal(color);
+        return this;
+    }
+
+    /**
+     * Will generate style color using a dynamic value coming from the specified DataFrame column, essentially
+     * providing an extra visual dimension.
+     *
+     * @since 2.0.0
+     */
+    public ScatterItemStyle colorData(String colorDataColumn) {
+        this.color = ValOrColumn.ofDataColumn(colorDataColumn);
         return this;
     }
 
@@ -42,7 +53,11 @@ public class ScatterItemStyle {
         return this;
     }
 
-    ItemStyleModel resolve() {
+    ItemStyleModel resolve(Integer symbolSizeColorDimension) {
+        String color = this.color != null
+                ? (this.color.val != null ? "'" + this.color.val + "'" : ValOrColumn.jsFunctionWithObjectParam(symbolSizeColorDimension))
+                : null;
+
         return new ItemStyleModel(
                 color,
                 null,

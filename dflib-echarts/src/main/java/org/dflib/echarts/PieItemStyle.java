@@ -59,7 +59,7 @@ public class PieItemStyle {
 
     ItemStyleModel resolve() {
         return new ItemStyleModel(
-                color,
+                color != null ? "'" + color + "'" : null,
                 null,
                 borderColor,
                 null,
