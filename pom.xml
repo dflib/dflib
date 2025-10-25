@@ -53,15 +53,17 @@
         <testcontainers.version>1.20.4</testcontainers.version>
         <junit5.version>5.11.3</junit5.version>
         <jsonpath.version>2.9.0</jsonpath.version>
-        <avro.version>1.12.0</avro.version>
+        <avro.version>1.12.1</avro.version>
         <jackson.version>2.15.4</jackson.version>
         <jackson.databind.version>2.15.4</jackson.databind.version>
         <poi.version>5.4.1</poi.version>
         <commons.csv.version>1.11.0</commons.csv.version>
-        <commons.compress.version>1.27.1</commons.compress.version>
+        <commons.compress.version>1.28.0</commons.compress.version>
+        <commons.lang3.version>3.19.0</commons.lang3.version>
         <mustache.version>0.9.10</mustache.version>
         <parquet.version>1.15.2</parquet.version>
-        <hadoop.version>3.4.1</hadoop.version>
+        <hadoop.version>3.4.2</hadoop.version>
+        <json.smart.version>2.6.0</json.smart.version>
 
         <jjava.version>1.0-a6</jjava.version>
         <mysql.version>9.1.0</mysql.version>
@@ -181,6 +183,11 @@
                 <version>${jsonpath.version}</version>
             </dependency>
             <dependency>
+                <groupId>net.minidev</groupId>
+                <artifactId>json-smart</artifactId>
+                <version>${json.smart.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro</artifactId>
                 <version>${avro.version}</version>
@@ -217,6 +224,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
                 <version>${commons.compress.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons.lang3.version}</version>
             </dependency>
 
             <dependency>
