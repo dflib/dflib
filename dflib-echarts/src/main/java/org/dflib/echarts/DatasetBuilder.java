@@ -67,19 +67,19 @@ class DatasetBuilder {
 
             if (opts instanceof LineSeriesOpts) {
                 LineSeriesOpts sso = (LineSeriesOpts) opts;
-                if (sso.symbolSize != null && sso.symbolSize.symbolSizeColumn != null) {
+                if (sso.symbolSize != null && sso.symbolSize.column != null) {
                     // TODO: appending X data as a Series to prevent column reuse. Two problems with reuse:
                     //  1. https://github.com/apache/echarts/issues/20330
                     //  2. The row type may change, and we won't detect that it is a label (this is fixable in DFLib by allowing multiple row types)
-                    dsb.appendRow(dsb.dataFrame.getColumn(sso.symbolSize.symbolSizeColumn), DatasetRowType.symbolSize, i);
+                    dsb.appendRow(dsb.dataFrame.getColumn(sso.symbolSize.column), DatasetRowType.symbolSize, i);
                 }
             } else if (opts instanceof ScatterSeriesOpts) {
                 ScatterSeriesOpts sso = (ScatterSeriesOpts) opts;
-                if (sso.symbolSize != null && sso.symbolSize.symbolSizeColumn != null) {
+                if (sso.symbolSize != null && sso.symbolSize.column != null) {
                     // TODO: appending X data as a Series to prevent column reuse. Two problems with reuse:
                     //  1. https://github.com/apache/echarts/issues/20330
                     //  2. The row type may change, and we won't detect that it is a label (this is fixable in DFLib by allowing multiple row types)
-                    dsb.appendRow(dsb.dataFrame.getColumn(sso.symbolSize.symbolSizeColumn), DatasetRowType.symbolSize, i);
+                    dsb.appendRow(dsb.dataFrame.getColumn(sso.symbolSize.column), DatasetRowType.symbolSize, i);
                 }
             }
         }

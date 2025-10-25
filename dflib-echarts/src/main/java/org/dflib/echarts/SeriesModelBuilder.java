@@ -145,8 +145,8 @@ class SeriesModelBuilder {
                 null,
                 so.smooth,
                 // TODO: ugly due to possible dimension linking
-                symbolSizeDimension != null ? SymbolSize.resolveAsFunction(symbolSizeDimension)
-                        : (so.symbolSize != null ? SymbolSize.resolveAsFixedSize(so.symbolSize.symbolSize) : null),
+                symbolSizeDimension != null ? ValOrColumn.resolveAsFunction(symbolSizeDimension)
+                        : (so.symbolSize != null ? ValOrColumn.resolveAsVal(so.symbolSize.val) : null),
                 so.xAxisIndex,
                 so.yAxisIndex,
                 null,
@@ -175,8 +175,8 @@ class SeriesModelBuilder {
                 null,
                 null,
                 // TODO: ugly due to possible dimension linking
-                symbolSizeDimension != null ? SymbolSize.resolveAsFunction(symbolSizeDimension)
-                        : (so.symbolSize != null ? SymbolSize.resolveAsFixedSize(so.symbolSize.symbolSize) : null),
+                symbolSizeDimension != null ? ValOrColumn.resolveAsFunction(symbolSizeDimension)
+                        : (so.symbolSize != null ? ValOrColumn.resolveAsVal(so.symbolSize.val) : null),
                 so.xAxisIndex,
                 so.yAxisIndex,
                 null,
