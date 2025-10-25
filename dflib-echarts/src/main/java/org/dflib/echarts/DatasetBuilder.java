@@ -211,44 +211,12 @@ class DatasetBuilder {
     static class DatasetRow {
         final Series<?> data;
         final DatasetRowType type;
-        final int xAxisIndex;
-        final int symbolSizeIndex;
-        final int pieSeriesIndex;
-        final int seriesIndex;
+        final int pos;
 
         DatasetRow(Series<?> data, DatasetRowType type, int pos) {
-
             this.type = type;
             this.data = data;
-
-            switch (type) {
-                case pieItemName:
-                    this.pieSeriesIndex = pos;
-                    this.xAxisIndex = -1;
-                    this.symbolSizeIndex = -1;
-                    this.seriesIndex = -1;
-                    break;
-                case seriesData:
-                    this.pieSeriesIndex = -1;
-                    this.xAxisIndex = -1;
-                    this.symbolSizeIndex = -1;
-                    this.seriesIndex = pos;
-                    break;
-                case xAxisLabels:
-                    this.pieSeriesIndex = -1;
-                    this.xAxisIndex = pos;
-                    this.symbolSizeIndex = -1;
-                    this.seriesIndex = -1;
-                    break;
-                case symbolSize:
-                    this.pieSeriesIndex = -1;
-                    this.xAxisIndex = -1;
-                    this.symbolSizeIndex = pos;
-                    this.seriesIndex = -1;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unsupported dataset row type: " + type);
-            }
+            this.pos = pos;
         }
     }
 }

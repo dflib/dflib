@@ -79,24 +79,24 @@ class SeriesModelBuilders {
 
                     // we are laying out DataFrame series as horizontal rows that are somewhat more readable when
                     // laid out in JS
-                    series.get(row.seriesIndex).datasetSeriesLayoutBy("row");
+                    series.get(row.pos).datasetSeriesLayoutBy("row");
 
                     // multiple dimensions can be appended to the same series in a loops
-                    series.get(row.seriesIndex).yDimension(i);
+                    series.get(row.pos).yDimension(i);
 
                     break;
                 case xAxisLabels:
                     for (SeriesModelBuilder sb : series) {
-                        if (xAxisIndex(sb.seriesOpts()) == row.xAxisIndex) {
+                        if (xAxisIndex(sb.seriesOpts()) == row.pos) {
                             sb.xDimension(i);
                         }
                     }
                     break;
                 case symbolSize:
-                    series.get(row.symbolSizeIndex).symbolSizeDimension(i);
+                    series.get(row.pos).symbolSizeDimension(i);
                     break;
                 case pieItemName:
-                    series.get(row.pieSeriesIndex).pieLabelsDimension(i);
+                    series.get(row.pos).pieLabelsDimension(i);
                     break;
             }
         }
