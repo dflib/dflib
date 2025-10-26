@@ -7,7 +7,7 @@ import org.dflib.echarts.render.option.series.ItemStyleModel;
  */
 public class ScatterItemStyle {
 
-    ValOrColumn<String> color;
+    ValOrSeries<String> color;
     private String borderColor;
     private Integer borderWidth;
     private LineType borderType;
@@ -18,7 +18,7 @@ public class ScatterItemStyle {
     }
 
     public ScatterItemStyle color(String color) {
-        this.color = ValOrColumn.ofVal(color);
+        this.color = ValOrSeries.ofVal(color);
         return this;
     }
 
@@ -29,7 +29,7 @@ public class ScatterItemStyle {
      * @since 2.0.0
      */
     public ScatterItemStyle colorData(String colorDataColumn) {
-        this.color = ValOrColumn.ofDataColumn(colorDataColumn);
+        this.color = ValOrSeries.ofSeries(colorDataColumn);
         return this;
     }
 
@@ -55,7 +55,7 @@ public class ScatterItemStyle {
 
     ItemStyleModel resolve(Integer symbolSizeColorDimension) {
         String color = this.color != null
-                ? (this.color.val != null ? "'" + this.color.val + "'" : ValOrColumn.jsFunctionWithObjectParam(symbolSizeColorDimension))
+                ? (this.color.isVal() ? this.color.valQuotedString() : ValOrSeries.jsFunctionWithObjectParam(symbolSizeColorDimension))
                 : null;
 
         return new ItemStyleModel(

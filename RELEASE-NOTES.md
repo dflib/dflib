@@ -5,6 +5,7 @@
 * #539 Consistently return "long" when summing ints
 * #540 Edge conditions for variance and stdDev
 * #541 Support for variance and stdDev functions for $bigint
+* #543 ECharts: "itemStyle.color" linked to a DataFrame column
 * #544 QL: can not use parameter where a single column or val 
 * #546 Upgrade to JJava 1.0-a6
 

@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
  */
 public class BarItemStyle {
 
-    ValOrColumn<String> color;
+    ValOrSeries<String> color;
     private String borderColor;
     private Integer borderWidth;
     private LineType borderType;
@@ -23,7 +23,7 @@ public class BarItemStyle {
     }
 
     public BarItemStyle color(String color) {
-        this.color = ValOrColumn.ofVal(color);
+        this.color = ValOrSeries.ofVal(color);
         return this;
     }
 
@@ -34,7 +34,7 @@ public class BarItemStyle {
      * @since 2.0.0
      */
     public BarItemStyle colorData(String colorDataColumn) {
-        this.color = ValOrColumn.ofDataColumn(colorDataColumn);
+        this.color = ValOrSeries.ofSeries(colorDataColumn);
         return this;
     }
 
@@ -77,7 +77,7 @@ public class BarItemStyle {
                 : (fourBorderRadius != null ? IntStream.of(fourBorderRadius).mapToObj(String::valueOf).collect(Collectors.joining(",", "[", "]")) : null);
 
         String color = this.color != null
-                ? (this.color.val != null ? "'" + this.color.val + "'" : ValOrColumn.jsFunctionWithObjectParam(symbolSizeColorDimension))
+                ? (this.color.isVal() ? this.color.valQuotedString() : ValOrSeries.jsFunctionWithObjectParam(symbolSizeColorDimension))
                 : null;
 
         return new ItemStyleModel(

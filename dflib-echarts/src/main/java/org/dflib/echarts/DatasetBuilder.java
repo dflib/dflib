@@ -68,19 +68,19 @@ class DatasetBuilder {
 
             if (opts instanceof LineSeriesOpts) {
                 LineSeriesOpts sso = (LineSeriesOpts) opts;
-                if (sso.symbolSize != null && sso.symbolSize.column != null) {
+                if (sso.symbolSize != null && sso.symbolSize.isSeries()) {
                     // TODO: appending X data as a Series to prevent column reuse. Two problems with reuse:
                     //  1. https://github.com/apache/echarts/issues/20330
                     //  2. The row type may change, and we won't detect that it is a label (this is fixable in DFLib by allowing multiple row types)
-                    dsb.appendExtraRow(dsb.dataFrame.getColumn(sso.symbolSize.column), DatasetRowType.symbolSize, i);
+                    dsb.appendExtraRow(dsb.dataFrame.getColumn(sso.symbolSize.seriesName), DatasetRowType.symbolSize, i);
                 }
             } else if (opts instanceof ScatterSeriesOpts) {
                 ScatterSeriesOpts sso = (ScatterSeriesOpts) opts;
-                if (sso.symbolSize != null && sso.symbolSize.column != null) {
+                if (sso.symbolSize != null && sso.symbolSize.isSeries()) {
                     // TODO: appending X data as a Series to prevent column reuse. Two problems with reuse:
                     //  1. https://github.com/apache/echarts/issues/20330
                     //  2. The row type may change, and we won't detect that it is a label (this is fixable in DFLib by allowing multiple row types)
-                    dsb.appendExtraRow(dsb.dataFrame.getColumn(sso.symbolSize.column), DatasetRowType.symbolSize, i);
+                    dsb.appendExtraRow(dsb.dataFrame.getColumn(sso.symbolSize.seriesName), DatasetRowType.symbolSize, i);
                 }
             }
         }
@@ -90,17 +90,17 @@ class DatasetBuilder {
         int len = series.size();
         for (int i = 0; i < len; i++) {
 
-            ValOrColumn<String> color = itemStyleColor(series.get(i));
-            if (color != null && color.column != null) {
+            ValOrSeries<String> color = itemStyleColor(series.get(i));
+            if (color != null && color.isSeries()) {
                 // TODO: appending X data as a Series to prevent column reuse. Two problems with reuse:
                 //  1. https://github.com/apache/echarts/issues/20330
                 //  2. The row type may change, and we won't detect that it is a label (this is fixable in DFLib by allowing multiple row types)
-                dsb.appendExtraRow(dsb.dataFrame.getColumn(color.column), DatasetRowType.itemStyleColor, i);
+                dsb.appendExtraRow(dsb.dataFrame.getColumn(color.seriesName), DatasetRowType.itemStyleColor, i);
             }
         }
     }
 
-    private static ValOrColumn<String> itemStyleColor(SeriesOpts<?> opts) {
+    private static ValOrSeries<String> itemStyleColor(SeriesOpts<?> opts) {
         if (opts instanceof LineSeriesOpts) {
             LineSeriesOpts so = (LineSeriesOpts) opts;
             return so.itemStyle != null ? so.itemStyle.color : null;

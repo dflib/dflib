@@ -5,7 +5,7 @@ public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
     Label label;
     Boolean areaStyle;
     Boolean showSymbol;
-    ValOrColumn<Integer> symbolSize;
+    ValOrSeries<Integer> symbolSize;
     Boolean smooth;
     Boolean stack;
     LineItemStyle itemStyle;
@@ -35,8 +35,16 @@ public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
      * @since 1.1.0
      */
     public LineSeriesOpts symbolSize(int symbolSize) {
-        this.symbolSize = ValOrColumn.ofVal(symbolSize);
+        this.symbolSize = ValOrSeries.ofVal(symbolSize);
         return this;
+    }
+
+    /**
+     * @deprecated in favor of {@link #symbolSizeData(String)}
+     */
+    @Deprecated(since = "2.0.0-M5", forRemoval = true)
+    public LineSeriesOpts symbolSize(String dataColumn) {
+        return symbolSizeData(dataColumn);
     }
 
     /**
@@ -45,8 +53,8 @@ public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
      *
      * @since 2.0.0
      */
-    public LineSeriesOpts symbolSize(String dataColumn) {
-        this.symbolSize = ValOrColumn.ofDataColumn(dataColumn);
+    public LineSeriesOpts symbolSizeData(String dataColumn) {
+        this.symbolSize = ValOrSeries.ofSeries(dataColumn);
         return this;
     }
 

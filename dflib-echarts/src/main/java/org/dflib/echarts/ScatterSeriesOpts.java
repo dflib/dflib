@@ -4,7 +4,7 @@ public class ScatterSeriesOpts extends CartesianSeriesOpts<ScatterSeriesOpts> {
 
     Label label;
     ScatterItemStyle itemStyle;
-    ValOrColumn<Integer> symbolSize;
+    ValOrSeries<Integer> symbolSize;
 
     @Override
     public ChartType getType() {
@@ -33,8 +33,16 @@ public class ScatterSeriesOpts extends CartesianSeriesOpts<ScatterSeriesOpts> {
      * @since 1.1.0
      */
     public ScatterSeriesOpts symbolSize(int symbolSize) {
-        this.symbolSize = ValOrColumn.ofVal(symbolSize);
+        this.symbolSize = ValOrSeries.ofVal(symbolSize);
         return this;
+    }
+
+    /**
+     * @deprecated in favor of {@link #symbolSizeData(String)}
+     */
+    @Deprecated(since = "2.0.0-M5", forRemoval = true)
+    public ScatterSeriesOpts symbolSize(String dataColumn) {
+        return symbolSizeData(dataColumn);
     }
 
     /**
@@ -43,8 +51,8 @@ public class ScatterSeriesOpts extends CartesianSeriesOpts<ScatterSeriesOpts> {
      *
      * @since 2.0.0
      */
-    public ScatterSeriesOpts symbolSize(String dataColumn) {
-        this.symbolSize = ValOrColumn.ofDataColumn(dataColumn);
+    public ScatterSeriesOpts symbolSizeData(String dataColumn) {
+        this.symbolSize = ValOrSeries.ofSeries(dataColumn);
         return this;
     }
 }

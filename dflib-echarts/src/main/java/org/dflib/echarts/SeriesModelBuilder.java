@@ -138,6 +138,11 @@ class SeriesModelBuilder {
     }
 
     private SeriesModel lineModel(LineSeriesOpts so) {
+
+        String symbolSize = symbolSizeDimension != null
+                ? ValOrSeries.jsFunctionWithArrayParam(symbolSizeDimension)
+                : (so.symbolSize != null ? so.symbolSize.valString() : null);
+
         return new SeriesModel(
                 name,
                 so.getType().name(),
@@ -151,9 +156,7 @@ class SeriesModelBuilder {
                 so.stack,
                 null,
                 so.smooth,
-                // TODO: ugly due to possible dimension linking
-                symbolSizeDimension != null ? ValOrColumn.jsFunctionWithArrayParam(symbolSizeDimension)
-                        : (so.symbolSize != null ? ValOrColumn.resolveAsVal(so.symbolSize.val) : null),
+                symbolSize,
                 so.xAxisIndex,
                 so.yAxisIndex,
                 null,
@@ -168,6 +171,11 @@ class SeriesModelBuilder {
     }
 
     private SeriesModel scatterModel(ScatterSeriesOpts so) {
+
+        String symbolSize = symbolSizeDimension != null
+                ? ValOrSeries.jsFunctionWithArrayParam(symbolSizeDimension)
+                : (so.symbolSize != null ? so.symbolSize.valString() : null);
+
         return new SeriesModel(
                 name,
                 so.getType().name(),
@@ -181,9 +189,7 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
-                // TODO: ugly due to possible dimension linking
-                symbolSizeDimension != null ? ValOrColumn.jsFunctionWithArrayParam(symbolSizeDimension)
-                        : (so.symbolSize != null ? ValOrColumn.resolveAsVal(so.symbolSize.val) : null),
+                symbolSize,
                 so.xAxisIndex,
                 so.yAxisIndex,
                 null,

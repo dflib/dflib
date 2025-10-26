@@ -73,10 +73,10 @@ public class LineSeriesTest {
     }
 
     @Test
-    public void symbolSizeColumn() {
+    public void symbolSizeData() {
 
         String s1 = ECharts.chart()
-                .series(SeriesOpts.ofLine().symbolSize("y2"), "y1")
+                .series(SeriesOpts.ofLine().symbolSizeData("y2"), "y1")
                 .plot(df2, "_tid").getChartScript();
         assertTrue(s1.contains("symbolSize: function (vals) { return vals[1]; },"), s1);
 
@@ -86,7 +86,7 @@ public class LineSeriesTest {
         assertTrue(s1.contains("['y1',10,11,14]"), s1);
 
         String s2 = ECharts.chart()
-                .series(SeriesOpts.ofLine().symbolSize("y1"), "y2")
+                .series(SeriesOpts.ofLine().symbolSizeData("y1"), "y2")
                 .plot(df2, "_tid").getChartScript();
         assertTrue(s2.contains("symbolSize: function (vals) { return vals[1]; },"), s2);
 
