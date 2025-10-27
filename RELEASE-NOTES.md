@@ -9,6 +9,7 @@
 * #544 QL: can not use parameter where a single column or val 
 * #546 Upgrade to JJava 1.0-a6
 * #547 ECharts: line chart "symbol" property
+* #548 ECharts: upgrade to 6.0.0
 
 ## Release 2.0.0-M4
 

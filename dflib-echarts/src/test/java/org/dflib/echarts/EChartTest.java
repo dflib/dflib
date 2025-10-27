@@ -10,7 +10,7 @@ public class EChartTest {
     @Test
     public void plot() {
         EChartHtml ch = ECharts.chart().xAxis("x").series("y1", "y2").plot(df2);
-        assertTrue(ch.getExternalScript().contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js'></script>"), ch.getExternalScript());
+        assertTrue(ch.getExternalScript().contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js'></script>"), ch.getExternalScript());
         assertTrue(ch.getChartDiv().contains("<div id='dfl_ech_"), ch.getChartDiv());
         assertTrue(ch.getChartScript().contains("['L0','A','B','C'],"), ch.getChartScript());
         assertTrue(ch.getChartScript().contains("['y1',10,11,14],"), ch.getChartScript());
@@ -22,7 +22,7 @@ public class EChartTest {
     @Test
     public void scriptUrl() {
 
-        assertEquals("https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js", ECharts.chart().echartsUrl());
+        assertEquals("https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js", ECharts.chart().echartsUrl());
         assertEquals("https://example.org/x.js", ECharts.chart().scriptUrl("https://example.org/x.js").echartsUrl());
     }
 
@@ -31,7 +31,7 @@ public class EChartTest {
     public void generateExternalScriptHtml() {
 
         String s1 = ECharts.chart().generateExternalScriptHtml();
-        assertTrue(s1.contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js'></script>"), s1);
+        assertTrue(s1.contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js'></script>"), s1);
 
         String s2 = ECharts.chart().scriptUrl("https://example.org/x.js").generateExternalScriptHtml();
         assertTrue(s2.contains("<script type='text/javascript' src='https://example.org/x.js'></script>"), s2);
