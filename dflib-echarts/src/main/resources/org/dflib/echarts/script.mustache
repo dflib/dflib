@@ -421,6 +421,9 @@ var chart_{{id}} = echarts.init(
             {{#coordinateSystem}}
                 coordinateSystem: '{{.}}',
             {{/coordinateSystem}}
+            {{#symbol}}
+                symbol: '{{.}}',
+            {{/symbol}}
             {{#dontShowSymbol}}
                 showSymbol: false,
             {{/dontShowSymbol}}

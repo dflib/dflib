@@ -53,6 +53,16 @@ public class LineSeriesTest {
     }
 
     @Test
+    public void symbol() {
+
+        String s1 = ECharts.chart().series("y1").plot(df2, "_tid").getChartScript();
+        assertFalse(s1.contains("symbol"), s1);
+
+        String s2 = ECharts.chart().series(SeriesOpts.ofLine().symbol(LineSymbol.circle), "y1").plot(df2, "_tid").getChartScript();
+        assertTrue(s2.contains("symbol: 'circle',"), s2);
+    }
+
+    @Test
     public void showSymbol() {
 
         String s1 = ECharts.chart().series("y1").plot(df2, "_tid").getChartScript();

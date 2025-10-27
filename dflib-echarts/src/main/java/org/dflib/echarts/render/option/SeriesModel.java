@@ -19,6 +19,7 @@ public class SeriesModel {
     private final String seriesLayoutBy;
     private final String coordinateSystem;
     private final Boolean areaStyle;
+    private final String symbol;
     private final Boolean showSymbol;
     private final Boolean smooth;
     private final Boolean stack;
@@ -47,6 +48,7 @@ public class SeriesModel {
             String seriesLayoutBy,
             String coordinateSystem,
             Boolean areaStyle,
+            String symbol,
             Boolean showSymbol,
             Boolean stack,
             String barWidth,
@@ -71,6 +73,7 @@ public class SeriesModel {
         this.seriesLayoutBy = seriesLayoutBy;
         this.coordinateSystem = coordinateSystem;
         this.areaStyle = areaStyle;
+        this.symbol = symbol;
         this.showSymbol = showSymbol;
         this.stack = stack;
         this.barWidth = barWidth;
@@ -110,7 +113,7 @@ public class SeriesModel {
             Integer endAngle,
             String roseType) {
 
-        this(name, type, null, encode, label, seriesLayoutBy, null, areaStyle, showSymbol, stack, null, smooth, null,
+        this(name, type, null, encode, label, seriesLayoutBy, null, areaStyle, null, showSymbol, stack, null, smooth, null,
                 xAxisIndex, yAxisIndex, null, radius, center, startAngle, endAngle, roseType, null, null);
     }
 
@@ -139,7 +142,7 @@ public class SeriesModel {
             String roseType,
             ItemStyleModel itemStyle,
             LineStyleModel lineStyle) {
-        this(name, type, null, encode, label, seriesLayoutBy, null, areaStyle, showSymbol, stack, null, smooth,
+        this(name, type, null, encode, label, seriesLayoutBy, null, areaStyle, null, showSymbol, stack, null, smooth,
                 symbolSize != null ? String.valueOf(symbolSize) : null,
                 xAxisIndex, yAxisIndex, null, radius, center, startAngle, endAngle, roseType, itemStyle, lineStyle);
     }
@@ -173,6 +176,13 @@ public class SeriesModel {
 
     public boolean isAreaStyle() {
         return areaStyle != null && areaStyle;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public String getSymbol() {
+        return symbol;
     }
 
     public boolean dontShowSymbol() {

@@ -4,6 +4,7 @@ public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
 
     Label label;
     Boolean areaStyle;
+    LineSymbol symbol;
     Boolean showSymbol;
     ValOrSeries<Integer> symbolSize;
     Boolean smooth;
@@ -23,6 +24,16 @@ public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
 
     public LineSeriesOpts areaStyle() {
         this.areaStyle = true;
+        return this;
+    }
+
+    /**
+     * Sets line chart symbol. The default is {@link LineSymbol#emptyCircle}.
+     *
+     * @since 2.0.0
+     */
+    public LineSeriesOpts symbol(LineSymbol symbol) {
+        this.symbol = symbol;
         return this;
     }
 

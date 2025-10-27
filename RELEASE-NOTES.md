@@ -8,6 +8,7 @@
 * #543 ECharts: "itemStyle.color" linked to a DataFrame column
 * #544 QL: can not use parameter where a single column or val 
 * #546 Upgrade to JJava 1.0-a6
+* #547 ECharts: line chart "symbol" property
 
 ## Release 2.0.0-M4
 
