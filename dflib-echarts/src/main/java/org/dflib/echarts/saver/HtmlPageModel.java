@@ -10,14 +10,17 @@ public class HtmlPageModel {
 
     private final String pageTitle;
     private final String echartsUrl;
+    private final List<String> themeUrls;
     private final List<HtmlChartModel> charts;
 
     public HtmlPageModel(
             String pageTitle,
             String echartsUrl,
+            List<String> themeUrls,
             List<HtmlChartModel> charts) {
         this.pageTitle = pageTitle;
         this.echartsUrl = echartsUrl;
+        this.themeUrls = themeUrls;
         this.charts = charts;
     }
 
@@ -27,6 +30,10 @@ public class HtmlPageModel {
 
     public String getEchartsUrl() {
         return echartsUrl;
+    }
+
+    public List<String> getThemeUrls() {
+        return themeUrls;
     }
 
     public List<HtmlChartModel> getCharts() {

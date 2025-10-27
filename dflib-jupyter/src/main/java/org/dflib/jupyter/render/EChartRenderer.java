@@ -21,7 +21,7 @@ public class EChartRenderer implements RenderFunction<EChartHtml> {
     // of ids in memory.
     static final int MAX_CHARTS_TO_TRACK = 1000;
 
-    private AtomicInteger idCacheSlots;
+    private final AtomicInteger idCacheSlots;
     private final ConcurrentMap<String, String> seenCharts;
 
     public EChartRenderer() {
@@ -64,9 +64,13 @@ public class EChartRenderer implements RenderFunction<EChartHtml> {
     }
 
     private String toString(EChartHtml chart) {
-        return
-                "<script type='text/javascript' src='" + chart.getEchartsUrl() + "'></script>"
-                        + chart.getChartDiv()
-                        + "<script type='text/javascript'>" + chart.getChartScript() + "</script>";
+        StringBuilder out = new StringBuilder();
+
+        out.append("<script type='text/javascript' src='").append(chart.getEchartsUrl()).append("'></script>");
+        chart.getThemeUrls().forEach(u -> out.append("<script type='text/javascript' src='").append(u).append("'></script>"));
+        out.append(chart.getChartDiv());
+        out.append("<script type='text/javascript'>").append(chart.getChartScript()).append("</script>");
+
+        return out.toString();
     }
 }

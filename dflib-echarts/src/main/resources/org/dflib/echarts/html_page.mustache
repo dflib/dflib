@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>{{pageTitle}}</title>
     <script type='text/javascript' src='{{{echartsUrl}}}'></script>
+    {{#themeUrls}}
+    <script type='text/javascript' src='{{{.}}}'></script>
+    {{/themeUrls}}
 </head>
 <body>
 <style>.dfl_ech { margin: 50px auto; padding: 20px; }</style>

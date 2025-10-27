@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -127,10 +128,14 @@ public class EChartHtmlSaver {
     }
 
     private void doSave(Appendable out, EChartHtml... charts) throws IOException {
+        List<String> themeUrls = Arrays.stream(charts)
+                .flatMap(c -> c.getThemeUrls().stream()).distinct()
+                .collect(Collectors.toList());
 
         HtmlPageModel model = new HtmlPageModel(
                 this.title != null ? this.title : "DFLib Chart",
                 charts.length > 0 ? charts[0].getEchartsUrl() : "",
+                themeUrls,
                 Arrays.stream(charts).map(c -> new HtmlChartModel(c.getChartDiv(), c.getChartScript())).collect(Collectors.toList())
         );
 

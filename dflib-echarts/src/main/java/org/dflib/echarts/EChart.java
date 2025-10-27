@@ -8,6 +8,8 @@ import org.dflib.echarts.render.ScriptModel;
 import org.dflib.echarts.render.util.ElementIdGenerator;
 import org.dflib.echarts.render.util.Renderer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -23,6 +25,7 @@ public class EChart {
     private String theme;
     private RendererType renderer;
     private String scriptUrl;
+    private List<String> themeUrls;
     private Integer width;
     private Integer height;
 
@@ -42,7 +45,10 @@ public class EChart {
     }
 
     /**
+     * Sets the chart theme. The default is EChart "light" theme.
+     *
      * @see #darkTheme()
+     * @see #themeUrl(String)
      */
     public EChart theme(String theme) {
         this.theme = theme;
@@ -58,6 +64,21 @@ public class EChart {
      */
     public EChart scriptUrl(String url) {
         this.scriptUrl = url;
+        return this;
+    }
+
+    /**
+     * Adds a URL of a JavaScript resource that usually represents an EChart theme. The main ECHarts JS includes
+     * light and dark default themes. Use this method to bootstrap any other themes.
+     *
+     * @since 2.0.0
+     */
+    public EChart themeUrl(String url) {
+        if (themeUrls == null) {
+            themeUrls = new ArrayList<>();
+        }
+
+        themeUrls.add(Objects.requireNonNull(url));
         return this;
     }
 
@@ -329,6 +350,7 @@ public class EChart {
         return new EChartHtml(
                 divContainerId,
                 echartsUrl(),
+                themeUrls != null ? themeUrls : List.of(),
                 Renderer.renderContainer(containerModel),
                 Renderer.renderScript(scriptModel),
                 idGenerator,
@@ -365,6 +387,7 @@ public class EChart {
         return new EChartHtml(
                 "-",
                 scriptUrl != null ? scriptUrl : DEFAULT_ECHARTS_SCRIPT_URL,
+                themeUrls != null ? themeUrls : List.of(),
                 "",
                 "",
                 idGenerator,
@@ -381,6 +404,7 @@ public class EChart {
         return new EChartHtml(
                 id,
                 "",
+                themeUrls != null ? themeUrls : List.of(),
                 "",
                 generateScript(id, df),
                 idGenerator,

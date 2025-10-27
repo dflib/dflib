@@ -15,7 +15,7 @@ import static org.dflib.echarts.EChartTestDatasets.*;
 public class EChartHtmlSaverTest {
 
     @Test
-    void standardTemplate() throws IOException {
+    public void standardTemplate() throws IOException {
         ElementIdGenerator idGenerator = ElementIdGenerator.sequential();
 
         EChartHtml p1 = ECharts
@@ -36,7 +36,7 @@ public class EChartHtmlSaverTest {
     }
 
     @Test
-    void customTemplateSeparateCharts() throws IOException {
+    public void customTemplateSeparateCharts() throws IOException {
         ElementIdGenerator idGenerator = ElementIdGenerator.sequential();
 
         EChartHtml p1 = ECharts
@@ -58,7 +58,7 @@ public class EChartHtmlSaverTest {
     }
 
     @Test
-    void customTemplateListOfCharts() throws IOException {
+    public void customTemplateListOfCharts() throws IOException {
         ElementIdGenerator idGenerator = ElementIdGenerator.sequential();
 
         EChartHtml p1 = ECharts
@@ -80,7 +80,7 @@ public class EChartHtmlSaverTest {
     }
 
     @Test
-    void customTemplateFromPath() throws IOException, URISyntaxException {
+    public void customTemplateFromPath() throws IOException, URISyntaxException {
         ElementIdGenerator idGenerator = ElementIdGenerator.sequential();
 
         EChartHtml p1 = ECharts
@@ -98,6 +98,30 @@ public class EChartHtmlSaverTest {
                 .save(out, p1, p2);
 
         String expected = new String(getClass().getResourceAsStream("charts-template2.html").readAllBytes(), StandardCharsets.UTF_8);
+        assertEquals(expected, out.toString());
+    }
+
+    @Test
+    public void themeUrls() throws IOException {
+        ElementIdGenerator idGenerator = ElementIdGenerator.sequential();
+
+        EChartHtml p1 = ECharts
+                .chart(idGenerator)
+                .themeUrl("https://example.org/t1.js")
+                .xAxis("x")
+                .series(SeriesOpts.ofLine().name("Y1"), "y1").plot(df2);
+        EChartHtml p2 = ECharts
+                .chart(idGenerator)
+                .themeUrl("https://example.org/t1.js")
+                .themeUrl("https://example.org/t2.js")
+                .xAxis("x")
+                .series(SeriesOpts.ofLine().name("Y2"), "y2").plot(df2);
+
+        StringWriter out = new StringWriter();
+        ECharts.saver().title("Test Charts").save(out, p1, p2);
+
+
+        String expected = new String(getClass().getResourceAsStream("charts1-themeurls.html").readAllBytes(), StandardCharsets.UTF_8);
         assertEquals(expected, out.toString());
     }
 }

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test Charts</title>
+    <script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js'></script>
+    <script type='text/javascript' src='https://example.org/t1.js'></script>
+    <script type='text/javascript' src='https://example.org/t2.js'></script>
+</head>
+<body>
+<style>.dfl_ech { margin: 50px auto; padding: 20px; }</style>
+<div id='dfl_ech_1' class='dfl_ech' style='width: 600px;height:400px;'></div>
+<script type='text/javascript'>var chart_dfl_ech_1 = echarts.init(
+        document.getElementById('dfl_ech_1'),
+        null,
+   );
+    var option_dfl_ech_1 = {
+        dataset: {
+            source: [
+                ['L0','A','B','C'],
+                ['y1',10,11,14]
+            ]
+        },
+        xAxis: [
+        {
+            type: 'category'
+        },
+        ],
+        yAxis: [
+        {
+            type: 'value'
+        },
+        ],
+        series: [
+            {
+                name: 'Y1',
+                encode: {
+                    x: 0,
+                    y: 1,
+                },
+                seriesLayoutBy: 'row',
+                type: 'line'
+            },
+        ]
+    };
+    option_dfl_ech_1 && chart_dfl_ech_1.setOption(option_dfl_ech_1);</script>
+<div id='dfl_ech_2' class='dfl_ech' style='width: 600px;height:400px;'></div>
+<script type='text/javascript'>var chart_dfl_ech_2 = echarts.init(
+        document.getElementById('dfl_ech_2'),
+        null,
+   );
+    var option_dfl_ech_2 = {
+        dataset: {
+            source: [
+                ['L0','A','B','C'],
+                ['y2',20,25,28]
+            ]
+        },
+        xAxis: [
+        {
+            type: 'category'
+        },
+        ],
+        yAxis: [
+        {
+            type: 'value'
+        },
+        ],
+        series: [
+            {
+                name: 'Y2',
+                encode: {
+                    x: 0,
+                    y: 1,
+                },
+                seriesLayoutBy: 'row',
+                type: 'line'
+            },
+        ]
+    };
+    option_dfl_ech_2 && chart_dfl_ech_2.setOption(option_dfl_ech_2);</script>
+</body>
+</html>

@@ -5,6 +5,7 @@ import org.dflib.echarts.render.ScriptModel;
 import org.dflib.echarts.render.util.ElementIdGenerator;
 import org.dflib.echarts.render.util.Renderer;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -14,6 +15,7 @@ public class EChartHtml {
 
     private final String divId;
     private final String echartsUrl;
+    private final List<String> themeUrls;
     private final String chartDiv;
     private final String chartScript;
 
@@ -28,6 +30,7 @@ public class EChartHtml {
     public EChartHtml(
             String divId,
             String echartsUrl,
+            List<String> themeUrls,
             String chartDiv,
             String chartScript,
             ElementIdGenerator idGenerator,
@@ -36,6 +39,7 @@ public class EChartHtml {
 
         this.divId = Objects.requireNonNull(divId);
         this.echartsUrl = echartsUrl;
+        this.themeUrls = themeUrls;
         this.chartDiv = chartDiv;
         this.chartScript = chartScript;
 
@@ -70,6 +74,7 @@ public class EChartHtml {
         return new EChartHtml(
                 newId,
                 echartsUrl,
+                themeUrls,
                 Renderer.renderContainer(containerModelWithId),
                 Renderer.renderScript(scriptModelWithId),
                 idGenerator,
@@ -93,6 +98,16 @@ public class EChartHtml {
      */
     public String getEchartsUrl() {
         return echartsUrl;
+    }
+
+    /**
+     * Returns a List of JavaScript URLs of optional extra themes required to render the chart. The two standard themes
+     * (light and dark) are bundled in the main ECharts script and will not be present in this list.
+     *
+     * @since 2.0.0
+     */
+    public List<String> getThemeUrls() {
+        return themeUrls;
     }
 
     /**
