@@ -45,13 +45,33 @@ public class EChart {
     }
 
     /**
-     * Sets the chart theme. The default is EChart "light" theme.
+     * Sets the chart theme. The default is "light".
      *
      * @see #darkTheme()
-     * @see #themeUrl(String)
+     * @see #theme(String, String)
      */
     public EChart theme(String theme) {
         this.theme = theme;
+        return this;
+    }
+
+    /**
+     * Sets the chart theme, providing a URL where to load it from. By default, ECHarts JS includes "light" and "dark"
+     * themes. Use this method to bootstrap any other themes. <i>This functionality is still experimental, and doesn't
+     * reliably work in Jupyter</i>
+     *
+     * @since 2.0.0
+     */
+    public EChart theme(String theme, String themeUrl) {
+        this.theme = theme;
+
+        if (themeUrl != null) {
+            if (themeUrls == null) {
+                themeUrls = new ArrayList<>();
+            }
+
+            themeUrls.add(Objects.requireNonNull(themeUrl));
+        }
         return this;
     }
 
@@ -64,21 +84,6 @@ public class EChart {
      */
     public EChart scriptUrl(String url) {
         this.scriptUrl = url;
-        return this;
-    }
-
-    /**
-     * Adds a URL of a JavaScript resource that usually represents an EChart theme. The main ECHarts JS includes
-     * light and dark default themes. Use this method to bootstrap any other themes.
-     *
-     * @since 2.0.0
-     */
-    public EChart themeUrl(String url) {
-        if (themeUrls == null) {
-            themeUrls = new ArrayList<>();
-        }
-
-        themeUrls.add(Objects.requireNonNull(url));
         return this;
     }
 

@@ -58,8 +58,7 @@ still experimental, and unfortunately doesn't yet reliably work in Jupyter.
 ```java
 ECharts
     .chart()
-    .themeUrl("https://cdn.jsdelivr.net/npm/echarts@6.0.0/theme/v5.js")
-    .theme("v5")
+    .theme("v5", "https://cdn.jsdelivr.net/npm/echarts@6.0.0/theme/v5.js")
     // ...
     .plot(df);
 ```
