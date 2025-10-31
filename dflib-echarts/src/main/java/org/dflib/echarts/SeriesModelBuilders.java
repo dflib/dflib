@@ -105,8 +105,8 @@ class SeriesModelBuilders {
                 case itemStyleColor:
                     series.get(row.pos).itemStyleColorDimension(i);
                     break;
-                case pieItemName:
-                    series.get(row.pos).pieLabelsDimension(i);
+                case itemName:
+                    series.get(row.pos).itemNameDimension(i);
                     break;
             }
         }

@@ -37,7 +37,7 @@ class DatasetBuilder {
         appendSingleAxesLabels(dsb, opt.singleAxes);
         appendSymbolSizes(dsb, opt.seriesOpts);
         appendItemStyleColors(dsb, opt.seriesOpts);
-        appendPieChartLabels(dsb, opt.seriesOpts);
+        appendItemNames(dsb, opt.seriesOpts);
         appendDatasetRows(dsb, opt.seriesDataColumns);
 
         return dsb;
@@ -106,9 +106,6 @@ class DatasetBuilder {
 
             ValOrSeries<String> color = itemStyleColor(series.get(i));
             if (color != null && color.isSeries()) {
-                // TODO: appending X data as a Series to prevent column reuse. Two problems with reuse:
-                //  1. https://github.com/apache/echarts/issues/20330
-                //  2. The row type may change, and we won't detect that it is a label (this is fixable in DFLib by allowing multiple row types)
                 dsb.appendExtraRow(dsb.dataFrame.getColumn(color.seriesName), DatasetRowType.itemStyleColor, i);
             }
         }
@@ -129,21 +126,17 @@ class DatasetBuilder {
         }
     }
 
-    private static void appendPieChartLabels(DatasetBuilder dsb, List<SeriesOpts<?>> series) {
+    private static void appendItemNames(DatasetBuilder dsb, List<SeriesOpts<?>> series) {
 
         int len = series.size();
         for (int i = 0; i < len; i++) {
 
             SeriesOpts<?> opts = series.get(i);
 
-            if (opts instanceof PieSeriesOpts) {
-                PieSeriesOpts pco = (PieSeriesOpts) opts;
-                if (pco.getLabelColumn() != null) {
-                    dsb.appendExtraRow(dsb.dataFrame.getColumn(pco.getLabelColumn()), DatasetRowType.pieItemName, i);
-                } else {
-                    // TODO: appending pie label data as a Series to prevent column reuse which is not possible until
-                    //   https://github.com/apache/echarts/issues/20330 is fixed
-                    dsb.appendExtraRow(new IntSequenceSeries(1, dsb.dataFrame.height() + 1), DatasetRowType.pieItemName, i);
+            if (opts instanceof NamedItemOpts) {
+                NamedItemOpts pco = (NamedItemOpts) opts;
+                if (pco.getItemNameData() != null) {
+                    dsb.appendExtraRow(dsb.dataFrame.getColumn(pco.getItemNameData()), DatasetRowType.itemName, i);
                 }
             }
         }
@@ -245,7 +238,7 @@ class DatasetBuilder {
     }
 
     enum DatasetRowType {
-        xAxisLabels, singleAxisLabel, symbolSize, itemStyleColor, pieItemName, seriesData
+        xAxisLabels, singleAxisLabel, symbolSize, itemStyleColor, itemName, seriesData
     }
 
     static class DatasetRow {

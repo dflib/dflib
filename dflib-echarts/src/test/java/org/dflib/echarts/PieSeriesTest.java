@@ -112,11 +112,11 @@ public class PieSeriesTest {
     @Test
     public void data() {
         String s2 = ECharts.chart().series(SeriesOpts.ofPie(), "y1").plot(df2, "_tid").getChartScript();
-        assertTrue(s2.contains("['L0',1,2,3],"), s2);
+        assertFalse(s2.contains("['L0'"), s2);
         assertTrue(s2.contains("['y1',10,11,14]"), s2);
         assertTrue(s2.contains("encode: {"), s2);
-        assertTrue(s2.contains("value: 1,"), s2);
-        assertTrue(s2.contains("itemName: 0,"), s2);
+        assertTrue(s2.contains("value: 0,"), s2);
+        assertFalse(s2.contains("itemName:"), s2);
 
         String s3 = ECharts.chart().series(SeriesOpts.ofPie().label("x"), "y1").plot(df2, "_tid").getChartScript();
         assertFalse(s3.contains("['L0',1,2,3],"), s3);

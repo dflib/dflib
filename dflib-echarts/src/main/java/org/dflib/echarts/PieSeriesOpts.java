@@ -2,7 +2,7 @@ package org.dflib.echarts;
 
 import org.dflib.echarts.render.option.Distance;
 
-public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
+public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> implements NamedItemOpts {
 
     Distance[] radius;
     Distance[] center;
@@ -21,6 +21,11 @@ public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
     public CoordinateSystemType getCoordinateSystemType() {
         // TODO: pie seems to also support "geo" and "calendar"
         return CoordinateSystemType.none;
+    }
+
+    @Override
+    public String getItemNameData() {
+        return label != null ? label.columnName : null;
     }
 
     public PieSeriesOpts label(String labelColumn) {
@@ -89,10 +94,6 @@ public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
     public PieSeriesOpts itemStyle(PieItemStyle itemStyle) {
         this.itemStyle = itemStyle;
         return this;
-    }
-
-    protected String getLabelColumn() {
-        return label != null ? label.columnName : null;
     }
 
     static class ColumnLinkedPieLabel {

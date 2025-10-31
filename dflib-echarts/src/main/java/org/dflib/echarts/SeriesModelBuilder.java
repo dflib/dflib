@@ -3,6 +3,7 @@ package org.dflib.echarts;
 import org.dflib.DataFrame;
 import org.dflib.echarts.render.ValueModels;
 import org.dflib.echarts.render.option.EncodeModel;
+import org.dflib.echarts.render.option.LabelModel;
 import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.echarts.render.option.data.DataModel;
 import org.dflib.echarts.render.option.series.CenterModel;
@@ -27,7 +28,7 @@ class SeriesModelBuilder {
     // this is treated as a "y" dimension in cartesian coordinates, or "value" in some others like pie, single axis, etc.
     List<Integer> valueDimensions;
     Integer singleAxisDimension;
-    Integer pieLabelsDimension;
+    Integer itemNameDimension;
     Integer symbolSizeDimension;
     Integer itemStyleColorDimension;
 
@@ -70,8 +71,8 @@ class SeriesModelBuilder {
         return this;
     }
 
-    public SeriesModelBuilder pieLabelsDimension(int dim) {
-        this.pieLabelsDimension = dim;
+    public SeriesModelBuilder itemNameDimension(int dim) {
+        this.itemNameDimension = dim;
         return this;
     }
 
@@ -192,6 +193,8 @@ class SeriesModelBuilder {
 
     private SeriesModel scatterCartesian2dModel(ScatterCartesian2DSeriesOpts so) {
 
+        LabelModel labelModel = so.label != null && so.label.label != null ? so.label.label.resolve() : null;
+
         String symbolSize = symbolSizeDimension != null
                 ? ValOrSeries.jsFunctionWithArrayParam(symbolSizeDimension)
                 : (so.symbolSize != null ? so.symbolSize.valString() : null);
@@ -201,7 +204,7 @@ class SeriesModelBuilder {
                 so.getType().name(),
                 null,
                 new EncodeModel(xDimension, ValueModels.of(valueDimensions), null, null, null),
-                so.label != null ? so.label.resolve() : null,
+                labelModel,
                 datasetSeriesLayoutBy,
                 null,
                 null,
@@ -231,6 +234,8 @@ class SeriesModelBuilder {
         Integer valueDimension = this.valueDimensions != null && !this.valueDimensions.isEmpty() ? this.valueDimensions.get(0) : null;
         Integer singleAxisDimension = this.singleAxisDimension != null ? this.singleAxisDimension : valueDimension;
 
+        LabelModel labelModel = so.label != null && so.label.label != null ? so.label.label.resolve() : null;
+
         String symbolSize = symbolSizeDimension != null
                 ? ValOrSeries.jsFunctionWithArrayParam(symbolSizeDimension)
                 : (so.symbolSize != null ? so.symbolSize.valString() : null);
@@ -239,8 +244,8 @@ class SeriesModelBuilder {
                 name,
                 so.getType().name(),
                 null,
-                new EncodeModel(null, null, singleAxisDimension, null, valueDimension),
-                so.label != null ? so.label.resolve() : null,
+                new EncodeModel(null, null, singleAxisDimension, itemNameDimension, valueDimension),
+                labelModel,
                 datasetSeriesLayoutBy,
                 CoordinateSystemType.singleAxis.name(),
                 null,
@@ -328,13 +333,14 @@ class SeriesModelBuilder {
 
         // TODO: multiple series in a pie chart?
         Integer valueDim = valueDimensions != null && !valueDimensions.isEmpty() ? valueDimensions.get(0) : null;
+        LabelModel labelModel = so.label != null && so.label.label != null ? so.label.label.resolve() : null;
 
         return new SeriesModel(
                 name,
                 so.getType().name(),
                 null,
-                new EncodeModel(null, null, null, pieLabelsDimension, valueDim),
-                so.label != null && so.label.label != null ? so.label.label.resolve() : null,
+                new EncodeModel(null, null, null, itemNameDimension, valueDim),
+                labelModel,
                 datasetSeriesLayoutBy,
                 null,
                 null,

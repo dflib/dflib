@@ -1,9 +1,8 @@
 package org.dflib.echarts;
 
-public abstract class ScatterSeriesOpts<SO extends ScatterSeriesOpts<SO>> extends SeriesOpts<SO> {
+public abstract class ScatterSeriesOpts<SO extends ScatterSeriesOpts<SO>> extends SeriesOpts<SO> implements NamedItemOpts {
 
-
-    Label label;
+    ColumnLinkedLabel label;
     ScatterItemStyle itemStyle;
     ValOrSeries<Integer> symbolSize;
 
@@ -12,13 +11,36 @@ public abstract class ScatterSeriesOpts<SO extends ScatterSeriesOpts<SO>> extend
         return ChartType.scatter;
     }
 
+    @Override
+    public String getItemNameData() {
+        return label != null ? label.columnName : null;
+    }
+
+    /**
+     * @deprecated redundant, use {@link #label(Label)} instead.
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public SO label(LabelPosition position) {
-        this.label = Label.of(position);
+        return label(Label.of(position));
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public SO label(String labelColumn) {
+        return label(labelColumn, null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public SO label(String labelColumn, Label label) {
+        this.label = new ColumnLinkedLabel(labelColumn, label);
         return (SO) this;
     }
 
     public SO label(Label label) {
-        this.label = label;
+        this.label = new ColumnLinkedLabel(null, label);
         return (SO) this;
     }
 
