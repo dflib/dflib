@@ -1,15 +1,12 @@
 package org.dflib.echarts;
 
-public class CandlestickSeriesOpts extends SeriesOpts<CandlestickSeriesOpts> implements CartesianSeriesOpts {
+/**
+ * @since 2.0.0
+ */
+public class ScatterCartesian2DSeriesOpts extends ScatterSeriesOpts<ScatterCartesian2DSeriesOpts> implements CartesianSeriesOpts {
 
     Integer xAxisIndex;
     Integer yAxisIndex;
-    CandlestickItemStyle itemStyle;
-
-    @Override
-    public ChartType getType() {
-        return ChartType.candlestick;
-    }
 
     @Override
     public CoordinateSystemType getCoordinateSystemType() {
@@ -30,7 +27,7 @@ public class CandlestickSeriesOpts extends SeriesOpts<CandlestickSeriesOpts> imp
      * Sets an index of X axis to use for this Series. There can be one or more X axes, so this method allows to
      * pick one. If not set, 0 is assumed.
      */
-    public CandlestickSeriesOpts xAxisIndex(int index) {
+    public ScatterCartesian2DSeriesOpts xAxisIndex(int index) {
         this.xAxisIndex = index;
         return this;
     }
@@ -39,16 +36,8 @@ public class CandlestickSeriesOpts extends SeriesOpts<CandlestickSeriesOpts> imp
      * Sets an index of Y axis to use for this Series. There can be one or more Y axes, so this method allows to
      * pick one. If not set, 0 is assumed.
      */
-    public CandlestickSeriesOpts yAxisIndex(int index) {
+    public ScatterCartesian2DSeriesOpts yAxisIndex(int index) {
         this.yAxisIndex = index;
-        return this;
-    }
-
-    /**
-     * @since 1.1.0
-     */
-    public CandlestickSeriesOpts itemStyle(CandlestickItemStyle itemStyle) {
-        this.itemStyle = itemStyle;
         return this;
     }
 }

@@ -322,6 +322,41 @@ var chart_{{id}} = echarts.init(
         {{/yAxes}}
         ],
     {{/yAxesPresent}}
+    {{#singleAxesPresent}}
+        singleAxis: [
+        {{#singleAxes}}
+            {
+            {{#noBoundaryGap}}
+                boundaryGap: false,
+            {{/noBoundaryGap}}
+            {{#name}}
+                name: {{{quotedName}}},
+            {{/name}}
+            {{#left}}
+                left: {{{.}}},
+            {{/left}}
+            {{#right}}
+                right: {{{.}}},
+            {{/right}}
+            {{#top}}
+                top: {{{.}}},
+            {{/top}}
+            {{#bottom}}
+                bottom: {{{.}}},
+            {{/bottom}}
+            {{#width}}
+                width: {{{.}}},
+            {{/width}}
+            {{#height}}
+                height: {{{.}}},
+            {{/height}}
+            {{#type}}
+                type: '{{.}}'
+            {{/type}}
+            },
+        {{/singleAxes}}
+        ],
+    {{/singleAxesPresent}}
         series: [
             {{#series}}
             {
@@ -347,6 +382,9 @@ var chart_{{id}} = echarts.init(
                 {{#yPresent}}
                     y: {{y}},
                 {{/yPresent}}
+                {{#single}}
+                    single: {{.}},
+                {{/single}}
                 {{#value}}
                     value: {{.}},
                 {{/value}}
@@ -445,6 +483,9 @@ var chart_{{id}} = echarts.init(
             {{#yAxisIndex}}
                 yAxisIndex: {{.}},
             {{/yAxisIndex}}
+            {{#singleAxisIndex}}
+                singleAxisIndex: {{.}},
+            {{/singleAxisIndex}}
             {{#calendarIndex}}
                 calendarIndex: {{.}},
             {{/calendarIndex}}

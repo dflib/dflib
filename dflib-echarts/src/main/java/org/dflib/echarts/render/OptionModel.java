@@ -5,6 +5,7 @@ import org.dflib.echarts.render.option.LegendModel;
 import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.echarts.render.option.TitleModel;
 import org.dflib.echarts.render.option.axis.AxisModel;
+import org.dflib.echarts.render.option.axis.SingleAxisModel;
 import org.dflib.echarts.render.option.calendar.CalendarModel;
 import org.dflib.echarts.render.option.dataset.DatasetModel;
 import org.dflib.echarts.render.option.toolbox.ToolboxModel;
@@ -24,6 +25,7 @@ public class OptionModel {
     private final TooltipModel tooltip;
     private final List<AxisModel> xAxes;
     private final List<AxisModel> yAxes;
+    private final List<SingleAxisModel> singleAxes;
     private final List<CalendarModel> calendars;
     private final List<VisualMapModel> visualMaps;
 
@@ -40,6 +42,7 @@ public class OptionModel {
             TooltipModel tooltip,
             List<AxisModel> xAxes,
             List<AxisModel> yAxes,
+            List<SingleAxisModel> singleAxes,
             List<CalendarModel> calendars,
             List<VisualMapModel> visualMaps) {
 
@@ -51,6 +54,7 @@ public class OptionModel {
         this.calendars = calendars;
         this.xAxes = xAxes;
         this.yAxes = yAxes;
+        this.singleAxes = singleAxes;
         this.grid = grid;
         this.series = series;
         this.legend = legend;
@@ -77,6 +81,7 @@ public class OptionModel {
                 tooltip,
                 xAxes,
                 yAxes,
+                null,
                 null,
                 null);
     }
@@ -147,6 +152,14 @@ public class OptionModel {
 
     public List<AxisModel> getYAxes() {
         return yAxes;
+    }
+
+    public boolean isSingleAxesPresent() {
+        return singleAxes != null;
+    }
+
+    public List<SingleAxisModel> getSingleAxes() {
+        return singleAxes;
     }
 
     public List<SeriesModel> getSeries() {

@@ -23,7 +23,10 @@ class SeriesModelBuilder {
 
     // dimensions are references to row numbers in the dataset
     Integer xDimension;
-    List<Integer> yDimensions;
+
+    // this is treated as a "y" dimension in cartesian coordinates, or "value" in some others like pie, single axis, etc.
+    List<Integer> valueDimensions;
+    Integer singleAxisDimension;
     Integer pieLabelsDimension;
     Integer symbolSizeDimension;
     Integer itemStyleColorDimension;
@@ -50,14 +53,20 @@ class SeriesModelBuilder {
     }
 
     /**
-     * Appends "y" dimension to the list of dimensions. "Dimension" is a position in the dataset.
+     * Appends a dimension (a position in the dataset) to the list of "value" dimensions.
      */
-    public SeriesModelBuilder yDimension(int dim) {
-        if (this.yDimensions == null) {
-            this.yDimensions = new ArrayList<>();
+    public SeriesModelBuilder valueDimension(int dim) {
+        if (this.valueDimensions == null) {
+            this.valueDimensions = new ArrayList<>();
         }
 
-        this.yDimensions.add(dim);
+        this.valueDimensions.add(dim);
+        return this;
+    }
+
+    // TODO: start using this; currently resorting to the default value dimension
+    public SeriesModelBuilder singleAxisDimension(int dim) {
+        this.singleAxisDimension = dim;
         return this;
     }
 
@@ -114,7 +123,7 @@ class SeriesModelBuilder {
                 name,
                 so.getType().name(),
                 null,
-                new EncodeModel(xDimension, ValueModels.of(yDimensions), null, null),
+                new EncodeModel(xDimension, ValueModels.of(valueDimensions), null, null, null),
                 so.label != null ? so.label.resolve() : null,
                 datasetSeriesLayoutBy,
                 null,
@@ -127,6 +136,7 @@ class SeriesModelBuilder {
                 null,
                 so.xAxisIndex,
                 so.yAxisIndex,
+                null,
                 null,
                 null,
                 null,
@@ -148,7 +158,7 @@ class SeriesModelBuilder {
                 name,
                 so.getType().name(),
                 null,
-                new EncodeModel(xDimension, ValueModels.of(yDimensions), null, null),
+                new EncodeModel(xDimension, ValueModels.of(valueDimensions), null, null, null),
                 so.label != null ? so.label.resolve() : null,
                 datasetSeriesLayoutBy,
                 null,
@@ -167,12 +177,20 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
+                null,
                 so.itemStyle != null ? so.itemStyle.resolve(itemStyleColorDimension) : null,
                 so.lineStyle != null ? so.lineStyle.resolve() : null
         );
     }
 
     private SeriesModel scatterModel(ScatterSeriesOpts so) {
+
+        return so instanceof ScatterCartesian2DSeriesOpts
+                ? scatterCartesian2dModel((ScatterCartesian2DSeriesOpts) so)
+                : scatterSingleAxisModel((ScatterSingleAxisSeriesOpts) so);
+    }
+
+    private SeriesModel scatterCartesian2dModel(ScatterCartesian2DSeriesOpts so) {
 
         String symbolSize = symbolSizeDimension != null
                 ? ValOrSeries.jsFunctionWithArrayParam(symbolSizeDimension)
@@ -182,7 +200,7 @@ class SeriesModelBuilder {
                 name,
                 so.getType().name(),
                 null,
-                new EncodeModel(xDimension, ValueModels.of(yDimensions), null, null),
+                new EncodeModel(xDimension, ValueModels.of(valueDimensions), null, null, null),
                 so.label != null ? so.label.resolve() : null,
                 datasetSeriesLayoutBy,
                 null,
@@ -201,6 +219,46 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
+                null,
+                so.itemStyle != null ? so.itemStyle.resolve(itemStyleColorDimension) : null,
+                null
+        );
+    }
+
+    private SeriesModel scatterSingleAxisModel(ScatterSingleAxisSeriesOpts so) {
+
+        // TODO: multiple series in single axis scatter chart?
+        Integer valueDimension = this.valueDimensions != null && !this.valueDimensions.isEmpty() ? this.valueDimensions.get(0) : null;
+        Integer singleAxisDimension = this.singleAxisDimension != null ? this.singleAxisDimension : valueDimension;
+
+        String symbolSize = symbolSizeDimension != null
+                ? ValOrSeries.jsFunctionWithArrayParam(symbolSizeDimension)
+                : (so.symbolSize != null ? so.symbolSize.valString() : null);
+
+        return new SeriesModel(
+                name,
+                so.getType().name(),
+                null,
+                new EncodeModel(null, null, singleAxisDimension, null, valueDimension),
+                so.label != null ? so.label.resolve() : null,
+                datasetSeriesLayoutBy,
+                CoordinateSystemType.singleAxis.name(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                symbolSize,
+                null,
+                null,
+                so.singleAxisIndex,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
                 so.itemStyle != null ? so.itemStyle.resolve(itemStyleColorDimension) : null,
                 null
         );
@@ -211,7 +269,7 @@ class SeriesModelBuilder {
                 name,
                 so.getType().name(),
                 null,
-                new EncodeModel(xDimension, ValueModels.of(yDimensions), null, null),
+                new EncodeModel(xDimension, ValueModels.of(valueDimensions), null, null, null),
                 null,
                 datasetSeriesLayoutBy,
                 null,
@@ -224,6 +282,7 @@ class SeriesModelBuilder {
                 null,
                 so.xAxisIndex,
                 so.yAxisIndex,
+                null,
                 null,
                 null,
                 null,
@@ -240,7 +299,7 @@ class SeriesModelBuilder {
                 name,
                 so.getType().name(),
                 null,
-                new EncodeModel(xDimension, ValueModels.of(yDimensions), null, null),
+                new EncodeModel(xDimension, ValueModels.of(valueDimensions), null, null, null),
                 null,
                 datasetSeriesLayoutBy,
                 null,
@@ -259,6 +318,7 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
+                null,
                 so.itemStyle != null ? so.itemStyle.resolve() : null,
                 null
         );
@@ -267,15 +327,16 @@ class SeriesModelBuilder {
     private SeriesModel pieModel(PieSeriesOpts so) {
 
         // TODO: multiple series in a pie chart?
-        Integer dataDim = yDimensions != null && !yDimensions.isEmpty() ? yDimensions.get(0) : null;
+        Integer valueDim = valueDimensions != null && !valueDimensions.isEmpty() ? valueDimensions.get(0) : null;
 
         return new SeriesModel(
                 name,
                 so.getType().name(),
                 null,
-                new EncodeModel(null, null, pieLabelsDimension, dataDim),
+                new EncodeModel(null, null, null, pieLabelsDimension, valueDim),
                 so.label != null && so.label.label != null ? so.label.label.resolve() : null,
                 datasetSeriesLayoutBy,
+                null,
                 null,
                 null,
                 null,
@@ -328,6 +389,7 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
+                null,
                 null
         );
     }
@@ -341,6 +403,7 @@ class SeriesModelBuilder {
                 null,
                 datasetSeriesLayoutBy,
                 CoordinateSystemType.calendar.name(),
+                null,
                 null,
                 null,
                 null,

@@ -5,10 +5,14 @@ package org.dflib.echarts;
  */
 public enum CoordinateSystemType {
 
-    cartesian2d, calendar, none;
+    cartesian2d, calendar, singleAxis, none;
 
     public boolean isCartesian() {
         return this == cartesian2d;
+    }
+
+    public boolean isSingleAxis() {
+        return this == singleAxis;
     }
 
     public boolean isCalendar() {

@@ -27,6 +27,7 @@ public class SeriesModel {
     private final String symbolSize;
     private final Integer xAxisIndex;
     private final Integer yAxisIndex;
+    private final Integer singleAxisIndex;
     private final Integer calendarIndex;
     private final RadiusModel radius;
     private final CenterModel center;
@@ -56,6 +57,7 @@ public class SeriesModel {
             String symbolSize,
             Integer xAxisIndex,
             Integer yAxisIndex,
+            Integer singleAxisIndex,
             Integer calendarIndex,
             RadiusModel radius,
             CenterModel center,
@@ -81,6 +83,7 @@ public class SeriesModel {
         this.symbolSize = symbolSize;
         this.xAxisIndex = xAxisIndex;
         this.yAxisIndex = yAxisIndex;
+        this.singleAxisIndex = singleAxisIndex;
         this.calendarIndex = calendarIndex;
         this.radius = radius;
         this.center = center;
@@ -114,7 +117,7 @@ public class SeriesModel {
             String roseType) {
 
         this(name, type, null, encode, label, seriesLayoutBy, null, areaStyle, null, showSymbol, stack, null, smooth, null,
-                xAxisIndex, yAxisIndex, null, radius, center, startAngle, endAngle, roseType, null, null);
+                xAxisIndex, yAxisIndex, null, null, radius, center, startAngle, endAngle, roseType, null, null);
     }
 
     /**
@@ -144,7 +147,7 @@ public class SeriesModel {
             LineStyleModel lineStyle) {
         this(name, type, null, encode, label, seriesLayoutBy, null, areaStyle, null, showSymbol, stack, null, smooth,
                 symbolSize != null ? String.valueOf(symbolSize) : null,
-                xAxisIndex, yAxisIndex, null, radius, center, startAngle, endAngle, roseType, itemStyle, lineStyle);
+                xAxisIndex, yAxisIndex, null, null, radius, center, startAngle, endAngle, roseType, itemStyle, lineStyle);
     }
 
     public String getName() {
@@ -195,6 +198,20 @@ public class SeriesModel {
 
     public Integer getYAxisIndex() {
         return yAxisIndex;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Integer getSingleAxisIndex() {
+        return singleAxisIndex;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Integer getCalendarIndex() {
+        return calendarIndex;
     }
 
     public RadiusModel getRadius() {
@@ -248,13 +265,6 @@ public class SeriesModel {
      */
     public LineStyleModel getLineStyle() {
         return lineStyle;
-    }
-
-    /**
-     * @since 2.0.0
-     */
-    public Integer getCalendarIndex() {
-        return calendarIndex;
     }
 
     /**

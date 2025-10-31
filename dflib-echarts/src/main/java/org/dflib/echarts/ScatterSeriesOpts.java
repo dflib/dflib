@@ -1,6 +1,7 @@
 package org.dflib.echarts;
 
-public class ScatterSeriesOpts extends CartesianSeriesOpts<ScatterSeriesOpts> {
+public abstract class ScatterSeriesOpts<SO extends ScatterSeriesOpts<SO>> extends SeriesOpts<SO> {
+
 
     Label label;
     ScatterItemStyle itemStyle;
@@ -11,37 +12,37 @@ public class ScatterSeriesOpts extends CartesianSeriesOpts<ScatterSeriesOpts> {
         return ChartType.scatter;
     }
 
-    public ScatterSeriesOpts label(LabelPosition position) {
+    public SO label(LabelPosition position) {
         this.label = Label.of(position);
-        return this;
+        return (SO) this;
     }
 
-    public ScatterSeriesOpts label(Label label) {
+    public SO label(Label label) {
         this.label = label;
-        return this;
+        return (SO) this;
     }
 
     /**
      * @since 1.1.0
      */
-    public ScatterSeriesOpts itemStyle(ScatterItemStyle itemStyle) {
+    public SO itemStyle(ScatterItemStyle itemStyle) {
         this.itemStyle = itemStyle;
-        return this;
+        return (SO) this;
     }
 
     /**
      * @since 1.1.0
      */
-    public ScatterSeriesOpts symbolSize(int symbolSize) {
+    public SO symbolSize(int symbolSize) {
         this.symbolSize = ValOrSeries.ofVal(symbolSize);
-        return this;
+        return (SO) this;
     }
 
     /**
      * @deprecated in favor of {@link #symbolSizeData(String)}
      */
     @Deprecated(since = "2.0.0-M5", forRemoval = true)
-    public ScatterSeriesOpts symbolSize(String dataColumn) {
+    public SO symbolSize(String dataColumn) {
         return symbolSizeData(dataColumn);
     }
 
@@ -51,8 +52,8 @@ public class ScatterSeriesOpts extends CartesianSeriesOpts<ScatterSeriesOpts> {
      *
      * @since 2.0.0
      */
-    public ScatterSeriesOpts symbolSizeData(String dataColumn) {
+    public SO symbolSizeData(String dataColumn) {
         this.symbolSize = ValOrSeries.ofSeries(dataColumn);
-        return this;
+        return (SO) this;
     }
 }

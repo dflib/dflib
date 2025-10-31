@@ -14,18 +14,18 @@ public class HeatmapCartesianSeriesTest {
         String s1 = ECharts.chart().plot(df4, "_tid").getChartScript();
         assertFalse(s1.contains("type: 'heatmap'"), s1);
 
-        String s2 = ECharts.chart().series(SeriesOpts.ofHeatmapCartesian2d(), "x1", "y1", "y2").plot(df4, "_tid").getChartScript();
+        String s2 = ECharts.chart().series(SeriesOpts.ofHeatmap(), "x1", "y1", "y2").plot(df4, "_tid").getChartScript();
         assertTrue(s2.contains("type: 'heatmap'"), s2);
     }
 
     @Test
     public void name() {
 
-        String s2 = ECharts.chart().series(SeriesOpts.ofHeatmapCartesian2d(), "x1", "y1", "y2").plot(df4, "_tid").getChartScript();
+        String s2 = ECharts.chart().series(SeriesOpts.ofHeatmap(), "x1", "y1", "y2").plot(df4, "_tid").getChartScript();
         assertFalse(s2.contains("name: 'Y2',"), s2);
         assertTrue(s2.contains("name: 'heatmap',"), s2);
 
-        String s3 = ECharts.chart().series(SeriesOpts.ofHeatmapCartesian2d().name("Y2"), "x1", "y1", "y2").plot(df4, "_tid").getChartScript();
+        String s3 = ECharts.chart().series(SeriesOpts.ofHeatmap().name("Y2"), "x1", "y1", "y2").plot(df4, "_tid").getChartScript();
         assertTrue(s3.contains("name: 'Y2',"), s3);
         assertFalse(s3.contains("name: 'y2',"), s3);
     }
@@ -33,7 +33,7 @@ public class HeatmapCartesianSeriesTest {
     @Test
     public void data() {
 
-        String s1 = ECharts.chart().series(SeriesOpts.ofHeatmapCartesian2d(), "x1", "y1", "y2").plot(df4, "_tid").getChartScript();
+        String s1 = ECharts.chart().series(SeriesOpts.ofHeatmap(), "x1", "y1", "y2").plot(df4, "_tid").getChartScript();
 
         assertFalse(s1.contains("dataset"), s1);
         assertFalse(s1.contains("encode"), s1);
@@ -47,7 +47,7 @@ public class HeatmapCartesianSeriesTest {
 
     @Test
     public void coordinateSystem() {
-        String s3 = ECharts.chart().series(SeriesOpts.ofHeatmapCartesian2d(), "x1", "y1", "y2").plot(df4, "_tid").getChartScript();
+        String s3 = ECharts.chart().series(SeriesOpts.ofHeatmap(), "x1", "y1", "y2").plot(df4, "_tid").getChartScript();
         assertTrue(s3.contains("coordinateSystem: 'cartesian2d'"), s3);
     }
 
@@ -57,7 +57,7 @@ public class HeatmapCartesianSeriesTest {
         String s1 = ECharts.chart()
                 .xAxis("x1")
                 .xAxis("x2")
-                .series(SeriesOpts.ofHeatmapCartesian2d().xAxisIndex(1), "x1", "y1", "y2")
+                .series(SeriesOpts.ofHeatmap().xAxisIndex(1), "x1", "y1", "y2")
                 .plot(df4, "_tid").getChartScript();
         assertTrue(s1.contains("xAxisIndex: 1,"), s1);
         assertFalse(s1.contains("encode"));
@@ -65,7 +65,7 @@ public class HeatmapCartesianSeriesTest {
 
     @Test
     public void yAxisIndex() {
-        String s1 = ECharts.chart().series(SeriesOpts.ofHeatmapCartesian2d().yAxisIndex(2), "x1", "y1", "y2").plot(df4, "_tid").getChartScript();
+        String s1 = ECharts.chart().series(SeriesOpts.ofHeatmap().yAxisIndex(2), "x1", "y1", "y2").plot(df4, "_tid").getChartScript();
         assertTrue(s1.contains("yAxisIndex: 2,"), s1);
     }
 }

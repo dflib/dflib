@@ -82,13 +82,20 @@ class SeriesModelBuilders {
                     series.get(row.pos).datasetSeriesLayoutBy("row");
 
                     // multiple dimensions can be appended to the same series in a loop
-                    series.get(row.pos).yDimension(i);
+                    series.get(row.pos).valueDimension(i);
 
                     break;
                 case xAxisLabels:
                     for (SeriesModelBuilder sb : series) {
                         if (xAxisIndex(sb.seriesOpts()) == row.pos) {
                             sb.xDimension(i);
+                        }
+                    }
+                    break;
+                case singleAxisLabel:
+                    for (SeriesModelBuilder sb : series) {
+                        if (singleAxisIndex(sb.seriesOpts()) == row.pos) {
+                            sb.singleAxisDimension(i);
                         }
                     }
                     break;
@@ -112,10 +119,24 @@ class SeriesModelBuilders {
 
         Integer i = null;
         if (series instanceof CartesianSeriesOpts) {
-            i = ((CartesianSeriesOpts) series).xAxisIndex;
+            i = ((CartesianSeriesOpts) series).getXAxisIndex();
         }
 
         // by default should pick the first X axis
+        return i != null ? i : 0;
+    }
+
+    private static int singleAxisIndex(SeriesOpts<?> series) {
+        if (!series.getCoordinateSystemType().isSingleAxis()) {
+            return -1;
+        }
+
+        Integer i = null;
+        if (series instanceof SingleAxisSeriesOpts) {
+            i = ((SingleAxisSeriesOpts) series).getSingleAxisIndex();
+        }
+
+        // by default should pick the first axis
         return i != null ? i : 0;
     }
 

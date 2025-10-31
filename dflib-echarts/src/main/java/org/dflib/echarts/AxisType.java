@@ -5,7 +5,5 @@ package org.dflib.echarts;
  */
 public enum AxisType {
 
-    category, time, value,
-
-    log
+    category, time, value, log
 }

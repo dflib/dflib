@@ -23,10 +23,19 @@ public abstract class SeriesOpts<SO extends SeriesOpts<SO>> {
     }
 
     /**
-     * Starts a builder for a scatter series options object.
+     * Starts a builder for a scatter series options object with cartesian coordinate system.
      */
-    public static ScatterSeriesOpts ofScatter() {
-        return new ScatterSeriesOpts();
+    public static ScatterCartesian2DSeriesOpts ofScatter() {
+        return new ScatterCartesian2DSeriesOpts();
+    }
+
+    /**
+     * Starts a builder for a scatter series options object with single axis coordinate system.
+     *
+     * @since 2.0.0
+     */
+    public static ScatterSingleAxisSeriesOpts ofScatterSingleAxis() {
+        return new ScatterSingleAxisSeriesOpts();
     }
 
     /**
@@ -56,7 +65,7 @@ public abstract class SeriesOpts<SO extends SeriesOpts<SO>> {
      *
      * @since 2.0.0
      */
-    public static HeatmapCartesian2DSeriesOpts ofHeatmapCartesian2d() {
+    public static HeatmapCartesian2DSeriesOpts ofHeatmap() {
         return new HeatmapCartesian2DSeriesOpts();
     }
 

@@ -2,8 +2,10 @@ package org.dflib.echarts;
 
 import org.dflib.echarts.render.option.Distance;
 
-public class BarSeriesOpts extends CartesianSeriesOpts<BarSeriesOpts> {
+public class BarSeriesOpts extends SeriesOpts<BarSeriesOpts> implements CartesianSeriesOpts {
 
+    Integer xAxisIndex;
+    Integer yAxisIndex;
     Label label;
     boolean stack;
     Distance barWidth;
@@ -17,6 +19,39 @@ public class BarSeriesOpts extends CartesianSeriesOpts<BarSeriesOpts> {
     @Override
     public ChartType getType() {
         return ChartType.bar;
+    }
+
+    @Override
+    public CoordinateSystemType getCoordinateSystemType() {
+        return CoordinateSystemType.cartesian2d;
+    }
+
+    @Override
+    public Integer getXAxisIndex() {
+        return xAxisIndex;
+    }
+
+    @Override
+    public Integer getYAxisIndex() {
+        return yAxisIndex;
+    }
+
+    /**
+     * Sets an index of X axis to use for this Series. There can be one or more X axes, so this method allows to
+     * pick one. If not set, 0 is assumed.
+     */
+    public BarSeriesOpts xAxisIndex(int index) {
+        this.xAxisIndex = index;
+        return this;
+    }
+
+    /**
+     * Sets an index of Y axis to use for this Series. There can be one or more Y axes, so this method allows to
+     * pick one. If not set, 0 is assumed.
+     */
+    public BarSeriesOpts yAxisIndex(int index) {
+        this.yAxisIndex = index;
+        return this;
     }
 
     public BarSeriesOpts stack() {

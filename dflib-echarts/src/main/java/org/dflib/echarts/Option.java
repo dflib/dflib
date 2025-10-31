@@ -22,6 +22,7 @@ public class Option {
     List<CalendarCoordsBuilder> calendars;
     List<XAxisBuilder> xAxes;
     List<YAxis> yAxes;
+    List<SingleAxisBuilder> singleAxes;
 
     final List<SeriesOpts<?>> seriesOpts;
     final List<Index> seriesDataColumns;
@@ -145,6 +146,40 @@ public class Option {
     }
 
     /**
+     * Adds a "single" axis to the chart that will be bound to the provided data column.
+     *
+     * @since 2.0.0
+     */
+    public Option singleAxis(String dataColumn, SingleAxis axis) {
+        Objects.requireNonNull(axis);
+
+        if (this.singleAxes == null) {
+            this.singleAxes = new ArrayList<>(3);
+        }
+
+        this.singleAxes.add(new SingleAxisBuilder(dataColumn, axis));
+        return this;
+    }
+
+    /**
+     * Adds a "single" axis to the chart.
+     *
+     * @since 2.0.0
+     */
+    public Option singleAxis(SingleAxis axis) {
+        return singleAxis(null, axis);
+    }
+
+    /**
+     * Adds a categorical "single" axis to the chart that will be bound to the provided data column.
+     *
+     * @since 2.0.0
+     */
+    public Option singleAxis(String dataColumn) {
+        return singleAxis(dataColumn, SingleAxis.ofCategory());
+    }
+
+    /**
      * Specifies a DataFrame column to be plotted as individual series and configuration for series display.
      */
     public Option series(SeriesOpts opts, Index dataColumns) {
@@ -193,6 +228,10 @@ public class Option {
             yAxes = List.of(YAxis.ofDefault());
         }
 
+        if (singleAxes == null && useSingleAxisDefaults()) {
+            singleAxes = List.of(new SingleAxisBuilder(null, SingleAxis.ofValue()));
+        }
+
         if (calendars == null && useCalendarDefaults()) {
             calendars = List.of(new CalendarCoordsBuilder(null, CalendarCoords.ofLast12Months()));
         }
@@ -201,6 +240,10 @@ public class Option {
     private boolean useCartesianDefaults() {
         return seriesOpts.isEmpty()
                 || seriesOpts.stream().anyMatch(s -> s.getCoordinateSystemType().isCartesian());
+    }
+
+    private boolean useSingleAxisDefaults() {
+        return seriesOpts.stream().anyMatch(s -> s.getCoordinateSystemType().isSingleAxis());
     }
 
     private boolean useCalendarDefaults() {

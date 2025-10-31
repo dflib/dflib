@@ -34,6 +34,7 @@ class DatasetBuilder {
 
         DatasetBuilder dsb = new DatasetBuilder(dataFrame);
         appendXAxesLabels(dsb, opt.xAxes);
+        appendSingleAxesLabels(dsb, opt.singleAxes);
         appendSymbolSizes(dsb, opt.seriesOpts);
         appendItemStyleColors(dsb, opt.seriesOpts);
         appendPieChartLabels(dsb, opt.seriesOpts);
@@ -51,9 +52,22 @@ class DatasetBuilder {
                 if (ab.columnName != null) {
                     dsb.appendExtraRow(dsb.dataFrame.getColumn(ab.columnName), DatasetRowType.xAxisLabels, i);
                 } else {
-                    // TODO: appending X data as a Series to prevent column reuse which is not possible until
+                    // TODO: appending axis data as a Series to prevent column reuse which is not possible until
                     //  https://github.com/apache/echarts/issues/20330 is fixed
                     dsb.appendExtraRow(new IntSequenceSeries(1, dsb.dataFrame.height() + 1), DatasetRowType.xAxisLabels, i);
+                }
+            }
+        }
+    }
+
+    private static void appendSingleAxesLabels(DatasetBuilder dsb, List<SingleAxisBuilder> ss) {
+
+        if (ss != null) {
+            int len = ss.size();
+            for (int i = 0; i < len; i++) {
+                SingleAxisBuilder ab = ss.get(i);
+                if (ab.columnName != null) {
+                    dsb.appendExtraRow(dsb.dataFrame.getColumn(ab.columnName), DatasetRowType.singleAxisLabel, i);
                 }
             }
         }
@@ -231,7 +245,7 @@ class DatasetBuilder {
     }
 
     enum DatasetRowType {
-        xAxisLabels, symbolSize, itemStyleColor, pieItemName, seriesData
+        xAxisLabels, singleAxisLabel, symbolSize, itemStyleColor, pieItemName, seriesData
     }
 
     static class DatasetRow {

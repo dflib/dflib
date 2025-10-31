@@ -166,7 +166,7 @@ public class EChart {
     }
 
     /**
-     * Add one or more configured Y axes of the chart.
+     * Add one or more Y axes to the chart.
      */
     public EChart yAxes(YAxis... axes) {
         option.yAxes(axes);
@@ -174,10 +174,40 @@ public class EChart {
     }
 
     /**
-     * Add a configured Y axis of the chart.
+     * Add a Y axis to the chart.
      */
     public EChart yAxis(YAxis axis) {
         option.yAxis(axis);
+        return this;
+    }
+
+    /**
+     * Add a "single" axis to the chart.
+     *
+     * @since 2.0.0
+     */
+    public EChart singleAxis(String dataColumn) {
+        option.singleAxis(dataColumn);
+        return this;
+    }
+
+    /**
+     * Add a "single" axis to the chart.
+     *
+     * @since 2.0.0
+     */
+    public EChart singleAxis(String dataColumn, SingleAxis axis) {
+        option.singleAxis(dataColumn, axis);
+        return this;
+    }
+
+    /**
+     * Add a "single" axis to the chart.
+     *
+     * @since 2.0.0
+     */
+    public EChart singleAxis(SingleAxis axis) {
+        option.singleAxis(axis);
         return this;
     }
 

@@ -1,7 +1,9 @@
 package org.dflib.echarts;
 
-public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
+public class LineSeriesOpts extends SeriesOpts<LineSeriesOpts> implements CartesianSeriesOpts {
 
+    Integer xAxisIndex;
+    Integer yAxisIndex;
     Label label;
     Boolean areaStyle;
     LineSymbol symbol;
@@ -15,6 +17,39 @@ public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
     @Override
     public ChartType getType() {
         return ChartType.line;
+    }
+
+    @Override
+    public CoordinateSystemType getCoordinateSystemType() {
+        return CoordinateSystemType.cartesian2d;
+    }
+
+    @Override
+    public Integer getXAxisIndex() {
+        return xAxisIndex;
+    }
+
+    @Override
+    public Integer getYAxisIndex() {
+        return yAxisIndex;
+    }
+
+    /**
+     * Sets an index of X axis to use for this Series. There can be one or more X axes, so this method allows to
+     * pick one. If not set, 0 is assumed.
+     */
+    public LineSeriesOpts xAxisIndex(int index) {
+        this.xAxisIndex = index;
+        return this;
+    }
+
+    /**
+     * Sets an index of Y axis to use for this Series. There can be one or more Y axes, so this method allows to
+     * pick one. If not set, 0 is assumed.
+     */
+    public LineSeriesOpts yAxisIndex(int index) {
+        this.yAxisIndex = index;
+        return this;
     }
 
     public LineSeriesOpts smooth() {

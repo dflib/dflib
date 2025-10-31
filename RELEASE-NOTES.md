@@ -12,6 +12,7 @@
 * #548 ECharts: upgrade to 6.0.0
 * #549 ECharts: Allow custom themes (experimental)
 * #551 ECharts: NPE with two series reusing column names
+* #552 ECharts: scatter plots on a single axis
 
 ## Release 2.0.0-M4
 

@@ -6,14 +6,27 @@ public class EncodeModel {
 
     private final Integer x;
     private final ValueModels<Integer> ys;
+    private final Integer single;
     private final Integer value;
     private final Integer itemName;
 
-    public EncodeModel(Integer x, ValueModels<Integer> ys, Integer itemName, Integer value) {
+    /**
+     * @since 2.0.0
+     */
+    public EncodeModel(Integer x, ValueModels<Integer> ys, Integer single, Integer itemName, Integer value) {
         this.itemName = itemName;
         this.x = x;
         this.ys = ys;
+        this.single = single;
         this.value = value;
+    }
+
+    /**
+     * @deprecated in favor of a wider constructor.
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public EncodeModel(Integer x, ValueModels<Integer> ys, Integer itemName, Integer value) {
+        this(x, ys, null, itemName, value);
     }
 
     public Integer getX() {
@@ -34,6 +47,13 @@ public class EncodeModel {
 
     public Integer getY() {
         return ys.getValue(0);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Integer getSingle() {
+        return single;
     }
 
     public Integer getItemName() {
