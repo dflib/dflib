@@ -152,27 +152,28 @@ class DatasetBuilder {
     private final DataFrame dataFrame;
 
     final List<DatasetRow> rows;
-    private final Map<String, Integer> rowPosByDataColumn;
+    private final Set<String> seenDataColumns;
     private final Map<Integer, String> dataColumnByRowPos;
 
     DatasetBuilder(DataFrame dataFrame) {
         this.dataFrame = dataFrame;
 
         this.rows = new ArrayList<>();
-        this.rowPosByDataColumn = new HashMap<>();
+        this.seenDataColumns = new HashSet<>();
         this.dataColumnByRowPos = new HashMap<>();
     }
 
     private void appendChartSeriesRow(String dataColumnName, int seriesPos) {
         Objects.requireNonNull(dataColumnName);
 
-        Integer existingPos = rowPosByDataColumn.get(dataColumnName);
-        if (existingPos == null) {
-            int pos = rows.size();
-            rows.add(new DatasetRow(dataFrame.getColumn(dataColumnName), DatasetRowType.seriesData, seriesPos));
-            rowPosByDataColumn.put(dataColumnName, pos);
-            dataColumnByRowPos.put(pos, dataColumnName);
-        }
+        // "dataColumnName" can be used multiple times (e.g., when the same column is used by multiple plot series).
+        // We'll register a separate dataset row for each one of the duplicates.
+
+        int pos = rows.size();
+        rows.add(new DatasetRow(dataFrame.getColumn(dataColumnName), DatasetRowType.seriesData, seriesPos));
+        seenDataColumns.add(dataColumnName);
+        dataColumnByRowPos.put(pos, dataColumnName);
+
     }
 
     // Append a row that is not present in the DataFrame.
@@ -194,7 +195,7 @@ class DatasetBuilder {
         Supplier<String> labelMaker = new Supplier<>() {
 
             final String baseLabel = "L";
-            final Set<String> seen = new HashSet<>(rowPosByDataColumn.keySet());
+            final Set<String> seen = new HashSet<>(seenDataColumns);
             int labelCounter = 0;
 
             @Override

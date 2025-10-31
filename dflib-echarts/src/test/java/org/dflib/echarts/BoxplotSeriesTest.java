@@ -82,4 +82,29 @@ public class BoxplotSeriesTest {
         assertTrue(s2.contains("x: 0,"), s2);
         assertTrue(s2.contains("y: [1,2,3,4,5]"), s2);
     }
+
+    @Test
+    // #551 - two plot series using the same column
+    public void boxplotAndLine() {
+
+        String s2 = ECharts.chart()
+                .series(SeriesOpts.ofBoxplot(), "min", "q1", "median", "q3", "max")
+                .series(SeriesOpts.ofLine(), "median")
+                .plot(df, "_tid").getChartScript();
+
+        assertTrue(s2.contains("dataset"), s2);
+        assertTrue(s2.contains("['L0',1,2,3]"), s2);
+        assertTrue(s2.contains("['min',15,18,15],"), s2);
+        assertTrue(s2.contains("['q1',18,19,20],"), s2);
+        assertTrue(s2.contains("['median',19,20,21],"), s2);
+        assertTrue(s2.contains("['q3',20,25,27],"), s2);
+        assertTrue(s2.contains("['max',21,28,30]"), s2);
+
+        int firstMedian = s2.indexOf("['median',19,20,21],");
+        int secondMedian = s2.indexOf("['median',19,20,21]", firstMedian + 10);
+        assertTrue(secondMedian > 0, s2);
+
+        assertTrue(s2.contains("x: 0,"), s2);
+        assertTrue(s2.contains("y: [1,2,3,4,5]"), s2);
+    }
 }

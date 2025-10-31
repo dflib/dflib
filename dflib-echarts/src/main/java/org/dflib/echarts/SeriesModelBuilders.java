@@ -81,7 +81,7 @@ class SeriesModelBuilders {
                     // laid out in JS
                     series.get(row.pos).datasetSeriesLayoutBy("row");
 
-                    // multiple dimensions can be appended to the same series in a loops
+                    // multiple dimensions can be appended to the same series in a loop
                     series.get(row.pos).yDimension(i);
 
                     break;
