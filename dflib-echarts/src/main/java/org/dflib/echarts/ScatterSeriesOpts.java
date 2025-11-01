@@ -1,6 +1,9 @@
 package org.dflib.echarts;
 
-public abstract class ScatterSeriesOpts<SO extends ScatterSeriesOpts<SO>> extends SeriesOpts<SO> implements NamedItemOpts {
+public abstract class ScatterSeriesOpts<SO extends ScatterSeriesOpts<SO>> extends SeriesOpts<SO> implements
+        SeriesOptsNamedItems,
+        SeriesOptsItemStyleColor,
+        SeriesOptsItemSymbolSize {
 
     ColumnLinkedLabel label;
     ScatterItemStyle itemStyle;
@@ -12,8 +15,18 @@ public abstract class ScatterSeriesOpts<SO extends ScatterSeriesOpts<SO>> extend
     }
 
     @Override
-    public String getItemNameData() {
+    public String getItemNameSeries() {
         return label != null ? label.columnName : null;
+    }
+
+    @Override
+    public String getItemStyleColorSeries() {
+        return itemStyle != null && itemStyle.color != null && itemStyle.color.isSeries() ? itemStyle.color.seriesName : null;
+    }
+
+    @Override
+    public String getItemSymbolSizeSeries() {
+        return symbolSize != null && symbolSize.isSeries() ? symbolSize.seriesName : null;
     }
 
     /**

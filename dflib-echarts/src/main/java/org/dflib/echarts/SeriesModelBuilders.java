@@ -118,8 +118,8 @@ class SeriesModelBuilders {
         }
 
         Integer i = null;
-        if (series instanceof CartesianSeriesOpts) {
-            i = ((CartesianSeriesOpts) series).getXAxisIndex();
+        if (series instanceof SeriesOptsCoordsCartesian2D) {
+            i = ((SeriesOptsCoordsCartesian2D) series).getXAxisIndex();
         }
 
         // by default should pick the first X axis
@@ -132,8 +132,8 @@ class SeriesModelBuilders {
         }
 
         Integer i = null;
-        if (series instanceof SingleAxisSeriesOpts) {
-            i = ((SingleAxisSeriesOpts) series).getSingleAxisIndex();
+        if (series instanceof SeriesOptsCoordsSingleAxis) {
+            i = ((SeriesOptsCoordsSingleAxis) series).getSingleAxisIndex();
         }
 
         // by default should pick the first axis

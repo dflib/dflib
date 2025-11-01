@@ -1,6 +1,6 @@
 package org.dflib.echarts;
 
-interface CartesianSeriesOpts {
+interface SeriesOptsCoordsCartesian2D {
 
     Integer getXAxisIndex();
 

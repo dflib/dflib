@@ -1,6 +1,6 @@
 package org.dflib.echarts;
 
-interface SingleAxisSeriesOpts {
+interface SeriesOptsCoordsSingleAxis {
 
     Integer getSingleAxisIndex();
 }

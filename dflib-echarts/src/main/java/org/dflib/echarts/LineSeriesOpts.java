@@ -1,6 +1,9 @@
 package org.dflib.echarts;
 
-public class LineSeriesOpts extends SeriesOpts<LineSeriesOpts> implements CartesianSeriesOpts {
+public class LineSeriesOpts extends SeriesOpts<LineSeriesOpts> implements
+        SeriesOptsCoordsCartesian2D,
+        SeriesOptsItemStyleColor,
+        SeriesOptsItemSymbolSize {
 
     Integer xAxisIndex;
     Integer yAxisIndex;
@@ -32,6 +35,16 @@ public class LineSeriesOpts extends SeriesOpts<LineSeriesOpts> implements Cartes
     @Override
     public Integer getYAxisIndex() {
         return yAxisIndex;
+    }
+
+    @Override
+    public String getItemStyleColorSeries() {
+        return itemStyle != null && itemStyle.color != null && itemStyle.color.isSeries() ? itemStyle.color.seriesName : null;
+    }
+
+    @Override
+    public String getItemSymbolSizeSeries() {
+        return symbolSize != null && symbolSize.isSeries() ? symbolSize.seriesName : null;
     }
 
     /**

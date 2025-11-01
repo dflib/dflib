@@ -2,7 +2,8 @@ package org.dflib.echarts;
 
 import org.dflib.echarts.render.option.Distance;
 
-public class BarSeriesOpts extends SeriesOpts<BarSeriesOpts> implements CartesianSeriesOpts {
+public class BarSeriesOpts extends SeriesOpts<BarSeriesOpts>
+        implements SeriesOptsCoordsCartesian2D, SeriesOptsItemStyleColor {
 
     Integer xAxisIndex;
     Integer yAxisIndex;
@@ -34,6 +35,11 @@ public class BarSeriesOpts extends SeriesOpts<BarSeriesOpts> implements Cartesia
     @Override
     public Integer getYAxisIndex() {
         return yAxisIndex;
+    }
+
+    @Override
+    public String getItemStyleColorSeries() {
+        return itemStyle != null && itemStyle.color != null && itemStyle.color.isSeries() ? itemStyle.color.seriesName : null;
     }
 
     /**

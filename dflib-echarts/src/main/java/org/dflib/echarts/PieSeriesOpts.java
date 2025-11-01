@@ -2,7 +2,7 @@ package org.dflib.echarts;
 
 import org.dflib.echarts.render.option.Distance;
 
-public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> implements NamedItemOpts {
+public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> implements SeriesOptsNamedItems {
 
     Distance[] radius;
     Distance[] center;
@@ -24,7 +24,7 @@ public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> implements NamedIte
     }
 
     @Override
-    public String getItemNameData() {
+    public String getItemNameSeries() {
         return label != null ? label.columnName : null;
     }
 

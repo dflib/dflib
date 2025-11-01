@@ -1,6 +1,6 @@
 package org.dflib.echarts;
 
-public class BoxplotSeriesOpts extends SeriesOpts<BoxplotSeriesOpts> implements CartesianSeriesOpts {
+public class BoxplotSeriesOpts extends SeriesOpts<BoxplotSeriesOpts> implements SeriesOptsCoordsCartesian2D {
 
     Integer xAxisIndex;
     Integer yAxisIndex;

@@ -3,7 +3,7 @@ package org.dflib.echarts;
 /**
  * @since 2.0.0
  */
-public class ScatterSingleAxisSeriesOpts extends ScatterSeriesOpts<ScatterSingleAxisSeriesOpts> implements SingleAxisSeriesOpts {
+public class ScatterSingleAxisSeriesOpts extends ScatterSeriesOpts<ScatterSingleAxisSeriesOpts> implements SeriesOptsCoordsSingleAxis {
 
     Integer singleAxisIndex;
 

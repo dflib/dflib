@@ -3,7 +3,7 @@ package org.dflib.echarts;
 /**
  * @since 2.0.0
  */
-public class ScatterCartesian2DSeriesOpts extends ScatterSeriesOpts<ScatterCartesian2DSeriesOpts> implements CartesianSeriesOpts {
+public class ScatterCartesian2DSeriesOpts extends ScatterSeriesOpts<ScatterCartesian2DSeriesOpts> implements SeriesOptsCoordsCartesian2D {
 
     Integer xAxisIndex;
     Integer yAxisIndex;

@@ -1,6 +1,6 @@
 package org.dflib.echarts;
 
-public class CandlestickSeriesOpts extends SeriesOpts<CandlestickSeriesOpts> implements CartesianSeriesOpts {
+public class CandlestickSeriesOpts extends SeriesOpts<CandlestickSeriesOpts> implements SeriesOptsCoordsCartesian2D {
 
     Integer xAxisIndex;
     Integer yAxisIndex;

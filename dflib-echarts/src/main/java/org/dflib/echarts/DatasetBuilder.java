@@ -78,23 +78,13 @@ class DatasetBuilder {
         int len = series.size();
         for (int i = 0; i < len; i++) {
 
-            SeriesOpts<?> opts = series.get(i);
+            SeriesOpts<?> so = series.get(i);
 
-            if (opts instanceof LineSeriesOpts) {
-                LineSeriesOpts sso = (LineSeriesOpts) opts;
-                if (sso.symbolSize != null && sso.symbolSize.isSeries()) {
-                    // TODO: appending X data as a Series to prevent column reuse. Two problems with reuse:
-                    //  1. https://github.com/apache/echarts/issues/20330
-                    //  2. The row type may change, and we won't detect that it is a label (this is fixable in DFLib by allowing multiple row types)
-                    dsb.appendExtraRow(dsb.dataFrame.getColumn(sso.symbolSize.seriesName), DatasetRowType.symbolSize, i);
-                }
-            } else if (opts instanceof ScatterSeriesOpts) {
-                ScatterSeriesOpts sso = (ScatterSeriesOpts) opts;
-                if (sso.symbolSize != null && sso.symbolSize.isSeries()) {
-                    // TODO: appending X data as a Series to prevent column reuse. Two problems with reuse:
-                    //  1. https://github.com/apache/echarts/issues/20330
-                    //  2. The row type may change, and we won't detect that it is a label (this is fixable in DFLib by allowing multiple row types)
-                    dsb.appendExtraRow(dsb.dataFrame.getColumn(sso.symbolSize.seriesName), DatasetRowType.symbolSize, i);
+            if (so instanceof SeriesOptsItemSymbolSize) {
+                SeriesOptsItemSymbolSize soc = (SeriesOptsItemSymbolSize) so;
+                String columnName = soc.getItemSymbolSizeSeries();
+                if (columnName != null) {
+                    dsb.appendExtraRow(dsb.dataFrame.getColumn(columnName), DatasetRowType.symbolSize, i);
                 }
             }
         }
@@ -104,25 +94,15 @@ class DatasetBuilder {
         int len = series.size();
         for (int i = 0; i < len; i++) {
 
-            ValOrSeries<String> color = itemStyleColor(series.get(i));
-            if (color != null && color.isSeries()) {
-                dsb.appendExtraRow(dsb.dataFrame.getColumn(color.seriesName), DatasetRowType.itemStyleColor, i);
-            }
-        }
-    }
+            SeriesOpts<?> so = series.get(i);
 
-    private static ValOrSeries<String> itemStyleColor(SeriesOpts<?> opts) {
-        if (opts instanceof LineSeriesOpts) {
-            LineSeriesOpts so = (LineSeriesOpts) opts;
-            return so.itemStyle != null ? so.itemStyle.color : null;
-        } else if (opts instanceof BarSeriesOpts) {
-            BarSeriesOpts so = (BarSeriesOpts) opts;
-            return so.itemStyle != null ? so.itemStyle.color : null;
-        } else if (opts instanceof ScatterSeriesOpts) {
-            ScatterSeriesOpts so = (ScatterSeriesOpts) opts;
-            return so.itemStyle != null ? so.itemStyle.color : null;
-        } else {
-            return null;
+            if (so instanceof SeriesOptsItemStyleColor) {
+                SeriesOptsItemStyleColor soc = (SeriesOptsItemStyleColor) so;
+                String columnName = soc.getItemStyleColorSeries();
+                if (columnName != null) {
+                    dsb.appendExtraRow(dsb.dataFrame.getColumn(columnName), DatasetRowType.itemStyleColor, i);
+                }
+            }
         }
     }
 
@@ -131,12 +111,12 @@ class DatasetBuilder {
         int len = series.size();
         for (int i = 0; i < len; i++) {
 
-            SeriesOpts<?> opts = series.get(i);
+            SeriesOpts<?> so = series.get(i);
 
-            if (opts instanceof NamedItemOpts) {
-                NamedItemOpts pco = (NamedItemOpts) opts;
-                if (pco.getItemNameData() != null) {
-                    dsb.appendExtraRow(dsb.dataFrame.getColumn(pco.getItemNameData()), DatasetRowType.itemName, i);
+            if (so instanceof SeriesOptsNamedItems) {
+                SeriesOptsNamedItems soc = (SeriesOptsNamedItems) so;
+                if (soc.getItemNameSeries() != null) {
+                    dsb.appendExtraRow(dsb.dataFrame.getColumn(soc.getItemNameSeries()), DatasetRowType.itemName, i);
                 }
             }
         }
@@ -154,7 +134,6 @@ class DatasetBuilder {
             }
         }
     }
-
 
     private final DataFrame dataFrame;
 
