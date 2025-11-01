@@ -125,7 +125,7 @@ class SeriesModelBuilder {
                 so.getType().name(),
                 null,
                 new EncodeModel(xDimension, ValueModels.of(valueDimensions), null, null, null),
-                so.label != null ? so.label.resolve() : null,
+                so.label != null ? so.label.resolve(itemNameDimension) : null,
                 datasetSeriesLayoutBy,
                 null,
                 null,
@@ -160,7 +160,7 @@ class SeriesModelBuilder {
                 so.getType().name(),
                 null,
                 new EncodeModel(xDimension, ValueModels.of(valueDimensions), null, null, null),
-                so.label != null ? so.label.resolve() : null,
+                so.label != null ? so.label.resolve(itemNameDimension) : null,
                 datasetSeriesLayoutBy,
                 null,
                 so.areaStyle,
@@ -193,7 +193,7 @@ class SeriesModelBuilder {
 
     private SeriesModel scatterCartesian2dModel(ScatterCartesian2DSeriesOpts so) {
 
-        LabelModel labelModel = so.label != null && so.label.label != null ? so.label.label.resolve() : null;
+        LabelModel labelModel = so.label != null && so.label.label != null ? so.label.label.resolve(itemNameDimension) : null;
 
         String symbolSize = symbolSizeDimension != null
                 ? ValOrSeries.jsFunctionWithArrayParam(symbolSizeDimension)
@@ -234,7 +234,7 @@ class SeriesModelBuilder {
         Integer valueDimension = this.valueDimensions != null && !this.valueDimensions.isEmpty() ? this.valueDimensions.get(0) : null;
         Integer singleAxisDimension = this.singleAxisDimension != null ? this.singleAxisDimension : valueDimension;
 
-        LabelModel labelModel = so.label != null && so.label.label != null ? so.label.label.resolve() : null;
+        LabelModel labelModel = so.label != null && so.label.label != null ? so.label.label.resolve(itemNameDimension) : null;
 
         String symbolSize = symbolSizeDimension != null
                 ? ValOrSeries.jsFunctionWithArrayParam(symbolSizeDimension)

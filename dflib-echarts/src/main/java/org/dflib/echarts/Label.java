@@ -78,7 +78,13 @@ public class Label {
         return this;
     }
 
-    LabelModel resolve() {
+    LabelModel resolve(Integer itemNameDimension) {
+
+        // point label to the item name, unless formatter is set explicitly
+        String formatter = this.formatter != null
+                ? this.formatter
+                : (itemNameDimension != null ? "{@[" + itemNameDimension + "]}" : null);
+
         return new LabelModel(
                 show,
                 formatter,
