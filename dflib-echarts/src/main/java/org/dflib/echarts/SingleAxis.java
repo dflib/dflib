@@ -17,6 +17,10 @@ public class SingleAxis {
     private Distance bottom;
     private Distance width;
     private Distance height;
+    private Min min;
+    private Max max;
+    private Boolean scale;
+
 
     public static SingleAxis of(AxisType type) {
         return new SingleAxis(type);
@@ -142,6 +146,31 @@ public class SingleAxis {
         return this;
     }
 
+    public SingleAxis min(double value) {
+        this.min = new Min(false, value);
+        return this;
+    }
+
+    public SingleAxis minData() {
+        this.min = new Min(true, 0.);
+        return this;
+    }
+
+    public SingleAxis max(double value) {
+        this.max = new Max(false, value);
+        return this;
+    }
+
+    public SingleAxis maxData() {
+        this.max = new Max(true, 0.);
+        return this;
+    }
+
+    public SingleAxis scale(boolean scale) {
+        this.scale = scale;
+        return this;
+    }
+
     SingleAxisModel resolve() {
         return new SingleAxisModel(
                 name,
@@ -152,8 +181,38 @@ public class SingleAxis {
                 top != null ? top.asString() : null,
                 bottom != null ? bottom.asString() : null,
                 width != null ? width.asString() : null, // ignoring 'auto' option, which is the default
-                height != null ? height.asString() : null // ignoring 'auto' option, which is the default
+                height != null ? height.asString() : null, // ignoring 'auto' option, which is the default
+                min != null ? min.asString() : null,
+                max != null ? max.asString() : null,
+                scale
         );
     }
 
+    static class Min {
+        final boolean dataMin;
+        final double value;
+
+        public Min(boolean dataMin, double value) {
+            this.dataMin = dataMin;
+            this.value = value;
+        }
+
+        public String asString() {
+            return dataMin ? "'dataMin'" : String.valueOf(value);
+        }
+    }
+
+    static class Max {
+        final boolean dataMax;
+        final double value;
+
+        public Max(boolean dataMax, double value) {
+            this.dataMax = dataMax;
+            this.value = value;
+        }
+
+        public String asString() {
+            return dataMax ? "'dataMax'" : String.valueOf(value);
+        }
+    }
 }

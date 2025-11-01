@@ -101,4 +101,46 @@ public class SingleAxisTest {
         String s3 =  ECharts.chart().singleAxis(SingleAxis.ofValue().widthPx(20)).plot(df1, "_tid").getChartScript();
         assertTrue(s3.contains("width: 20"), s3);
     }
+
+    @Test
+    public void scale() {
+
+        String s1 = ECharts.chart().singleAxis(SingleAxis.ofValue()).plot(df1, "_tid").getChartScript();
+        assertTrue(s1.contains("singleAxis: ["), s1);
+        assertFalse(s1.contains("scale:"), s1);
+
+        String s2 =  ECharts.chart().singleAxis(SingleAxis.ofValue().scale(true)).plot(df1, "_tid").getChartScript();
+        assertTrue(s2.contains("scale: true"), s2);
+
+        String s3 =  ECharts.chart().singleAxis(SingleAxis.ofValue().scale(false)).plot(df1, "_tid").getChartScript();
+        assertTrue(s3.contains("scale: false"), s3);
+    }
+
+    @Test
+    public void min() {
+
+        String s1 = ECharts.chart().singleAxis(SingleAxis.ofValue()).plot(df1, "_tid").getChartScript();
+        assertTrue(s1.contains("singleAxis: ["), s1);
+        assertFalse(s1.contains("min:"), s1);
+
+        String s2 =  ECharts.chart().singleAxis(SingleAxis.ofValue().minData()).plot(df1, "_tid").getChartScript();
+        assertTrue(s2.contains("min: 'dataMin',"), s2);
+
+        String s3 =  ECharts.chart().singleAxis(SingleAxis.ofValue().min(-1.1)).plot(df1, "_tid").getChartScript();
+        assertTrue(s3.contains("min: -1.1"), s3);
+    }
+
+    @Test
+    public void max() {
+
+        String s1 = ECharts.chart().singleAxis(SingleAxis.ofValue()).plot(df1, "_tid").getChartScript();
+        assertTrue(s1.contains("singleAxis: ["), s1);
+        assertFalse(s1.contains("max:"), s1);
+
+        String s2 =  ECharts.chart().singleAxis(SingleAxis.ofValue().maxData()).plot(df1, "_tid").getChartScript();
+        assertTrue(s2.contains("max: 'dataMax',"), s2);
+
+        String s3 =  ECharts.chart().singleAxis(SingleAxis.ofValue().max(1.1)).plot(df1, "_tid").getChartScript();
+        assertTrue(s3.contains("max: 1.1"), s3);
+    }
 }

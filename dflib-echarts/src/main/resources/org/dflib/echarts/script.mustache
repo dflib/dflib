@@ -350,6 +350,15 @@ var chart_{{id}} = echarts.init(
             {{#height}}
                 height: {{{.}}},
             {{/height}}
+            {{#min}}
+                min: {{{.}}},
+            {{/min}}
+            {{#max}}
+                max: {{{.}}},
+            {{/max}}
+            {{#scalePresent}}
+                scale: {{scale}},
+            {{/scalePresent}}
             {{#type}}
                 type: '{{.}}'
             {{/type}}

@@ -16,6 +16,9 @@ public class SingleAxisModel {
     private final String bottom;
     private final String width;
     private final String height;
+    private final String min;
+    private final String max;
+    private final Boolean scale;
 
     public SingleAxisModel(
             String name,
@@ -26,7 +29,10 @@ public class SingleAxisModel {
             String top,
             String bottom,
             String width,
-            String height) {
+            String height,
+            String min,
+            String max,
+            Boolean scale) {
 
         this.name = name;
         this.type = type;
@@ -37,6 +43,9 @@ public class SingleAxisModel {
         this.top = top;
         this.width = width;
         this.height = height;
+        this.min = min;
+        this.max = max;
+        this.scale = scale;
     }
 
     public String getName() {
@@ -81,5 +90,21 @@ public class SingleAxisModel {
 
     public String getHeight() {
         return height;
+    }
+
+    public String getMin() {
+        return min;
+    }
+
+    public String getMax() {
+        return max;
+    }
+
+    public boolean isScalePresent() {
+        return scale != null;
+    }
+
+    public Boolean getScale() {
+        return scale;
     }
 }
