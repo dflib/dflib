@@ -2,12 +2,13 @@ package org.dflib.echarts;
 
 public class LineSeriesOpts extends SeriesOpts<LineSeriesOpts> implements
         SeriesOptsCoordsCartesian2D,
+        SeriesOptsNamedItems,
         SeriesOptsItemStyleColor,
         SeriesOptsItemSymbolSize {
 
     Integer xAxisIndex;
     Integer yAxisIndex;
-    Label label;
+    ColumnLinkedLabel label;
     Boolean areaStyle;
     LineSymbol symbol;
     Boolean showSymbol;
@@ -35,6 +36,11 @@ public class LineSeriesOpts extends SeriesOpts<LineSeriesOpts> implements
     @Override
     public Integer getYAxisIndex() {
         return yAxisIndex;
+    }
+
+    @Override
+    public String getItemNameSeries() {
+        return label != null ? label.columnName : null;
     }
 
     @Override
@@ -122,13 +128,31 @@ public class LineSeriesOpts extends SeriesOpts<LineSeriesOpts> implements
         return this;
     }
 
+    /**
+     * @deprecated redundant, use {@link #label(Label)} instead.
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public LineSeriesOpts label(LabelPosition position) {
-        this.label = Label.of(position);
-        return this;
+        return label(Label.of(position));
     }
 
     public LineSeriesOpts label(Label label) {
-        this.label = label;
+        this.label = new ColumnLinkedLabel(null, label);
+        return this;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public LineSeriesOpts label(String labelColumn) {
+        return label(labelColumn, null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public LineSeriesOpts label(String labelColumn, Label label) {
+        this.label = new ColumnLinkedLabel(labelColumn, label);
         return this;
     }
 

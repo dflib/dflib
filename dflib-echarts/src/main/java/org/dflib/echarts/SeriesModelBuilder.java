@@ -152,6 +152,7 @@ class SeriesModelBuilder {
     }
 
     private SeriesModel lineModel(LineSeriesOpts so) {
+        LabelModel labelModel = so.label != null && so.label.label != null ? so.label.label.resolve(itemNameDimension) : null;
 
         String symbolSize = symbolSizeDimension != null
                 ? ValOrSeries.jsFunctionWithArrayParam(symbolSizeDimension)
@@ -162,7 +163,7 @@ class SeriesModelBuilder {
                 so.getType().name(),
                 null,
                 new EncodeModel(xDimension, ValueModels.of(valueDimensions), null, null, null),
-                so.label != null ? so.label.resolve(itemNameDimension) : null,
+                labelModel,
                 datasetSeriesLayoutBy,
                 null,
                 so.areaStyle,
