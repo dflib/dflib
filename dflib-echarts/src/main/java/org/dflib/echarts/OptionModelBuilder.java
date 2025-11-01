@@ -31,10 +31,10 @@ class OptionModelBuilder {
                 opt.title != null ? opt.title.resolve() : null,
                 opt.toolbox != null ? opt.toolbox.resolve() : null,
                 opt.tooltip != null ? opt.tooltip.resolve() : null,
-                opt.xAxes != null ? opt.xAxes.stream().map(XAxisBuilder::getAxis).map(XAxis::resolve).collect(Collectors.toList()) : null,
+                opt.xAxes != null ? opt.xAxes.stream().map(ColumnLinkedXAxis::getAxis).map(XAxis::resolve).collect(Collectors.toList()) : null,
                 opt.yAxes != null ? opt.yAxes.stream().map(YAxis::resolve).collect(Collectors.toList()) : null,
-                opt.singleAxes != null ? opt.singleAxes.stream().map(SingleAxisBuilder::getAxis).map(SingleAxis::resolve).collect(Collectors.toList()) : null,
-                opt.calendars != null ? opt.calendars.stream().map(CalendarCoordsBuilder::getCalendar).map(CalendarCoords::resolve).collect(Collectors.toList()) : null,
+                opt.singleAxes != null ? opt.singleAxes.stream().map(ColumnLinkedSingleAxis::getAxis).map(SingleAxis::resolve).collect(Collectors.toList()) : null,
+                opt.calendars != null ? opt.calendars.stream().map(ColumnLinkedCalendarCoords::getCalendar).map(CalendarCoords::resolve).collect(Collectors.toList()) : null,
                 opt.visualMaps != null ? opt.visualMaps.stream().map(VisualMap::resolve).collect(Collectors.toList()) : null
         );
     }

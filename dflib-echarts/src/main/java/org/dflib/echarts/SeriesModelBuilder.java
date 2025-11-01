@@ -436,7 +436,7 @@ class SeriesModelBuilder {
         if (opt.calendars != null) {
             int len = opt.calendars.size();
             for (int i = 0; i < len; i++) {
-                CalendarCoordsBuilder ab = opt.calendars.get(i);
+                ColumnLinkedCalendarCoords ab = opt.calendars.get(i);
                 if (ab.columnName != null) {
                     db.appendCol(dataFrame.getColumn(ab.columnName));
                 }

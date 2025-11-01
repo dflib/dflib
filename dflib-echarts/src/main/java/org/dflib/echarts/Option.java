@@ -19,10 +19,10 @@ public class Option {
     Tooltip tooltip;
     List<Grid> grids;
     List<VisualMap> visualMaps;
-    List<CalendarCoordsBuilder> calendars;
-    List<XAxisBuilder> xAxes;
+    List<ColumnLinkedCalendarCoords> calendars;
+    List<ColumnLinkedXAxis> xAxes;
     List<YAxis> yAxes;
-    List<SingleAxisBuilder> singleAxes;
+    List<ColumnLinkedSingleAxis> singleAxes;
 
     final List<SeriesOpts<?>> seriesOpts;
     final List<Index> seriesDataColumns;
@@ -94,7 +94,7 @@ public class Option {
             calendars = new ArrayList<>(3);
         }
 
-        calendars.add(new CalendarCoordsBuilder(dataColumn, calendar));
+        calendars.add(new ColumnLinkedCalendarCoords(dataColumn, calendar));
         return this;
     }
 
@@ -116,7 +116,7 @@ public class Option {
             xAxes = new ArrayList<>(3);
         }
 
-        xAxes.add(new XAxisBuilder(dataColumn, axis));
+        xAxes.add(new ColumnLinkedXAxis(dataColumn, axis));
         return this;
     }
 
@@ -157,7 +157,7 @@ public class Option {
             this.singleAxes = new ArrayList<>(3);
         }
 
-        this.singleAxes.add(new SingleAxisBuilder(dataColumn, axis));
+        this.singleAxes.add(new ColumnLinkedSingleAxis(dataColumn, axis));
         return this;
     }
 
@@ -221,7 +221,7 @@ public class Option {
         boolean cartesianDefaults = useCartesianDefaults();
 
         if (xAxes == null && cartesianDefaults) {
-            xAxes = List.of(new XAxisBuilder(null, XAxis.ofDefault()));
+            xAxes = List.of(new ColumnLinkedXAxis(null, XAxis.ofDefault()));
         }
 
         if (yAxes == null && cartesianDefaults) {
@@ -229,11 +229,11 @@ public class Option {
         }
 
         if (singleAxes == null && useSingleAxisDefaults()) {
-            singleAxes = List.of(new SingleAxisBuilder(null, SingleAxis.ofValue()));
+            singleAxes = List.of(new ColumnLinkedSingleAxis(null, SingleAxis.ofValue()));
         }
 
         if (calendars == null && useCalendarDefaults()) {
-            calendars = List.of(new CalendarCoordsBuilder(null, CalendarCoords.ofLast12Months()));
+            calendars = List.of(new ColumnLinkedCalendarCoords(null, CalendarCoords.ofLast12Months()));
         }
     }
 

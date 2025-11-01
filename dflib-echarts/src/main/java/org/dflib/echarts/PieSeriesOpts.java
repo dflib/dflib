@@ -6,7 +6,7 @@ public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
 
     Distance[] radius;
     Distance[] center;
-    BoundLabel label;
+    ColumnLinkedPieLabel label;
     Integer startAngle;
     Integer endAngle;
     RoseType roseType;
@@ -24,17 +24,17 @@ public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
     }
 
     public PieSeriesOpts label(String labelColumn) {
-        this.label = new BoundLabel(labelColumn, null);
+        this.label = new ColumnLinkedPieLabel(labelColumn, null);
         return this;
     }
 
     public PieSeriesOpts label(String labelColumn, PieLabel label) {
-        this.label = new BoundLabel(labelColumn, label);
+        this.label = new ColumnLinkedPieLabel(labelColumn, label);
         return this;
     }
 
     public PieSeriesOpts label(PieLabel label) {
-        this.label = new BoundLabel(null, label);
+        this.label = new ColumnLinkedPieLabel(null, label);
         return this;
     }
 
@@ -95,11 +95,11 @@ public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
         return label != null ? label.columnName : null;
     }
 
-    static class BoundLabel {
+    static class ColumnLinkedPieLabel {
         final String columnName;
         final PieLabel label;
 
-        BoundLabel(String columnName, PieLabel label) {
+        ColumnLinkedPieLabel(String columnName, PieLabel label) {
             this.columnName = columnName;
             this.label = label;
         }

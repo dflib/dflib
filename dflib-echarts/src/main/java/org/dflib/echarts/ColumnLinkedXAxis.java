@@ -1,10 +1,10 @@
 package org.dflib.echarts;
 
-class XAxisBuilder {
+class ColumnLinkedXAxis {
     final String columnName;
     final XAxis axis;
 
-    XAxisBuilder(String columnName, XAxis axis) {
+    ColumnLinkedXAxis(String columnName, XAxis axis) {
         this.columnName = columnName;
         this.axis = axis;
     }

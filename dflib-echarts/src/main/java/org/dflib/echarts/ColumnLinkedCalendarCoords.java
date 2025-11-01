@@ -1,10 +1,10 @@
 package org.dflib.echarts;
 
-class CalendarCoordsBuilder {
+class ColumnLinkedCalendarCoords {
     final String columnName;
     final CalendarCoords calendar;
 
-    CalendarCoordsBuilder(String columnName, CalendarCoords calendar) {
+    ColumnLinkedCalendarCoords(String columnName, CalendarCoords calendar) {
         this.columnName = columnName;
         this.calendar = calendar;
     }

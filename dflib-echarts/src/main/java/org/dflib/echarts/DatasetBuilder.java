@@ -43,12 +43,12 @@ class DatasetBuilder {
         return dsb;
     }
 
-    private static void appendXAxesLabels(DatasetBuilder dsb, List<XAxisBuilder> xs) {
+    private static void appendXAxesLabels(DatasetBuilder dsb, List<ColumnLinkedXAxis> xs) {
 
         if (xs != null) {
             int len = xs.size();
             for (int i = 0; i < len; i++) {
-                XAxisBuilder ab = xs.get(i);
+                ColumnLinkedXAxis ab = xs.get(i);
                 if (ab.columnName != null) {
                     dsb.appendExtraRow(dsb.dataFrame.getColumn(ab.columnName), DatasetRowType.xAxisLabels, i);
                 } else {
@@ -60,12 +60,12 @@ class DatasetBuilder {
         }
     }
 
-    private static void appendSingleAxesLabels(DatasetBuilder dsb, List<SingleAxisBuilder> ss) {
+    private static void appendSingleAxesLabels(DatasetBuilder dsb, List<ColumnLinkedSingleAxis> ss) {
 
         if (ss != null) {
             int len = ss.size();
             for (int i = 0; i < len; i++) {
-                SingleAxisBuilder ab = ss.get(i);
+                ColumnLinkedSingleAxis ab = ss.get(i);
                 if (ab.columnName != null) {
                     dsb.appendExtraRow(dsb.dataFrame.getColumn(ab.columnName), DatasetRowType.singleAxisLabel, i);
                 }
