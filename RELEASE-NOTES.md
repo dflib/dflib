@@ -13,6 +13,7 @@
 * #549 ECharts: Allow custom themes (experimental)
 * #551 ECharts: NPE with two series reusing column names
 * #552 ECharts: scatter plots on a single axis
+* #553 ECharts: bar chart to allow an arbitrary column to be used in bar labeling
 
 ## Release 2.0.0-M4
 

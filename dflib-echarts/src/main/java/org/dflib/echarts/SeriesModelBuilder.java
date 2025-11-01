@@ -120,12 +120,14 @@ class SeriesModelBuilder {
     }
 
     private SeriesModel barModel(BarSeriesOpts so) {
+        LabelModel labelModel = so.label != null && so.label.label != null ? so.label.label.resolve(itemNameDimension) : null;
+
         return new SeriesModel(
                 name,
                 so.getType().name(),
                 null,
                 new EncodeModel(xDimension, ValueModels.of(valueDimensions), null, null, null),
-                so.label != null ? so.label.resolve(itemNameDimension) : null,
+                labelModel,
                 datasetSeriesLayoutBy,
                 null,
                 null,

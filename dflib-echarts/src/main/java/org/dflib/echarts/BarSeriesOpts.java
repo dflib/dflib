@@ -2,12 +2,14 @@ package org.dflib.echarts;
 
 import org.dflib.echarts.render.option.Distance;
 
-public class BarSeriesOpts extends SeriesOpts<BarSeriesOpts>
-        implements SeriesOptsCoordsCartesian2D, SeriesOptsItemStyleColor {
+public class BarSeriesOpts extends SeriesOpts<BarSeriesOpts> implements
+        SeriesOptsCoordsCartesian2D,
+        SeriesOptsNamedItems,
+        SeriesOptsItemStyleColor {
 
     Integer xAxisIndex;
     Integer yAxisIndex;
-    Label label;
+    ColumnLinkedLabel label;
     boolean stack;
     Distance barWidth;
     BarItemStyle itemStyle;
@@ -38,6 +40,11 @@ public class BarSeriesOpts extends SeriesOpts<BarSeriesOpts>
     }
 
     @Override
+    public String getItemNameSeries() {
+        return label != null ? label.columnName : null;
+    }
+
+    @Override
     public String getItemStyleColorSeries() {
         return itemStyle != null && itemStyle.color != null && itemStyle.color.isSeries() ? itemStyle.color.seriesName : null;
     }
@@ -65,13 +72,32 @@ public class BarSeriesOpts extends SeriesOpts<BarSeriesOpts>
         return this;
     }
 
+
+    /**
+     * @deprecated redundant, use {@link #label(Label)} instead.
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public BarSeriesOpts label(LabelPosition position) {
-        this.label = Label.of(position);
-        return this;
+        return label(Label.of(position));
     }
 
     public BarSeriesOpts label(Label label) {
-        this.label = label;
+        this.label = new ColumnLinkedLabel(null, label);
+        return this;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public BarSeriesOpts label(String labelColumn) {
+        return label(labelColumn, null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public BarSeriesOpts label(String labelColumn, Label label) {
+        this.label = new ColumnLinkedLabel(labelColumn, label);
         return this;
     }
 
