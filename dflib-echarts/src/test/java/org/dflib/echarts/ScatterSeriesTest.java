@@ -72,4 +72,28 @@ public class ScatterSeriesTest {
         assertTrue(s2.contains("borderType: 'dotted'"), s2);
         assertTrue(s2.contains("opacity: 0.55"), s2);
     }
+
+    @Test
+    public void label() {
+
+        String s1 = ECharts.chart().series(SeriesOpts.ofScatter(), "y1").plot(df2, "_tid").getChartScript();
+        assertFalse(s1.contains("label:"), s1);
+        assertFalse(s1.contains("['L1','A','B','C']"), s1);
+
+        String s2 = ECharts.chart().series(SeriesOpts.ofScatter().label("x"), "y1").plot(df2, "_tid").getChartScript();
+        assertFalse(s2.contains("label:"), s2);
+        assertTrue(s2.contains("['L1','A','B','C'],"), s2);
+
+        String s3 = ECharts.chart().series(SeriesOpts.ofScatter().label("x", Label.ofTop().show(true)), "y1").plot(df2, "_tid").getChartScript();
+        assertTrue(s3.contains("label:"), s3);
+        assertTrue(s3.contains("['L1','A','B','C'],"), s3);
+        assertTrue(s3.contains("formatter: '{@[1]}',"), s3);
+
+        String s4 = ECharts.chart().series(SeriesOpts.ofScatter().label("x", Label.ofTop().formatter("{b}").show(true)), "y1").plot(df2, "_tid").getChartScript();
+        assertTrue(s4.contains("label:"), s4);
+        assertTrue(s4.contains("['L1','A','B','C'],"), s4);
+        assertFalse(s4.contains("formatter: '{@[1]}',"), s4);
+        assertTrue(s4.contains("formatter: '{b}',"), s4);
+
+    }
 }

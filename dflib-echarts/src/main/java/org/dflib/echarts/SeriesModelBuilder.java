@@ -244,7 +244,7 @@ class SeriesModelBuilder {
                 name,
                 so.getType().name(),
                 null,
-                new EncodeModel(null, null, singleAxisDimension, itemNameDimension, valueDimension),
+                new EncodeModel(null, null, singleAxisDimension, null, valueDimension),
                 labelModel,
                 datasetSeriesLayoutBy,
                 CoordinateSystemType.singleAxis.name(),
