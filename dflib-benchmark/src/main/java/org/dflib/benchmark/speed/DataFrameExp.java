@@ -41,34 +41,71 @@ public class DataFrameExp {
     }
 
     @Benchmark
-    public Object mapIntViaLambda() {
-        return df.cols("C").merge(r -> r.get("c0", Integer.class) + r.get("c1", Integer.class))
+    public Object selectIntegerViaLambda1() {
+        return df.cols("C").select(r -> r.get("c0", Integer.class) + r.get("c2", Integer.class))
                 .materialize()
                 .iterator();
     }
 
     @Benchmark
-    public Object mapIntViaExp() {
-        Exp<?> add = $int("c0").add($int("c1"));
-        return df.cols("C").merge(add).materialize().iterator();
-    }
-
-    @Benchmark
-    public Object mapIntegerViaLambda() {
-        return df.cols("C").merge(r -> r.get("c0", Integer.class) + r.get("c2", Integer.class))
-                .materialize()
-                .iterator();
-    }
-
-    @Benchmark
-    public Object mapIntegerViaExp() {
+    public Object selectIntegerViaExp1() {
         Exp<?> add = $int("c0").add($int("c2"));
-        return df.cols("C").merge(add).materialize().iterator();
+        return df.cols("C").select(add).materialize().iterator();
     }
 
     @Benchmark
-    public Object mapStringViaLambda() {
-        return df.cols("C").merge(r -> {
+    public Object selectIntViaLambda1() {
+        return df.cols("C").select(r -> r.get("c0", Integer.class) + r.get("c1", Integer.class))
+                .materialize()
+                .iterator();
+    }
+
+    @Benchmark
+    public Object selectIntViaExp1() {
+        Exp<?> add = $int("c0").add($int("c1"));
+        return df.cols("C").select(add).materialize().iterator();
+    }
+
+    @Benchmark
+    public Object selectIntViaExp4() {
+        Exp<?> add = $int("c0").add($int("c1"));
+        Exp<?> mul = $int("c0").mul($int("c1"));
+        Exp<?> sub1 = $int("c0").sub($int("c1"));
+        Exp<?> sub2 = $int("c1").sub($int("c0"));
+        return df.cols("A", "M", "S1", "S2")
+                .select(add, mul, sub1, sub2)
+                .materialize()
+                .iterator();
+    }
+
+    @Benchmark
+    public Object selectDoubleViaLambda1() {
+        return df.cols("C").select(r -> ((Double) r.get("c5")) + ((Double) r.get("c6")))
+                .materialize()
+                .iterator();
+    }
+
+    @Benchmark
+    public Object selectDoubleViaExp1() {
+        Exp<?> add = $double("c5").add($double("c6"));
+        return df.cols("C").select(add).materialize().iterator();
+    }
+
+    @Benchmark
+    public Object selectDoubleViaExp4() {
+        Exp<?> add = $double("c5").add($double("c6"));
+        Exp<?> mul = $double("c5").mul($double("c6"));
+        Exp<?> sub1 = $double("c5").sub($double("c6"));
+        Exp<?> sub2 = $double("c6").sub($double("c5"));
+        return df.cols("A", "M", "S1", "S2")
+                .select(add, mul, sub1, sub2)
+                .materialize()
+                .iterator();
+    }
+
+    @Benchmark
+    public Object selectStringViaLambda1() {
+        return df.cols("C").select(r -> {
                     String c3 = (String) r.get("c3");
                     String c4 = (String) r.get("c4");
 
@@ -79,21 +116,61 @@ public class DataFrameExp {
     }
 
     @Benchmark
-    public Object mapStringViaExp() {
-        Exp<String> concat = concat($col("c3"), $col("c4"));
-        return df.cols("C").merge(concat).materialize().iterator();
+    public Object selectStringViaExp1() {
+        Exp<String> concat = concat($col("c3"), " ", $col("c4"));
+        return df.cols("C").select(concat).materialize().iterator();
     }
 
     @Benchmark
-    public Object mapDoubleViaLambda() {
-        return df.cols("C").merge(r -> ((Double) r.get("c5")) + ((Double) r.get("c6")))
+    public Object selectStringViaExp2() {
+        Exp<String> concat1 = concat($col("c3"), $col("c4"));
+        Exp<String> concat2 = concat($col("c3"), " ", $col("c4"));
+        return df.cols("C1", "C2")
+                .select(concat1, concat2)
                 .materialize()
                 .iterator();
     }
 
     @Benchmark
-    public Object mapDoubleViaExp() {
-        Exp<?> add = $double("c5").add($double("c6"));
-        return df.cols("C").merge(add).materialize().iterator();
+    public Object selectStringViaExp4() {
+        Exp<String> concat1 = concat($col("c3"), " ", $col("c4"));
+        Exp<String> concat2 = concat($col("c3"), "_", $col("c4"));
+        Exp<String> concat3 = concat($col("c3"), "-", $col("c4"));
+        Exp<String> concat4 = concat($col("c3"), "|", $col("c4"));
+        return df.cols("C1", "C2", "C3", "C4")
+                .select(concat1, concat2, concat3, concat4)
+                .materialize()
+                .iterator();
+    }
+
+    @Benchmark
+    public Object selectStringViaExp6() {
+        Exp<String> concat1 = concat($col("c3"), " ", $col("c4"));
+        Exp<String> concat2 = concat($col("c3"), "_", $col("c4"));
+        Exp<String> concat3 = concat($col("c3"), "-", $col("c4"));
+        Exp<String> concat4 = concat($col("c3"), "|", $col("c4"));
+        Exp<String> concat5 = concat($col("c3"), "+", $col("c4"));
+        Exp<String> concat6 = concat($col("c3"), "=", $col("c4"));
+        return df.cols("C1", "C2", "C3", "C4", "C5", "C6")
+                .select(concat1, concat2, concat3, concat4, concat5, concat6)
+                .materialize()
+                .iterator();
+    }
+
+    @Benchmark
+    public Object selectStringViaExp8() {
+        Exp<String> concat1 = concat($col("c3"), " ", $col("c4"));
+        Exp<String> concat2 = concat($col("c3"), "_", $col("c4"));
+        Exp<String> concat3 = concat($col("c3"), "-", $col("c4"));
+        Exp<String> concat4 = concat($col("c3"), "|", $col("c4"));
+        Exp<String> concat5 = concat($col("c3"), "+", $col("c4"));
+        Exp<String> concat6 = concat($col("c3"), "=", $col("c4"));
+        Exp<String> concat7 = concat($col("c3"), "+", $col("c4"));
+        Exp<String> concat8 = concat($col("c3"), "*", $col("c4"));
+
+        return df.cols("C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8")
+                .select(concat1, concat2, concat3, concat4, concat5, concat6, concat7, concat8)
+                .materialize()
+                .iterator();
     }
 }
