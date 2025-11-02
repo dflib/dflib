@@ -11,6 +11,7 @@ import org.dflib.series.SingleValueSeries;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.function.Function;
 
 /**
  * Evaluates expressions with operation parallelization support.
@@ -23,47 +24,50 @@ public class ExpEvaluator {
      * Evaluates multiple expressions over a given DataFrame, parallelizing evaluation if deemed necessary.
      */
     public static Series<?>[] eval(DataFrame df, Exp<?>... exps) {
-
-        int w = exps.length;
-        Series<?>[] result = new Series[w];
-
-        if (shouldRunInParallel(w, df.height())) {
-            ExecutorService pool = Environment.commonEnv().threadPool();
-            Future<Series<?>>[] tasks = new Future[w];
-
-            for (int i = 0; i < w; i++) {
-                Exp<?> exp = exps[i];
-                tasks[i] = pool.submit(() -> exp.eval(df));
-            }
-
-            for (int i = 0; i < w; i++) {
-                try {
-                    result[i] = tasks[i].get();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        } else {
-            for (int i = 0; i < w; i++) {
-                result[i] = exps[i].eval(df);
-            }
-        }
-
-        return result;
+        return run(
+                e -> e.eval(df),
+                df.height(),
+                exps);
     }
 
     public static Series<?>[] reduce(DataFrame df, Exp<?>... exps) {
+        return run(
+                e -> new SingleValueSeries<>(e.reduce(df), 1),
+                df.height(),
+                exps);
+    }
+
+    public static Series<?>[] reduce(GroupBy groupBy, Exp<?>... exps) {
+        int gbH = groupBy.size();
+        return run(
+                e -> {
+                    // TODO: primitives support for performance
+                    ValueAccum<Object> accum = new ObjectAccum<>(gbH);
+
+                    // if aggH == 0, there will be no group keys, and the result will be empty
+                    for (Object key : groupBy.getGroupKeys()) {
+                        DataFrame group = groupBy.getGroup(key);
+                        accum.push(e.reduce(group));
+                    }
+
+                    return accum.toSeries();
+                },
+                groupBy.getSource().height(),
+                exps);
+    }
+
+    private static Series<?>[] run(Function<Exp<?>, Series<?>> seriesMaker, int srcHeight, Exp<?>... exps) {
 
         int w = exps.length;
         Series<?>[] result = new Series[w];
 
-        if (shouldRunInParallel(w, df.height())) {
+        if (shouldRunInParallel(w, srcHeight)) {
             ExecutorService pool = Environment.commonEnv().threadPool();
             Future<Series<?>>[] tasks = new Future[w];
 
             for (int i = 0; i < w; i++) {
                 Exp<?> exp = exps[i];
-                tasks[i] = pool.submit(() -> new SingleValueSeries<>(exp.reduce(df), 1));
+                tasks[i] = pool.submit(() -> seriesMaker.apply(exp));
             }
 
             for (int i = 0; i < w; i++) {
@@ -75,59 +79,11 @@ public class ExpEvaluator {
             }
         } else {
             for (int i = 0; i < w; i++) {
-                result[i] = new SingleValueSeries<>(exps[i].reduce(df), 1);
+                result[i] = seriesMaker.apply(exps[i]);
             }
         }
 
         return result;
-    }
-
-    public static Series<?>[] reduce(GroupBy groupBy, Exp<?>... exps) {
-
-        int w = exps.length;
-        int gbH = groupBy.size();
-        Series<?>[] result = new Series[w];
-
-        if (shouldRunInParallel(w, groupBy.getSource().height())) {
-            ExecutorService pool = Environment.commonEnv().threadPool();
-            Future<Series<?>>[] tasks = new Future[w];
-
-            for (int i = 0; i < w; i++) {
-                Exp<?> exp = exps[i];
-                tasks[i] = pool.submit(() -> reduceColumn(groupBy, exp, gbH));
-            }
-
-            for (int i = 0; i < w; i++) {
-                try {
-                    result[i] = tasks[i].get();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        else {
-            for (int i = 0; i < w; i++) {
-                result[i] = reduceColumn(groupBy, exps[i], gbH);
-            }
-        }
-
-        return result;
-    }
-
-    private static Series<?> reduceColumn(GroupBy groupBy, Exp<?> exp, int aggH) {
-        // TODO: primitives support for performance
-        ValueAccum<Object> columnBuilder = new ObjectAccum<>(aggH);
-
-        // if aggH == 0, there will be no group keys, and the result will be empty
-        // TODO: a check for aggH == 0 to avoid the implicit assumption?
-        for (Object key : groupBy.getGroupKeys()) {
-            DataFrame group = groupBy.getGroup(key);
-
-            // expecting 1-element Series. Unpack them and add to the accum
-            columnBuilder.push(exp.reduce(group));
-        }
-
-        return columnBuilder.toSeries();
     }
 
     private static boolean shouldRunInParallel(int resultWidth, int srcHeight) {

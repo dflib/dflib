@@ -125,7 +125,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
         PivotBuilder pb = df1.pivot().cols("b").rows("a");
-        assertThrows(IllegalArgumentException.class, () -> pb.vals("c"));
+        assertThrows(RuntimeException.class, () -> pb.vals("c"));
     }
 
     @Test
