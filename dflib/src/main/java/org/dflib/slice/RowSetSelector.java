@@ -2,9 +2,11 @@ package org.dflib.slice;
 
 import org.dflib.ColumnDataFrame;
 import org.dflib.DataFrame;
+import org.dflib.Exp;
 import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.Sorter;
+import org.dflib.exp.ExpEvaluator;
 import org.dflib.f.IntObjectFunction2;
 import org.dflib.sort.IntComparator;
 
@@ -39,6 +41,11 @@ class RowSetSelector {
                     : rowSet.getColumn(i).select(srcPositionsExpanded);
         }
 
+        return new RowSetSelector(new ColumnDataFrame(null, rowSet.getColumnsIndex(), cols));
+    }
+
+    public RowSetSelector mapColumns(Exp<?>[] exps) {
+        Series<?>[] cols = ExpEvaluator.eval(rowSet, exps);
         return new RowSetSelector(new ColumnDataFrame(null, rowSet.getColumnsIndex(), cols));
     }
 

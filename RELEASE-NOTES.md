@@ -15,6 +15,7 @@
 * #552 ECharts: scatter plots on a single axis
 * #553 ECharts: bar chart to allow an arbitrary column to be used in bar labeling
 * #554 ECharts: line chart to allow an arbitrary column to be used in symbol labeling
+* #555 Performance: parallel column evaluation
 
 ## Release 2.0.0-M4
 

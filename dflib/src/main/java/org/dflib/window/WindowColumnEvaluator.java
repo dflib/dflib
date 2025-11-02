@@ -1,14 +1,12 @@
 package org.dflib.window;
 
 import org.dflib.DataFrame;
-import org.dflib.Environment;
 import org.dflib.Exp;
 import org.dflib.Series;
 import org.dflib.builder.ObjectAccum;
+import org.dflib.exp.ExpEvaluator;
 
 import java.util.Arrays;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 abstract class WindowColumnEvaluator {
 
@@ -45,38 +43,7 @@ abstract class WindowColumnEvaluator {
                 return columns;
             }
 
-            Series<?>[] columns = new Series[w];
-
-            // TODO: unified parallelization engine
-            Environment env = Environment.commonEnv();
-
-            // 1. don't parallelize single-column DataFrames
-            // 2. don't parallelize small DataFrames, as sequential calculations are fast enough vs the overhead of
-            // creating, submitting and joining tasks
-
-            if (w <= 1 || source.height() < env.parallelExecThreshold()) {
-                for (int i = 0; i < w; i++) {
-                    columns[i] = exps[i].eval(source);
-                }
-            } else {
-                ExecutorService pool = env.threadPool();
-                Future<Series<?>>[] tasks = new Future[w];
-
-                for (int i = 0; i < w; i++) {
-                    Exp<?> exp = exps[i];
-                    tasks[i] = pool.submit(() -> exp.eval(source));
-                }
-
-                for (int i = 0; i < w; i++) {
-                    try {
-                        columns[i] = tasks[i].get();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-
-            return columns;
+            return ExpEvaluator.eval(source, exps);
         }
     }
 

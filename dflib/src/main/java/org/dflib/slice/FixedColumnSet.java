@@ -19,6 +19,7 @@ import org.dflib.RowPredicate;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
 import org.dflib.agg.DataFrameAggregator;
+import org.dflib.exp.ExpEvaluator;
 import org.dflib.row.MultiArrayRowBuilder;
 import org.dflib.series.RowMappedSeries;
 import org.dflib.series.SingleValueSeries;
@@ -429,12 +430,7 @@ public class FixedColumnSet implements ColumnSet {
                     "Can't perform 'map': Exp[] size is different from the ColumnSet size: " + w + " vs. " + csIndex.length);
         }
 
-        Series<?>[] columns = new Series[w];
-        for (int i = 0; i < w; i++) {
-            columns[i] = exps[i].eval(source);
-        }
-
-        return columns;
+        return ExpEvaluator.eval(source, exps);
     }
 
     @Override

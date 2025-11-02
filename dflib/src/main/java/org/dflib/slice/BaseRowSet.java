@@ -98,7 +98,7 @@ public abstract class BaseRowSet implements RowSet {
             throw new IllegalArgumentException("The number of column expressions (" + w + ") is different from the DataFrame width (" + source.width() + ")");
         }
 
-        return runSelect(s -> s.mapColumns((i, rowSet) -> exps[i].eval(rowSet)));
+        return runSelect(s -> s.mapColumns(exps));
     }
 
     @Override
@@ -156,7 +156,7 @@ public abstract class BaseRowSet implements RowSet {
             throw new IllegalArgumentException("The number of column expressions (" + w + ") is different from the DataFrame width (" + source.width() + ")");
         }
 
-        return runMerge(m -> m.mapColumns((i, rowSet) -> exps[i].eval(rowSet)));
+        return runMerge(m -> m.mapColumns(exps));
     }
 
     @Override

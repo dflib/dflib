@@ -3,10 +3,12 @@ package org.dflib.slice;
 import org.dflib.BooleanSeries;
 import org.dflib.ColumnDataFrame;
 import org.dflib.DataFrame;
+import org.dflib.Exp;
 import org.dflib.Index;
 import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.Sorter;
+import org.dflib.exp.ExpEvaluator;
 import org.dflib.f.IntObjectFunction2;
 import org.dflib.series.IntReverseSequenceSeries;
 import org.dflib.series.IntSequenceSeries;
@@ -148,6 +150,14 @@ class RowSetMerger {
                 source,
                 new ColumnDataFrame(null, rowSet.getColumnsIndex(), cols),
                 expandMergeIndex(expander));
+    }
+
+    public RowSetMerger mapColumns(Exp<?>[] exps) {
+        Series<?>[] cols = ExpEvaluator.eval(rowSet, exps);
+        return new RowSetMerger(
+                source,
+                new ColumnDataFrame(null, rowSet.getColumnsIndex(), cols),
+                mergeIndex);
     }
 
     public RowSetMerger mapColumns(IntObjectFunction2<DataFrame, Series<?>> colMapper) {

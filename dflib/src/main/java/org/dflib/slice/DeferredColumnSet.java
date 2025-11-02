@@ -19,6 +19,7 @@ import org.dflib.RowPredicate;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
 import org.dflib.agg.DataFrameAggregator;
+import org.dflib.exp.ExpEvaluator;
 import org.dflib.exp.Exps;
 import org.dflib.index.StringDeduplicator;
 import org.dflib.row.DynamicColsRowBuilder;
@@ -365,13 +366,8 @@ public class DeferredColumnSet implements ColumnSet {
 
     @Override
     public DataFrame select(Exp<?>... exps) {
-        int w = exps.length;
 
-        Series<?>[] columns = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            columns[i] = exps[i].eval(source);
-        }
+        Series<?>[] columns = ExpEvaluator.eval(source, exps);
 
         return new ColumnDataFrame(
                 null,
