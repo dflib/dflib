@@ -46,6 +46,16 @@ public class ExpEvaluator {
 
                     // if aggH == 0, there will be no group keys, and the result will be empty
                     for (Object key : groupBy.getGroupKeys()) {
+
+                        // Note that "getGroup(key)" lazily triggers DataFrame resolution for that group key. When run
+                        // in parallel, it may resolve multiple times for the same key. Hopefully, this is not a problem,
+                        // as producing indexed columns is fast, and only one copy of the "group" DataFrame is seen by
+                        // the reduce expressions.
+
+                        // TODO: One level below, IndexedSeries.materialize() within each group DataFrame has a
+                        //  synchronization lock, so while it doesn't resolve multiple times, it may result in thread
+                        //  contention
+
                         DataFrame group = groupBy.getGroup(key);
                         accum.push(e.reduce(group));
                     }
