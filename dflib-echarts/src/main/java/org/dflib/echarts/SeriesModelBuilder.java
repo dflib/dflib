@@ -17,15 +17,14 @@ class SeriesModelBuilder {
 
     final Option opt;
     final DataFrame dataFrame;
-    final int seriesPosInOpt;
-
+    final int seriesOptsPos;
 
     String name;
 
     // dimensions are references to row numbers in the dataset
-    Integer xDimension;
 
-    // this is treated as a "y" dimension in cartesian coordinates, or "value" in some others like pie, single axis, etc.
+    Integer xDimension;
+    // "value" is treated as a "y" dimension in cartesian coordinates or as a "value" in others like pie, single axis, etc.
     List<Integer> valueDimensions;
     Integer singleAxisDimension;
     Integer itemNameDimension;
@@ -36,9 +35,9 @@ class SeriesModelBuilder {
 
     String datasetSeriesLayoutBy;
 
-    public SeriesModelBuilder(String name, Option opt, DataFrame dataFrame, int seriesPosInOpt) {
+    public SeriesModelBuilder(String name, Option opt, DataFrame dataFrame, int seriesOptsPos) {
         this.name = name;
-        this.seriesPosInOpt = seriesPosInOpt;
+        this.seriesOptsPos = seriesOptsPos;
         this.dataFrame = Objects.requireNonNull(dataFrame);
         this.opt = opt;
     }
@@ -92,7 +91,7 @@ class SeriesModelBuilder {
     }
 
     public SeriesOpts<?> seriesOpts() {
-        return opt.seriesOpts.get(seriesPosInOpt);
+        return opt.seriesOpts.get(seriesOptsPos);
     }
 
     public SeriesModel resolve() {
@@ -435,7 +434,7 @@ class SeriesModelBuilder {
 
     private DataModel heatmapCartesian2dDataModel() {
         InlineDataBuilder db = InlineDataBuilder.of(dataFrame);
-        opt.seriesDataColumns.get(seriesPosInOpt).forEach(db::appendCol);
+        opt.seriesDataColumns.get(seriesOptsPos).forEach(db::appendCol);
         return db.dataModel();
     }
 
@@ -453,7 +452,7 @@ class SeriesModelBuilder {
             }
         }
 
-        opt.seriesDataColumns.get(seriesPosInOpt).forEach(db::appendCol);
+        opt.seriesDataColumns.get(seriesOptsPos).forEach(db::appendCol);
         return db.dataModel();
     }
 }

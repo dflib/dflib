@@ -32,6 +32,8 @@ public enum ChartType {
     }
 
     /**
+     * Returns whether the data for this chart type should be rendered as a dataset or inline for each series.
+     *
      * @since 2.0.0
      */
     public boolean supportsDataset() {

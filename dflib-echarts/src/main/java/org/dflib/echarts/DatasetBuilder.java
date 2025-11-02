@@ -18,8 +18,7 @@ import java.util.function.Supplier;
 
 class DatasetBuilder {
 
-    public static DatasetBuilder of(
-            Option opt, DataFrame dataFrame) {
+    public static DatasetBuilder of(Option opt, DataFrame dataFrame) {
 
         // The default for no series is to show empty cartesian coordinates, so "dataset" is still needed
         boolean needsDataset = opt.seriesOpts.isEmpty() || opt.seriesOpts.stream()
@@ -28,115 +27,20 @@ class DatasetBuilder {
                 .findFirst()
                 .orElse(false);
 
-        if (!needsDataset) {
-            return null;
-        }
-
-        DatasetBuilder dsb = new DatasetBuilder(dataFrame);
-        appendXAxesLabels(dsb, opt.xAxes);
-        appendSingleAxesLabels(dsb, opt.singleAxes);
-        appendSymbolSizes(dsb, opt.seriesOpts);
-        appendItemStyleColors(dsb, opt.seriesOpts);
-        appendItemNames(dsb, opt.seriesOpts);
-        appendDatasetRows(dsb, opt.seriesDataColumns);
-
-        return dsb;
+        return needsDataset ? create(opt, dataFrame) : null;
     }
 
-    private static void appendXAxesLabels(DatasetBuilder dsb, List<ColumnLinkedXAxis> xs) {
-
-        if (xs != null) {
-            int len = xs.size();
-            for (int i = 0; i < len; i++) {
-                ColumnLinkedXAxis ab = xs.get(i);
-                if (ab.columnName != null) {
-                    dsb.appendExtraRow(dsb.dataFrame.getColumn(ab.columnName), DatasetRowType.xAxisLabels, i);
-                } else {
-                    // TODO: appending axis data as a Series to prevent column reuse which is not possible until
-                    //  https://github.com/apache/echarts/issues/20330 is fixed
-                    dsb.appendExtraRow(new IntSequenceSeries(1, dsb.dataFrame.height() + 1), DatasetRowType.xAxisLabels, i);
-                }
-            }
-        }
-    }
-
-    private static void appendSingleAxesLabels(DatasetBuilder dsb, List<ColumnLinkedSingleAxis> ss) {
-
-        if (ss != null) {
-            int len = ss.size();
-            for (int i = 0; i < len; i++) {
-                ColumnLinkedSingleAxis ab = ss.get(i);
-                if (ab.columnName != null) {
-                    dsb.appendExtraRow(dsb.dataFrame.getColumn(ab.columnName), DatasetRowType.singleAxisLabel, i);
-                }
-            }
-        }
-    }
-
-    private static void appendSymbolSizes(DatasetBuilder dsb, List<SeriesOpts<?>> series) {
-
-        int len = series.size();
-        for (int i = 0; i < len; i++) {
-
-            SeriesOpts<?> so = series.get(i);
-
-            if (so instanceof SeriesOptsItemSymbolSize) {
-                SeriesOptsItemSymbolSize soc = (SeriesOptsItemSymbolSize) so;
-                String columnName = soc.getItemSymbolSizeSeries();
-                if (columnName != null) {
-                    dsb.appendExtraRow(dsb.dataFrame.getColumn(columnName), DatasetRowType.symbolSize, i);
-                }
-            }
-        }
-    }
-
-    private static void appendItemStyleColors(DatasetBuilder dsb, List<SeriesOpts<?>> series) {
-        int len = series.size();
-        for (int i = 0; i < len; i++) {
-
-            SeriesOpts<?> so = series.get(i);
-
-            if (so instanceof SeriesOptsItemStyleColor) {
-                SeriesOptsItemStyleColor soc = (SeriesOptsItemStyleColor) so;
-                String columnName = soc.getItemStyleColorSeries();
-                if (columnName != null) {
-                    dsb.appendExtraRow(dsb.dataFrame.getColumn(columnName), DatasetRowType.itemStyleColor, i);
-                }
-            }
-        }
-    }
-
-    private static void appendItemNames(DatasetBuilder dsb, List<SeriesOpts<?>> series) {
-
-        int len = series.size();
-        for (int i = 0; i < len; i++) {
-
-            SeriesOpts<?> so = series.get(i);
-
-            if (so instanceof SeriesOptsNamedItems) {
-                SeriesOptsNamedItems soc = (SeriesOptsNamedItems) so;
-                if (soc.getItemNameSeries() != null) {
-                    dsb.appendExtraRow(dsb.dataFrame.getColumn(soc.getItemNameSeries()), DatasetRowType.itemName, i);
-                }
-            }
-        }
-    }
-
-    private static void appendDatasetRows(DatasetBuilder dsb, List<Index> seriesDataColumns) {
-        int len = seriesDataColumns.size();
-        for (int i = 0; i < len; i++) {
-
-            Index dataColumns = seriesDataColumns.get(i);
-            if (dataColumns != null) {
-                for (String dc : dataColumns) {
-                    dsb.appendChartSeriesRow(dc, i);
-                }
-            }
-        }
+    private static DatasetBuilder create(Option opt, DataFrame dataFrame) {
+        return new DatasetBuilder(dataFrame)
+                .appendXAxesLabels(opt.xAxes)
+                .appendSingleAxesLabels(opt.singleAxes)
+                .appendSymbolSizes(opt.seriesOpts)
+                .appendItemStyleColors(opt.seriesOpts)
+                .appendItemNames(opt.seriesOpts)
+                .appendDatasetRows(opt.seriesDataColumns);
     }
 
     private final DataFrame dataFrame;
-
     final List<DatasetRow> rows;
     private final Set<String> seenDataColumns;
     private final Map<Integer, String> dataColumnByRowPos;
@@ -147,6 +51,108 @@ class DatasetBuilder {
         this.rows = new ArrayList<>();
         this.seenDataColumns = new HashSet<>();
         this.dataColumnByRowPos = new HashMap<>();
+    }
+
+    private DatasetBuilder appendXAxesLabels(List<ColumnLinkedXAxis> xs) {
+
+        if (xs != null) {
+            int len = xs.size();
+            for (int i = 0; i < len; i++) {
+                ColumnLinkedXAxis ab = xs.get(i);
+                if (ab.columnName != null) {
+                    appendExtraRow(dataFrame.getColumn(ab.columnName), DatasetRowType.xAxisLabels, i);
+                } else {
+                    appendExtraRow(new IntSequenceSeries(1, dataFrame.height() + 1), DatasetRowType.xAxisLabels, i);
+                }
+            }
+        }
+
+        return this;
+    }
+
+    private DatasetBuilder appendSingleAxesLabels(List<ColumnLinkedSingleAxis> ss) {
+
+        if (ss != null) {
+            int len = ss.size();
+            for (int i = 0; i < len; i++) {
+                ColumnLinkedSingleAxis ab = ss.get(i);
+                if (ab.columnName != null) {
+                    appendExtraRow(dataFrame.getColumn(ab.columnName), DatasetRowType.singleAxisLabel, i);
+                }
+            }
+        }
+
+        return this;
+    }
+
+    private DatasetBuilder appendSymbolSizes(List<SeriesOpts<?>> series) {
+
+        int len = series.size();
+        for (int i = 0; i < len; i++) {
+
+            SeriesOpts<?> so = series.get(i);
+
+            if (so instanceof SeriesOptsItemSymbolSize) {
+                SeriesOptsItemSymbolSize soc = (SeriesOptsItemSymbolSize) so;
+                String columnName = soc.getItemSymbolSizeSeries();
+                if (columnName != null) {
+                    appendExtraRow(dataFrame.getColumn(columnName), DatasetRowType.symbolSize, i);
+                }
+            }
+        }
+
+        return this;
+    }
+
+    private DatasetBuilder appendItemStyleColors(List<SeriesOpts<?>> series) {
+        int len = series.size();
+        for (int i = 0; i < len; i++) {
+
+            SeriesOpts<?> so = series.get(i);
+
+            if (so instanceof SeriesOptsItemStyleColor) {
+                SeriesOptsItemStyleColor soc = (SeriesOptsItemStyleColor) so;
+                String columnName = soc.getItemStyleColorSeries();
+                if (columnName != null) {
+                    appendExtraRow(dataFrame.getColumn(columnName), DatasetRowType.itemStyleColor, i);
+                }
+            }
+        }
+
+        return this;
+    }
+
+    private DatasetBuilder appendItemNames(List<SeriesOpts<?>> series) {
+
+        int len = series.size();
+        for (int i = 0; i < len; i++) {
+
+            SeriesOpts<?> so = series.get(i);
+
+            if (so instanceof SeriesOptsNamedItems) {
+                SeriesOptsNamedItems soc = (SeriesOptsNamedItems) so;
+                if (soc.getItemNameSeries() != null) {
+                    appendExtraRow(dataFrame.getColumn(soc.getItemNameSeries()), DatasetRowType.itemName, i);
+                }
+            }
+        }
+
+        return this;
+    }
+
+    private DatasetBuilder appendDatasetRows(List<Index> seriesDataColumns) {
+        int len = seriesDataColumns.size();
+        for (int i = 0; i < len; i++) {
+
+            Index dataColumns = seriesDataColumns.get(i);
+            if (dataColumns != null) {
+                for (String dc : dataColumns) {
+                    appendChartSeriesRow(dc, i);
+                }
+            }
+        }
+
+        return this;
     }
 
     private void appendChartSeriesRow(String dataColumnName, int seriesPos) {
@@ -223,12 +229,12 @@ class DatasetBuilder {
     static class DatasetRow {
         final Series<?> data;
         final DatasetRowType type;
-        final int pos;
+        final int seriesOptsPos;
 
-        DatasetRow(Series<?> data, DatasetRowType type, int pos) {
+        DatasetRow(Series<?> data, DatasetRowType type, int seriesOptsPos) {
             this.type = type;
             this.data = data;
-            this.pos = pos;
+            this.seriesOptsPos = seriesOptsPos;
         }
     }
 }

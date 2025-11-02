@@ -3,6 +3,7 @@ package org.dflib.echarts;
 import org.dflib.DataFrame;
 import org.dflib.echarts.render.OptionModel;
 import org.dflib.echarts.render.option.GridModel;
+import org.dflib.echarts.render.option.SeriesModel;
 
 import java.util.List;
 import java.util.Objects;
@@ -21,13 +22,13 @@ class OptionModelBuilder {
     OptionModel resolve() {
 
         DatasetBuilder dsb = DatasetBuilder.of(opt, dataFrame);
-        SeriesModelBuilders sb = SeriesModelBuilders.of(opt, dataFrame, dsb);
+        List<SeriesModel> sm = SeriesModelBuilders.of(opt, dataFrame, dsb);
 
         return new OptionModel(
                 dsb != null ? dsb.resolve() : null,
                 opt.legend != null ? opt.legend.resolve() : null,
                 grids(),
-                sb.resolve(),
+                sm,
                 opt.title != null ? opt.title.resolve() : null,
                 opt.toolbox != null ? opt.toolbox.resolve() : null,
                 opt.tooltip != null ? opt.tooltip.resolve() : null,

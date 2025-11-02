@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 class SeriesModelBuilders {
 
-    public static SeriesModelBuilders of(
+    public static List<SeriesModel> of(
             Option opt,
             DataFrame dataFrame,
             DatasetBuilder dsb) {
@@ -37,21 +37,23 @@ class SeriesModelBuilders {
         };
 
         int len = opt.seriesOpts.size();
-        List<SeriesModelBuilder> series = new ArrayList<>(len);
+        List<SeriesModelBuilder> seriesModels = new ArrayList<>(len);
         for (int i = 0; i < len; i++) {
 
             SeriesOpts<?> so = opt.seriesOpts.get(i);
             Index dataColumns = opt.seriesDataColumns.get(i);
             String name = nameDeduplicator.apply(defaultName(so, dataColumns));
 
-            series.add(new SeriesModelBuilder(name, opt, dataFrame, i));
+            seriesModels.add(new SeriesModelBuilder(name, opt, dataFrame, i));
         }
 
         if (dsb != null) {
-            linkSeriesToRows(series, dsb.rows);
+            linkSeriesToDatasetRows(seriesModels, dsb.rows);
         }
 
-        return new SeriesModelBuilders(series);
+        return seriesModels.isEmpty()
+                ? null
+                : seriesModels.stream().map(SeriesModelBuilder::resolve).collect(Collectors.toList());
     }
 
     private static String defaultName(SeriesOpts<?> opts, Index dataColumns) {
@@ -69,44 +71,41 @@ class SeriesModelBuilders {
         }
     }
 
-    private static void linkSeriesToRows(List<SeriesModelBuilder> series, List<DatasetBuilder.DatasetRow> rows) {
+    private static void linkSeriesToDatasetRows(List<SeriesModelBuilder> seriesModels, List<DatasetBuilder.DatasetRow> rows) {
         int len = rows.size();
         for (int i = 0; i < len; i++) {
 
             DatasetBuilder.DatasetRow row = rows.get(i);
             switch (row.type) {
                 case seriesData:
-
-                    // we are laying out DataFrame series as horizontal rows that are somewhat more readable when
-                    // laid out in JS
-                    series.get(row.pos).datasetSeriesLayoutBy("row");
+                    // laying out DataFrame series as horizontal rows that are somewhat more readable when laid out in JS
+                    seriesModels.get(row.seriesOptsPos).datasetSeriesLayoutBy("row");
 
                     // multiple dimensions can be appended to the same series in a loop
-                    series.get(row.pos).valueDimension(i);
-
+                    seriesModels.get(row.seriesOptsPos).valueDimension(i);
                     break;
                 case xAxisLabels:
-                    for (SeriesModelBuilder sb : series) {
-                        if (xAxisIndex(sb.seriesOpts()) == row.pos) {
+                    for (SeriesModelBuilder sb : seriesModels) {
+                        if (xAxisIndex(sb.seriesOpts()) == row.seriesOptsPos) {
                             sb.xDimension(i);
                         }
                     }
                     break;
                 case singleAxisLabel:
-                    for (SeriesModelBuilder sb : series) {
-                        if (singleAxisIndex(sb.seriesOpts()) == row.pos) {
+                    for (SeriesModelBuilder sb : seriesModels) {
+                        if (singleAxisIndex(sb.seriesOpts()) == row.seriesOptsPos) {
                             sb.singleAxisDimension(i);
                         }
                     }
                     break;
                 case symbolSize:
-                    series.get(row.pos).symbolSizeDimension(i);
+                    seriesModels.get(row.seriesOptsPos).symbolSizeDimension(i);
                     break;
                 case itemStyleColor:
-                    series.get(row.pos).itemStyleColorDimension(i);
+                    seriesModels.get(row.seriesOptsPos).itemStyleColorDimension(i);
                     break;
                 case itemName:
-                    series.get(row.pos).itemNameDimension(i);
+                    seriesModels.get(row.seriesOptsPos).itemNameDimension(i);
                     break;
             }
         }
@@ -138,17 +137,5 @@ class SeriesModelBuilders {
 
         // by default should pick the first axis
         return i != null ? i : 0;
-    }
-
-    private final List<SeriesModelBuilder> builders;
-
-    private SeriesModelBuilders(List<SeriesModelBuilder> builders) {
-        this.builders = builders;
-    }
-
-    public List<SeriesModel> resolve() {
-        return builders.isEmpty()
-                ? null
-                : builders.stream().map(SeriesModelBuilder::resolve).collect(Collectors.toList());
     }
 }
