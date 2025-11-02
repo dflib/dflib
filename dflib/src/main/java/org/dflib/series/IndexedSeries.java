@@ -61,8 +61,8 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
                 if (!materializedCompacted) {
                     Series<T> compact = materialized != null ? materialized.compact() : raw.compact();
 
-                    materializedCompacted = true;
                     this.materialized = compact;
+                    this.materializedCompacted = true;
 
                     // reset source reference, allowing to free up memory
                     raw = null;
