@@ -102,7 +102,7 @@ public interface RowSet {
 
     /**
      * A noop sort operation. Useless on its own, and primarily exists to disambiguate {@link #sort(Sorter...)} and
-     * {@link #sort(String...)} for no-arg sort call.
+     * {@link #sort(String, Object...)} for no-arg sort call.
      *
      * @since 2.0.0
      */
