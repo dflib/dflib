@@ -196,25 +196,19 @@ class DatasetBuilder {
             }
         };
 
-        List<ValueModels<?>> rows = new ArrayList<>(h);
-        for (int i = 0; i < h; i++) {
+        List<ValueModels<?>> mRows = new ArrayList<>(h);
+        for (DatasetRow dsRow : this.rows) {
 
-            DatasetRow dsRow = this.rows.get(i);
-            List<Object> row = new ArrayList<>(w + 1);
+            List<Object> mRow = new ArrayList<>(w + 1);
 
             String rowLabel = dsRow.dfColumn != null ? dsRow.dfColumn : labelMaker.get();
+            mRow.add(rowLabel);
+            dsRow.data.forEach(mRow::add);
 
-            row.add(rowLabel);
-            Series<?> rowData = dsRow.data;
-
-            for (int j = 0; j < w; j++) {
-                row.add(rowData.get(j));
-            }
-
-            rows.add(ValueModels.of(row));
+            mRows.add(ValueModels.of(mRow));
         }
 
-        return new DatasetModel(ValueModels.of(rows));
+        return new DatasetModel(ValueModels.of(mRows));
     }
 
     enum DatasetRowType {
