@@ -18,7 +18,6 @@ import org.dflib.RowMapper;
 import org.dflib.RowPredicate;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
-import org.dflib.agg.DataFrameAggregator;
 import org.dflib.exp.ExpEvaluator;
 import org.dflib.exp.Exps;
 import org.dflib.index.StringDeduplicator;
@@ -443,7 +442,7 @@ public class DeferredColumnSet implements ColumnSet {
 
     @Override
     public DataFrame agg(Exp<?>... aggregatingExps) {
-        Series<?>[] aggregated = DataFrameAggregator.agg(source, aggregatingExps);
+        Series<?>[] aggregated = ExpEvaluator.reduce(source, aggregatingExps);
         Index index = Exps.index(source, aggregatingExps);
         return new ColumnDataFrame(
                 null,

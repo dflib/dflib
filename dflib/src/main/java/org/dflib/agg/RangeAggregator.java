@@ -4,6 +4,7 @@ import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
 import org.dflib.builder.ObjectAccum;
+import org.dflib.exp.ExpEvaluator;
 import org.dflib.window.WindowRange;
 
 import java.util.Arrays;
@@ -46,7 +47,7 @@ public abstract class RangeAggregator {
                 return expandedColumns;
             }
 
-            Series<?>[] oneRowSeries = DataFrameAggregator.agg(source, aggregators);
+            Series<?>[] oneRowSeries = ExpEvaluator.reduce(source, aggregators);
 
             // expand each column to the height of the original DataFrame
             Series<?>[] expandedColumns = new Series[w];

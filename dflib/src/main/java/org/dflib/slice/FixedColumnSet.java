@@ -18,7 +18,6 @@ import org.dflib.RowMapper;
 import org.dflib.RowPredicate;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
-import org.dflib.agg.DataFrameAggregator;
 import org.dflib.exp.ExpEvaluator;
 import org.dflib.row.MultiArrayRowBuilder;
 import org.dflib.series.RowMappedSeries;
@@ -610,7 +609,7 @@ public class FixedColumnSet implements ColumnSet {
                     "Can't perform 'agg': Exp[] size is different from the ColumnSet size: " + w + " vs. " + csIndex.length);
         }
 
-        Series<?>[] aggregated = DataFrameAggregator.agg(source, aggregatingExps);
+        Series<?>[] aggregated = ExpEvaluator.reduce(source, aggregatingExps);
         return new ColumnDataFrame(
                 null,
                 Index.ofDeduplicated(csIndex),

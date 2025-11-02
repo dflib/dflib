@@ -1,8 +1,8 @@
 package org.dflib;
 
-import org.dflib.agg.GroupByAggregator;
 import org.dflib.concat.SeriesConcat;
 import org.dflib.concat.VConcat;
+import org.dflib.exp.ExpEvaluator;
 import org.dflib.exp.Exps;
 import org.dflib.series.EmptySeries;
 import org.dflib.slice.FixedColumnSetIndex;
@@ -410,7 +410,7 @@ public class GroupBy {
 
         return new ColumnDataFrame(null,
                 index,
-                GroupByAggregator.agg(this, aggregatingExps));
+                ExpEvaluator.reduce(this, aggregatingExps));
     }
 
     protected DataFrame resolveGroup(Object key) {
