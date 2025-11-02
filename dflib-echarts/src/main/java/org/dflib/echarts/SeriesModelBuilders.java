@@ -48,7 +48,7 @@ class SeriesModelBuilders {
         }
 
         if (dsb != null) {
-            linkSeriesToDatasetRows(seriesModels, dsb.rows);
+            dsb.rows.forEach(r -> linkSeriesToDatasetRow(seriesModels, r));
         }
 
         return seriesModels.isEmpty()
@@ -71,43 +71,39 @@ class SeriesModelBuilders {
         }
     }
 
-    private static void linkSeriesToDatasetRows(List<SeriesModelBuilder> seriesModels, List<DatasetBuilder.DatasetRow> rows) {
-        int len = rows.size();
-        for (int i = 0; i < len; i++) {
+    private static void linkSeriesToDatasetRow(List<SeriesModelBuilder> seriesModels, DatasetBuilder.DatasetRow row) {
 
-            DatasetBuilder.DatasetRow row = rows.get(i);
-            switch (row.type) {
-                case seriesData:
-                    // laying out DataFrame series as horizontal rows that are somewhat more readable when laid out in JS
-                    seriesModels.get(row.seriesOptsPos).datasetSeriesLayoutBy("row");
+        switch (row.type) {
+            case seriesData:
+                // laying out DataFrame series as horizontal rows that are somewhat more readable when laid out in JS
+                seriesModels.get(row.seriesOptsPos).datasetSeriesLayoutBy("row");
 
-                    // multiple dimensions can be appended to the same series in a loop
-                    seriesModels.get(row.seriesOptsPos).valueDimension(i);
-                    break;
-                case xAxisLabels:
-                    for (SeriesModelBuilder sb : seriesModels) {
-                        if (xAxisIndex(sb.seriesOpts()) == row.seriesOptsPos) {
-                            sb.xDimension(i);
-                        }
+                // multiple dimensions can be appended to the same series in a loop
+                seriesModels.get(row.seriesOptsPos).valueDimension(row.datasetPos);
+                break;
+            case xAxisLabels:
+                for (SeriesModelBuilder sb : seriesModels) {
+                    if (xAxisIndex(sb.seriesOpts()) == row.seriesOptsPos) {
+                        sb.xDimension(row.datasetPos);
                     }
-                    break;
-                case singleAxisLabel:
-                    for (SeriesModelBuilder sb : seriesModels) {
-                        if (singleAxisIndex(sb.seriesOpts()) == row.seriesOptsPos) {
-                            sb.singleAxisDimension(i);
-                        }
+                }
+                break;
+            case singleAxisLabel:
+                for (SeriesModelBuilder sb : seriesModels) {
+                    if (singleAxisIndex(sb.seriesOpts()) == row.seriesOptsPos) {
+                        sb.singleAxisDimension(row.datasetPos);
                     }
-                    break;
-                case symbolSize:
-                    seriesModels.get(row.seriesOptsPos).symbolSizeDimension(i);
-                    break;
-                case itemStyleColor:
-                    seriesModels.get(row.seriesOptsPos).itemStyleColorDimension(i);
-                    break;
-                case itemName:
-                    seriesModels.get(row.seriesOptsPos).itemNameDimension(i);
-                    break;
-            }
+                }
+                break;
+            case symbolSize:
+                seriesModels.get(row.seriesOptsPos).symbolSizeDimension(row.datasetPos);
+                break;
+            case itemStyleColor:
+                seriesModels.get(row.seriesOptsPos).itemStyleColorDimension(row.datasetPos);
+                break;
+            case itemName:
+                seriesModels.get(row.seriesOptsPos).itemNameDimension(row.datasetPos);
+                break;
         }
     }
 
