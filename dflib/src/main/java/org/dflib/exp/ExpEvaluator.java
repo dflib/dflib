@@ -54,7 +54,7 @@ public class ExpEvaluator {
 
                         // TODO: One level below, IndexedSeries.materialize() within each group DataFrame has a
                         //  synchronization lock, so while it doesn't resolve multiple times, it may result in thread
-                        //  contention
+                        //  contention (presumably, only for the columns referenced by the aggregating expressions).
 
                         DataFrame group = groupBy.getGroup(key);
                         accum.push(e.reduce(group));
