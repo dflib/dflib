@@ -33,7 +33,7 @@ as a sister project to DFLib.
 
 * [Website](https://dflib.org/)
 * [Getting Started](https://dflib.org/dflib/docs/1.x/#_get_started_with_dflib)
-* [Documentation](https://dflib.org/dflib/docs/1.x/)
+* [Documentation](https://dflib.org/dflib/docs/)
 * [Discussions and Support Forum](https://github.com/dflib/dflib/discussions)
 
 ## Presentation Videos
