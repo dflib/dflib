@@ -200,8 +200,10 @@ public class StrExpTest {
                 arguments("trim('  example  ')", $strVal("  example  ").trim()),
                 arguments("trim(str(1))", $str(1).trim()),
                 arguments("trim(castAsStr(3))", $intVal(3).castAsStr().trim()),
+                arguments("lower(a)", $col("a").lower()),
                 arguments("lower(str(a))", $str("a").lower()),
                 arguments("lower('AbCd')", $strVal("AbCd").lower()),
+                arguments("upper(a)", $col("a").upper()),
                 arguments("upper(str(a))", $str("a").upper()),
                 arguments("upper('AbCd')", $strVal("AbCd").upper())
         );

@@ -7124,7 +7124,6 @@ public class ExpParser extends Parser {
 		public StrExp exp;
 		public CastAsStrContext castAsStr;
 		public ExpressionContext expression;
-		public StrExpContext strExp;
 		public ExpressionContext s;
 		public IntegerScalarContext a;
 		public IntegerScalarContext b;
@@ -7142,9 +7141,6 @@ public class ExpParser extends Parser {
 		}
 		public TerminalNode RP() { return getToken(ExpParser.RP, 0); }
 		public TerminalNode LOWER() { return getToken(ExpParser.LOWER, 0); }
-		public StrExpContext strExp() {
-			return getRuleContext(StrExpContext.class,0);
-		}
 		public TerminalNode UPPER() { return getToken(ExpParser.UPPER, 0); }
 		public TerminalNode SUBSTR() { return getToken(ExpParser.SUBSTR, 0); }
 		public List<TerminalNode> COMMA() { return getTokens(ExpParser.COMMA); }
@@ -7215,10 +7211,10 @@ public class ExpParser extends Parser {
 				setState(1328);
 				match(LP);
 				setState(1329);
-				((StrFnContext)_localctx).strExp = strExp();
+				((StrFnContext)_localctx).expression = expression();
 				setState(1330);
 				match(RP);
-				 ((StrFnContext)_localctx).exp =  ((StrFnContext)_localctx).strExp.exp.lower(); 
+				 ((StrFnContext)_localctx).exp =  ((StrFnContext)_localctx).expression.exp.lower(); 
 				}
 				break;
 			case UPPER:
@@ -7229,10 +7225,10 @@ public class ExpParser extends Parser {
 				setState(1334);
 				match(LP);
 				setState(1335);
-				((StrFnContext)_localctx).strExp = strExp();
+				((StrFnContext)_localctx).expression = expression();
 				setState(1336);
 				match(RP);
-				 ((StrFnContext)_localctx).exp =  ((StrFnContext)_localctx).strExp.exp.upper(); 
+				 ((StrFnContext)_localctx).exp =  ((StrFnContext)_localctx).expression.exp.upper(); 
 				}
 				break;
 			case SUBSTR:
@@ -11186,10 +11182,10 @@ public class ExpParser extends Parser {
 		"\u0000\u0000\u052b\u052c\u0003\f\u0006\u0000\u052c\u052d\u0005\u0002\u0000"+
 		"\u0000\u052d\u052e\u0006A\uffff\uffff\u0000\u052e\u0557\u0001\u0000\u0000"+
 		"\u0000\u052f\u0530\u00051\u0000\u0000\u0530\u0531\u0005\u0001\u0000\u0000"+
-		"\u0531\u0532\u0003\u0012\t\u0000\u0532\u0533\u0005\u0002\u0000\u0000\u0533"+
+		"\u0531\u0532\u0003\f\u0006\u0000\u0532\u0533\u0005\u0002\u0000\u0000\u0533"+
 		"\u0534\u0006A\uffff\uffff\u0000\u0534\u0557\u0001\u0000\u0000\u0000\u0535"+
 		"\u0536\u00052\u0000\u0000\u0536\u0537\u0005\u0001\u0000\u0000\u0537\u0538"+
-		"\u0003\u0012\t\u0000\u0538\u0539\u0005\u0002\u0000\u0000\u0539\u053a\u0006"+
+		"\u0003\f\u0006\u0000\u0538\u0539\u0005\u0002\u0000\u0000\u0539\u053a\u0006"+
 		"A\uffff\uffff\u0000\u053a\u0557\u0001\u0000\u0000\u0000\u053b\u053c\u0005"+
 		".\u0000\u0000\u053c\u053d\u0005\u0001\u0000\u0000\u053d\u053e\u0003\f"+
 		"\u0006\u0000\u053e\u053f\u0005\u0003\u0000\u0000\u053f\u0542\u0003,\u0016"+
