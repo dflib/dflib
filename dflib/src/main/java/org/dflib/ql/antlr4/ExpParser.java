@@ -7123,33 +7123,33 @@ public class ExpParser extends Parser {
 	public static class StrFnContext extends ParserRuleContext {
 		public StrExp exp;
 		public CastAsStrContext castAsStr;
+		public ExpressionContext expression;
 		public StrExpContext strExp;
 		public ExpressionContext s;
 		public IntegerScalarContext a;
 		public IntegerScalarContext b;
-		public ExpressionContext expression;
 		public List<ExpressionContext> args = new ArrayList<ExpressionContext>();
 		public CastAsStrContext castAsStr() {
 			return getRuleContext(CastAsStrContext.class,0);
 		}
 		public TerminalNode TRIM() { return getToken(ExpParser.TRIM, 0); }
 		public TerminalNode LP() { return getToken(ExpParser.LP, 0); }
-		public StrExpContext strExp() {
-			return getRuleContext(StrExpContext.class,0);
-		}
-		public TerminalNode RP() { return getToken(ExpParser.RP, 0); }
-		public TerminalNode LOWER() { return getToken(ExpParser.LOWER, 0); }
-		public TerminalNode UPPER() { return getToken(ExpParser.UPPER, 0); }
-		public TerminalNode SUBSTR() { return getToken(ExpParser.SUBSTR, 0); }
-		public List<TerminalNode> COMMA() { return getTokens(ExpParser.COMMA); }
-		public TerminalNode COMMA(int i) {
-			return getToken(ExpParser.COMMA, i);
-		}
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode RP() { return getToken(ExpParser.RP, 0); }
+		public TerminalNode LOWER() { return getToken(ExpParser.LOWER, 0); }
+		public StrExpContext strExp() {
+			return getRuleContext(StrExpContext.class,0);
+		}
+		public TerminalNode UPPER() { return getToken(ExpParser.UPPER, 0); }
+		public TerminalNode SUBSTR() { return getToken(ExpParser.SUBSTR, 0); }
+		public List<TerminalNode> COMMA() { return getTokens(ExpParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(ExpParser.COMMA, i);
 		}
 		public List<IntegerScalarContext> integerScalar() {
 			return getRuleContexts(IntegerScalarContext.class);
@@ -7201,10 +7201,10 @@ public class ExpParser extends Parser {
 				setState(1322);
 				match(LP);
 				setState(1323);
-				((StrFnContext)_localctx).strExp = strExp();
+				((StrFnContext)_localctx).expression = expression();
 				setState(1324);
 				match(RP);
-				 ((StrFnContext)_localctx).exp =  ((StrFnContext)_localctx).strExp.exp.trim(); 
+				 ((StrFnContext)_localctx).exp =  ((StrFnContext)_localctx).expression.exp.trim(); 
 				}
 				break;
 			case LOWER:
@@ -11183,7 +11183,7 @@ public class ExpParser extends Parser {
 		"\u0001\u0000\u0000\u0000\u0525\u0081\u0001\u0000\u0000\u0000\u0526\u0527"+
 		"\u0003\u0092I\u0000\u0527\u0528\u0006A\uffff\uffff\u0000\u0528\u0557\u0001"+
 		"\u0000\u0000\u0000\u0529\u052a\u0005/\u0000\u0000\u052a\u052b\u0005\u0001"+
-		"\u0000\u0000\u052b\u052c\u0003\u0012\t\u0000\u052c\u052d\u0005\u0002\u0000"+
+		"\u0000\u0000\u052b\u052c\u0003\f\u0006\u0000\u052c\u052d\u0005\u0002\u0000"+
 		"\u0000\u052d\u052e\u0006A\uffff\uffff\u0000\u052e\u0557\u0001\u0000\u0000"+
 		"\u0000\u052f\u0530\u00051\u0000\u0000\u0530\u0531\u0005\u0001\u0000\u0000"+
 		"\u0531\u0532\u0003\u0012\t\u0000\u0532\u0533\u0005\u0002\u0000\u0000\u0533"+

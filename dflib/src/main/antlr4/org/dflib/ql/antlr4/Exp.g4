@@ -912,7 +912,7 @@ offsetDateTimeFn returns [OffsetDateTimeExp exp] locals [BiFunction<OffsetDateTi
  */
 strFn returns [StrExp exp]
     : castAsStr { $exp = $castAsStr.exp; }
-    | TRIM '(' strExp ')' { $exp = $strExp.exp.trim(); }
+    | TRIM '(' expression ')' { $exp = $expression.exp.trim(); }
     | LOWER '(' strExp ')' { $exp = $strExp.exp.lower(); }
     | UPPER '(' strExp ')' { $exp = $strExp.exp.upper(); }
     | SUBSTR '(' s=expression ',' a=integerScalar (',' b=integerScalar)? ')' {
