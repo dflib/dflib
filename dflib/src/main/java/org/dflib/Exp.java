@@ -540,15 +540,23 @@ public interface Exp<T> {
         return SubstrFromLenExp.of(this, fromInclusive, len);
     }
 
+    /**
+     * Converts each value to a String and then checks whether it starts with a given prefix.
+     */
     default Condition startsWith(String prefix) {
         return StartsWithExp.of(this, prefix);
     }
 
+    /**
+     * Converts each value to a String and then checks whether it ends with a given suffix.
+     */
     default Condition endsWith(String suffix) {
         return EndsWithExp.of(this, suffix);
     }
 
     /**
+     * Converts each value to a String and then converts each String to lower case.
+     *
      * @since 2.0.0
      */
     default StrExp lower() {
@@ -556,12 +564,17 @@ public interface Exp<T> {
     }
 
     /**
+     * Converts each value to a String and then converts each String to upper case.
+     *
      * @since 2.0.0
      */
     default StrExp upper() {
         return UpperExp.of(this);
     }
 
+    /**
+     * Converts each value to a String and then "trims" that String, removing leading and trailing spaces.
+     */
     default StrExp trim() {
         return TrimExp.of(this);
     }
