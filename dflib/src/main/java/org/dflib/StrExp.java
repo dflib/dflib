@@ -11,7 +11,6 @@ import org.dflib.exp.num.DoubleExp1;
 import org.dflib.exp.num.FloatExp1;
 import org.dflib.exp.num.IntExp1;
 import org.dflib.exp.str.StrAsExp;
-import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrShiftExp;
 import org.dflib.exp.str.StrSplitExp;
 
@@ -93,13 +92,6 @@ public interface StrExp extends Exp<String> {
 
     default Condition contains(String substring) {
         return MapCondition2.mapVal("contains", this, $val(substring), (s, p) -> s.contains(substring));
-    }
-
-    default StrExp trim() {
-        return StrExp1.mapVal("trim", this, s -> {
-            String trimmed = s.trim();
-            return trimmed.isEmpty() ? null : trimmed;
-        });
     }
 
     /**

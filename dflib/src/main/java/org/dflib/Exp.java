@@ -56,6 +56,7 @@ import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrScalarExp;
 import org.dflib.exp.str.SubstrFromExp;
 import org.dflib.exp.str.SubstrFromLenExp;
+import org.dflib.exp.str.TrimExp;
 import org.dflib.exp.str.UpperExp;
 import org.dflib.ql.QLParserInvoker;
 import org.dflib.ql.antlr4.ExpParser;
@@ -559,6 +560,10 @@ public interface Exp<T> {
      */
     default StrExp upper() {
         return UpperExp.of(this);
+    }
+
+    default StrExp trim() {
+        return TrimExp.of(this);
     }
 
     /**
