@@ -90,10 +90,6 @@ public interface StrExp extends Exp<String> {
         return MapCondition2.mapVal("matches", this, $val(regex), (s, r) -> p.matcher(s).matches());
     }
 
-    default Condition contains(String substring) {
-        return MapCondition2.mapVal("contains", this, $val(substring), (s, p) -> s.contains(substring));
-    }
-
     /**
      * @since 2.0.0
      */

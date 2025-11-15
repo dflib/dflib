@@ -1,30 +1,29 @@
-package org.dflib.exp.str;
+package org.dflib.exp.bool;
 
 import org.dflib.BooleanSeries;
 import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
-import org.dflib.exp.bool.TrueCondition;
 
 import java.util.Objects;
 
 /**
  * @since 2.0.0
  */
-public class EndsWithExp implements Condition {
+public class StartsWithExp implements Condition {
 
     public static Condition of(Exp<?> exp, String prefix) {
         Objects.requireNonNull(prefix, "Null 'prefix'");
-        return prefix.isEmpty() ? new TrueCondition() : new EndsWithExp(exp, prefix);
+        return new StartsWithExp(exp, prefix);
     }
 
     private final Exp<?> exp;
-    private final String suffix;
+    private final String prefix;
 
-    protected EndsWithExp(Exp<?> exp, String suffix) {
+    protected StartsWithExp(Exp<?> exp, String prefix) {
         this.exp = exp;
-        this.suffix = suffix;
+        this.prefix = prefix;
     }
 
     @Override
@@ -56,14 +55,14 @@ public class EndsWithExp implements Condition {
             return false;
         }
 
-        EndsWithExp exp2 = (EndsWithExp) o;
+        StartsWithExp exp2 = (StartsWithExp) o;
         return Objects.equals(exp, exp2.exp)
-                && Objects.equals(suffix, exp2.suffix);
+                && Objects.equals(prefix, exp2.prefix);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash("endsWith", exp, suffix);
+        return Objects.hash("startsWith", exp, prefix);
     }
 
     @Override
@@ -73,15 +72,15 @@ public class EndsWithExp implements Condition {
 
     @Override
     public String toQL() {
-        return "endsWith(" + exp.toQL() + "," + suffix + ")";
+        return "startsWith(" + exp.toQL() + "," + prefix + ")";
     }
 
     @Override
     public String toQL(DataFrame df) {
-        return "endsWith(" + exp.toQL(df) + "," + suffix + ")";
+        return "startsWith(" + exp.toQL(df) + "," + prefix + ")";
     }
 
     private BooleanSeries doEval(Series<?> data) {
-        return data.locate(o -> o != null ? o.toString().endsWith(suffix) : false);
+        return data.locate(o -> o != null ? o.toString().startsWith(prefix) : false);
     }
 }
