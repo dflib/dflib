@@ -26,6 +26,11 @@ import static org.dflib.Exp.$val;
  */
 public interface StrExp extends Exp<String> {
 
+    @Override
+    default Class<String> getType() {
+        return String.class;
+    }
+
     /**
      * @since 2.0.0
      */

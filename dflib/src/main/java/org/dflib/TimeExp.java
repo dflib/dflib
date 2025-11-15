@@ -22,6 +22,11 @@ import static org.dflib.Exp.$val;
 
 public interface TimeExp extends Exp<LocalTime> {
 
+    @Override
+    default Class<LocalTime> getType() {
+        return LocalTime.class;
+    }
+
     /**
      * @since 2.0.0
      */
