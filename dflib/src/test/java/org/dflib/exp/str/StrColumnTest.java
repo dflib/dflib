@@ -25,7 +25,8 @@ public class StrColumnTest {
     @Test
     public void getColumnName() {
         assertEquals("a", $str("a").getColumnName());
-        assertEquals("$str(0)", $str(0).getColumnName());
+        assertEquals("str(0)", $str(0).getColumnName());
+        assertEquals("a b", $str("a b").getColumnName());
     }
 
     @Test
@@ -33,6 +34,13 @@ public class StrColumnTest {
         DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $str("b").getColumnName(df));
         assertEquals("a", $str(0).getColumnName(df));
+    }
+
+    @Test
+    public void toQL() {
+        assertEquals("a", $str("a").toQL());
+        assertEquals("`str(0)`", $str(0).toQL());
+        assertEquals("`a b`", $str("a b").toQL());
     }
 
     @Test

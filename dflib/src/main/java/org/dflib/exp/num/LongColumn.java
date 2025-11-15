@@ -15,8 +15,8 @@ public class LongColumn extends Column<Long> implements NumExp<Long> {
     }
 
     @Override
-    public String toQL() {
-        return position >= 0 ? "$long(" + position + ")" : name;
+    public String getColumnName() {
+        return position >= 0 ? "long(" + position + ")" : name;
     }
 
     @Override

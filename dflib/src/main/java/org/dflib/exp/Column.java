@@ -62,13 +62,25 @@ public class Column<T> implements Exp<T> {
     }
 
     @Override
+    public String getColumnName() {
+        return position >= 0 ? "col(" + position + ")" : name;
+    }
+
+    @Override
+    public String getColumnName(DataFrame df) {
+        return position >= 0 ? df.getColumnsIndex().get(position) : name;
+    }
+
+    @Override
     public String toQL() {
-        return position >= 0 ? "$col(" + position + ")" : name;
+        String name = getColumnName();
+        return shouldQuoteName(name) ? "`" + name + "`" : name;
     }
 
     @Override
     public String toQL(DataFrame df) {
-        return position >= 0 ? df.getColumnsIndex().get(position) : name;
+        String name = getColumnName(df);
+        return shouldQuoteName(name) ? "`" + name + "`" : name;
     }
 
     @Override
@@ -89,5 +101,24 @@ public class Column<T> implements Exp<T> {
     @Override
     public T reduce(Series<?> s) {
         return eval(s).first();
+    }
+
+    static boolean shouldQuoteName(String name) {
+        if (name == null || name.isEmpty()) {
+            return false;
+        }
+
+        if (!Character.isJavaIdentifierStart(name.charAt(0))) {
+            return true;
+        }
+
+        int len = name.length();
+        for (int i = 1; i < len; i++) {
+            if (!Character.isJavaIdentifierPart(name.charAt(i))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

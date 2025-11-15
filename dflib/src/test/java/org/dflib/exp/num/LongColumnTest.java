@@ -23,7 +23,8 @@ public class LongColumnTest extends BaseExpTest {
     @Test
     public void getColumnName() {
         assertEquals("a", $long("a").getColumnName());
-        assertEquals("$long(0)", $long(0).getColumnName());
+        assertEquals("long(0)", $long(0).getColumnName());
+        assertEquals("a b", $long("a b").getColumnName());
     }
 
     @Test
@@ -31,6 +32,13 @@ public class LongColumnTest extends BaseExpTest {
         DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $long("b").getColumnName(df));
         assertEquals("a", $long(0).getColumnName(df));
+    }
+
+    @Test
+    public void toQL() {
+        assertEquals("a", $long("a").toQL());
+        assertEquals("`long(0)`", $long(0).toQL());
+        assertEquals("`a b`", $long("a b").toQL());
     }
 
     @Test

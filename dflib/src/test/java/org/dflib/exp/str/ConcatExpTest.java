@@ -14,7 +14,7 @@ public class ConcatExpTest extends BaseExpTest {
     @Test
     public void toQL() {
         StrExp exp = concat($str("a"), $val("X"), $str(0));
-        assertEquals("concat(a,'X',$str(0))", exp.toQL());
+        assertEquals("concat(a,'X',`str(0)`)", exp.toQL());
     }
 
     @Test

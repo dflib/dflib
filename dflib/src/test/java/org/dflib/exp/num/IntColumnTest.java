@@ -1,7 +1,5 @@
 package org.dflib.exp.num;
 
-import org.dflib.unit.BoolSeriesAsserts;
-import org.dflib.unit.SeriesAsserts;
 import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.DecimalExp;
@@ -11,11 +9,12 @@ import org.dflib.IntSeries;
 import org.dflib.NumExp;
 import org.dflib.Series;
 import org.dflib.exp.BaseExpTest;
+import org.dflib.unit.BoolSeriesAsserts;
+import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +25,8 @@ public class IntColumnTest extends BaseExpTest {
     @Test
     public void getColumnName() {
         assertEquals("a", $int("a").getColumnName());
-        assertEquals("$int(0)", $int(0).getColumnName());
+        assertEquals("int(0)", $int(0).getColumnName());
+        assertEquals("a b", $int("a b").getColumnName());
     }
 
     @Test
@@ -34,6 +34,13 @@ public class IntColumnTest extends BaseExpTest {
         DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $int("b").getColumnName(df));
         assertEquals("a", $int(0).getColumnName(df));
+    }
+
+    @Test
+    public void toQL() {
+        assertEquals("a", $int("a").toQL());
+        assertEquals("`int(0)`", $int(0).toQL());
+        assertEquals("`a b`", $int("a b").toQL());
     }
 
     @Test

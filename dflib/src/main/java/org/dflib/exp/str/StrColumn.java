@@ -15,7 +15,7 @@ public class StrColumn extends Column<String> implements StrExp {
     }
 
     @Override
-    public String toQL() {
-        return position >= 0 ? "$str(" + position + ")" : name;
+    public String getColumnName() {
+        return position >= 0 ? "str(" + position + ")" : name;
     }
 }

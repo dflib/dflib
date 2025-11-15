@@ -18,8 +18,8 @@ public class BoolColumn extends Column<Boolean> implements Condition {
     }
 
     @Override
-    public String toQL() {
-        return position >= 0 ? "$bool(" + position + ")" : name;
+    public String getColumnName() {
+        return position >= 0 ? "bool(" + position + ")" : name;
     }
 
     @Override

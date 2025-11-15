@@ -57,7 +57,15 @@ public class ColumnTest {
     @Test
     public void getColumnName() {
         assertEquals("a", $col("a").getColumnName());
-        assertEquals("$col(0)", $col(0).getColumnName());
+        assertEquals("col(0)", $col(0).getColumnName());
+        assertEquals("a b", $col("a b").getColumnName());
+    }
+
+    @Test
+    public void toQL() {
+        assertEquals("a", $col("a").toQL());
+        assertEquals("`col(0)`", $col(0).toQL());
+        assertEquals("`a b`", $col("a b").toQL());
     }
 
     @Test

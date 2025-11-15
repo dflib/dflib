@@ -25,7 +25,8 @@ public class OffsetDateTimeColumnTest {
     @Test
     public void getColumnName() {
         assertEquals("a", $offsetDateTime("a").getColumnName());
-        assertEquals("$offsetDateTime(0)", $offsetDateTime(0).getColumnName());
+        assertEquals("offsetDateTime(0)", $offsetDateTime(0).getColumnName());
+        assertEquals("a b", $offsetDateTime("a b").getColumnName());
     }
 
     @Test
@@ -33,6 +34,13 @@ public class OffsetDateTimeColumnTest {
         DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $offsetDateTime("b").getColumnName(df));
         assertEquals("a", $offsetDateTime(0).getColumnName(df));
+    }
+
+    @Test
+    public void toQL() {
+        assertEquals("a", $offsetDateTime("a").toQL());
+        assertEquals("`offsetDateTime(0)`", $offsetDateTime(0).toQL());
+        assertEquals("`a b`", $offsetDateTime("a b").toQL());
     }
 
     @Test
