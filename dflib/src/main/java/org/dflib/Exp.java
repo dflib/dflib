@@ -49,12 +49,14 @@ import org.dflib.exp.num.LongColumn;
 import org.dflib.exp.num.LongScalarExp;
 import org.dflib.exp.str.ConcatExp;
 import org.dflib.exp.str.EndsWithExp;
+import org.dflib.exp.str.LowerExp;
 import org.dflib.exp.str.StartsWithExp;
 import org.dflib.exp.str.StrColumn;
 import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrScalarExp;
 import org.dflib.exp.str.SubstrFromExp;
 import org.dflib.exp.str.SubstrFromLenExp;
+import org.dflib.exp.str.UpperExp;
 import org.dflib.ql.QLParserInvoker;
 import org.dflib.ql.antlr4.ExpParser;
 import org.dflib.sort.ExpSorter;
@@ -543,6 +545,20 @@ public interface Exp<T> {
 
     default Condition endsWith(String suffix) {
         return EndsWithExp.of(this, suffix);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default StrExp lower() {
+        return LowerExp.of(this);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default StrExp upper() {
+        return UpperExp.of(this);
     }
 
     /**

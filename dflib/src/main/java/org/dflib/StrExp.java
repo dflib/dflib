@@ -105,20 +105,6 @@ public interface StrExp extends Exp<String> {
     /**
      * @since 2.0.0
      */
-    default StrExp lower() {
-        return StrExp1.mapVal("lower", this, String::toLowerCase);
-    }
-
-    /**
-     * @since 2.0.0
-     */
-    default StrExp upper() {
-        return StrExp1.mapVal("upper", this, String::toUpperCase);
-    }
-
-    /**
-     * @since 2.0.0
-     */
     default NumExp<Integer> len() {
         return IntExp1.mapVal("len", this, String::length);
     }
