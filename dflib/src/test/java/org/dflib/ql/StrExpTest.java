@@ -148,9 +148,13 @@ public class StrExpTest {
 
     static Stream<Arguments> function_returnsCondition() {
         return Stream.of(
+                arguments("matches(a, 'he.*')", $col("a").matches("he.*")),
                 arguments("matches('hello', 'he.*')", $strVal("hello").matches("he.*")),
+                arguments("startsWith(a, 'he')", $col("a").startsWith("he")),
                 arguments("startsWith('hello', 'he')", $strVal("hello").startsWith("he")),
+                arguments("endsWith(a, 'lo')", $col("a").endsWith("lo")),
                 arguments("endsWith('hello', 'lo')", $strVal("hello").endsWith("lo")),
+                arguments("contains(a, 'ell')", $col("a").contains("ell")),
                 arguments("contains('hello', 'ell')", $strVal("hello").contains("ell")),
                 arguments("matches(str(1), 'he.*')", $str(1).matches("he.*")),
                 arguments("matches(trim('  hello'), 'he.*')", $strVal("  hello").trim().matches("he.*"))
@@ -162,8 +166,6 @@ public class StrExpTest {
             "matches('hello')",
             "startsWith('hello', 'll', 2)",
             "contains('hello', true)",
-            "matches(123, 'pattern')",
-            "startsWith(true, 'prefix')",
             "endsWith('hello', null)",
     })
     public void function_returnsCondition_throws(String text) {

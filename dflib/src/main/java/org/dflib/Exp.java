@@ -17,7 +17,10 @@ import org.dflib.exp.bool.BoolColumn;
 import org.dflib.exp.bool.BoolScalarExp;
 import org.dflib.exp.bool.ConditionFactory;
 import org.dflib.exp.bool.ContainsExp;
+import org.dflib.exp.bool.EndsWithExp;
+import org.dflib.exp.bool.MatchesExp;
 import org.dflib.exp.bool.OrCondition;
+import org.dflib.exp.bool.StartsWithExp;
 import org.dflib.exp.datetime.DateColumn;
 import org.dflib.exp.datetime.DateExp1;
 import org.dflib.exp.datetime.DateScalarExp;
@@ -49,9 +52,7 @@ import org.dflib.exp.num.IntScalarExp;
 import org.dflib.exp.num.LongColumn;
 import org.dflib.exp.num.LongScalarExp;
 import org.dflib.exp.str.ConcatExp;
-import org.dflib.exp.bool.EndsWithExp;
 import org.dflib.exp.str.LowerExp;
-import org.dflib.exp.bool.StartsWithExp;
 import org.dflib.exp.str.StrColumn;
 import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrScalarExp;
@@ -560,6 +561,13 @@ public interface Exp<T> {
      */
     default Condition contains(String substring) {
         return ContainsExp.of(this, substring);
+    }
+
+    /**
+     * Converts each value to a String and then checks whether it matches a given pattern.
+     */
+    default Condition matches(String regex) {
+        return MatchesExp.of(this, regex);
     }
 
     /**

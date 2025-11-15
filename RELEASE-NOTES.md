@@ -4,7 +4,7 @@
 * #563 QL: "startsWith(..)" function without the "str(..)" wrapper for the first argument
 * #564 QL: lower(..), upper(..) without the "str(..)" wrapper for the argument
 * #565 QL: trim(..) without the "str(..)" wrapper for the argument
-* #566 QL: contains(..) without "str(..)" wrapper for the argument
+* #566 QL: QL: contains(..), matches(..) without "str(..)" wrapper for the argument
 
 ## Release 2.0.0-M5
 

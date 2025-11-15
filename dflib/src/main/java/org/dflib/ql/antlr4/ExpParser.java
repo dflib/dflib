@@ -6398,9 +6398,9 @@ public class ExpParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class BoolFnContext extends ParserRuleContext {
 		public Condition exp;
-		public BiFunction<StrExp, String, Condition> fn;
+		public BiFunction<Exp, String, Condition> fn;
 		public CastAsBoolContext castAsBool;
-		public StrExpContext a;
+		public ExpressionContext a;
 		public StrScalarContext b;
 		public CastAsBoolContext castAsBool() {
 			return getRuleContext(CastAsBoolContext.class,0);
@@ -6408,8 +6408,8 @@ public class ExpParser extends Parser {
 		public TerminalNode LP() { return getToken(ExpParser.LP, 0); }
 		public TerminalNode COMMA() { return getToken(ExpParser.COMMA, 0); }
 		public TerminalNode RP() { return getToken(ExpParser.RP, 0); }
-		public StrExpContext strExp() {
-			return getRuleContext(StrExpContext.class,0);
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
 		}
 		public StrScalarContext strScalar() {
 			return getRuleContext(StrScalarContext.class,0);
@@ -6495,7 +6495,7 @@ public class ExpParser extends Parser {
 				setState(1199);
 				match(LP);
 				setState(1200);
-				((BoolFnContext)_localctx).a = strExp();
+				((BoolFnContext)_localctx).a = expression();
 				setState(1201);
 				match(COMMA);
 				setState(1202);
@@ -11107,7 +11107,7 @@ public class ExpParser extends Parser {
 		"\u0000\u04ad\u04a5\u0001\u0000\u0000\u0000\u04ad\u04a7\u0001\u0000\u0000"+
 		"\u0000\u04ad\u04a9\u0001\u0000\u0000\u0000\u04ad\u04ab\u0001\u0000\u0000"+
 		"\u0000\u04ae\u04af\u0001\u0000\u0000\u0000\u04af\u04b0\u0005\u0001\u0000"+
-		"\u0000\u04b0\u04b1\u0003\u0012\t\u0000\u04b1\u04b2\u0005\u0003\u0000\u0000"+
+		"\u0000\u04b0\u04b1\u0003\f\u0006\u0000\u04b1\u04b2\u0005\u0003\u0000\u0000"+
 		"\u04b2\u04b3\u00038\u001c\u0000\u04b3\u04b4\u0005\u0002\u0000\u0000\u04b4"+
 		"\u04b5\u0006<\uffff\uffff\u0000\u04b5\u04b7\u0001\u0000\u0000\u0000\u04b6"+
 		"\u04a2\u0001\u0000\u0000\u0000\u04b6\u04ad\u0001\u0000\u0000\u0000\u04b7"+

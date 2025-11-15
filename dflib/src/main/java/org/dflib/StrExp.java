@@ -4,7 +4,6 @@ import org.dflib.agg.Max;
 import org.dflib.agg.Min;
 import org.dflib.exp.agg.StrReduceExp1;
 import org.dflib.exp.map.MapCondition1;
-import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.map.MapExp1;
 import org.dflib.exp.num.DecimalExp1;
 import org.dflib.exp.num.DoubleExp1;
@@ -16,9 +15,6 @@ import org.dflib.exp.str.StrSplitExp;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import java.util.regex.Pattern;
-
-import static org.dflib.Exp.$val;
 
 /**
  * An expression applied to String columns.
@@ -82,12 +78,6 @@ public interface StrExp extends Exp<String> {
     @Override
     default DecimalExp castAsDecimal() {
         return DecimalExp1.mapVal("castAsDecimal", this, BigDecimal::new);
-    }
-
-    default Condition matches(String regex) {
-        // precompile pattern..
-        Pattern p = Pattern.compile(regex);
-        return MapCondition2.mapVal("matches", this, $val(regex), (s, r) -> p.matcher(s).matches());
     }
 
     /**
