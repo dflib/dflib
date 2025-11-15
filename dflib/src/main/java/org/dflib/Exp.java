@@ -48,6 +48,8 @@ import org.dflib.exp.num.IntScalarExp;
 import org.dflib.exp.num.LongColumn;
 import org.dflib.exp.num.LongScalarExp;
 import org.dflib.exp.str.ConcatExp;
+import org.dflib.exp.str.EndsWithExp;
+import org.dflib.exp.str.StartsWithExp;
 import org.dflib.exp.str.StrColumn;
 import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrScalarExp;
@@ -533,6 +535,14 @@ public interface Exp<T> {
      */
     default StrExp substr(int fromInclusive, int len) {
         return SubstrFromLenExp.of(this, fromInclusive, len);
+    }
+
+    default Condition startsWith(String prefix) {
+        return StartsWithExp.of(this, prefix);
+    }
+
+    default Condition endsWith(String suffix) {
+        return EndsWithExp.of(this, suffix);
     }
 
     /**

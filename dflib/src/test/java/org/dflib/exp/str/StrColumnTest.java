@@ -92,6 +92,14 @@ public class StrColumnTest {
     }
 
     @Test
+    public void startsWith_EmptyPrefix() {
+        Condition c = $str(0).startsWith("");
+
+        Series<String> s = Series.of("a", "_b", "c", "__d");
+        new BoolSeriesAsserts(c.eval(s)).expectData(true, true, true, true);
+    }
+
+    @Test
     public void endsWith() {
         Condition c = $str(0).endsWith("_");
 

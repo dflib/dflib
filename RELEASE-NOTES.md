@@ -1,6 +1,7 @@
 ## Release 2.0.0-M6
 
 * #562 Column getColumnName() and toQL() consistency
+* #563 QL: "startsWith(..)" function without the "str(..)" wrapper for the first argument
 
 ## Release 2.0.0-M5
 

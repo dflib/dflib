@@ -91,14 +91,6 @@ public interface StrExp extends Exp<String> {
         return MapCondition2.mapVal("matches", this, $val(regex), (s, r) -> p.matcher(s).matches());
     }
 
-    default Condition startsWith(String prefix) {
-        return MapCondition2.mapVal("startsWith", this, $val(prefix), (s, p) -> s.startsWith(prefix));
-    }
-
-    default Condition endsWith(String suffix) {
-        return MapCondition2.mapVal("endsWith", this, $val(suffix), (s, p) -> s.endsWith(suffix));
-    }
-
     default Condition contains(String substring) {
         return MapCondition2.mapVal("contains", this, $val(substring), (s, p) -> s.contains(substring));
     }

@@ -5,6 +5,7 @@ import org.dflib.exp.bool.AndCondition;
 import org.dflib.exp.bool.AsCondition;
 import org.dflib.exp.bool.NotCondition;
 import org.dflib.exp.bool.OrCondition;
+import org.dflib.exp.bool.TrueCondition;
 import org.dflib.exp.num.IntExp1;
 
 import java.util.Objects;
@@ -14,6 +15,13 @@ import java.util.Objects;
  * row of the source DataFrame.
  */
 public interface Condition extends Exp<Boolean> {
+
+    /**
+     * @since 2.0.0
+     */
+    static Condition ofTrue() {
+        return new TrueCondition();
+    }
 
     /**
      * @since 2.0.0
