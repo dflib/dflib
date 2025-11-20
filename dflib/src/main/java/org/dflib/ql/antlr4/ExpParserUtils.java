@@ -142,6 +142,10 @@ class ExpParserUtils {
         return new IfNullExp<>(a, b);
     }
 
+    public static <N extends Number> NumExp<N> negate(NumExp<N> num) {
+        return num.negate();
+    }
+
     public static NumExp<?> addOrSub(NumExp a, NumExp b, Token op) {
         switch (op.getType()) {
             case ExpParser.ADD:

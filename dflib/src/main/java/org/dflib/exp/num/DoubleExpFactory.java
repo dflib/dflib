@@ -88,6 +88,11 @@ public class DoubleExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<Double> negate(Exp<? extends Number> exp) {
+        return DoubleExp1.mapVal("-", cast(exp), v -> -v);
+    }
+
+    @Override
     public NumExp<?> abs(Exp<? extends Number> exp) {
         return DoubleExp1.mapVal("abs", cast(exp), Math::abs);
     }
