@@ -80,6 +80,14 @@ public class DecimalColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void negate() {
+        DataFrame df = DataFrame.foldByRow("a").of(new BigDecimal("10.50"), BigDecimal.ZERO, new BigDecimal("-7.25"));
+
+        Series<?> s = $decimal("a").negate().eval(df);
+        new SeriesAsserts(s).expectData(new BigDecimal("-10.50"), BigDecimal.ZERO, new BigDecimal("7.25"));
+    }
+
+    @Test
     public void scale() {
         DataFrame df = DataFrame.foldByRow("a").of(
                 new BigDecimal("2.0100287"),

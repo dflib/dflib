@@ -71,6 +71,14 @@ public class LongColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void negate() {
+        DataFrame df = DataFrame.foldByRow("a").of(1L, 0L, -3L, Long.MIN_VALUE, Long.MAX_VALUE);
+
+        Series<?> s = $long("a").negate().eval(df);
+        new SeriesAsserts(s).expectData(-1L, 0L, 3L, Long.MIN_VALUE /* overflow */, -Long.MAX_VALUE);
+    }
+
+    @Test
     public void castAsLong() {
         NumExp<Long> e = $long("a");
         assertSame(e, e.castAsLong());

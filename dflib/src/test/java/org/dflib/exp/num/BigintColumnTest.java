@@ -67,6 +67,14 @@ public class BigintColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void negate() {
+        DataFrame df = DataFrame.foldByRow("a").of(new BigInteger("10"), BigInteger.ZERO, new BigInteger("-7"));
+
+        Series<?> s = $bigint("a").negate().eval(df);
+        new SeriesAsserts(s).expectData(new BigInteger("-10"), BigInteger.ZERO, new BigInteger("7"));
+    }
+
+    @Test
     public void castAsBigInteger() {
         NumExp<BigInteger> e = $bigint("a");
         assertSame(e, e.castAsBigint());

@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,6 +70,14 @@ public class IntColumnTest extends BaseExpTest {
 
         Series<? extends Number> s = $int("a").round().eval(df);
         new SeriesAsserts(s).expectData(2, 5, 0, 1, -2);
+    }
+
+    @Test
+    public void negate() {
+        DataFrame df = DataFrame.foldByRow("a").of(1, 0, -3, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+        Series<?> s = $int("a").negate().eval(df);
+        new SeriesAsserts(s).expectData(-1, 0, 3, Integer.MIN_VALUE /* overflow */, -Integer.MAX_VALUE);
     }
 
     @Test
