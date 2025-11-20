@@ -146,6 +146,8 @@ public abstract class NumericExpFactory {
 
     public abstract NumExp<?> abs(Exp<? extends Number> exp);
 
+    public abstract NumExp<?> negate(Exp<? extends Number> exp);
+
 
     public abstract NumExp<?> cumSum(Exp<? extends Number> exp);
 

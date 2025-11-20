@@ -121,6 +121,11 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public DecimalExp negate(Exp<? extends Number> exp) {
+        return DecimalExp1.mapVal("-", cast(exp), BigDecimal::negate);
+    }
+
+    @Override
     public NumExp<BigInteger> castAsBigint(NumExp<?> exp) {
         return BigintExp1.mapVal("castAsBigint", cast(exp), BigDecimal::toBigInteger);
     }

@@ -75,6 +75,11 @@ public class IntExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<Integer> negate(Exp<? extends Number> exp) {
+        return IntExp1.mapVal("-", cast(exp), v -> -v);
+    }
+
+    @Override
     public DecimalExp castAsDecimal(NumExp<?> exp) {
         return DecimalExp1.mapVal("castAsDecimal", cast(exp), BigDecimal::valueOf);
     }
