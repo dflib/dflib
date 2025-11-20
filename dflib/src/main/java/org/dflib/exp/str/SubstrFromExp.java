@@ -45,11 +45,6 @@ public class SubstrFromExp implements StrExp {
     }
 
     @Override
-    public Class<String> getType() {
-        return String.class;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

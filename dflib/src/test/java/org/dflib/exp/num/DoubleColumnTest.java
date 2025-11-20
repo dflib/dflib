@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.stream.DoubleStream;
-import java.util.stream.LongStream;
 
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,7 +23,8 @@ public class DoubleColumnTest extends BaseExpTest {
     @Test
     public void getColumnName() {
         assertEquals("a", $double("a").getColumnName());
-        assertEquals("$double(0)", $double(0).getColumnName());
+        assertEquals("double(0)", $double(0).getColumnName());
+        assertEquals("a b", $double("a b").getColumnName());
     }
 
     @Test
@@ -32,6 +32,13 @@ public class DoubleColumnTest extends BaseExpTest {
         DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $double("b").toQL(df));
         assertEquals("a", $double(0).toQL(df));
+    }
+
+    @Test
+    public void toQL() {
+        assertEquals("a", $double("a").toQL());
+        assertEquals("`double(0)`", $double(0).toQL());
+        assertEquals("`a b`", $double("a b").toQL());
     }
 
     @Test

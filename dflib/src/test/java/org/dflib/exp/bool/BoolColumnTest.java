@@ -18,7 +18,15 @@ public class BoolColumnTest {
     @Test
     public void getColumnName() {
         assertEquals("a", $bool("a").getColumnName());
-        assertEquals("$bool(0)", $bool(0).getColumnName());
+        assertEquals("bool(0)", $bool(0).getColumnName());
+        assertEquals("a b", $bool("a b").getColumnName());
+    }
+
+    @Test
+    public void toQL() {
+        assertEquals("a", $bool("a").toQL());
+        assertEquals("`bool(0)`", $bool(0).toQL());
+        assertEquals("`a b`", $bool("a b").toQL());
     }
 
     @Test

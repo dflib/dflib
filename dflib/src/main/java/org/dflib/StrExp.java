@@ -4,27 +4,27 @@ import org.dflib.agg.Max;
 import org.dflib.agg.Min;
 import org.dflib.exp.agg.StrReduceExp1;
 import org.dflib.exp.map.MapCondition1;
-import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.map.MapExp1;
 import org.dflib.exp.num.DecimalExp1;
 import org.dflib.exp.num.DoubleExp1;
 import org.dflib.exp.num.FloatExp1;
 import org.dflib.exp.num.IntExp1;
 import org.dflib.exp.str.StrAsExp;
-import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrShiftExp;
 import org.dflib.exp.str.StrSplitExp;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import java.util.regex.Pattern;
-
-import static org.dflib.Exp.$val;
 
 /**
  * An expression applied to String columns.
  */
 public interface StrExp extends Exp<String> {
+
+    @Override
+    default Class<String> getType() {
+        return String.class;
+    }
 
     /**
      * @since 2.0.0
@@ -78,45 +78,6 @@ public interface StrExp extends Exp<String> {
     @Override
     default DecimalExp castAsDecimal() {
         return DecimalExp1.mapVal("castAsDecimal", this, BigDecimal::new);
-    }
-
-    default Condition matches(String regex) {
-        // precompile pattern..
-        Pattern p = Pattern.compile(regex);
-        return MapCondition2.mapVal("matches", this, $val(regex), (s, r) -> p.matcher(s).matches());
-    }
-
-    default Condition startsWith(String prefix) {
-        return MapCondition2.mapVal("startsWith", this, $val(prefix), (s, p) -> s.startsWith(prefix));
-    }
-
-    default Condition endsWith(String suffix) {
-        return MapCondition2.mapVal("endsWith", this, $val(suffix), (s, p) -> s.endsWith(suffix));
-    }
-
-    default Condition contains(String substring) {
-        return MapCondition2.mapVal("contains", this, $val(substring), (s, p) -> s.contains(substring));
-    }
-
-    default StrExp trim() {
-        return StrExp1.mapVal("trim", this, s -> {
-            String trimmed = s.trim();
-            return trimmed.isEmpty() ? null : trimmed;
-        });
-    }
-
-    /**
-     * @since 2.0.0
-     */
-    default StrExp lower() {
-        return StrExp1.mapVal("lower", this, String::toLowerCase);
-    }
-
-    /**
-     * @since 2.0.0
-     */
-    default StrExp upper() {
-        return StrExp1.mapVal("upper", this, String::toUpperCase);
     }
 
     /**

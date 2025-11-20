@@ -148,9 +148,13 @@ public class StrExpTest {
 
     static Stream<Arguments> function_returnsCondition() {
         return Stream.of(
+                arguments("matches(a, 'he.*')", $col("a").matches("he.*")),
                 arguments("matches('hello', 'he.*')", $strVal("hello").matches("he.*")),
+                arguments("startsWith(a, 'he')", $col("a").startsWith("he")),
                 arguments("startsWith('hello', 'he')", $strVal("hello").startsWith("he")),
+                arguments("endsWith(a, 'lo')", $col("a").endsWith("lo")),
                 arguments("endsWith('hello', 'lo')", $strVal("hello").endsWith("lo")),
+                arguments("contains(a, 'ell')", $col("a").contains("ell")),
                 arguments("contains('hello', 'ell')", $strVal("hello").contains("ell")),
                 arguments("matches(str(1), 'he.*')", $str(1).matches("he.*")),
                 arguments("matches(trim('  hello'), 'he.*')", $strVal("  hello").trim().matches("he.*"))
@@ -162,8 +166,6 @@ public class StrExpTest {
             "matches('hello')",
             "startsWith('hello', 'll', 2)",
             "contains('hello', true)",
-            "matches(123, 'pattern')",
-            "startsWith(true, 'prefix')",
             "endsWith('hello', null)",
     })
     public void function_returnsCondition_throws(String text) {
@@ -182,6 +184,7 @@ public class StrExpTest {
         return Stream.of(
                 arguments("concat(str(1), 'example')", concat($str(1), $strVal("example"))),
                 arguments("concat(str(1))", concat($str(1))),
+                arguments("concat(a)", concat($col("a"))),
                 arguments("concat( )", concat()),
                 arguments("concat()", concat()),
                 arguments("concat('abc', 123, double(1), abc = 32.0)", concat(
@@ -190,16 +193,19 @@ public class StrExpTest {
                         $double(1),
                         $col("abc").eq($floatVal(32.0f))
                 )),
-                arguments("trim('  example  ')", $strVal("  example  ").trim()),
                 arguments("substr('example', 2)", $strVal("example").substr(2)),
                 arguments("substr('example', 2, 3)", $strVal("example").substr(2, 3)),
                 arguments("substr('example', -2, 3)", $strVal("example").substr(-2, 3)),
                 arguments("substr(a, 2)", $col("a").substr(2)),
                 arguments("substr(a, 2, 1)", $col("a").substr(2, 1)),
+                arguments("trim(abc)",$col("abc").trim()),
+                arguments("trim('  example  ')", $strVal("  example  ").trim()),
                 arguments("trim(str(1))", $str(1).trim()),
                 arguments("trim(castAsStr(3))", $intVal(3).castAsStr().trim()),
+                arguments("lower(a)", $col("a").lower()),
                 arguments("lower(str(a))", $str("a").lower()),
                 arguments("lower('AbCd')", $strVal("AbCd").lower()),
+                arguments("upper(a)", $col("a").upper()),
                 arguments("upper(str(a))", $str("a").upper()),
                 arguments("upper('AbCd')", $strVal("AbCd").upper())
         );
@@ -209,7 +215,6 @@ public class StrExpTest {
     @ValueSource(strings = {
             "CONCAT()",
             "trim()",
-            "trim(  abc  )",
             "substr('example')",
             "substr('example', 1 + 2)",
             "substr('example', 2, null)",

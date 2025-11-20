@@ -1,3 +1,11 @@
+## Release 2.0.0-M6
+
+* #562 Column getColumnName() and toQL() consistency
+* #563 QL: "startsWith(..)" function without the "str(..)" wrapper for the first argument
+* #564 QL: lower(..), upper(..) without the "str(..)" wrapper for the argument
+* #565 QL: trim(..) without the "str(..)" wrapper for the argument
+* #566 QL: QL: contains(..), matches(..) without "str(..)" wrapper for the argument
+
 ## Release 2.0.0-M5
 
 * #532 Can not expand collections with QL

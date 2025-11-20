@@ -19,7 +19,7 @@ public class OffsetDateTimeColumn extends Column<OffsetDateTime> implements Offs
     }
 
     @Override
-    public String toQL() {
-        return position >= 0 ? "$offsetDateTime(" + position + ")" : name;
+    public String getColumnName() {
+        return position >= 0 ? "offsetDateTime(" + position + ")" : name;
     }
 }

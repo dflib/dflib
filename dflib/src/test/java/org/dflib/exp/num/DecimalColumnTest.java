@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.stream.LongStream;
 
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +24,8 @@ public class DecimalColumnTest extends BaseExpTest {
     @Test
     public void getColumnName() {
         assertEquals("a", $decimal("a").getColumnName());
-        assertEquals("$decimal(0)", $decimal(0).getColumnName());
+        assertEquals("decimal(0)", $decimal(0).getColumnName());
+        assertEquals("a b", $decimal("a b").getColumnName());
     }
 
     @Test
@@ -33,6 +33,13 @@ public class DecimalColumnTest extends BaseExpTest {
         DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $decimal("b").getColumnName(df));
         assertEquals("a", $decimal(0).getColumnName(df));
+    }
+
+    @Test
+    public void toQL() {
+        assertEquals("a", $decimal("a").toQL());
+        assertEquals("`decimal(0)`", $decimal(0).toQL());
+        assertEquals("`a b`", $decimal("a b").toQL());
     }
 
     @Test

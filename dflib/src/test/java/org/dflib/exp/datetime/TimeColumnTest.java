@@ -20,7 +20,8 @@ public class TimeColumnTest {
     @Test
     public void getColumnName() {
         assertEquals("a", $time("a").getColumnName());
-        assertEquals("$time(0)", $time(0).getColumnName());
+        assertEquals("time(0)", $time(0).getColumnName());
+        assertEquals("a b", $time("a b").getColumnName());
     }
 
     @Test
@@ -29,6 +30,14 @@ public class TimeColumnTest {
         assertEquals("b", $time("b").getColumnName(df));
         assertEquals("a", $time(0).getColumnName(df));
     }
+
+    @Test
+    public void toQL() {
+        assertEquals("a", $time("a").toQL());
+        assertEquals("`time(0)`", $time(0).toQL());
+        assertEquals("`a b`", $time("a b").toQL());
+    }
+
 
     @Test
     public void eval() {

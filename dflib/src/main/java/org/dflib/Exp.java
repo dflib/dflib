@@ -16,7 +16,11 @@ import org.dflib.exp.bool.AndCondition;
 import org.dflib.exp.bool.BoolColumn;
 import org.dflib.exp.bool.BoolScalarExp;
 import org.dflib.exp.bool.ConditionFactory;
+import org.dflib.exp.bool.ContainsExp;
+import org.dflib.exp.bool.EndsWithExp;
+import org.dflib.exp.bool.MatchesExp;
 import org.dflib.exp.bool.OrCondition;
+import org.dflib.exp.bool.StartsWithExp;
 import org.dflib.exp.datetime.DateColumn;
 import org.dflib.exp.datetime.DateExp1;
 import org.dflib.exp.datetime.DateScalarExp;
@@ -48,11 +52,14 @@ import org.dflib.exp.num.IntScalarExp;
 import org.dflib.exp.num.LongColumn;
 import org.dflib.exp.num.LongScalarExp;
 import org.dflib.exp.str.ConcatExp;
+import org.dflib.exp.str.LowerExp;
 import org.dflib.exp.str.StrColumn;
 import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrScalarExp;
 import org.dflib.exp.str.SubstrFromExp;
 import org.dflib.exp.str.SubstrFromLenExp;
+import org.dflib.exp.str.TrimExp;
+import org.dflib.exp.str.UpperExp;
 import org.dflib.ql.QLParserInvoker;
 import org.dflib.ql.antlr4.ExpParser;
 import org.dflib.sort.ExpSorter;
@@ -533,6 +540,59 @@ public interface Exp<T> {
      */
     default StrExp substr(int fromInclusive, int len) {
         return SubstrFromLenExp.of(this, fromInclusive, len);
+    }
+
+    /**
+     * Converts each value to a String and then checks whether it starts with a given prefix.
+     */
+    default Condition startsWith(String prefix) {
+        return StartsWithExp.of(this, prefix);
+    }
+
+    /**
+     * Converts each value to a String and then checks whether it ends with a given suffix.
+     */
+    default Condition endsWith(String suffix) {
+        return EndsWithExp.of(this, suffix);
+    }
+
+    /**
+     * Converts each value to a String and then checks whether it contains a given suffix.
+     */
+    default Condition contains(String substring) {
+        return ContainsExp.of(this, substring);
+    }
+
+    /**
+     * Converts each value to a String and then checks whether it matches a given pattern.
+     */
+    default Condition matches(String regex) {
+        return MatchesExp.of(this, regex);
+    }
+
+    /**
+     * Converts each value to a String and then converts each String to lower case.
+     *
+     * @since 2.0.0
+     */
+    default StrExp lower() {
+        return LowerExp.of(this);
+    }
+
+    /**
+     * Converts each value to a String and then converts each String to upper case.
+     *
+     * @since 2.0.0
+     */
+    default StrExp upper() {
+        return UpperExp.of(this);
+    }
+
+    /**
+     * Converts each value to a String and then "trims" that String, removing leading and trailing spaces.
+     */
+    default StrExp trim() {
+        return TrimExp.of(this);
     }
 
     /**

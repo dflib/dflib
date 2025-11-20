@@ -11,8 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static org.dflib.Exp.$col;
-import static org.dflib.Exp.$date;
+import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -21,7 +20,8 @@ public class DateColumnTest {
     @Test
     public void getColumnName() {
         assertEquals("a", $date("a").getColumnName());
-        assertEquals("$date(0)", $date(0).getColumnName());
+        assertEquals("date(0)", $date(0).getColumnName());
+        assertEquals("a b", $date("a b").getColumnName());
     }
 
     @Test
@@ -29,6 +29,13 @@ public class DateColumnTest {
         DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $date("b").getColumnName(df));
         assertEquals("a", $date(0).getColumnName(df));
+    }
+
+    @Test
+    public void toQL() {
+        assertEquals("a", $date("a").toQL());
+        assertEquals("`date(0)`", $date(0).toQL());
+        assertEquals("`a b`", $date("a b").toQL());
     }
 
     @Test

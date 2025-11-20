@@ -17,8 +17,8 @@ public class FloatColumn extends Column<Float> implements NumExp<Float> {
     }
 
     @Override
-    public String toQL() {
-        return position >= 0 ? "$float(" + position + ")" : name;
+    public String getColumnName() {
+        return position >= 0 ? "float(" + position + ")" : name;
     }
 
     @Override

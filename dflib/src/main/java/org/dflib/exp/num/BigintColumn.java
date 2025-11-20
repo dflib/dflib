@@ -19,12 +19,12 @@ public class BigintColumn extends Column<BigInteger> implements NumExp<BigIntege
     }
 
     @Override
-    public NumExp<BigInteger> castAsBigint() {
-        return this;
+    public String getColumnName() {
+        return position >= 0 ? "bigint(" + position + ")" : name;
     }
 
     @Override
-    public String toQL() {
-        return position >= 0 ? "$bigint(" + position + ")" : name;
+    public NumExp<BigInteger> castAsBigint() {
+        return this;
     }
 }

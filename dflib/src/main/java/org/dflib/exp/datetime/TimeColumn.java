@@ -16,7 +16,7 @@ public class TimeColumn extends Column<LocalTime> implements TimeExp {
     }
 
     @Override
-    public String toQL() {
-        return position >= 0 ? "$time(" + position + ")" : name;
+    public String getColumnName() {
+        return position >= 0 ? "time(" + position + ")" : name;
     }
 }

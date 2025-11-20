@@ -27,6 +27,11 @@ import static org.dflib.Exp.$val;
  */
 public interface OffsetDateTimeExp extends Exp<OffsetDateTime> {
 
+    @Override
+    default Class<OffsetDateTime> getType() {
+        return OffsetDateTime.class;
+    }
+
     /**
      * @since 2.0.0
      */

@@ -24,7 +24,8 @@ public class BigintColumnTest extends BaseExpTest {
     @Test
     public void getColumnName() {
         assertEquals("a", Exp.$bigint("a").getColumnName());
-        assertEquals("$bigint(0)", $bigint(0).getColumnName());
+        assertEquals("bigint(0)", $bigint(0).getColumnName());
+        assertEquals("a b", $bigint("a b").getColumnName());
     }
 
     @Test
@@ -32,6 +33,13 @@ public class BigintColumnTest extends BaseExpTest {
         DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", Exp.$bigint("b").getColumnName(df));
         assertEquals("a", $bigint(0).getColumnName(df));
+    }
+
+    @Test
+    public void toQL() {
+        assertEquals("a", $bigint("a").toQL());
+        assertEquals("`bigint(0)`", $bigint(0).toQL());
+        assertEquals("`a b`", $bigint("a b").toQL());
     }
 
     @Test

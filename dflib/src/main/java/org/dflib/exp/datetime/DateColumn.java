@@ -5,7 +5,6 @@ import org.dflib.exp.Column;
 
 import java.time.LocalDate;
 
-
 public class DateColumn extends Column<LocalDate> implements DateExp {
 
     public DateColumn(String name) {
@@ -17,7 +16,7 @@ public class DateColumn extends Column<LocalDate> implements DateExp {
     }
 
     @Override
-    public String toQL() {
-        return position >= 0 ? "$date(" + position + ")" : name;
+    public String getColumnName() {
+        return position >= 0 ? "date(" + position + ")" : name;
     }
 }

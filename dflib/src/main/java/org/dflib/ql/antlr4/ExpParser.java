@@ -6407,9 +6407,9 @@ public class ExpParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class BoolFnContext extends ParserRuleContext {
 		public Condition exp;
-		public BiFunction<StrExp, String, Condition> fn;
+		public BiFunction<Exp, String, Condition> fn;
 		public CastAsBoolContext castAsBool;
-		public StrExpContext a;
+		public ExpressionContext a;
 		public StrScalarContext b;
 		public CastAsBoolContext castAsBool() {
 			return getRuleContext(CastAsBoolContext.class,0);
@@ -6417,8 +6417,8 @@ public class ExpParser extends Parser {
 		public TerminalNode LP() { return getToken(ExpParser.LP, 0); }
 		public TerminalNode COMMA() { return getToken(ExpParser.COMMA, 0); }
 		public TerminalNode RP() { return getToken(ExpParser.RP, 0); }
-		public StrExpContext strExp() {
-			return getRuleContext(StrExpContext.class,0);
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
 		}
 		public StrScalarContext strScalar() {
 			return getRuleContext(StrScalarContext.class,0);
@@ -6504,7 +6504,7 @@ public class ExpParser extends Parser {
 				setState(1203);
 				match(LP);
 				setState(1204);
-				((BoolFnContext)_localctx).a = strExp();
+				((BoolFnContext)_localctx).a = expression();
 				setState(1205);
 				match(COMMA);
 				setState(1206);
@@ -7132,19 +7132,21 @@ public class ExpParser extends Parser {
 	public static class StrFnContext extends ParserRuleContext {
 		public StrExp exp;
 		public CastAsStrContext castAsStr;
-		public StrExpContext strExp;
+		public ExpressionContext expression;
 		public ExpressionContext s;
 		public IntegerScalarContext a;
 		public IntegerScalarContext b;
-		public ExpressionContext expression;
 		public List<ExpressionContext> args = new ArrayList<ExpressionContext>();
 		public CastAsStrContext castAsStr() {
 			return getRuleContext(CastAsStrContext.class,0);
 		}
 		public TerminalNode TRIM() { return getToken(ExpParser.TRIM, 0); }
 		public TerminalNode LP() { return getToken(ExpParser.LP, 0); }
-		public StrExpContext strExp() {
-			return getRuleContext(StrExpContext.class,0);
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
 		}
 		public TerminalNode RP() { return getToken(ExpParser.RP, 0); }
 		public TerminalNode LOWER() { return getToken(ExpParser.LOWER, 0); }
@@ -7153,12 +7155,6 @@ public class ExpParser extends Parser {
 		public List<TerminalNode> COMMA() { return getTokens(ExpParser.COMMA); }
 		public TerminalNode COMMA(int i) {
 			return getToken(ExpParser.COMMA, i);
-		}
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
 		}
 		public List<IntegerScalarContext> integerScalar() {
 			return getRuleContexts(IntegerScalarContext.class);
@@ -7210,10 +7206,10 @@ public class ExpParser extends Parser {
 				setState(1326);
 				match(LP);
 				setState(1327);
-				((StrFnContext)_localctx).strExp = strExp();
+				((StrFnContext)_localctx).expression = expression();
 				setState(1328);
 				match(RP);
-				 ((StrFnContext)_localctx).exp =  ((StrFnContext)_localctx).strExp.exp.trim(); 
+				 ((StrFnContext)_localctx).exp =  ((StrFnContext)_localctx).expression.exp.trim(); 
 				}
 				break;
 			case LOWER:
@@ -7224,10 +7220,10 @@ public class ExpParser extends Parser {
 				setState(1332);
 				match(LP);
 				setState(1333);
-				((StrFnContext)_localctx).strExp = strExp();
+				((StrFnContext)_localctx).expression = expression();
 				setState(1334);
 				match(RP);
-				 ((StrFnContext)_localctx).exp =  ((StrFnContext)_localctx).strExp.exp.lower(); 
+				 ((StrFnContext)_localctx).exp =  ((StrFnContext)_localctx).expression.exp.lower(); 
 				}
 				break;
 			case UPPER:
@@ -7238,10 +7234,10 @@ public class ExpParser extends Parser {
 				setState(1338);
 				match(LP);
 				setState(1339);
-				((StrFnContext)_localctx).strExp = strExp();
+				((StrFnContext)_localctx).expression = expression();
 				setState(1340);
 				match(RP);
-				 ((StrFnContext)_localctx).exp =  ((StrFnContext)_localctx).strExp.exp.upper(); 
+				 ((StrFnContext)_localctx).exp =  ((StrFnContext)_localctx).expression.exp.upper(); 
 				}
 				break;
 			case SUBSTR:
@@ -11123,7 +11119,7 @@ public class ExpParser extends Parser {
 		"\u0000\u04b1\u04a9\u0001\u0000\u0000\u0000\u04b1\u04ab\u0001\u0000\u0000"+
 		"\u0000\u04b1\u04ad\u0001\u0000\u0000\u0000\u04b1\u04af\u0001\u0000\u0000"+
 		"\u0000\u04b2\u04b3\u0001\u0000\u0000\u0000\u04b3\u04b4\u0005\u0001\u0000"+
-		"\u0000\u04b4\u04b5\u0003\u0012\t\u0000\u04b5\u04b6\u0005\u0003\u0000\u0000"+
+		"\u0000\u04b4\u04b5\u0003\f\u0006\u0000\u04b5\u04b6\u0005\u0003\u0000\u0000"+
 		"\u04b6\u04b7\u00038\u001c\u0000\u04b7\u04b8\u0005\u0002\u0000\u0000\u04b8"+
 		"\u04b9\u0006<\uffff\uffff\u0000\u04b9\u04bb\u0001\u0000\u0000\u0000\u04ba"+
 		"\u04a6\u0001\u0000\u0000\u0000\u04ba\u04b1\u0001\u0000\u0000\u0000\u04bb"+
@@ -11195,13 +11191,13 @@ public class ExpParser extends Parser {
 		"\u0001\u0000\u0000\u0000\u0529\u0081\u0001\u0000\u0000\u0000\u052a\u052b"+
 		"\u0003\u0092I\u0000\u052b\u052c\u0006A\uffff\uffff\u0000\u052c\u055b\u0001"+
 		"\u0000\u0000\u0000\u052d\u052e\u0005/\u0000\u0000\u052e\u052f\u0005\u0001"+
-		"\u0000\u0000\u052f\u0530\u0003\u0012\t\u0000\u0530\u0531\u0005\u0002\u0000"+
+		"\u0000\u0000\u052f\u0530\u0003\f\u0006\u0000\u0530\u0531\u0005\u0002\u0000"+
 		"\u0000\u0531\u0532\u0006A\uffff\uffff\u0000\u0532\u055b\u0001\u0000\u0000"+
 		"\u0000\u0533\u0534\u00051\u0000\u0000\u0534\u0535\u0005\u0001\u0000\u0000"+
-		"\u0535\u0536\u0003\u0012\t\u0000\u0536\u0537\u0005\u0002\u0000\u0000\u0537"+
+		"\u0535\u0536\u0003\f\u0006\u0000\u0536\u0537\u0005\u0002\u0000\u0000\u0537"+
 		"\u0538\u0006A\uffff\uffff\u0000\u0538\u055b\u0001\u0000\u0000\u0000\u0539"+
 		"\u053a\u00052\u0000\u0000\u053a\u053b\u0005\u0001\u0000\u0000\u053b\u053c"+
-		"\u0003\u0012\t\u0000\u053c\u053d\u0005\u0002\u0000\u0000\u053d\u053e\u0006"+
+		"\u0003\f\u0006\u0000\u053c\u053d\u0005\u0002\u0000\u0000\u053d\u053e\u0006"+
 		"A\uffff\uffff\u0000\u053e\u055b\u0001\u0000\u0000\u0000\u053f\u0540\u0005"+
 		".\u0000\u0000\u0540\u0541\u0005\u0001\u0000\u0000\u0541\u0542\u0003\f"+
 		"\u0006\u0000\u0542\u0543\u0005\u0003\u0000\u0000\u0543\u0546\u0003,\u0016"+

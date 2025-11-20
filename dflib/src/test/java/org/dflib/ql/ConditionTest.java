@@ -184,8 +184,11 @@ public class ConditionTest {
 
     static Stream<Arguments> function() {
         return Stream.of(
+                arguments("matches(a, 'he.*')", $col("a").matches("he.*")),
                 arguments("matches('hello', 'he.*')", $strVal("hello").matches("he.*")),
+                arguments("startsWith(a, 'he')", $col("a").startsWith("he")),
                 arguments("startsWith('hello', 'he')", $strVal("hello").startsWith("he")),
+                arguments("endsWith(a, 'lo')", $col("a").endsWith("lo")),
                 arguments("endsWith('hello', 'lo')", $strVal("hello").endsWith("lo")),
                 arguments("contains('hello', 'ell')", $strVal("hello").contains("ell")),
                 arguments("matches(str(1), 'he.*')", $str(1).matches("he.*")),
@@ -198,8 +201,6 @@ public class ConditionTest {
             "matches('hello')",
             "startsWith('hello', 'll', 2)",
             "contains('hello', true)",
-            "matches(123, 'pattern')",
-            "startsWith(true, 'prefix')",
             "endsWith('hello', null)",
     })
     void function_throws(String text) {

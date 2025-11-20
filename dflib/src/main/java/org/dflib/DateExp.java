@@ -23,6 +23,11 @@ import static org.dflib.Exp.$val;
  */
 public interface DateExp extends Exp<LocalDate> {
 
+    @Override
+    default Class<LocalDate> getType() {
+        return LocalDate.class;
+    }
+
     /**
      * @since 2.0.0
      */

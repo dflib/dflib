@@ -810,14 +810,14 @@ offsetDateTimeFieldFn returns [NumExp<Integer> exp] locals [Function<OffsetDateT
  *  - The input expression(s) for the boolean function. The types and number of parameters depend on the specific function.
  *    For example, `matches` takes a string expression and a string literal, while `castAsBool` takes a single expression of any type.
  */
-boolFn returns [Condition exp] locals [BiFunction<StrExp, String, Condition> fn]
+boolFn returns [Condition exp] locals [BiFunction<Exp, String, Condition> fn]
     : castAsBool { $exp = $castAsBool.exp; }
     | (
         : MATCHES { $fn = (a, b) -> a.matches(b); }
         | STARTS_WITH { $fn = (a, b) -> a.startsWith(b); }
         | ENDS_WITH { $fn = (a, b) -> a.endsWith(b); }
         | CONTAINS { $fn = (a, b) -> a.contains(b); }
-    ) '(' a=strExp ',' b=strScalar ')' { $exp = $fn.apply($a.exp, $b.value); }
+    ) '(' a=expression ',' b=strScalar ')' { $exp = $fn.apply($a.exp, $b.value); }
     ;
 
 
@@ -913,9 +913,9 @@ offsetDateTimeFn returns [OffsetDateTimeExp exp] locals [BiFunction<OffsetDateTi
  */
 strFn returns [StrExp exp]
     : castAsStr { $exp = $castAsStr.exp; }
-    | TRIM '(' strExp ')' { $exp = $strExp.exp.trim(); }
-    | LOWER '(' strExp ')' { $exp = $strExp.exp.lower(); }
-    | UPPER '(' strExp ')' { $exp = $strExp.exp.upper(); }
+    | TRIM '(' expression ')' { $exp = $expression.exp.trim(); }
+    | LOWER '(' expression ')' { $exp = $expression.exp.lower(); }
+    | UPPER '(' expression ')' { $exp = $expression.exp.upper(); }
     | SUBSTR '(' s=expression ',' a=integerScalar (',' b=integerScalar)? ')' {
         $exp = $ctx.b != null ? $s.exp.substr($a.value.intValue(), $b.value.intValue()) : $s.exp.substr($a.value.intValue());
     }

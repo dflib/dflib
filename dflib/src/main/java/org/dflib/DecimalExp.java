@@ -12,6 +12,11 @@ import static org.dflib.Exp.$val;
 
 public interface DecimalExp extends NumExp<BigDecimal> {
 
+    @Override
+    default Class<BigDecimal> getType() {
+        return BigDecimal.class;
+    }
+
     /**
      * @since 2.0.0
      */

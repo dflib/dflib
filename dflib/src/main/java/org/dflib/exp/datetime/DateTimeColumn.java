@@ -16,7 +16,7 @@ public class DateTimeColumn extends Column<LocalDateTime> implements DateTimeExp
     }
 
     @Override
-    public String toQL() {
-        return position >= 0 ? "$dateTime(" + position + ")" : name;
+    public String getColumnName() {
+        return position >= 0 ? "dateTime(" + position + ")" : name;
     }
 }

@@ -1,13 +1,18 @@
 package org.dflib.exp.num;
 
-import org.dflib.*;
+import org.dflib.Condition;
+import org.dflib.DataFrame;
+import org.dflib.DecimalExp;
+import org.dflib.DoubleSeries;
+import org.dflib.FloatSeries;
+import org.dflib.NumExp;
+import org.dflib.Series;
 import org.dflib.exp.BaseExpTest;
 import org.dflib.unit.BoolSeriesAsserts;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.stream.IntStream;
 
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,7 +23,15 @@ public class FloatColumnTest extends BaseExpTest {
     @Test
     public void getColumnName() {
         assertEquals("a", $float("a").getColumnName());
-        assertEquals("$float(0)", $float(0).getColumnName());
+        assertEquals("float(0)", $float(0).getColumnName());
+        assertEquals("a b", $float("a b").getColumnName());
+    }
+
+    @Test
+    public void toQL() {
+        assertEquals("a", $float("a").toQL());
+        assertEquals("`float(0)`", $float(0).toQL());
+        assertEquals("`a b`", $float("a b").toQL());
     }
 
     @Test

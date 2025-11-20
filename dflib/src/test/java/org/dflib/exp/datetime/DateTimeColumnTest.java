@@ -21,7 +21,8 @@ public class DateTimeColumnTest {
     @Test
     public void getColumnName() {
         assertEquals("a", $dateTime("a").getColumnName());
-        assertEquals("$dateTime(0)", $dateTime(0).getColumnName());
+        assertEquals("dateTime(0)", $dateTime(0).getColumnName());
+        assertEquals("a b", $dateTime("a b").getColumnName());
     }
 
     @Test
@@ -29,6 +30,13 @@ public class DateTimeColumnTest {
         DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $dateTime("b").getColumnName(df));
         assertEquals("a", $dateTime(0).getColumnName(df));
+    }
+
+    @Test
+    public void toQL() {
+        assertEquals("a", $dateTime("a").toQL());
+        assertEquals("`dateTime(0)`", $dateTime(0).toQL());
+        assertEquals("`a b`", $dateTime("a b").toQL());
     }
 
     @Test

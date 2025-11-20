@@ -17,7 +17,12 @@ public class DecimalColumn extends Column<BigDecimal> implements DecimalExp {
     }
 
     @Override
-    public String toQL() {
-        return position >= 0 ? "$decimal(" + position + ")" : name;
+    public String getColumnName() {
+        return position >= 0 ? "decimal(" + position + ")" : name;
+    }
+
+    @Override
+    public DecimalExp castAsDecimal() {
+        return this;
     }
 }
