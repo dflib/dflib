@@ -99,7 +99,7 @@ public class BigintExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<BigInteger> negate(Exp<? extends Number> exp) {
-        return BigintExp1.mapVal("-", cast(exp), BigInteger::negate);
+        return new NegateExp<>(BigInteger.class, cast(exp), BigInteger::negate);
     }
 
     @Override

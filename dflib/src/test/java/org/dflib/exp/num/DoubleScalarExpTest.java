@@ -1,5 +1,6 @@
 package org.dflib.exp.num;
 
+import org.dflib.Exp;
 import org.dflib.NumExp;
 import org.dflib.Series;
 import org.dflib.exp.BaseExpTest;

@@ -92,7 +92,7 @@ public class FloatExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<Float> negate(Exp<? extends Number> exp) {
-        return FloatExp1.mapVal("-", cast(exp), v -> -v);
+        return new NegateExp<>(Float.class, cast(exp), v -> -v);
     }
 
     @Override

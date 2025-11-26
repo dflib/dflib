@@ -76,7 +76,7 @@ public class IntExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<Integer> negate(Exp<? extends Number> exp) {
-        return IntExp1.mapVal("-", cast(exp), v -> -v);
+        return new NegateExp<>(Integer.class, cast(exp), v -> -v);
     }
 
     @Override

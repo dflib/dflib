@@ -122,7 +122,7 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp negate(Exp<? extends Number> exp) {
-        return DecimalExp1.mapVal("-", cast(exp), BigDecimal::negate);
+        return new DecimalNegateExp(cast(exp), BigDecimal::negate);
     }
 
     @Override

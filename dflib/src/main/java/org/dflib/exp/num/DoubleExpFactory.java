@@ -89,7 +89,7 @@ public class DoubleExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<Double> negate(Exp<? extends Number> exp) {
-        return DoubleExp1.mapVal("-", cast(exp), v -> -v);
+        return new NegateExp<>(Double.class, cast(exp), v -> -v);
     }
 
     @Override
