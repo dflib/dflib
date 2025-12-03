@@ -91,6 +91,11 @@ public class FloatExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<Float> negate(Exp<? extends Number> exp) {
+        return new NegateExp<>(Float.class, cast(exp), v -> -v);
+    }
+
+    @Override
     public NumExp<?> abs(Exp<? extends Number> exp) {
         return FloatExp1.mapVal("abs", cast(exp), Math::abs);
     }

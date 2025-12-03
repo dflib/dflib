@@ -10,7 +10,7 @@ import java.util.Objects;
  */
 public abstract class Exp1<F, T> implements Exp<T> {
 
-    private final String opName;
+    protected final String opName;
     protected final Exp<F> exp;
     private final Class<T> type;
 

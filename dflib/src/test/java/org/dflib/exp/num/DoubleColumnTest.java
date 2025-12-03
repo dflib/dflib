@@ -80,6 +80,18 @@ public class DoubleColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void negate() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                1.5, 0.0, -0.0, -2.25,
+                Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NaN);
+
+        Series<?> s = $double("a").negate().eval(df);
+        new SeriesAsserts(s).expectData(
+                -1.5, -0.0, 0.0, 2.25,
+                Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NaN);
+    }
+
+    @Test
     public void castAsDouble() {
         NumExp<Double> e = $double("a");
         assertSame(e, e.castAsDouble());

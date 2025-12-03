@@ -98,6 +98,11 @@ public class BigintExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<BigInteger> negate(Exp<? extends Number> exp) {
+        return new NegateExp<>(BigInteger.class, cast(exp), BigInteger::negate);
+    }
+
+    @Override
     public NumExp<BigInteger> castAsBigint(NumExp<?> exp) {
         return (NumExp<BigInteger>) cast(exp);
     }

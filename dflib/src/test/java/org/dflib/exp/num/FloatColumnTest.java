@@ -80,6 +80,18 @@ public class FloatColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void negate() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                1.5f, 0f, -0f, -2.25f,
+                Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NaN);
+
+        Series<?> s = $float("a").negate().eval(df);
+        new SeriesAsserts(s).expectData(
+                -1.5f, -0f, 0f, 2.25f,
+                Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, Float.NaN);
+    }
+
+    @Test
     public void castAsFloat() {
         NumExp<Float> e = $float("a");
         assertSame(e, e.castAsFloat());

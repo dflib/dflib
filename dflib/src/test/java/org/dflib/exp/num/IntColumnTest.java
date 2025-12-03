@@ -81,6 +81,14 @@ public class IntColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void negate() {
+        DataFrame df = DataFrame.foldByRow("a").of(1, 0, -3, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+        Series<?> s = $int("a").negate().eval(df);
+        new SeriesAsserts(s).expectData(-1, 0, 3, Integer.MIN_VALUE /* overflow */, -Integer.MAX_VALUE);
+    }
+
+    @Test
     public void castAsInt() {
         NumExp<Integer> e = $int("a");
         assertSame(e, e.castAsInt());

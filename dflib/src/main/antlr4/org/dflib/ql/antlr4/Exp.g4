@@ -95,6 +95,7 @@ numExp returns [NumExp<?> exp]
     | numColumn { $exp = $numColumn.exp; }
     | numFn { $exp = $numFn.exp; }
     | numAgg { $exp = $numAgg.exp; }
+    | SUB numExp { $exp = negate($numExp.exp); }
     | a=numExp op=(MUL | DIV | MOD) b=numExp { $exp = mulDivOrMod($a.exp, $b.exp, $op); }
     | a=numExp op=(ADD | SUB) b=numExp { $exp = addOrSub($a.exp, $b.exp, $op); }
     | '(' numExp ')' { $exp = $numExp.exp; }
