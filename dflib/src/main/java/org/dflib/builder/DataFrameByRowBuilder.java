@@ -6,17 +6,14 @@ import org.dflib.Index;
 import org.dflib.RowPredicate;
 import org.dflib.sample.Sampler;
 
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Random;
 
 /**
  * Builds a DataFrameExtractor that can be used to create DataFrames from a sequence of objects of a some type.
-
  */
 public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
 
-    static final int DEFAULT_CAPACITY = 1000;
 
     private final Extractor<S, ?>[] columnsExtractors;
 
@@ -89,8 +86,7 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
     }
 
     public DataFrame ofIterable(Iterable<S> sources) {
-        int autoCapacity = (sources instanceof Collection) ? ((Collection) sources).size() : -1;
-        int capacity = guessCapacity(autoCapacity);
+        int capacity = guessCapacity(sources);
 
         return appender(capacity).append(sources).toDataFrame();
     }
@@ -99,7 +95,7 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
      * Creates an "appender" with this builder parameters. The appender can be used to build the DataFrame row by row.
      */
     public DataFrameAppender<S> appender() {
-        return appender(guessCapacity(-1));
+        return appender(guessCapacity());
     }
 
     protected DataFrameAppender<S> appender(int capacity) {
@@ -161,15 +157,23 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
         return this.rowsSampleRandom != null ? this.rowsSampleRandom : Sampler.getDefaultRandom();
     }
 
-    protected int guessCapacity(int guessedCapacity) {
-        int defaultCapacity = guessedCapacity > 0 ? guessedCapacity : DEFAULT_CAPACITY;
-
+    protected int guessCapacity() {
         if (this.capacity > 0) {
             return this.capacity;
         } else if (rowSampleSize > 0) {
-            return Math.min(rowSampleSize, defaultCapacity);
+            return Math.min(rowSampleSize, BuilderCapacity.defaultCapacity());
         } else {
-            return defaultCapacity;
+            return BuilderCapacity.defaultCapacity();
+        }
+    }
+
+    protected int guessCapacity(Iterable<?> source) {
+        if (this.capacity > 0) {
+            return this.capacity;
+        } else if (rowSampleSize > 0) {
+            return Math.min(rowSampleSize, BuilderCapacity.capacity(source));
+        } else {
+            return BuilderCapacity.capacity(source);
         }
     }
 }

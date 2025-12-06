@@ -2,6 +2,7 @@ package org.dflib;
 
 import org.dflib.builder.DataFrameArrayByRowBuilder;
 import org.dflib.builder.DataFrameByColumnBuilder;
+import org.dflib.builder.DataFrameByMapRowBuilder;
 import org.dflib.builder.DataFrameByRowBuilder;
 import org.dflib.builder.DataFrameFoldByColumnBuilder;
 import org.dflib.builder.DataFrameFoldByRowBuilder;
@@ -97,6 +98,13 @@ public interface DataFrame extends Iterable<RowProxy> {
             extractors[i] = Extractor.$col(a -> a[pos]);
         }
         return new DataFrameArrayByRowBuilder(extractors).columnIndex(columnIndex);
+    }
+
+    /**
+     * Starts a DataFrame builder that will extract data from a collection of maps.
+     */
+    static DataFrameByMapRowBuilder byMapRow() {
+        return new DataFrameByMapRowBuilder();
     }
 
     static DataFrameFoldByRowBuilder foldByRow(String... columnLabels) {

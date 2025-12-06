@@ -15,7 +15,7 @@ public class DataFrameArrayByRowBuilder extends DataFrameByRowBuilder<Object[], 
     // override to return covariant subclass
     @Override
     public DataFrameArrayAppender appender() {
-        return appender(guessCapacity(-1));
+        return appender(guessCapacity());
     }
 
     @Override

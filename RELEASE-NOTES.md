@@ -6,6 +6,7 @@
 * #564 QL: lower(..), upper(..) without the "str(..)" wrapper for the argument
 * #565 QL: trim(..) without the "str(..)" wrapper for the argument
 * #566 QL: QL: contains(..), matches(..) without "str(..)" wrapper for the argument
+* #571 DataFrame <-> Iterable<Map> conversions
 
 ## Release 2.0.0-M5
 
