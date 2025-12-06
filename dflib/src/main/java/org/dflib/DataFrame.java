@@ -16,6 +16,7 @@ import org.dflib.stack.StackBuilder;
 import org.dflib.window.Window;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
@@ -668,4 +669,11 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     @Override
     Iterator<RowProxy> iterator();
+
+    /**
+     * Returns a List with each DataFrame row converted to a Map.
+     *
+     * @since 2.0.0
+     */
+    List<Map<String, Object>> toMaps();
 }

@@ -17,8 +17,11 @@ import org.dflib.slice.RangeRowSet;
 import org.dflib.stack.StackBuilder;
 import org.dflib.stack.Stacker;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -338,6 +341,26 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public String toString() {
         return Environment.commonEnv().printer().print(this);
+    }
+
+    @Override
+    public List<Map<String, Object>> toMaps() {
+        int h = height();
+        int w = width();
+        List<Map<String, Object>> result = new ArrayList<>(h);
+
+        // Calculate proper initial capacity for HashMap considering 0.75 load factor
+        int mapCapacity = (int) Math.ceil(w / 0.75);
+
+        for (int row = 0; row < h; row++) {
+            Map<String, Object> map = new HashMap<>(mapCapacity);
+            for (int col = 0; col < w; col++) {
+                map.put(columnsIndex.get(col), dataColumns[col].get(row));
+            }
+            result.add(map);
+        }
+
+        return result;
     }
 
     protected DataFrame replaceColumn(int pos, Series<?> newColumn) {
