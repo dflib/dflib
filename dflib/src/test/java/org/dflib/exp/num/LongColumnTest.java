@@ -16,7 +16,6 @@ import java.util.stream.LongStream;
 
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 public class LongColumnTest extends BaseExpTest {
 
@@ -44,14 +43,14 @@ public class LongColumnTest extends BaseExpTest {
     @Test
     public void chainStaysNumeric() {
         NumExp<?> exp = $long("b").as("x").as("y").sum().as("SUM(x)");
-        assertEquals("SUM(x)", exp.getColumnName(mock(DataFrame.class)));
+        assertEquals("SUM(x)", exp.getColumnName(DataFrame.empty()));
     }
 
     @Test
     public void as() {
         NumExp<Long> e = $long("b");
-        assertEquals("b", e.getColumnName(mock(DataFrame.class)));
-        assertEquals("c", e.as("c").getColumnName(mock(DataFrame.class)));
+        assertEquals("b", e.getColumnName(DataFrame.empty()));
+        assertEquals("c", e.as("c").getColumnName(DataFrame.empty()));
     }
 
     @Test

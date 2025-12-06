@@ -13,7 +13,6 @@ import java.time.LocalTime;
 
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
 
 public class TimeColumnTest {
 
@@ -53,8 +52,8 @@ public class TimeColumnTest {
     @Test
     public void as() {
         TimeExp exp = $time("b");
-        assertEquals("b", exp.getColumnName(mock(DataFrame.class)));
-        assertEquals("c", exp.as("c").getColumnName(mock(DataFrame.class)));
+        assertEquals("b", exp.getColumnName(DataFrame.empty()));
+        assertEquals("c", exp.as("c").getColumnName(DataFrame.empty()));
     }
 
     @Test

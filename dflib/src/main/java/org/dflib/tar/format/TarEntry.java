@@ -70,7 +70,7 @@ public class TarEntry {
     private boolean starSparse;
     private long dataOffset;
 
-    TarEntry(
+    protected TarEntry(
             String name,
             long size,
             long realSize,
@@ -98,7 +98,7 @@ public class TarEntry {
         this.dataOffset = dataOffset;
     }
 
-    TarEntry(
+    protected TarEntry(
             Map<String, String> globalPaxHeaders,
             byte[] headerBuf,
             ZipEncoding encoding,
@@ -110,7 +110,7 @@ public class TarEntry {
         parseTarHeader(globalPaxHeaders, headerBuf, encoding, lenient);
     }
 
-    TarEntry(
+    protected TarEntry(
             Map<String, String> globalPaxHeaders,
             byte[] headerBuf,
             ZipEncoding encoding,

@@ -7,8 +7,6 @@ import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class TarTest {
 
@@ -30,8 +28,6 @@ public class TarTest {
     }
 
     private TarEntry createTarEntry(String name) {
-        TarEntry mock = mock(TarEntry.class);
-        when(mock.getName()).thenReturn(name);
-        return mock;
+        return new TarEntry(name, 1L, 1L, 0L, 0, false, (byte) 0, null, false, false, false, null) {};
     }
 }

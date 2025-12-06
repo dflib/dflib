@@ -18,7 +18,6 @@ import java.time.LocalTime;
 
 import static org.dflib.Exp.$str;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
 
 public class StrColumnTest {
 
@@ -46,8 +45,8 @@ public class StrColumnTest {
     @Test
     public void as() {
         StrExp e = $str("b");
-        assertEquals("b", e.getColumnName(mock(DataFrame.class)));
-        assertEquals("c", e.as("c").getColumnName(mock(DataFrame.class)));
+        assertEquals("b", e.getColumnName(DataFrame.empty()));
+        assertEquals("c", e.as("c").getColumnName(DataFrame.empty()));
     }
 
     @Test

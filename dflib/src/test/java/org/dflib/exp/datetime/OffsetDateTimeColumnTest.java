@@ -18,7 +18,6 @@ import static org.dflib.Exp.$col;
 import static org.dflib.Exp.$offsetDateTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 
 public class OffsetDateTimeColumnTest {
 
@@ -59,8 +58,8 @@ public class OffsetDateTimeColumnTest {
     @Test
     public void as() {
         OffsetDateTimeExp exp = $offsetDateTime("b");
-        assertEquals("b", exp.getColumnName(mock(DataFrame.class)));
-        assertEquals("c", exp.as("c").getColumnName(mock(DataFrame.class)));
+        assertEquals("b", exp.getColumnName(DataFrame.empty()));
+        assertEquals("c", exp.as("c").getColumnName(DataFrame.empty()));
     }
 
     @Test

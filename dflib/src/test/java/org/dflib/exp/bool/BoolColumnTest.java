@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
 
 public class BoolColumnTest {
 
@@ -47,8 +46,8 @@ public class BoolColumnTest {
     @Test
     public void as() {
         Condition c = $bool("b");
-        assertEquals("b", c.getColumnName(mock(DataFrame.class)));
-        assertEquals("c", c.as("c").getColumnName(mock(DataFrame.class)));
+        assertEquals("b", c.getColumnName(DataFrame.empty()));
+        assertEquals("c", c.as("c").getColumnName(DataFrame.empty()));
     }
 
     @Test

@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
 
 public class DateTimeColumnTest {
 
@@ -54,8 +53,8 @@ public class DateTimeColumnTest {
     @Test
     public void as() {
         DateTimeExp exp = $dateTime("b");
-        assertEquals("b", exp.getColumnName(mock(DataFrame.class)));
-        assertEquals("c", exp.as("c").getColumnName(mock(DataFrame.class)));
+        assertEquals("b", exp.getColumnName(DataFrame.empty()));
+        assertEquals("c", exp.as("c").getColumnName(DataFrame.empty()));
     }
 
     @Test

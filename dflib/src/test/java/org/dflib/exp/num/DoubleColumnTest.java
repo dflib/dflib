@@ -16,7 +16,6 @@ import java.util.stream.DoubleStream;
 
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 public class DoubleColumnTest extends BaseExpTest {
 
@@ -44,14 +43,14 @@ public class DoubleColumnTest extends BaseExpTest {
     @Test
     public void chainStaysNumeric() {
         NumExp<?> exp = $double("b").as("x").as("y").sum().as("SUM(x)");
-        assertEquals("SUM(x)", exp.getColumnName(mock(DataFrame.class)));
+        assertEquals("SUM(x)", exp.getColumnName(DataFrame.empty()));
     }
 
     @Test
     public void as() {
         NumExp<Double> e = $double("b");
-        assertEquals("b", e.getColumnName(mock(DataFrame.class)));
-        assertEquals("c", e.as("c").getColumnName(mock(DataFrame.class)));
+        assertEquals("b", e.getColumnName(DataFrame.empty()));
+        assertEquals("c", e.as("c").getColumnName(DataFrame.empty()));
     }
 
     @Test
