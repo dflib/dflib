@@ -35,12 +35,12 @@ public class DataFrameByMapRowBuilder {
         return this;
     }
 
-    public DataFrame of(Iterable<Map<String, ?>> maps) {
-        int capacity = guessCapacity(maps);
-        return columnsIndex != null ? ofFixedIndex(maps, columnsIndex, capacity) : ofDynamicIndex(maps, capacity);
+    public DataFrame of(Iterable<Map<String, ?>> source) {
+        int capacity = guessCapacity(source);
+        return columnsIndex != null ? ofFixedIndex(source, columnsIndex, capacity) : ofDynamicIndex(source, capacity);
     }
 
-    private DataFrame ofFixedIndex(Iterable<Map<String, ?>> maps, Index columnsIndex, int capacity) {
+    private DataFrame ofFixedIndex(Iterable<Map<String, ?>> source, Index columnsIndex, int capacity) {
 
         String[] names = columnsIndex.toArray();
         int w = names.length;
@@ -50,7 +50,7 @@ public class DataFrameByMapRowBuilder {
             accums[i] = new ObjectAccum<>(capacity);
         }
 
-        for (Map<String, ?> m : maps) {
+        for (Map<String, ?> m : source) {
             for (int i = 0; i < w; i++) {
                 accums[i].push(m.get(names[i]));
             }

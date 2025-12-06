@@ -8,6 +8,7 @@
 * #566 QL: QL: contains(..), matches(..) without "str(..)" wrapper for the argument
 * #571 DataFrame <-> Iterable<Map> conversions
 * #572 Require Java 17+
+* #573 DataFrame <-> Iterable<? extends Record> conversions
 
 ## Release 2.0.0-M5
 

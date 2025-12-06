@@ -3,6 +3,7 @@ package org.dflib;
 import org.dflib.builder.DataFrameArrayByRowBuilder;
 import org.dflib.builder.DataFrameByColumnBuilder;
 import org.dflib.builder.DataFrameByMapRowBuilder;
+import org.dflib.builder.DataFrameByRecordRowBuilder;
 import org.dflib.builder.DataFrameByRowBuilder;
 import org.dflib.builder.DataFrameFoldByColumnBuilder;
 import org.dflib.builder.DataFrameFoldByRowBuilder;
@@ -58,6 +59,14 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     static DataFrameByColumnBuilder byColumn(Index columnIndex) {
         return new DataFrameByColumnBuilder(columnIndex);
+    }
+
+    /**
+     * Starts a DataFrame builder that will extract data from some collection of records of a given type, each record
+     * object resulting in a row in a DataFrame. Columns are generated from record members.
+     */
+    static <T extends Record> DataFrameByRecordRowBuilder<T> byRecordRow(Class<T> type) {
+        return new DataFrameByRecordRowBuilder<>(type);
     }
 
     /**
@@ -677,4 +686,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 2.0.0
      */
     List<Map<String, Object>> toMaps();
+
+    /**
+     * Returns a List with each DataFrame row converted to the specified record type.
+     *
+     * @since 2.0.0
+     */
+    <T extends Record> List<T> toRecords(Class<T> type);
 }

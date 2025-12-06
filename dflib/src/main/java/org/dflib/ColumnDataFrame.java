@@ -15,13 +15,17 @@ import org.dflib.slice.EmptyRowSet;
 import org.dflib.slice.IndexedRowSet;
 import org.dflib.slice.RangeRowSet;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class ColumnDataFrame implements DataFrame {
 
@@ -359,5 +363,90 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         return result;
+    }
+
+    private static final Map<Class<?>, Object> PRIMITIVE_DEFAULTS = Map.of(
+            boolean.class, false,
+            byte.class, (byte) 0,
+            short.class, (short) 0,
+            int.class, 0,
+            long.class, 0L,
+            float.class, 0.0f,
+            double.class, 0.0,
+            char.class, '\0'
+    );
+
+    @Override
+    public <T extends Record> List<T> toRecords(Class<T> type) {
+
+        int w = width();
+        int h = height();
+
+        Set<String> names = new HashSet<>((int) Math.ceil(w / 0.75));
+        columnsIndex.forEach(names::add);
+
+        RecordComponent[] components = type.getRecordComponents();
+        int rw = components.length;
+
+        // placeholders for primitive nulls
+        Object[] nullArgs = new Object[rw];
+        int[] colIndices = new int[rw];
+        Class<?>[] paramTypes = new Class<?>[rw];
+
+        for (int i = 0; i < rw; i++) {
+            colIndices[i] = names.remove(components[i].getName())
+                    ? columnsIndex.position(components[i].getName())
+                    : -1;
+
+            paramTypes[i] = components[i].getType();
+            nullArgs[i] = defaultArg(paramTypes[i]);
+        }
+
+        if (!names.isEmpty()) {
+            throw new IllegalArgumentException("Record type '" + type.getName() + "' does not have members for DataFrame columns: " + names);
+        }
+
+        Constructor<T> constructor;
+        try {
+            constructor = type.getDeclaredConstructor(paramTypes);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("Could not find canonical constructor for record type " + type.getName(), e);
+        }
+
+        List<T> result = new ArrayList<>(h);
+        Object[] args = new Object[rw];
+
+        for (int r = 0; r < h; r++) {
+
+            for (int c = 0; c < rw; c++) {
+                // ... extra record components not in DataFrame will remain null (or a corresponding primitive default)
+                Object val = colIndices[c] < 0 ? null : dataColumns[colIndices[c]].get(r);
+                args[c] = val != null ? val : nullArgs[c];
+            }
+
+            try {
+                result.add(constructor.newInstance(args));
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to create record instance for row " + r, e);
+            }
+        }
+
+        return result;
+    }
+
+    private static Object defaultArg(Class<?> type) {
+        if (!type.isPrimitive()) {
+            return null;
+        }
+
+        if (type == boolean.class) return Boolean.FALSE;
+        if (type == byte.class) return (byte) 0;
+        if (type == short.class) return (short) 0;
+        if (type == int.class) return 0;
+        if (type == long.class) return 0L;
+        if (type == float.class) return 0.0f;
+        if (type == double.class) return 0.0;
+        if (type == char.class) return '\0';
+        throw new IllegalArgumentException("Unknown primitive type: " + type);
     }
 }
