@@ -102,7 +102,8 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Starts a DataFrame builder that will extract data from a collection of maps.
+     * Starts a DataFrame builder that will extract data from a collection of maps. Unlike {@link #byRow(Extractor[])}
+     * and similar methods, reading data from maps does not require explicit extractors.
      */
     static DataFrameByMapRowBuilder byMapRow() {
         return new DataFrameByMapRowBuilder();
