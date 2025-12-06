@@ -53,8 +53,7 @@ minimal supported kernel version is `1.0-a6`. You will need to upgrade the kerne
 For the list of EChart changes, you can follow 
 [this page](https://echarts.apache.org/handbook/en/basics/release-note/v6-upgrade-guide/). The new ECharts is much more 
 powerful but also introduces a new default chart theme. We recommend that you just use it, but if you have to switch 
-back to the old v5 for any reason, you can try the new custom theme feature as shown below. Though theme switching is 
-still experimental, and unfortunately doesn't yet reliably work in Jupyter.
+back to the old v5 for any reason, you can try the new custom theme feature as shown below:
 ```java
 ECharts
     .chart()

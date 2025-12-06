@@ -57,8 +57,7 @@ public class EChart {
 
     /**
      * Sets the chart theme, providing a URL where to load it from. By default, ECHarts JS includes "light" and "dark"
-     * themes. Use this method to bootstrap any other themes. <i>This functionality is still experimental, and doesn't
-     * reliably work in Jupyter</i>
+     * themes. Use this method to bootstrap any other themes.
      *
      * @since 2.0.0
      */
