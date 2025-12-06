@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         db: [ 'derby', 'mysql', 'postgresql' ]
-        java: [ 17, 21, 24 ]
+        java: [ 17, 21, 25 ]
 
     steps:
       - name: Checkout...
