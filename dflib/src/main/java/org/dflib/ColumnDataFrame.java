@@ -14,8 +14,6 @@ import org.dflib.slice.DeferredColumnSet;
 import org.dflib.slice.EmptyRowSet;
 import org.dflib.slice.IndexedRowSet;
 import org.dflib.slice.RangeRowSet;
-import org.dflib.stack.StackBuilder;
-import org.dflib.stack.Stacker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -251,7 +249,7 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public DataFrame ne(DataFrame another) {
 
-        // after this comparision passes, we can compare columns by position
+        // after this comparison passes, we can compare columns by position
         checkShapeMatches(another);
 
         int w = width();
@@ -361,19 +359,5 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         return result;
-    }
-
-    protected DataFrame replaceColumn(int pos, Series<?> newColumn) {
-        if (newColumn == dataColumns[pos]) {
-            return this;
-        }
-
-        int w = width();
-        Series[] newColumns = new Series[w];
-        for (int i = 0; i < w; i++) {
-            newColumns[i] = i == pos ? newColumn : dataColumns[i];
-        }
-
-        return new ColumnDataFrame(null, columnsIndex, newColumns);
     }
 }
