@@ -205,10 +205,10 @@ class DatasetBuilder {
             mRow.add(rowLabel);
             dsRow.data.forEach(mRow::add);
 
-            mRows.add(ValueModels.of(mRow));
+            mRows.add(new ValueModels(mRow));
         }
 
-        return new DatasetModel(ValueModels.of(mRows));
+        return new DatasetModel(new ValueModels(mRows));
     }
 
     enum DatasetRowType {

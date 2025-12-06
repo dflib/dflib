@@ -7,15 +7,17 @@ import java.util.Objects;
 /**
  * An adapter for a list of values that simplifies stripping trailing commas when rendering a list in a Mustache template
  */
-public class ValueModels<T> implements Iterable<ValueModel<T>> {
+public record ValueModels<T>(List<T> values) implements Iterable<ValueModel<T>> {
 
-    private final List<T> values;
-
+    /**
+     * @deprecated just use the constructor
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static <T> ValueModels<T> of(List<T> values) {
         return new ValueModels<>(values);
     }
 
-    private ValueModels(List<T> values) {
+    public ValueModels(List<T> values) {
         this.values = Objects.requireNonNull(values);
     }
 

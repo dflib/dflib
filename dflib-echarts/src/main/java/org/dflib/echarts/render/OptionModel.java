@@ -14,51 +14,22 @@ import org.dflib.echarts.render.option.visualmap.VisualMapModel;
 
 import java.util.List;
 
-public class OptionModel {
-
-    private final DatasetModel dataset;
-    private final LegendModel legend;
-    private final List<GridModel> grid;
-    private final List<SeriesModel> series;
-    private final TitleModel title;
-    private final ToolboxModel toolbox;
-    private final TooltipModel tooltip;
-    private final List<AxisModel> xAxes;
-    private final List<AxisModel> yAxes;
-    private final List<SingleAxisModel> singleAxes;
-    private final List<CalendarModel> calendars;
-    private final List<VisualMapModel> visualMaps;
-
-    /**
-     * @since 2.0.0
-     */
-    public OptionModel(
-            DatasetModel dataset,
-            LegendModel legend,
-            List<GridModel> grid,
-            List<SeriesModel> series,
-            TitleModel title,
-            ToolboxModel toolbox,
-            TooltipModel tooltip,
-            List<AxisModel> xAxes,
-            List<AxisModel> yAxes,
-            List<SingleAxisModel> singleAxes,
-            List<CalendarModel> calendars,
-            List<VisualMapModel> visualMaps) {
-
-        this.title = title;
-        this.toolbox = toolbox;
-        this.tooltip = tooltip;
-        this.dataset = dataset;
-        this.visualMaps = visualMaps;
-        this.calendars = calendars;
-        this.xAxes = xAxes;
-        this.yAxes = yAxes;
-        this.singleAxes = singleAxes;
-        this.grid = grid;
-        this.series = series;
-        this.legend = legend;
-    }
+/**
+ * @since 2.0.0
+ */
+public record OptionModel(
+        DatasetModel dataset,
+        LegendModel legend,
+        List<GridModel> grid,
+        List<SeriesModel> series,
+        TitleModel title,
+        ToolboxModel toolbox,
+        TooltipModel tooltip,
+        List<AxisModel> xAxes,
+        List<AxisModel> yAxes,
+        List<SingleAxisModel> singleAxes,
+        List<CalendarModel> calendars,
+        List<VisualMapModel> visualMaps) {
 
     @Deprecated(since = "2.0.0", forRemoval = true)
     public OptionModel(
@@ -86,28 +57,8 @@ public class OptionModel {
                 null);
     }
 
-    public TitleModel getTitle() {
-        return title;
-    }
-
-    public TooltipModel getTooltip() {
-        return tooltip;
-    }
-
-    public ToolboxModel getToolbox() {
-        return toolbox;
-    }
-
     public boolean isGridPresent() {
         return grid != null;
-    }
-
-    public List<GridModel> getGrid() {
-        return grid;
-    }
-
-    public DatasetModel getDataset() {
-        return dataset;
     }
 
     /**
@@ -120,7 +71,8 @@ public class OptionModel {
     /**
      * @since 2.0.0
      */
-    public List<CalendarModel> getCalendars() {
+    @Override
+    public List<CalendarModel> calendars() {
         return calendars;
     }
 
@@ -131,50 +83,20 @@ public class OptionModel {
         return visualMaps != null;
     }
 
-    /**
-     * @since 2.0.0
-     */
-    public List<VisualMapModel> getVisualMaps() {
-        return visualMaps;
-    }
-
     public boolean isXAxesPresent() {
         return xAxes != null;
-    }
-
-    public List<AxisModel> getXAxes() {
-        return xAxes;
     }
 
     public boolean isYAxesPresent() {
         return yAxes != null;
     }
 
-    public List<AxisModel> getYAxes() {
-        return yAxes;
-    }
-
     public boolean isSingleAxesPresent() {
         return singleAxes != null;
-    }
-
-    public List<SingleAxisModel> getSingleAxes() {
-        return singleAxes;
-    }
-
-    public List<SeriesModel> getSeries() {
-        return series;
     }
 
     @Deprecated(since = "2.0.0", forRemoval = true)
     public boolean isLegend() {
         return legend != null;
-    }
-
-    /**
-     * @since 2.0.0
-     */
-    public LegendModel getLegend() {
-        return legend;
     }
 }

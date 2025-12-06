@@ -93,7 +93,7 @@ class InlineDataBuilder {
             labels.add(rowLabel);
         }
 
-        rows.add(ValueModels.of(labels));
+        rows.add(new ValueModels(labels));
 
         // append data
         for (int i = 0; i < h; i++) {
@@ -104,9 +104,9 @@ class InlineDataBuilder {
                 row.add(cols.get(j).get(i));
             }
 
-            rows.add(ValueModels.of(row));
+            rows.add(new ValueModels(row));
         }
 
-        return new DataModel(ValueModels.of(rows));
+        return new DataModel(new ValueModels(rows));
     }
 }

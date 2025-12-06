@@ -84,7 +84,7 @@ public class Renderer {
 
         int len = s.length();
         StringBuilder escaped = new StringBuilder(len + 5);
-        escaped.append('\'').append(s.substring(0, firstEscapePos)).append('\\').append(s.charAt(firstEscapePos));
+        escaped.append('\'').append(s, 0, firstEscapePos).append('\\').append(s.charAt(firstEscapePos));
 
         for (int i = firstEscapePos + 1; i < len; i++) {
             char c = s.charAt(i);
