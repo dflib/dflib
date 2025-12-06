@@ -1,0 +1,25 @@
+{{#charts}}
+{{{chartDiv}}}
+<script type='text/javascript'>
+function dflibEchartLoad_{{id}}(src, currentScript) {
+    return new Promise(function (resolve, reject) {
+        var s = document.createElement("script");
+        s.src = src;
+        s.onload = resolve;
+        s.onerror = reject;
+        currentScript.parentNode.insertBefore(s, currentScript);
+    });
+}
+
+(async function () {
+    const cs = document.currentScript;
+    if (!window.echarts) {
+        await dflibEchartLoad_{{id}}('{{{echartsUrl}}}', cs);
+    }
+    {{#themeUrls}}
+    await dflibEchartLoad_{{id}}('{{{.}}}', cs);
+    {{/themeUrls}}
+    {{{chartScript}}}
+})();
+</script>
+{{/charts}}

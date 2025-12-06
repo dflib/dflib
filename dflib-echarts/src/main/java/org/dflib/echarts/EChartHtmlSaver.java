@@ -23,10 +23,12 @@ import java.util.stream.Collectors;
 public class EChartHtmlSaver {
 
     private static final Mustache DEFAULT_PAGE_TEMPLATE = Renderer.loadTemplate("html_page.mustache");
+    private static final Mustache DEFAULT_EMBEDDED_TEMPLATE = Renderer.loadTemplate("html_embedded.mustache");
 
     private boolean createMissingDirs;
     private String title;
     private URL htmlTemplate;
+    private Mustache compiledHtmlTemplate;
 
     /**
      * Instructs the saver to create any missing directories in the file path.
@@ -43,6 +45,25 @@ public class EChartHtmlSaver {
      */
     public EChartHtmlSaver title(String title) {
         this.title = title;
+        return this;
+    }
+
+    /**
+     * Sets the HTML template to the default full-page template. This method is usually redundant, as this is the default
+     * template anyways.
+     */
+    public EChartHtmlSaver defaultHtmlTemplate() {
+        this.compiledHtmlTemplate = DEFAULT_PAGE_TEMPLATE;
+        return this;
+    }
+
+
+    /**
+     * Sets the HTML template to the default "embedded" template. This template is designed to be rendered inside
+     * some other dynamically generated HTML page. E.g., it may be used in Jupyter notebook cells.
+     */
+    public EChartHtmlSaver defaultEmbeddedTemplate() {
+        this.compiledHtmlTemplate = DEFAULT_EMBEDDED_TEMPLATE;
         return this;
     }
 
@@ -136,7 +157,7 @@ public class EChartHtmlSaver {
                 this.title != null ? this.title : "DFLib Chart",
                 charts.length > 0 ? charts[0].getEchartsUrl() : "",
                 themeUrls,
-                Arrays.stream(charts).map(c -> new HtmlChartModel(c.getChartDiv(), c.getChartScript())).collect(Collectors.toList())
+                Arrays.stream(charts).map(c -> new HtmlChartModel(c.getDivId(), c.getChartDiv(), c.getChartScript())).collect(Collectors.toList())
         );
 
         boolean direct = out instanceof Writer;
@@ -150,6 +171,8 @@ public class EChartHtmlSaver {
 
     private Mustache htmlTemplate() {
         // TODO: cache precompiled templates for cases of mass chart generation for a single template?
-        return this.htmlTemplate != null ? Renderer.loadTemplate(htmlTemplate) : DEFAULT_PAGE_TEMPLATE;
+        return this.compiledHtmlTemplate != null
+                ? this.compiledHtmlTemplate
+                : (this.htmlTemplate != null ? Renderer.loadTemplate(htmlTemplate) : DEFAULT_PAGE_TEMPLATE);
     }
 }

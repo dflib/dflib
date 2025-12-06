@@ -9,6 +9,7 @@
 * #571 DataFrame <-> Iterable<Map> conversions
 * #572 Require Java 17+
 * #573 DataFrame <-> Iterable<? extends Record> conversions
+* #574 Robust ECharts embedding script
 
 ## Release 2.0.0-M5
 

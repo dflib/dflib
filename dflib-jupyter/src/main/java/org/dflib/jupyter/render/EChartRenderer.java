@@ -1,6 +1,7 @@
 package org.dflib.jupyter.render;
 
 import org.dflib.echarts.EChartHtml;
+import org.dflib.echarts.ECharts;
 import org.dflib.jjava.jupyter.kernel.display.RenderContext;
 import org.dflib.jjava.jupyter.kernel.display.RenderFunction;
 import org.dflib.jjava.jupyter.kernel.display.mime.MIMEType;
@@ -31,13 +32,13 @@ public class EChartRenderer implements RenderFunction<EChartHtml> {
     }
 
     @Override
-    public void render(EChartHtml data, RenderContext context) {
+    public void render(EChartHtml chart, RenderContext context) {
         boolean canRender = SUPPORTED_TYPES.stream().anyMatch(context::wantsDataRenderedAs);
 
         if (canRender) {
             // We must ensure a unique chart <div> ID to prevent JavaScript conflicts on the Notebook page.
-            EChartHtml toRender = shouldResetDivId(data.getDivId()) ? data.plotWithNewDivId() : data;
-            String content = toString(toRender);
+            EChartHtml chartToRender = shouldResetDivId(chart.getDivId()) ? chart.plotWithNewDivId() : chart;
+            String content = toString(chartToRender);
             SUPPORTED_TYPES.forEach(t -> context.renderIfRequested(t, () -> content));
         }
     }
@@ -66,10 +67,9 @@ public class EChartRenderer implements RenderFunction<EChartHtml> {
     private String toString(EChartHtml chart) {
         StringBuilder out = new StringBuilder();
 
-        out.append("<script type='text/javascript' src='").append(chart.getEchartsUrl()).append("'></script>");
-        chart.getThemeUrls().forEach(u -> out.append("<script type='text/javascript' src='").append(u).append("'></script>"));
-        out.append(chart.getChartDiv());
-        out.append("<script type='text/javascript'>").append(chart.getChartScript()).append("</script>");
+        ECharts.saver()
+                .defaultEmbeddedTemplate()
+                .save(out, chart);
 
         return out.toString();
     }

@@ -18,6 +18,7 @@ public class Renderer {
     private static final Mustache CONTAINER_TEMPLATE = loadTemplate("container.mustache");
     private static final Mustache SCRIPT_TEMPLATE = loadTemplate("script.mustache");
 
+
     /**
      * Loads a Mustache template, resolving the name against classpath
      */
