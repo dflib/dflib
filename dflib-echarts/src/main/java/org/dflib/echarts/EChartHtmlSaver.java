@@ -52,7 +52,7 @@ public class EChartHtmlSaver {
      * Sets the HTML template to the default full-page template. This method is usually redundant, as this is the default
      * template anyways.
      */
-    public EChartHtmlSaver defaultHtmlTemplate() {
+    public EChartHtmlSaver defaultPageTemplate() {
         this.compiledHtmlTemplate = DEFAULT_PAGE_TEMPLATE;
         return this;
     }
