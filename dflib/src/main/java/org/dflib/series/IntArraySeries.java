@@ -7,7 +7,6 @@ import org.dflib.agg.CumSum;
 import org.dflib.agg.Max;
 import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
-import org.dflib.agg.PrimitiveSeriesSum;
 import org.dflib.agg.Sum;
 
 public class IntArraySeries extends IntBaseSeries {
@@ -29,7 +28,7 @@ public class IntArraySeries extends IntBaseSeries {
     @Override
     public IntSeries add(IntSeries s) {
 
-        if (!(s instanceof IntArraySeries)) {
+        if (!(s instanceof IntArraySeries as)) {
             return super.add(s);
         }
 
@@ -37,8 +36,6 @@ public class IntArraySeries extends IntBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        IntArraySeries as = (IntArraySeries) s;
 
         // storing ivars in the local vars for performance
         int[] l = this.data;
@@ -55,7 +52,7 @@ public class IntArraySeries extends IntBaseSeries {
 
     @Override
     public IntSeries sub(IntSeries s) {
-        if (!(s instanceof IntArraySeries)) {
+        if (!(s instanceof IntArraySeries as)) {
             return super.sub(s);
         }
 
@@ -63,8 +60,6 @@ public class IntArraySeries extends IntBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        IntArraySeries as = (IntArraySeries) s;
 
         // storing ivars in the local vars for performance
         int[] l = this.data;
@@ -80,7 +75,7 @@ public class IntArraySeries extends IntBaseSeries {
 
     @Override
     public IntSeries mul(IntSeries s) {
-        if (!(s instanceof IntArraySeries)) {
+        if (!(s instanceof IntArraySeries as)) {
             return super.mul(s);
         }
 
@@ -88,8 +83,6 @@ public class IntArraySeries extends IntBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        IntArraySeries as = (IntArraySeries) s;
 
         // storing ivars in the local vars for performance
         int[] l = this.data;
@@ -105,7 +98,7 @@ public class IntArraySeries extends IntBaseSeries {
 
     @Override
     public IntSeries div(IntSeries s) {
-        if (!(s instanceof IntArraySeries)) {
+        if (!(s instanceof IntArraySeries as)) {
             return super.div(s);
         }
 
@@ -113,8 +106,6 @@ public class IntArraySeries extends IntBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        IntArraySeries as = (IntArraySeries) s;
 
         // storing ivars in the local vars for performance
         int[] l = this.data;
@@ -131,7 +122,7 @@ public class IntArraySeries extends IntBaseSeries {
 
     @Override
     public IntSeries mod(IntSeries s) {
-        if (!(s instanceof IntArraySeries)) {
+        if (!(s instanceof IntArraySeries as)) {
             return super.mod(s);
         }
 
@@ -139,8 +130,6 @@ public class IntArraySeries extends IntBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        IntArraySeries as = (IntArraySeries) s;
 
         // storing ivars in the local vars for performance
         int[] l = this.data;

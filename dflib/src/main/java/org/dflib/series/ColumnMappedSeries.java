@@ -7,7 +7,7 @@ public class ColumnMappedSeries<S, T> extends ObjectSeries<T> {
 
     private Series<S> source;
     private ValueMapper<S, T> mapper;
-    private Series<T> materialized;
+    private volatile Series<T> materialized;
 
     public ColumnMappedSeries(Series<S> source, ValueMapper<S, T> mapper) {
         super(Object.class);

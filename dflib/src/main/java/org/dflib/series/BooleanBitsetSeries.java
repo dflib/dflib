@@ -121,8 +121,7 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
         int firstTrue = firstTrue();
         BoolAccum accum = new BoolAccum(len - firstTrue);
 
-        if (positions instanceof BooleanBitsetSeries) {
-            BooleanBitsetSeries bitPositions = (BooleanBitsetSeries) positions;
+        if (positions instanceof BooleanBitsetSeries bitPositions) {
             for (int i = 0; i < data.length; i++) {
                 long pos = bitPositions.data[i];
                 long val = data[i];

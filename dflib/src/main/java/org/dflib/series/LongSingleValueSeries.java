@@ -3,7 +3,6 @@ package org.dflib.series;
 import org.dflib.LongSeries;
 import org.dflib.Series;
 import org.dflib.agg.CumSum;
-import org.dflib.agg.PrimitiveSeriesSum;
 import org.dflib.range.Range;
 
 import java.util.Arrays;

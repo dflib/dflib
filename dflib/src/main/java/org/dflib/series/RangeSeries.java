@@ -8,9 +8,9 @@ import org.dflib.range.Range;
  */
 public class RangeSeries<T> extends ObjectSeries<T> {
 
-    private Series<T> delegate;
-    private int offset;
-    private int size;
+    private final Series<T> delegate;
+    private final int offset;
+    private final int size;
 
     public RangeSeries(Series<T> delegate, int offset, int size) {
         super(delegate.getNominalType());

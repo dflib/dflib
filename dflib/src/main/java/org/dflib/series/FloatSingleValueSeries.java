@@ -4,7 +4,6 @@ import org.dflib.DoubleSeries;
 import org.dflib.FloatSeries;
 import org.dflib.Series;
 import org.dflib.agg.CumSum;
-import org.dflib.agg.PrimitiveSeriesSum;
 import org.dflib.range.Range;
 
 import java.util.Arrays;

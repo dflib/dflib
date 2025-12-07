@@ -14,7 +14,7 @@ public class ByRowSeries extends ObjectSeries<Object> {
     private final int width;
     private final int size;
 
-    private Series<Object> materialized;
+    private volatile Series<Object> materialized;
 
     public ByRowSeries(DataFrame source) {
         // since we are concatenating multiple columns, the common type is Object.class

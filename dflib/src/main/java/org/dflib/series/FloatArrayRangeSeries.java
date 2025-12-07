@@ -7,7 +7,6 @@ import org.dflib.agg.CumSum;
 import org.dflib.agg.Max;
 import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
-import org.dflib.agg.PrimitiveSeriesSum;
 import org.dflib.agg.Sum;
 
 /**
@@ -35,7 +34,7 @@ public class FloatArrayRangeSeries extends FloatBaseSeries {
 
     @Override
     public FloatSeries add(FloatSeries s) {
-        if (!(s instanceof FloatArrayRangeSeries)) {
+        if (!(s instanceof FloatArrayRangeSeries as)) {
             return super.add(s);
         }
 
@@ -43,8 +42,6 @@ public class FloatArrayRangeSeries extends FloatBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        FloatArrayRangeSeries as = (FloatArrayRangeSeries) s;
 
         // storing ivars in the local vars for performance
         float[] l = this.data;
@@ -72,7 +69,7 @@ public class FloatArrayRangeSeries extends FloatBaseSeries {
 
     @Override
     public FloatSeries sub(FloatSeries s) {
-        if (!(s instanceof FloatArrayRangeSeries)) {
+        if (!(s instanceof FloatArrayRangeSeries as)) {
             return super.add(s);
         }
 
@@ -80,8 +77,6 @@ public class FloatArrayRangeSeries extends FloatBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        FloatArrayRangeSeries as = (FloatArrayRangeSeries) s;
 
         // storing ivars in the local vars for performance
         float[] l = this.data;
@@ -109,7 +104,7 @@ public class FloatArrayRangeSeries extends FloatBaseSeries {
 
     @Override
     public FloatSeries mul(FloatSeries s) {
-        if (!(s instanceof FloatArrayRangeSeries)) {
+        if (!(s instanceof FloatArrayRangeSeries as)) {
             return super.add(s);
         }
 
@@ -117,8 +112,6 @@ public class FloatArrayRangeSeries extends FloatBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        FloatArrayRangeSeries as = (FloatArrayRangeSeries) s;
 
         // storing ivars in the local vars for performance
         float[] l = this.data;
@@ -146,7 +139,7 @@ public class FloatArrayRangeSeries extends FloatBaseSeries {
 
     @Override
     public FloatSeries div(FloatSeries s) {
-        if (!(s instanceof FloatArrayRangeSeries)) {
+        if (!(s instanceof FloatArrayRangeSeries as)) {
             return super.add(s);
         }
 
@@ -154,8 +147,6 @@ public class FloatArrayRangeSeries extends FloatBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        FloatArrayRangeSeries as = (FloatArrayRangeSeries) s;
 
         // storing ivars in the local vars for performance
         float[] l = this.data;
@@ -183,7 +174,7 @@ public class FloatArrayRangeSeries extends FloatBaseSeries {
 
     @Override
     public FloatSeries mod(FloatSeries s) {
-        if (!(s instanceof FloatArrayRangeSeries)) {
+        if (!(s instanceof FloatArrayRangeSeries as)) {
             return super.add(s);
         }
 
@@ -191,8 +182,6 @@ public class FloatArrayRangeSeries extends FloatBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        FloatArrayRangeSeries as = (FloatArrayRangeSeries) s;
 
         // storing ivars in the local vars for performance
         float[] l = this.data;

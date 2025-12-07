@@ -50,7 +50,7 @@ public class ArrayRangeSeries<T> extends ObjectSeries<T> {
     public Series<T> materialize() {
 
         if (offset == 0 && size == data.length) {
-            return new ArraySeries(data);
+            return new ArraySeries<>(data);
         }
 
         Object[] data = new Object[size];

@@ -175,19 +175,6 @@ public abstract class LongBaseSeries implements LongSeries {
         return new LongArraySeries(data);
     }
 
-    private Series<Long> selectAsObjectSeries(IntSeries positions) {
-
-        int h = positions.size();
-        Long[] data = new Long[h];
-
-        for (int i = 0; i < h; i++) {
-            int index = positions.getInt(i);
-            data[i] = index < 0 ? null : getLong(index);
-        }
-
-        return new ArraySeries<>(data);
-    }
-
     @Override
     public Series<Long> fillNulls(Long value) {
         // primitive series has no nulls
@@ -312,9 +299,8 @@ public abstract class LongBaseSeries implements LongSeries {
         // Quick check for nulls in "with". May result in false positives (no nulls in Series<Long>), but does not
         // require checking each value
 
-        if (with instanceof LongSeries) {
+        if (with instanceof LongSeries withLong) {
 
-            LongSeries withLong = (LongSeries) with;
             LongAccum values = new LongAccum(s);
 
             values.fill(this, 0, 0, s);

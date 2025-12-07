@@ -10,7 +10,7 @@ public class RowMappedSeries<T> extends ObjectSeries<T> {
 
     private volatile DataFrame source;
     private RowToValueMapper<T> mapper;
-    private Series<T> materialized;
+    private volatile Series<T> materialized;
     private volatile boolean materializedCompacted;
 
     public RowMappedSeries(DataFrame source, RowToValueMapper<T> mapper) {

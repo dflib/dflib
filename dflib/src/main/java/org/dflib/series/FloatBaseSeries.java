@@ -172,19 +172,6 @@ public abstract class FloatBaseSeries implements FloatSeries {
         return new FloatArraySeries(data);
     }
 
-    private Series<Float> selectAsObjectSeries(IntSeries positions) {
-
-        int h = positions.size();
-        Float[] data = new Float[h];
-
-        for (int i = 0; i < h; i++) {
-            int index = positions.getInt(i);
-            data[i] = index < 0 ? null : getFloat(index);
-        }
-
-        return new ArraySeries<>(data);
-    }
-
     @Override
     public Series<Float> fillNulls(Float value) {
         // primitive series has no nulls
@@ -310,9 +297,8 @@ public abstract class FloatBaseSeries implements FloatSeries {
         // Quick check for nulls in "with". May result in false positives (no nulls in Series<Float>), but does not
         // require checking each value
 
-        if (with instanceof FloatSeries) {
+        if (with instanceof FloatSeries withFloat) {
 
-            FloatSeries withFloat = (FloatSeries) with;
             FloatAccum values = new FloatAccum(s);
 
             values.fill(this, 0, 0, s);

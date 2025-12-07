@@ -6,7 +6,6 @@ import org.dflib.agg.CumSum;
 import org.dflib.agg.Max;
 import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
-import org.dflib.agg.PrimitiveSeriesSum;
 import org.dflib.agg.Sum;
 
 public class LongArraySeries extends LongBaseSeries {
@@ -24,7 +23,7 @@ public class LongArraySeries extends LongBaseSeries {
 
     @Override
     public LongSeries add(LongSeries s) {
-        if (!(s instanceof LongArraySeries)) {
+        if (!(s instanceof LongArraySeries as)) {
             return super.add(s);
         }
 
@@ -32,8 +31,6 @@ public class LongArraySeries extends LongBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        LongArraySeries as = (LongArraySeries) s;
 
         // storing ivars in the local vars for performance
         long[] l = this.data;
@@ -49,7 +46,7 @@ public class LongArraySeries extends LongBaseSeries {
 
     @Override
     public LongSeries sub(LongSeries s) {
-        if (!(s instanceof LongArraySeries)) {
+        if (!(s instanceof LongArraySeries as)) {
             return super.add(s);
         }
 
@@ -57,8 +54,6 @@ public class LongArraySeries extends LongBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        LongArraySeries as = (LongArraySeries) s;
 
         // storing ivars in the local vars for performance
         long[] l = this.data;
@@ -74,7 +69,7 @@ public class LongArraySeries extends LongBaseSeries {
 
     @Override
     public LongSeries mul(LongSeries s) {
-        if (!(s instanceof LongArraySeries)) {
+        if (!(s instanceof LongArraySeries as)) {
             return super.add(s);
         }
 
@@ -82,8 +77,6 @@ public class LongArraySeries extends LongBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        LongArraySeries as = (LongArraySeries) s;
 
         // storing ivars in the local vars for performance
         long[] l = this.data;
@@ -99,7 +92,7 @@ public class LongArraySeries extends LongBaseSeries {
 
     @Override
     public LongSeries div(LongSeries s) {
-        if (!(s instanceof LongArraySeries)) {
+        if (!(s instanceof LongArraySeries as)) {
             return super.add(s);
         }
 
@@ -107,8 +100,6 @@ public class LongArraySeries extends LongBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        LongArraySeries as = (LongArraySeries) s;
 
         // storing ivars in the local vars for performance
         long[] l = this.data;
@@ -124,7 +115,7 @@ public class LongArraySeries extends LongBaseSeries {
 
     @Override
     public LongSeries mod(LongSeries s) {
-        if (!(s instanceof LongArraySeries)) {
+        if (!(s instanceof LongArraySeries as)) {
             return super.add(s);
         }
 
@@ -132,8 +123,6 @@ public class LongArraySeries extends LongBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        LongArraySeries as = (LongArraySeries) s;
 
         // storing ivars in the local vars for performance
         long[] l = this.data;

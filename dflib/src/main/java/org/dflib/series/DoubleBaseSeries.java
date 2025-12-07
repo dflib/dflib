@@ -172,19 +172,6 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         return new DoubleArraySeries(data);
     }
 
-    private Series<Double> selectAsObjectSeries(IntSeries positions) {
-
-        int h = positions.size();
-        Double[] data = new Double[h];
-
-        for (int i = 0; i < h; i++) {
-            int index = positions.getInt(i);
-            data[i] = index < 0 ? null : getDouble(index);
-        }
-
-        return new ArraySeries<>(data);
-    }
-
     @Override
     public Series<Double> fillNulls(Double value) {
         // primitive series has no nulls
@@ -310,9 +297,8 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         // Quick check for nulls in "with". May result in false positives (no nulls in Series<Double>), but does not
         // require checking each value
 
-        if (with instanceof DoubleSeries) {
+        if (with instanceof DoubleSeries withDouble) {
 
-            DoubleSeries withDouble = (DoubleSeries) with;
             DoubleAccum values = new DoubleAccum(s);
 
             values.fill(this, 0, 0, s);

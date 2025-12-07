@@ -198,19 +198,6 @@ public abstract class IntBaseSeries implements IntSeries {
         return new IntArraySeries(data);
     }
 
-    private Series<Integer> selectAsObjectSeries(IntSeries positions) {
-
-        int h = positions.size();
-        Integer[] data = new Integer[h];
-
-        for (int i = 0; i < h; i++) {
-            int index = positions.getInt(i);
-            data[i] = index < 0 ? null : getInt(index);
-        }
-
-        return new ArraySeries<>(data);
-    }
-
     @Override
     public Series<Integer> fillNulls(Integer value) {
         // primitive series has no nulls
@@ -336,9 +323,8 @@ public abstract class IntBaseSeries implements IntSeries {
         // Quick check for nulls in "with". May result in false positives (no nulls in Series<Integer), but does not
         // require checking each value
 
-        if (with instanceof IntSeries) {
+        if (with instanceof IntSeries withInt) {
 
-            IntSeries withInt = (IntSeries) with;
             IntAccum values = new IntAccum(s);
 
             values.fill(this, 0, 0, s);

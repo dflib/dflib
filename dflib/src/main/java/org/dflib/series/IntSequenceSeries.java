@@ -6,7 +6,6 @@ import org.dflib.Series;
 import org.dflib.agg.Average;
 import org.dflib.agg.CumSum;
 import org.dflib.agg.Percentiles;
-import org.dflib.agg.PrimitiveSeriesSum;
 import org.dflib.agg.Sum;
 import org.dflib.range.Range;
 

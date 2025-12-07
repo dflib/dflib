@@ -6,7 +6,6 @@ import org.dflib.agg.CumSum;
 import org.dflib.agg.Max;
 import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
-import org.dflib.agg.PrimitiveSeriesSum;
 import org.dflib.agg.Sum;
 
 /**
@@ -32,7 +31,7 @@ public class DoubleArrayRangeSeries extends DoubleBaseSeries {
 
     @Override
     public DoubleSeries add(DoubleSeries s) {
-        if (!(s instanceof DoubleArrayRangeSeries)) {
+        if (!(s instanceof DoubleArrayRangeSeries as)) {
             return super.add(s);
         }
 
@@ -40,8 +39,6 @@ public class DoubleArrayRangeSeries extends DoubleBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        DoubleArrayRangeSeries as = (DoubleArrayRangeSeries) s;
 
         // storing ivars in the local vars for performance
         double[] l = this.data;
@@ -69,7 +66,7 @@ public class DoubleArrayRangeSeries extends DoubleBaseSeries {
 
     @Override
     public DoubleSeries sub(DoubleSeries s) {
-        if (!(s instanceof DoubleArrayRangeSeries)) {
+        if (!(s instanceof DoubleArrayRangeSeries as)) {
             return super.add(s);
         }
 
@@ -77,8 +74,6 @@ public class DoubleArrayRangeSeries extends DoubleBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        DoubleArrayRangeSeries as = (DoubleArrayRangeSeries) s;
 
         // storing ivars in the local vars for performance
         double[] l = this.data;
@@ -106,7 +101,7 @@ public class DoubleArrayRangeSeries extends DoubleBaseSeries {
 
     @Override
     public DoubleSeries mul(DoubleSeries s) {
-        if (!(s instanceof DoubleArrayRangeSeries)) {
+        if (!(s instanceof DoubleArrayRangeSeries as)) {
             return super.add(s);
         }
 
@@ -114,8 +109,6 @@ public class DoubleArrayRangeSeries extends DoubleBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        DoubleArrayRangeSeries as = (DoubleArrayRangeSeries) s;
 
         // storing ivars in the local vars for performance
         double[] l = this.data;
@@ -143,7 +136,7 @@ public class DoubleArrayRangeSeries extends DoubleBaseSeries {
 
     @Override
     public DoubleSeries div(DoubleSeries s) {
-        if (!(s instanceof DoubleArrayRangeSeries)) {
+        if (!(s instanceof DoubleArrayRangeSeries as)) {
             return super.add(s);
         }
 
@@ -151,8 +144,6 @@ public class DoubleArrayRangeSeries extends DoubleBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        DoubleArrayRangeSeries as = (DoubleArrayRangeSeries) s;
 
         // storing ivars in the local vars for performance
         double[] l = this.data;
@@ -180,7 +171,7 @@ public class DoubleArrayRangeSeries extends DoubleBaseSeries {
 
     @Override
     public DoubleSeries mod(DoubleSeries s) {
-        if (!(s instanceof DoubleArrayRangeSeries)) {
+        if (!(s instanceof DoubleArrayRangeSeries as)) {
             return super.add(s);
         }
 
@@ -188,8 +179,6 @@ public class DoubleArrayRangeSeries extends DoubleBaseSeries {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
-        DoubleArrayRangeSeries as = (DoubleArrayRangeSeries) s;
 
         // storing ivars in the local vars for performance
         double[] l = this.data;

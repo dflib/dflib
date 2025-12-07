@@ -267,9 +267,8 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         // Quick check for nulls in "with". May result in false positives (no nulls in Series<Boolean>), but does not
         // require checking each value
 
-        if (with instanceof BooleanSeries) {
+        if (with instanceof BooleanSeries withBool) {
 
-            BooleanSeries withBool = (BooleanSeries) with;
             BoolAccum values = new BoolAccum(s);
 
             values.fill(this, 0, 0, s);
