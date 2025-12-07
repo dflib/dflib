@@ -63,7 +63,7 @@ public class TxConnectionWrapper implements Connection {
     }
 
     @Override
-    public void commit() throws SQLException {
+    public void commit() {
         // do nothing ... commit must be managed by the external TX manager
     }
 

@@ -4,6 +4,7 @@ import org.apache.parquet.schema.MessageType;
 import org.apache.parquet.schema.Type;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,9 +36,9 @@ public interface SchemaProjector {
         int w = columns.length;
         List<Type> projection = new ArrayList<>(w);
 
-        for (int i = 0; i < w; i++) {
+        for (int column : columns) {
             // TODO: DFLib exceptions for invalid positions
-            projection.add(schema.getType(schema.getFieldName(columns[i])));
+            projection.add(schema.getType(schema.getFieldName(column)));
         }
 
         return new MessageType(schema.getName(), projection);
@@ -47,9 +48,9 @@ public interface SchemaProjector {
         int w = columns.length;
         List<Type> projection = new ArrayList<>(w);
 
-        for (int i = 0; i < w; i++) {
+        for (String column : columns) {
             // TODO: DFLib exceptions for invalid columns
-            projection.add(schema.getType(columns[i]));
+            projection.add(schema.getType(column));
         }
 
         return new MessageType(schema.getName(), projection);
@@ -85,9 +86,7 @@ public interface SchemaProjector {
         }
 
         Set<String> excludes = new HashSet<>((int) Math.ceil(w / 0.75));
-        for (String e : columns) {
-            excludes.add(e);
-        }
+        Collections.addAll(excludes, columns);
 
         List<Type> projection = new ArrayList<>();
         for (Type t : schema.getFields()) {

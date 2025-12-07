@@ -6,8 +6,8 @@ import java.sql.PreparedStatement;
 
 public class FixedParamsBinderFactory implements StatementBinderFactory {
 
-    protected ValueConverterFactory converterFactory;
-    private DbColumnMetadata[] paramDescriptors;
+    private final ValueConverterFactory converterFactory;
+    private final DbColumnMetadata[] paramDescriptors;
 
     public FixedParamsBinderFactory(ValueConverterFactory converterFactory, DbColumnMetadata[] paramDescriptors) {
         this.converterFactory = converterFactory;

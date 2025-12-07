@@ -1,7 +1,6 @@
 package org.dflib.parquet;
 
 import org.apache.parquet.schema.GroupType;
-import org.apache.parquet.schema.LogicalTypeAnnotation;
 import org.apache.parquet.schema.PrimitiveType;
 import org.apache.parquet.schema.Type;
 import org.dflib.Extractor;
@@ -62,20 +61,14 @@ class ColConfigurator {
         if (colSchema.isRepetition(Type.Repetition.OPTIONAL)) {
             return Extractor.$col(r -> r[pos]);
         }
-        switch (type) {
-            case INT32:
-                return Extractor.$int(r -> (Integer) r[pos]);
-            case INT64:
-                return Extractor.$long(r -> (Long) r[pos]);
-            case FLOAT:
-                return Extractor.$float(r -> (Float) r[pos]);
-            case DOUBLE:
-                return Extractor.$double(r -> (Double) r[pos]);
-            case BOOLEAN:
-                return Extractor.$bool(r -> (Boolean) r[pos]);
-            default:
-                throw new RuntimeException(type + " deserialization not supported");
-        }
+        return switch (type) {
+            case INT32 -> Extractor.$int(r -> (Integer) r[pos]);
+            case INT64 -> Extractor.$long(r -> (Long) r[pos]);
+            case FLOAT -> Extractor.$float(r -> (Float) r[pos]);
+            case DOUBLE -> Extractor.$double(r -> (Double) r[pos]);
+            case BOOLEAN -> Extractor.$bool(r -> (Boolean) r[pos]);
+            default -> throw new RuntimeException(type + " deserialization not supported");
+        };
     }
 
     private static Extractor<Object[], ?> logicalExtractor(int pos, Type colSchema) {
@@ -90,8 +83,7 @@ class ColConfigurator {
         if (logicalTypeAnnotation.equals(enumType())) {
             return defaultExtractor;
         }
-        if (logicalTypeAnnotation instanceof LogicalTypeAnnotation.IntLogicalTypeAnnotation) {
-            LogicalTypeAnnotation.IntLogicalTypeAnnotation intType = (LogicalTypeAnnotation.IntLogicalTypeAnnotation) logicalTypeAnnotation;
+        if (logicalTypeAnnotation instanceof IntLogicalTypeAnnotation intType) {
             if (intType.getBitWidth() == 8) {
                 return defaultExtractor;
             }

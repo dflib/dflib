@@ -54,22 +54,15 @@ class ColConfigurator {
         CellType type = cell.getCellType() == CellType.FORMULA
                 ? cell.getCachedFormulaResultType() : cell.getCellType();
 
-        switch (type) {
-            case STRING:
-                return cell.getStringCellValue();
-            case NUMERIC:
-                // TODO: check the actual format to return LocalDate, LocalDateTime or smth else
-                return DateUtil.isCellDateFormatted(cell)
-                        ? cell.getLocalDateTimeCellValue()
-                        : cell.getNumericCellValue();
-            case BOOLEAN:
-                return cell.getBooleanCellValue();
-            case FORMULA:
-                throw new IllegalStateException("FORMULA is unexpected as a FORMULA cell result");
-            case BLANK:
-            case ERROR:
-            default:
-                return null;
-        }
+        return switch (type) {
+            case STRING -> cell.getStringCellValue();
+            // TODO: check the actual format to return LocalDate, LocalDateTime or smth else
+            case NUMERIC -> DateUtil.isCellDateFormatted(cell)
+                    ? cell.getLocalDateTimeCellValue()
+                    : cell.getNumericCellValue();
+            case BOOLEAN -> cell.getBooleanCellValue();
+            case FORMULA -> throw new IllegalStateException("FORMULA is unexpected as a FORMULA cell result");
+            default -> null;
+        };
     }
 }

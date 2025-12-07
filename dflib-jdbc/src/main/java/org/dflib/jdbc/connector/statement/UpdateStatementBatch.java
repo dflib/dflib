@@ -10,10 +10,10 @@ import java.sql.SQLException;
 
 public class UpdateStatementBatch implements UpdateStatement {
 
-    private String sql;
-    private DataFrame paramsBatch;
-    private StatementBinderFactory binderFactory;
-    private SqlLogger logger;
+    private final String sql;
+    private final DataFrame paramsBatch;
+    private final StatementBinderFactory binderFactory;
+    private final SqlLogger logger;
 
     public UpdateStatementBatch(
             String sql,

@@ -22,14 +22,12 @@ public class PostgresFlavor extends GenericFlavor {
     @Override
     public int columnType(int jdbcType, String nativeType) {
 
-        switch (jdbcType) {
-            case Types.TIMESTAMP:
-                // PostgreSQL driver does not correctly detect Java 8 data types (TIMESTAMP with TZ, etc.)
-                // TODO: pull request for Postgres?
-                return "timestamptz".equals(nativeType) ? Types.TIMESTAMP_WITH_TIMEZONE : Types.TIMESTAMP;
+        return switch (jdbcType) {
+            // PostgreSQL driver does not correctly detect Java 8 data types (TIMESTAMP with TZ, etc.)
+            // TODO: pull request for Postgres?
+            case Types.TIMESTAMP -> "timestamptz".equals(nativeType) ? Types.TIMESTAMP_WITH_TIMEZONE : Types.TIMESTAMP;
             // TODO: the same hack for Types.TIME
-            default:
-                return super.columnType(jdbcType, nativeType);
-        }
+            default -> super.columnType(jdbcType, nativeType);
+        };
     }
 }

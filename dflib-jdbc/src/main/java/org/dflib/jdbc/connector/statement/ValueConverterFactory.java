@@ -4,8 +4,8 @@ import java.util.Map;
 
 public class ValueConverterFactory {
 
-    private ValueConverter defaultConverter;
-    private Map<Integer, ValueConverter> converters;
+    private final ValueConverter defaultConverter;
+    private final Map<Integer, ValueConverter> converters;
 
     public ValueConverterFactory(ValueConverter defaultConverter, Map<Integer, ValueConverter> converters) {
         this.defaultConverter = defaultConverter;

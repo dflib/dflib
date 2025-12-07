@@ -44,13 +44,13 @@ class ExcelSaverDataUpdater {
         Class<?> type = column.getNominalType();
 
         if (Boolean.TYPE.equals(type)) {
-            updateTypedColumn(columnPos, Boolean.class, (c, v) -> c.setCellValue(v));
+            updateTypedColumn(columnPos, Boolean.class, Cell::setCellValue);
         } else if (Integer.TYPE.equals(type)) {
-            updateTypedColumn(columnPos, Integer.class, (c, v) -> c.setCellValue(v));
+            updateTypedColumn(columnPos, Integer.class, Cell::setCellValue);
         } else if (Long.TYPE.equals(type)) {
-            updateTypedColumn(columnPos, Long.class, (c, v) -> c.setCellValue(v));
+            updateTypedColumn(columnPos, Long.class, Cell::setCellValue);
         } else if (Double.TYPE.equals(type)) {
-            updateTypedColumn(columnPos, Double.class, (c, v) -> c.setCellValue(v));
+            updateTypedColumn(columnPos, Double.class, Cell::setCellValue);
         } else {
             updateAnyTypeColumn(columnPos);
         }

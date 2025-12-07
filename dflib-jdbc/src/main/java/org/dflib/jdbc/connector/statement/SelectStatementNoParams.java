@@ -10,8 +10,8 @@ import java.sql.SQLException;
 
 public class SelectStatementNoParams implements SelectStatement {
 
-    private String sql;
-    private SqlLogger logger;
+    private final String sql;
+    private final SqlLogger logger;
 
     public SelectStatementNoParams(String sql, SqlLogger logger) {
         this.logger = logger;

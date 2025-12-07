@@ -9,8 +9,8 @@ import java.util.BitSet;
 
 class UpsertInfoTracker {
 
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
 
     private Series<JoinIndicator> newOldJoin;
     private Series<BitSet> updatePositions;

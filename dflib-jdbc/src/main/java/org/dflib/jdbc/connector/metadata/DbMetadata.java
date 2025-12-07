@@ -17,9 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DbMetadata {
 
-    private DataSource dataSource;
-    private DbFlavor flavor;
-    private Map<TableFQName, DbTableMetadata> tables;
+    private final DataSource dataSource;
+    private final DbFlavor flavor;
+    private final Map<TableFQName, DbTableMetadata> tables;
 
     protected DbMetadata(DataSource dataSource, DbFlavor flavor) {
 

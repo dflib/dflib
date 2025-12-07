@@ -2,10 +2,10 @@ package org.dflib.jdbc.connector.metadata;
 
 public class DbColumnMetadata {
 
-    private String name;
-    private int type;
-    private boolean pk;
-    private boolean nullable;
+    private final String name;
+    private final int type;
+    private final boolean pk;
+    private final boolean nullable;
 
     public DbColumnMetadata(String name, int type, boolean pk, boolean nullable) {
         this.name = name;

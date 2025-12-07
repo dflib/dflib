@@ -7,13 +7,13 @@ import java.util.Objects;
  */
 public class TableFQName {
 
-    private String catalog;
-    private String schema;
-    private String table;
+    private final String catalog;
+    private final String schema;
+    private final String table;
 
     public TableFQName(String catalog, String schema, String table) {
-        this.catalog = catalog != null && catalog.length() == 0 ? null : catalog;
-        this.schema = schema != null && schema.length() == 0 ? null : schema;
+        this.catalog = catalog != null && catalog.isEmpty() ? null : catalog;
+        this.schema = schema != null && schema.isEmpty() ? null : schema;
         this.table = Objects.requireNonNull(table);
     }
 
@@ -60,9 +60,8 @@ public class TableFQName {
             return true;
         }
 
-        if (o instanceof TableFQName) {
+        if (o instanceof TableFQName ot) {
 
-            TableFQName ot = (TableFQName) o;
             return Objects.equals(catalog, ot.catalog)
                     && Objects.equals(schema, ot.schema)
                     && Objects.equals(table, ot.table);

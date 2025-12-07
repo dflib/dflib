@@ -8,8 +8,8 @@ import java.sql.SQLException;
 
 public class UpdateStatementNoParams implements UpdateStatement {
 
-    private String sql;
-    private SqlLogger logger;
+    private final String sql;
+    private final SqlLogger logger;
 
     public UpdateStatementNoParams(String sql, SqlLogger logger) {
         this.sql = sql;

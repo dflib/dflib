@@ -9,10 +9,10 @@ import java.sql.SQLException;
 
 public class UpdateStatementParamsRow implements UpdateStatement {
 
-    private String sql;
-    private Series<?> params;
-    private StatementBinderFactory binderFactory;
-    private SqlLogger logger;
+    private final String sql;
+    private final Series<?> params;
+    private final StatementBinderFactory binderFactory;
+    private final SqlLogger logger;
 
     public UpdateStatementParamsRow(
             String sql,

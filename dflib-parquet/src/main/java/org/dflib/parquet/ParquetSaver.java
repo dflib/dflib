@@ -106,18 +106,12 @@ public class ParquetSaver {
             return CompressionCodecName.UNCOMPRESSED;
         }
 
-        switch (compressionCodec) {
-            case GZIP:
-                return CompressionCodecName.GZIP;
-            case ZSTD:
-                return CompressionCodecName.ZSTD;
-            case SNAPPY:
-                return CompressionCodecName.SNAPPY;
-            case LZ4_RAW:
-                return CompressionCodecName.LZ4_RAW;
-            default:
-                return CompressionCodecName.UNCOMPRESSED;
-        }
+        return switch (compressionCodec) {
+            case GZIP -> CompressionCodecName.GZIP;
+            case ZSTD -> CompressionCodecName.ZSTD;
+            case SNAPPY -> CompressionCodecName.SNAPPY;
+            case LZ4_RAW -> CompressionCodecName.LZ4_RAW;
+        };
     }
 
 }

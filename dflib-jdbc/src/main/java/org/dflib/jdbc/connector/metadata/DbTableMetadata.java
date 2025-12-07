@@ -1,16 +1,15 @@
 package org.dflib.jdbc.connector.metadata;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class DbTableMetadata {
 
-    private TableFQName name;
-    private DbColumnMetadata[] columns;
+    private final TableFQName name;
+    private final DbColumnMetadata[] columns;
 
-    private Map<String, DbColumnMetadata> columnsByName;
+    private final Map<String, DbColumnMetadata> columnsByName;
     private DbColumnMetadata[] pk;
 
     public DbTableMetadata(TableFQName name, DbColumnMetadata[] columns) {
@@ -68,13 +67,6 @@ public class DbTableMetadata {
     }
 
     private DbColumnMetadata[] findPk() {
-        List<DbColumnMetadata> pk = new ArrayList<>();
-        for (DbColumnMetadata c : columns) {
-            if (c.isPk()) {
-                pk.add(c);
-            }
-        }
-
-        return pk.toArray(new DbColumnMetadata[0]);
+        return Stream.of(columns).filter(DbColumnMetadata::isPk).toArray(DbColumnMetadata[]::new);
     }
 }
