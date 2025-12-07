@@ -11,13 +11,10 @@ public class RadiusModel {
     }
 
     public String getRadius() {
-        switch (radius.length) {
-            case 0:
-                return null;
-            case 1:
-                return radius[0].asString();
-            default:
-                return '[' + radius[0].asString() + ',' + radius[1].asString() + ']';
-        }
+        return switch (radius.length) {
+            case 0 -> null;
+            case 1 -> radius[0].asString();
+            default -> '[' + radius[0].asString() + ',' + radius[1].asString() + ']';
+        };
     }
 }

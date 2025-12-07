@@ -54,25 +54,21 @@ class BOM {
         }
 
         bytes[0] = (byte) b0;
-        switch (b0) {
+        return switch (b0) {
             // UTF-8
-            case 0xEF:
-                return checkUTF8(in, bytes);
+            case 0xEF -> checkUTF8(in, bytes);
 
             // UTF-16BE
-            case 0xFE:
-                return checkUTF16BE(in, bytes);
+            case 0xFE -> checkUTF16BE(in, bytes);
 
             // UTF-16LE
-            case 0xFF:
-                return checkUTF16LE(in, bytes);
+            case 0xFF -> checkUTF16LE(in, bytes);
 
             // TODO: ignoring UTF-32 for now. Those seem very rare
 
             // no BOM
-            default:
-                return new BOM(bytes, 1, Charset.defaultCharset(), false);
-        }
+            default -> new BOM(bytes, 1, Charset.defaultCharset(), false);
+        };
     }
 
     private static BOM checkUTF8(InputStream in, byte[] bytes) throws IOException {

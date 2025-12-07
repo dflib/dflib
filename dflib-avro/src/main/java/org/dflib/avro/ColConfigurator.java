@@ -43,31 +43,21 @@ class ColConfigurator {
     }
 
     private static Extractor<GenericRecord, ?> sparseExtractor(int pos, Schema colSchema) {
-        switch (colSchema.getType()) {
+        return switch (colSchema.getType()) {
             // Raw numeric and boolean types can be loaded as primitives,
             // as numeric nullable types are declared as unions and will fall under the "default" case
-            case INT:
-                return Extractor.$int(r -> (Integer) r.get(pos));
-            case FLOAT:
-                return Extractor.$float(r -> (Float) r.get(pos));
-            case DOUBLE:
-                return Extractor.$double(r -> (Double) r.get(pos));
-            case LONG:
-                return Extractor.$long(r -> (Long) r.get(pos));
-            case BOOLEAN:
-                return Extractor.$bool(r -> (Boolean) r.get(pos));
-            case BYTES:
-            case NULL:
-                return Extractor.$col(r -> r.get(pos));
-            case ENUM:
-                return enumExtractor(pos, colSchema);
-            case STRING:
-                return stringExtractor(pos);
-            case UNION:
-                return unionExtractor(pos, colSchema.getTypes());
-            default:
-                throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + colSchema.getType());
-        }
+            case INT -> Extractor.$int(r -> (Integer) r.get(pos));
+            case FLOAT -> Extractor.$float(r -> (Float) r.get(pos));
+            case DOUBLE -> Extractor.$double(r -> (Double) r.get(pos));
+            case LONG -> Extractor.$long(r -> (Long) r.get(pos));
+            case BOOLEAN -> Extractor.$bool(r -> (Boolean) r.get(pos));
+            case BYTES, NULL -> Extractor.$col(r -> r.get(pos));
+            case ENUM -> enumExtractor(pos, colSchema);
+            case STRING -> stringExtractor(pos);
+            case UNION -> unionExtractor(pos, colSchema.getTypes());
+            default ->
+                    throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + colSchema.getType());
+        };
     }
 
     private static Extractor<GenericRecord, ?> unionExtractor(int pos, List<Schema> types) {
@@ -85,22 +75,13 @@ class ColConfigurator {
         }
 
         // don't allow primitives
-        switch (otherThanNull[0].getType()) {
-            case INT:
-            case DOUBLE:
-            case LONG:
-            case BOOLEAN:
-            case BYTES:
-                return Extractor.$col(r -> r.get(pos));
-            case ENUM:
-                return enumExtractor(pos, otherThanNull[0]);
-            case STRING:
-                return stringExtractor(pos);
-            case UNION:
-                return unionExtractor(pos, otherThanNull[0].getTypes());
-            default:
-                throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + otherThanNull[0].getType());
-        }
+        return switch (otherThanNull[0].getType()) {
+            case INT, DOUBLE, LONG, BOOLEAN, BYTES -> Extractor.$col(r -> r.get(pos));
+            case ENUM -> enumExtractor(pos, otherThanNull[0]);
+            case STRING -> stringExtractor(pos);
+            case UNION -> unionExtractor(pos, otherThanNull[0].getTypes());
+            default -> throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + otherThanNull[0].getType());
+        };
     }
 
     private static Extractor<GenericRecord, ?> enumExtractor(int pos, Schema colSchema) {

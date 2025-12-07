@@ -37,13 +37,11 @@ public enum ChartType {
      * @since 2.0.0
      */
     public boolean supportsDataset() {
-        switch (this) {
+        return switch (this) {
             // TODO: dataset / encode kinda works with heatmaps, but is very unreliable, so should encode data
             //  per Series for those
-            case heatmap:
-                return false;
-            default:
-                return true;
-        }
+            case heatmap -> false;
+            default -> true;
+        };
     }
 }

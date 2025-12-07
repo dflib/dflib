@@ -45,16 +45,10 @@ public class RowConverter extends GroupConverter {
 
     private static Converter buildPrimitiveConverters(Type parquetField, Consumer<Object> consumer) {
         PrimitiveTypeName type = parquetField.asPrimitiveType().getPrimitiveTypeName();
-        switch (type) {
-        case INT32:
-        case INT64:
-        case FLOAT:
-        case DOUBLE:
-        case BOOLEAN:
-            return new ToPrimitiveTypeConverter(consumer);
-        default:
-            throw new RuntimeException(type + " deserialization not supported");
-        }
+        return switch (type) {
+            case INT32, INT64, FLOAT, DOUBLE, BOOLEAN -> new ToPrimitiveTypeConverter(consumer);
+            default -> throw new RuntimeException(type + " deserialization not supported");
+        };
     }
 
     public static Converter buildFromLogicalTypeConverter(Type parquetField, Consumer<Object> consumer) {
@@ -69,8 +63,7 @@ public class RowConverter extends GroupConverter {
         if (logicalTypeAnnotation.equals(enumType())) {
             return new StringConverter(consumer);
         }
-        if (logicalTypeAnnotation instanceof IntLogicalTypeAnnotation) {
-            IntLogicalTypeAnnotation intType = (IntLogicalTypeAnnotation) logicalTypeAnnotation;
+        if (logicalTypeAnnotation instanceof IntLogicalTypeAnnotation intType) {
             if (intType.getBitWidth() == 8) {
                 return new ToByteConverter(consumer);
             }
@@ -86,21 +79,18 @@ public class RowConverter extends GroupConverter {
                 && primitiveTypeName == INT32) {
             return new LocalDateConverter(consumer);
         }
-        if (logicalTypeAnnotation instanceof TimeLogicalTypeAnnotation
+        if (logicalTypeAnnotation instanceof TimeLogicalTypeAnnotation time
                 && (primitiveTypeName == INT32 || primitiveTypeName == INT64)) {
-            TimeLogicalTypeAnnotation time = (TimeLogicalTypeAnnotation) logicalTypeAnnotation;
             return new LocalTimeConverter(consumer, time.getUnit());
         }
-        if (logicalTypeAnnotation instanceof TimestampLogicalTypeAnnotation
+        if (logicalTypeAnnotation instanceof TimestampLogicalTypeAnnotation timeStamp
                 && primitiveTypeName == INT64) {
-            TimestampLogicalTypeAnnotation timeStamp = (TimestampLogicalTypeAnnotation) logicalTypeAnnotation;
             if (timeStamp.isAdjustedToUTC()) {
                 return new InstantConverter(consumer, timeStamp.getUnit());
             }
             return new LocalDateTimeConverter(consumer, timeStamp.getUnit());
         }
-        if (logicalTypeAnnotation instanceof DecimalLogicalTypeAnnotation) {
-            DecimalLogicalTypeAnnotation decimalType = (DecimalLogicalTypeAnnotation) logicalTypeAnnotation;
+        if (logicalTypeAnnotation instanceof DecimalLogicalTypeAnnotation decimalType) {
             return new DecimalConverter(consumer, primitiveTypeName, decimalType.getScale());
         }
         return null;

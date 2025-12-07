@@ -72,22 +72,19 @@ public class Average {
         Series<LocalDate> noNulls = SeriesCompactor.noNullsSeries(s);
         int len = noNulls.size();
 
-        switch (len) {
-            case 0:
-                return null;
-            case 1:
-                return noNulls.get(0);
-            default:
-
+        return switch (len) {
+            case 0 -> null;
+            case 1 -> noNulls.get(0);
+            default -> {
                 long days = 0;
                 LocalDate first = noNulls.first();
 
                 for (int i = 1; i < len; i++) {
                     days += ChronoUnit.DAYS.between(first, noNulls.get(i));
                 }
-
-                return first.plusDays(Math.round(days / (double) len));
-        }
+                yield first.plusDays(Math.round(days / (double) len));
+            }
+        };
     }
 
     public static LocalDateTime ofDateTimes(Series<LocalDateTime> s) {
@@ -95,13 +92,10 @@ public class Average {
 
         int len = noNulls.size();
 
-        switch (len) {
-            case 0:
-                return null;
-            case 1:
-                return noNulls.get(0);
-            default:
-
+        return switch (len) {
+            case 0 -> null;
+            case 1 -> noNulls.get(0);
+            default -> {
                 long nanos = 0;
                 LocalDateTime first = noNulls.first();
 
@@ -109,8 +103,9 @@ public class Average {
                     nanos += ChronoUnit.NANOS.between(first, noNulls.get(i));
                 }
 
-                return first.plusNanos(Math.round(nanos / (double) len));
-        }
+                yield first.plusNanos(Math.round(nanos / (double) len));
+            }
+        };
     }
 
     public static LocalTime ofTimes(Series<LocalTime> s) {
@@ -118,12 +113,10 @@ public class Average {
 
         int len = noNulls.size();
 
-        switch (len) {
-            case 0:
-                return null;
-            case 1:
-                return noNulls.get(0);
-            default:
+        return switch (len) {
+            case 0 -> null;
+            case 1 -> noNulls.get(0);
+            default -> {
 
                 long nanos = 0;
                 LocalTime first = noNulls.first();
@@ -132,7 +125,8 @@ public class Average {
                     nanos += ChronoUnit.NANOS.between(first, noNulls.get(i));
                 }
 
-                return first.plusNanos(Math.round(nanos / (double) len));
-        }
+                yield first.plusNanos(Math.round(nanos / (double) len));
+            }
+        };
     }
 }

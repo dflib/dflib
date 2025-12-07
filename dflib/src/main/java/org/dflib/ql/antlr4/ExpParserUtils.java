@@ -147,27 +147,20 @@ class ExpParserUtils {
     }
 
     public static NumExp<?> addOrSub(NumExp a, NumExp b, Token op) {
-        switch (op.getType()) {
-            case ExpParser.ADD:
-                return a.add(b);
-            case ExpParser.SUB:
-                return a.sub(b);
-            default:
-                throw new RuntimeException("Unknown operator: " + op.getText());
-        }
+        return switch (op.getType()) {
+            case ExpParser.ADD -> a.add(b);
+            case ExpParser.SUB -> a.sub(b);
+            default -> throw new RuntimeException("Unknown operator: " + op.getText());
+        };
     }
 
     public static NumExp<?> mulDivOrMod(NumExp a, NumExp b, Token op) {
-        switch (op.getType()) {
-            case ExpParser.MUL:
-                return a.mul(b);
-            case ExpParser.DIV:
-                return a.div(b);
-            case ExpParser.MOD:
-                return a.mod(b);
-            default:
-                throw new RuntimeException("Unknown operator: " + op.getText());
-        }
+        return switch (op.getType()) {
+            case ExpParser.MUL -> a.mul(b);
+            case ExpParser.DIV -> a.div(b);
+            case ExpParser.MOD -> a.mod(b);
+            default -> throw new RuntimeException("Unknown operator: " + op.getText());
+        };
     }
 
     public static Number parseIntegerValue(String token) {
@@ -356,16 +349,12 @@ class ExpParserUtils {
         String scalar = token.toLowerCase();
         scalar = scalar.replaceAll("_+", "");
         scalar = postfix != null ? scalar.replaceAll(postfix.toLowerCase() + "$", "") : scalar;
-        switch (radix) {
-            case 2:
-                return scalar.replaceFirst("0b", "");
-            case 8:
-                return scalar.replaceFirst("0(?=.)", "");
-            case 16:
-                return scalar.replaceFirst("0x", "");
-            default:
-                return scalar;
-        }
+        return switch (radix) {
+            case 2 -> scalar.replaceFirst("0b", "");
+            case 8 -> scalar.replaceFirst("0(?=.)", "");
+            case 16 -> scalar.replaceFirst("0x", "");
+            default -> scalar;
+        };
     }
 
     public static String unescapeIdentifier(String raw) {
@@ -478,8 +467,7 @@ class ExpParserUtils {
         Object next = source.next();
         if(next instanceof Collection) {
             return ((Collection<?>) next).toArray(arrayGenerator);
-        } else if(next instanceof Object[]) {
-            Object[] data = (Object[]) next;
+        } else if(next instanceof Object[] data) {
             T[] result = arrayGenerator.apply(data.length);
             for(int i=0; i<data.length; i++) {
                 result[i] = (T)data[i]; // unsafe cast here

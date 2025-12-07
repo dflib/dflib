@@ -43,17 +43,14 @@ public class ConditionBuilder {
         }
 
         int criteriaWidth = condition != null ? condition.width() : 0;
-        switch (criteriaWidth) {
-            case 0:
-                return buffer;
-            case 1:
-                return appendWhereSql_SingleColumn(
-                        buffer,
-                        condition.getColumnsIndex().get(0),
-                        criteriaHeight);
-            default:
-                return appendWhereSql_MultiColumns(buffer, condition.getColumnsIndex(), criteriaHeight);
-        }
+        return switch (criteriaWidth) {
+            case 0 -> buffer;
+            case 1 -> appendWhereSql_SingleColumn(
+                    buffer,
+                    condition.getColumnsIndex().get(0),
+                    criteriaHeight);
+            default -> appendWhereSql_MultiColumns(buffer, condition.getColumnsIndex(), criteriaHeight);
+        };
     }
 
     public Series<?> bindingParams() {
@@ -63,14 +60,11 @@ public class ConditionBuilder {
         }
 
         int criteriaWidth = condition != null ? condition.width() : 0;
-        switch (criteriaWidth) {
-            case 0:
-                return Series.of();
-            case 1:
-                return condition.getColumn(0);
-            default:
-                return new ByRowSeries(condition);
-        }
+        return switch (criteriaWidth) {
+            case 0 -> Series.of();
+            case 1 -> condition.getColumn(0);
+            default -> new ByRowSeries(condition);
+        };
     }
 
     protected StringBuilder appendWhereSql_SingleColumn(StringBuilder buffer, String columnName, int criteriaHeight) {

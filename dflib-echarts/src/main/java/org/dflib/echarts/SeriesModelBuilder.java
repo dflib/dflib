@@ -98,24 +98,15 @@ class SeriesModelBuilder {
 
         SeriesOpts<?> seriesOpts = seriesOpts();
 
-        switch (seriesOpts.getType()) {
-            case line:
-                return lineModel((LineSeriesOpts) seriesOpts);
-            case bar:
-                return barModel((BarSeriesOpts) seriesOpts);
-            case scatter:
-                return scatterModel((ScatterSeriesOpts) seriesOpts);
-            case candlestick:
-                return candlestickModel((CandlestickSeriesOpts) seriesOpts);
-            case boxplot:
-                return boxplotModel((BoxplotSeriesOpts) seriesOpts);
-            case pie:
-                return pieModel((PieSeriesOpts) seriesOpts);
-            case heatmap:
-                return heatmapModel(seriesOpts);
-            default:
-                throw new UnsupportedOperationException("Unexpected ChartType: " + seriesOpts.getType());
-        }
+        return switch (seriesOpts.getType()) {
+            case line -> lineModel((LineSeriesOpts) seriesOpts);
+            case bar -> barModel((BarSeriesOpts) seriesOpts);
+            case scatter -> scatterModel((ScatterSeriesOpts) seriesOpts);
+            case candlestick -> candlestickModel((CandlestickSeriesOpts) seriesOpts);
+            case boxplot -> boxplotModel((BoxplotSeriesOpts) seriesOpts);
+            case pie -> pieModel((PieSeriesOpts) seriesOpts);
+            case heatmap -> heatmapModel(seriesOpts);
+        };
     }
 
     private SeriesModel barModel(BarSeriesOpts so) {
