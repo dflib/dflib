@@ -6,6 +6,7 @@ import org.dflib.sample.Sampler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -352,9 +353,7 @@ public class Index implements Iterable<String> {
         }
 
         Set<String> excludes = new HashSet<>();
-        for (String e : exceptVals) {
-            excludes.add(e);
-        }
+        Collections.addAll(excludes, exceptVals);
 
         return positions(s -> !excludes.contains(s));
     }
@@ -425,8 +424,7 @@ public class Index implements Iterable<String> {
             return true;
         }
 
-        if (obj instanceof Index) {
-            Index otherIndex = (Index) obj;
+        if (obj instanceof Index otherIndex) {
             return Arrays.equals(values, otherIndex.values);
         }
 

@@ -17,18 +17,12 @@ public abstract class BaseJoiner {
 
     public IntSeries[] rowSelectors(DataFrame lf, DataFrame rf) {
 
-        switch (semantics) {
-            case inner:
-                return innerJoin(lf, rf);
-            case left:
-                return leftJoin(lf, rf);
-            case right:
-                return rightJoin(lf, rf);
-            case full:
-                return fullJoin(lf, rf);
-            default:
-                throw new IllegalStateException("Unsupported join semantics: " + semantics);
-        }
+        return switch (semantics) {
+            case inner -> innerJoin(lf, rf);
+            case left -> leftJoin(lf, rf);
+            case right -> rightJoin(lf, rf);
+            case full -> fullJoin(lf, rf);
+        };
     }
 
     protected abstract IntSeries[] innerJoin(DataFrame lf, DataFrame rf);

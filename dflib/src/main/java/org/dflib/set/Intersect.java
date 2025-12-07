@@ -22,7 +22,7 @@ public class Intersect {
         }
 
         Set<? extends T> s2Vals = s2.toSet();
-        return s1.select(v -> s2Vals.contains(v));
+        return s1.select(s2Vals::contains);
     }
 
     public static BooleanSeries intersectBool(BooleanSeries s1, Series<? extends Boolean> s2) {
@@ -44,15 +44,11 @@ public class Intersect {
             }
         }
 
-        switch (s2Vals.size()) {
-            case 0:
-                return Series.ofBool();
-            case 1:
-                Boolean b = s2Vals.iterator().next();
-                return s1.select(v -> v == b);
-            default:
-                return s1;
-        }
+        return switch (s2Vals.size()) {
+            case 0 -> Series.ofBool();
+            case 1 -> s1.select(v -> v == s2Vals.iterator().next());
+            default -> s1;
+        };
     }
 
     public static IntSeries intersectInt(IntSeries s1, Series<? extends Integer> s2) {
@@ -65,7 +61,7 @@ public class Intersect {
         }
 
         Set<? extends Integer> s2Vals = s2.toSet();
-        return s1.selectInt(v -> s2Vals.contains(v));
+        return s1.selectInt(s2Vals::contains);
     }
 
     public static LongSeries intersectLong(LongSeries s1, Series<? extends Long> s2) {
@@ -78,7 +74,7 @@ public class Intersect {
         }
 
         Set<? extends Long> s2Vals = s2.toSet();
-        return s1.selectLong(v -> s2Vals.contains(v));
+        return s1.selectLong(s2Vals::contains);
     }
 
     /**
@@ -94,7 +90,7 @@ public class Intersect {
         }
 
         Set<? extends Float> s2Vals = s2.toSet();
-        return s1.selectFloat(v -> s2Vals.contains(v));
+        return s1.selectFloat(s2Vals::contains);
     }
 
     public static DoubleSeries intersectDouble(DoubleSeries s1, Series<? extends Double> s2) {
@@ -107,6 +103,6 @@ public class Intersect {
         }
 
         Set<? extends Double> s2Vals = s2.toSet();
-        return s1.selectDouble(v -> s2Vals.contains(v));
+        return s1.selectDouble(s2Vals::contains);
     }
 }

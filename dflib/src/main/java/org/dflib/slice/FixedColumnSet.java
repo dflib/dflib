@@ -284,7 +284,7 @@ public class FixedColumnSet implements ColumnSet {
             columns[i] = getOrCreateColumn(
                     csIndex,
                     i,
-                    e -> e.fillNullsBackwards(),
+                    Series::fillNullsBackwards,
                     () -> new SingleValueSeries<>(null, h));
         }
 
@@ -303,7 +303,7 @@ public class FixedColumnSet implements ColumnSet {
             columns[i] = getOrCreateColumn(
                     csIndex,
                     i,
-                    e -> e.fillNullsForward(),
+                    Series::fillNullsForward,
                     () -> new SingleValueSeries<>(null, h));
         }
 
@@ -337,7 +337,7 @@ public class FixedColumnSet implements ColumnSet {
 
     @Override
     public ColumnSet compactBool() {
-        return new FixedColumnSet(source, csIndexResolver, s -> s.compactBool());
+        return new FixedColumnSet(source, csIndexResolver, Series::compactBool);
     }
 
     @Override

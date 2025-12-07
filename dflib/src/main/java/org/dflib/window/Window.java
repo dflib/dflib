@@ -188,8 +188,7 @@ public class Window {
     }
 
     /**
-     * A noop sort operation. Useless on its own, and primarily exists to disambiguate {@link #sort(Sorter...)} and
-     * {@link #sort(String...)} for no-arg sort call.
+     * A noop sort operation. Useless on its own, and primarily exists to disambiguate {@link #sort(Sorter...)} for no-arg sort call.
      *
      * @since 2.0.0
      */
@@ -297,37 +296,28 @@ public class Window {
 
     public IntSeries rank() {
 
-        switch (source.height()) {
-            case 0:
-                return Series.ofInt();
-            case 1:
-                return Series.ofInt(1);
-            default:
-                return partitioner != null ? rankPartitioned() : rankUnPartitioned();
-        }
+        return switch (source.height()) {
+            case 0 -> Series.ofInt();
+            case 1 -> Series.ofInt(1);
+            default -> partitioner != null ? rankPartitioned() : rankUnPartitioned();
+        };
     }
 
     public IntSeries denseRank() {
 
-        switch (source.height()) {
-            case 0:
-                return Series.ofInt();
-            case 1:
-                return Series.ofInt(1);
-            default:
-                return partitioner != null ? denseRankPartitioned() : denseRankUnPartitioned();
-        }
+        return switch (source.height()) {
+            case 0 -> Series.ofInt();
+            case 1 -> Series.ofInt(1);
+            default -> partitioner != null ? denseRankPartitioned() : denseRankUnPartitioned();
+        };
     }
 
     public IntSeries rowNumber() {
-        switch (source.height()) {
-            case 0:
-                return Series.ofInt();
-            case 1:
-                return Series.ofInt(1);
-            default:
-                return partitioner != null ? rowNumberPartitioned() : rowNumberUnPartitioned();
-        }
+        return switch (source.height()) {
+            case 0 -> Series.ofInt();
+            case 1 -> Series.ofInt(1);
+            default -> partitioner != null ? rowNumberPartitioned() : rowNumberUnPartitioned();
+        };
     }
 
     public <T> Series<T> shift(String column, int offset) {
@@ -349,16 +339,13 @@ public class Window {
             return source.getColumn(column);
         }
 
-        switch (source.height()) {
-            case 0:
-                return Series.of();
-            case 1:
-                return Series.of(filler);
-            default:
-                return partitioner != null
-                        ? shiftPartitioned(column, offset, filler)
-                        : shiftUnPartitioned(column, offset, filler);
-        }
+        return switch (source.height()) {
+            case 0 -> Series.of();
+            case 1 -> Series.of(filler);
+            default -> partitioner != null
+                    ? shiftPartitioned(column, offset, filler)
+                    : shiftUnPartitioned(column, offset, filler);
+        };
     }
 
     private <T> Series<T> shiftPartitioned(int column, int offset, T filler) {

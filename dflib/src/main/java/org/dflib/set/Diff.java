@@ -40,15 +40,11 @@ public class Diff {
             }
         }
 
-        switch (s2Vals.size()) {
-            case 0:
-                return s1;
-            case 1:
-                Boolean b = s2Vals.iterator().next();
-                return s1.select(v -> v != b);
-            default:
-                return Series.ofBool();
-        }
+        return switch (s2Vals.size()) {
+            case 0 -> s1;
+            case 1 -> s1.select(v -> v != s2Vals.iterator().next());
+            default -> Series.ofBool();
+        };
     }
 
     public static IntSeries diffInt(IntSeries s1, Series<? extends Integer> s2) {

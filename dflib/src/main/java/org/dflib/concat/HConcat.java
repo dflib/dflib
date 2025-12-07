@@ -85,18 +85,12 @@ public class HConcat {
     }
 
     private int concatHeight(int lh, int rh) {
-        switch (semantics) {
-            case full:
-                return Math.max(lh, rh);
-            case right:
-                return rh;
-            case left:
-                return lh;
-            case inner:
-                return Math.min(lh, rh);
-            default:
-                throw new IllegalStateException("Unsupported join type: " + semantics);
-        }
+        return switch (semantics) {
+            case full -> Math.max(lh, rh);
+            case right -> rh;
+            case left -> lh;
+            case inner -> Math.min(lh, rh);
+        };
     }
 
 

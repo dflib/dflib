@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class SeriesGrouper<T> {
 
-    private ValueMapper<T, ?> hasher;
+    private final ValueMapper<T, ?> hasher;
 
     public SeriesGrouper(ValueMapper<T, ?> hasher) {
         this.hasher = hasher;

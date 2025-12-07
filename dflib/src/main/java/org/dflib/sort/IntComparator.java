@@ -28,8 +28,8 @@ public interface IntComparator {
                 return sorters[0].eval(df);
             default:
                 IntComparator sorter = null;
-                for (int i = 0; i < w; i++) {
-                    IntComparator ci = sorters[i].eval(df);
+                for (Sorter value : sorters) {
+                    IntComparator ci = value.eval(df);
                     sorter = sorter == null ? ci : sorter.thenComparing(ci);
                 }
 
@@ -50,8 +50,8 @@ public interface IntComparator {
                 return sorters[0].eval(s);
             default:
                 IntComparator sorter = null;
-                for (int i = 0; i < w; i++) {
-                    IntComparator ci = sorters[i].eval(s);
+                for (Sorter value : sorters) {
+                    IntComparator ci = value.eval(s);
                     sorter = sorter == null ? ci : sorter.thenComparing(ci);
                 }
 

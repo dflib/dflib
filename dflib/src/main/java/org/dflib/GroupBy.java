@@ -236,8 +236,8 @@ public class GroupBy {
     }
 
     /**
-     * A noop sort operation. Useless on its own, and primarily exists to disambiguate {@link #sort(Sorter...)} and
-     * {@link #sort(String...)} for no-arg sort call.
+     * A noop sort operation. Useless on its own, and primarily exists to disambiguate {@link #sort(Sorter...)} for
+     * no-arg sort call.
      *
      * @since 2.0.0
      */

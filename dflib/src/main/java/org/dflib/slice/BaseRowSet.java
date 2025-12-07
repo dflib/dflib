@@ -37,7 +37,7 @@ public abstract class BaseRowSet implements RowSet {
 
     @Override
     public RowColumnSet cols() {
-        return new DefaultRowColumnSet(this, df -> df.cols());
+        return new DefaultRowColumnSet(this, DataFrame::cols);
     }
 
     @Override

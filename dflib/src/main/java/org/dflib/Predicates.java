@@ -13,8 +13,8 @@ public final class Predicates {
     public static Predicate<Object> isTrue() {
         return o -> {
 
-            if (o instanceof Boolean) {
-                return ((Boolean) o).booleanValue();
+            if (o instanceof Boolean b) {
+                return b;
             }
 
             String s = o != null ? o.toString() : null;
@@ -26,9 +26,10 @@ public final class Predicates {
 
     public static BoolValueMapper<String> isTrueString() {
         // null-safe... "parseBoolean" returns false for null
-        return s -> Boolean.parseBoolean(s);
+        return Boolean::parseBoolean;
     }
 
+    @SafeVarargs
     public static <T> Predicate<T> isIn(T... values) {
 
         if (values.length == 0) {

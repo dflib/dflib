@@ -25,16 +25,12 @@ public class PivotBuilder {
 
     private static <T> T oneValueAggregator(Series<? extends T> series) {
 
-        switch (series.size()) {
-            case 0:
-                throw new IllegalArgumentException("Unexpected empty Series");
-            case 1:
-                return series.get(0);
-            default:
-                throw new IllegalArgumentException(
-                        "Duplicate rows in the pivot table. " +
-                                "Consider passing an explicit aggregator to the pivot operation.");
-        }
+        return switch (series.size()) {
+            case 0 -> throw new IllegalArgumentException("Unexpected empty Series");
+            case 1 -> series.get(0);
+            default -> throw new IllegalArgumentException(
+                    "Duplicate rows in the pivot table. Consider passing an explicit aggregator to the pivot operation.");
+        };
     }
 
     /**
@@ -157,16 +153,11 @@ public class PivotBuilder {
             chunks.add(pivotChunk);
         }
 
-        switch (chunks.size()) {
-            case 0:
-                return DataFrame.empty(rowColumnName);
-            case 1:
-                return chunks.get(0);
-            default:
-                return chunks.stream()
-                        .reduce(this::joinChunks)
-                        .orElseGet(() -> empty(rowColumnName));
-        }
+        return switch (chunks.size()) {
+            case 0 -> DataFrame.empty(rowColumnName);
+            case 1 -> chunks.get(0);
+            default -> chunks.stream().reduce(this::joinChunks).orElseGet(() -> empty(rowColumnName));
+        };
     }
 
     private DataFrame joinChunks(DataFrame left, DataFrame right) {

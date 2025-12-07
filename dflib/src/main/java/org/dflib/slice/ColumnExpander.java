@@ -102,8 +102,7 @@ class ColumnExpander {
             IntAccum stretchCounts,
             Object array) {
 
-        if (array instanceof Object[]) {
-            Object[] a = (Object[]) array;
+        if (array instanceof Object[] a) {
 
             // empty array should generate a single null row
             if (a.length == 0) {
@@ -116,8 +115,7 @@ class ColumnExpander {
 
                 stretchCounts.push(a.length);
             }
-        } else if (array instanceof int[]) {
-            int[] a = (int[]) array;
+        } else if (array instanceof int[] a) {
 
             // empty array should generate a single null row
             if (a.length == 0) {
@@ -129,8 +127,7 @@ class ColumnExpander {
                 }
                 stretchCounts.push(a.length);
             }
-        } else if (array instanceof double[]) {
-            double[] a = (double[]) array;
+        } else if (array instanceof double[] a) {
 
             // empty array should generate a single null row
             if (a.length == 0) {
@@ -142,8 +139,7 @@ class ColumnExpander {
                 }
                 stretchCounts.push(a.length);
             }
-        } else if (array instanceof long[]) {
-            long[] a = (long[]) array;
+        } else if (array instanceof long[] a) {
 
             // empty array should generate a single null row
             if (a.length == 0) {
@@ -156,8 +152,7 @@ class ColumnExpander {
 
                 stretchCounts.push(a.length);
             }
-        } else if (array instanceof boolean[]) {
-            boolean[] a = (boolean[]) array;
+        } else if (array instanceof boolean[] a) {
 
             // empty array should generate a single null row
             if (a.length == 0) {
@@ -170,8 +165,7 @@ class ColumnExpander {
 
                 stretchCounts.push(a.length);
             }
-        } else if (array instanceof byte[]) {
-            byte[] a = (byte[]) array;
+        } else if (array instanceof byte[] a) {
 
             // empty array should generate a single null row
             if (a.length == 0) {

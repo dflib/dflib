@@ -10,6 +10,7 @@ public class SeriesConcat {
     /**
      * Concatenates multiple Series of various length into one.
      */
+    @SafeVarargs
     public static <T> Series<T> concat(Series<T>... concat) {
 
         int clen = concat.length;

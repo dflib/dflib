@@ -25,13 +25,10 @@ public interface Codec {
         }
 
         String extension = uri.substring(dot + 1);
-        switch (extension) {
-            case "gz":
-            case "gzip":
-                return Optional.of(GZIP);
-            default:
-                return Optional.empty();
-        }
+        return switch (extension) {
+            case "gz", "gzip" -> Optional.of(GZIP);
+            default -> Optional.empty();
+        };
     }
 
     ByteSource decompress(ByteSource compressed);

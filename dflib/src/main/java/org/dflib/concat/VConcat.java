@@ -7,7 +7,6 @@ import org.dflib.JoinType;
 import org.dflib.Series;
 
 import java.util.EnumMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -18,29 +17,18 @@ public class VConcat {
 
     static {
         for (JoinType s : JoinType.values()) {
-            Function<Index[], Index> joiner;
-            switch (s) {
-                case inner:
-                    joiner = VConcat::innerJoin;
-                    break;
-                case left:
-                    joiner = VConcat::leftJoin;
-                    break;
-                case right:
-                    joiner = VConcat::rightJoin;
-                    break;
-                case full:
-                    joiner = VConcat::fullJoin;
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected join semantics: " + s);
-            }
+            Function<Index[], Index> joiner = switch (s) {
+                case inner -> VConcat::innerJoin;
+                case left -> VConcat::leftJoin;
+                case right -> VConcat::rightJoin;
+                case full -> VConcat::fullJoin;
+            };
 
             JOINERS.put(s, new VConcat(joiner));
         }
     }
 
-    private Function<Index[], Index> zipper;
+    private final Function<Index[], Index> zipper;
 
     protected VConcat(Function<Index[], Index> zipper) {
         this.zipper = zipper;
@@ -48,14 +36,11 @@ public class VConcat {
 
     public static DataFrame concat(JoinType how, DataFrame... dfs) {
 
-        switch (dfs.length) {
-            case 0:
-                return DataFrame.empty();
-            case 1:
-                return dfs[0];
-            default:
-                return getInstance(how).concat(dfs);
-        }
+        return switch (dfs.length) {
+            case 0 -> DataFrame.empty();
+            case 1 -> dfs[0];
+            default -> getInstance(how).concat(dfs);
+        };
     }
 
     public static VConcat getInstance(JoinType how) {
@@ -74,18 +59,11 @@ public class VConcat {
             innerJoin(columns, indices[i]);
         }
 
-        return Index.of(columns.toArray(new String[columns.size()]));
+        return Index.of(columns.toArray(new String[0]));
     }
 
     private static void innerJoin(Set<String> columns, Index index) {
-
-        Iterator<String> it = columns.iterator();
-        while (it.hasNext()) {
-            String c = it.next();
-            if (!index.contains(c)) {
-                it.remove();
-            }
-        }
+        columns.removeIf(c -> !index.contains(c));
     }
 
     private static Index fullJoin(Index[] indices) {
@@ -97,7 +75,7 @@ public class VConcat {
             }
         }
 
-        return Index.of(columns.toArray(new String[columns.size()]));
+        return Index.of(columns.toArray(new String[0]));
     }
 
     private static Index leftJoin(Index[] indices) {

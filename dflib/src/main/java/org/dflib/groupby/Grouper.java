@@ -13,7 +13,7 @@ import java.util.Objects;
 
 public class Grouper {
 
-    private Hasher hasher;
+    private final Hasher hasher;
 
     public Grouper(Hasher hasher) {
         this.hasher = Objects.requireNonNull(hasher, "Null 'hasher'");

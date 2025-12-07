@@ -8,8 +8,8 @@ import java.util.Objects;
  */
 public class CombinationHash {
 
-    private Object hash1;
-    private Object hash2;
+    private final Object hash1;
+    private final Object hash2;
 
     public CombinationHash(Object hash1, Object hash2) {
         this.hash1 = hash1;
@@ -18,12 +18,7 @@ public class CombinationHash {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof CombinationHash)) {
-            return false;
-        }
-
-        CombinationHash ck = (CombinationHash) o;
-        return Objects.equals(hash1, ck.hash1) && Objects.equals(hash2, ck.hash2);
+        return o instanceof CombinationHash ck && Objects.equals(hash1, ck.hash1) && Objects.equals(hash2, ck.hash2);
     }
 
     @Override

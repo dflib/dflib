@@ -247,7 +247,7 @@ public class DeferredColumnSet implements ColumnSet {
 
     @Override
     public ColumnSet compactBool() {
-        return new DeferredColumnSet(source, sourceColumns, s -> s.compactBool());
+        return new DeferredColumnSet(source, sourceColumns, Series::compactBool);
     }
 
     @Override

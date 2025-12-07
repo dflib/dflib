@@ -78,10 +78,9 @@ class TabularColumnData {
         private int buildWidth() {
             int maxW = 1;
 
-            int h = vals.length;
-            for (int i = 0; i < h; i++) {
-                if (vals[i] != null) {
-                    maxW = Math.max(maxW, vals[i].length());
+            for (String val : vals) {
+                if (val != null) {
+                    maxW = Math.max(maxW, val.length());
                 }
             }
 

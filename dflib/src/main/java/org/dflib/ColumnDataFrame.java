@@ -365,17 +365,6 @@ public class ColumnDataFrame implements DataFrame {
         return result;
     }
 
-    private static final Map<Class<?>, Object> PRIMITIVE_DEFAULTS = Map.of(
-            boolean.class, false,
-            byte.class, (byte) 0,
-            short.class, (short) 0,
-            int.class, 0,
-            long.class, 0L,
-            float.class, 0.0f,
-            double.class, 0.0,
-            char.class, '\0'
-    );
-
     @Override
     public <T extends Record> List<T> toRecords(Class<T> type) {
 

@@ -3,12 +3,12 @@ package org.dflib.map;
 public class AnyToPrimitiveMappers {
 
     public static boolean toBool(Object o) {
-        if (o instanceof Boolean) {
-            return ((Boolean) o).booleanValue();
+        if (o instanceof Boolean b) {
+            return b;
         }
 
-        if (o instanceof Number) {
-            return ((Number) o).intValue() != 0;
+        if (o instanceof Number n) {
+            return n.intValue() != 0;
         }
 
         String s = o != null ? o.toString() : null;

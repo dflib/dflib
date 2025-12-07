@@ -41,7 +41,7 @@ public abstract class StringDeduplicator {
             nonConflicting[j] = nonConflictingName(values[j]);
         }
 
-        return nonConflicting != null ? nonConflicting : values;
+        return nonConflicting;
     }
 
     public static class DefaultDeduplicator extends StringDeduplicator {

@@ -29,9 +29,8 @@ public class ValueHolderRowProxy<S> implements RowProxy {
     }
 
     public void reset(S source) {
-        int w = row.length;
-        for (int i = 0; i < w; i++) {
-            row[i].reset(source);
+        for (ValueExtractor<S, ?> e : row) {
+            e.reset(source);
         }
     }
 
