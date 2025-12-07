@@ -26,6 +26,22 @@ public class ColumnSet_Select_ExpandTest {
     }
 
     @Test
+    public void allCols_multiExpand() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
+                        1, "x/y", "m/n",
+                        2, "a/b", "k/l")
+                .cols()
+                .expand("split(str(b), '/')")
+                .expand("split(str(c), '/')")
+                .select();
+
+        new DataFrameAsserts(df, "a", "b", "c", "3", "4", "5", "6")
+                .expectHeight(2)
+                .expectRow(0, 1, "x/y", "m/n", "x", "y", "m", "n")
+                .expectRow(1, 2, "a/b", "k/l", "a", "b", "k", "l");
+    }
+
+    @Test
     public void ql_listCol() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(
