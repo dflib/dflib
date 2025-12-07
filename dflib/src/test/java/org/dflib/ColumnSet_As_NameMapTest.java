@@ -12,9 +12,9 @@ public class ColumnSet_As_NameMapTest {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
                 .cols()
-                .as(Map.of("a", "c", "b", "d"));
+                .as(Map.of("a", "c"));
 
-        new DataFrameAsserts(df, "c", "d")
+        new DataFrameAsserts(df, "c", "b")
                 .expectHeight(2)
                 .expectRow(0, 1, "x")
                 .expectRow(1, 2, "y");
