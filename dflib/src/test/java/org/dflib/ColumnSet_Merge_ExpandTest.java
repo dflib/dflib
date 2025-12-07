@@ -13,17 +13,11 @@ public class ColumnSet_Merge_ExpandTest {
     public void all_DynamicSize() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
-                .cols().expand($int("a").mapVal(i -> {
-                    switch (i) {
-                        case 1:
-                            return List.of("one");
-                        case 2:
-                            return List.of("one", "two");
-                        case 3:
-                            return List.of("one", "two", "three");
-                        default:
-                            return null;
-                    }
+                .cols().expand($int("a").mapVal(i -> switch (i) {
+                    case 1 -> List.of("one");
+                    case 2 -> List.of("one", "two");
+                    case 3 -> List.of("one", "two", "three");
+                    default -> null;
                 })).merge();
 
         new DataFrameAsserts(df, "a", "b", "2", "3", "4")
@@ -87,17 +81,11 @@ public class ColumnSet_Merge_ExpandTest {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
                 .cols("a", "2", "3")
-                .expand($int("a").mapVal(i -> {
-                    switch (i) {
-                        case 1:
-                            return List.of("one");
-                        case 2:
-                            return List.of("one", "two");
-                        case 3:
-                            return List.of("one", "two", "three");
-                        default:
-                            return null;
-                    }
+                .expand($int("a").mapVal(i -> switch (i) {
+                    case 1 -> List.of("one");
+                    case 2 -> List.of("one", "two");
+                    case 3 -> List.of("one", "two", "three");
+                    default -> null;
                 }))
                 .merge();
 
@@ -113,15 +101,10 @@ public class ColumnSet_Merge_ExpandTest {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
                 .cols("a", "2", "3")
-                .expand($int("a").mapVal(i -> {
-                    switch (i) {
-                        case 1:
-                            return List.of("one");
-                        case 3:
-                            return List.of("one", "two", "three");
-                        default:
-                            return null;
-                    }
+                .expand($int("a").mapVal(i -> switch (i) {
+                    case 1 -> List.of("one");
+                    case 3 -> List.of("one", "two", "three");
+                    default -> null;
                 }))
                 .merge();
 

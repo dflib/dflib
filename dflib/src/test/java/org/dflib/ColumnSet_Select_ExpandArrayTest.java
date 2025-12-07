@@ -88,18 +88,11 @@ public class ColumnSet_Select_ExpandArrayTest {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
                 .cols("a", "2", "3")
-                .expandArray($int("a").mapVal(i -> {
-
-                    switch (i) {
-                        case 1:
-                            return new String[]{"one"};
-                        case 2:
-                            return new String[]{"one", "two"};
-                        case 3:
-                            return new String[]{"one", "two", "three"};
-                        default:
-                            return null;
-                    }
+                .expandArray($int("a").mapVal(i -> switch (i) {
+                    case 1 -> new String[]{"one"};
+                    case 2 -> new String[]{"one", "two"};
+                    case 3 -> new String[]{"one", "two", "three"};
+                    default -> null;
                 }))
                 .select();
 
@@ -115,16 +108,10 @@ public class ColumnSet_Select_ExpandArrayTest {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
                 .cols("a", "2", "3")
-                .expandArray($int("a").mapVal(i -> {
-
-                    switch (i) {
-                        case 1:
-                            return new String[]{"one"};
-                        case 3:
-                            return new String[]{"one", "two", "three"};
-                        default:
-                            return null;
-                    }
+                .expandArray($int("a").mapVal(i -> switch (i) {
+                    case 1 -> new String[]{"one"};
+                    case 3 -> new String[]{"one", "two", "three"};
+                    default -> null;
                 }))
                 .select();
 
@@ -140,17 +127,11 @@ public class ColumnSet_Select_ExpandArrayTest {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
                 .cols()
-                .expandArray($int("a").mapVal(i -> {
-                    switch (i) {
-                        case 1:
-                            return new String[]{"one"};
-                        case 2:
-                            return new String[]{"one", "two"};
-                        case 3:
-                            return new String[]{"one", "two", "three"};
-                        default:
-                            return null;
-                    }
+                .expandArray($int("a").mapVal(i -> switch (i) {
+                    case 1 -> new String[]{"one"};
+                    case 2 -> new String[]{"one", "two"};
+                    case 3 -> new String[]{"one", "two", "three"};
+                    default -> null;
                 }))
                 .select();
 
