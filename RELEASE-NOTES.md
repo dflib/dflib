@@ -11,6 +11,7 @@
 * #572 Require Java 17+
 * #573 DataFrame <-> Iterable<? extends Record> conversions
 * #574 Robust ECharts embedding script
+* #577 Udf0 functional interface 
 
 ## Release 2.0.0-M5
 
