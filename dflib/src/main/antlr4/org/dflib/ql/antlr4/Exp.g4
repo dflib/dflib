@@ -469,6 +469,7 @@ genericColumn returns [Exp<?> exp]
 columnId returns [Object id]
     : integerScalar { $id = $integerScalar.value; }
     | identifier { $id = $identifier.id; }
+    | PARAMETER { $id = columnIdParam(paramSource); }
     ;
 
 /**

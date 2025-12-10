@@ -483,4 +483,8 @@ class ExpParserUtils {
     public static String[] strArrayParam(PositionalParamSource source) {
         return arrayParam(source, String[]::new);
     }
+
+    public static Object columnIdParam(PositionalParamSource source) {
+        return source.next();
+    }
 }

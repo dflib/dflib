@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.*;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -192,6 +193,28 @@ public class ExpParamsTest {
                         $int(1).gt($longVal(1L))
                                 .and($str("b").ne($strVal("abc")))
                                 .or($bool("c").ne($boolVal(true)))
+                ),
+
+                // parameter as column id
+                arguments(
+                        "float(?) > 10",
+                        new Object[]{1},
+                        $float(1).gt($intVal(10))
+                ),
+                arguments(
+                        "col(?) = 10",
+                        new Object[]{1},
+                        $col(1).eq($intVal(10))
+                ),
+                arguments(
+                        "float(?) > 10",
+                        new Object[]{"a"},
+                        $float("a").gt($intVal(10))
+                ),
+                arguments(
+                        "col(?) = 10",
+                        new Object[]{"a"},
+                        $col("a").eq($intVal(10))
                 )
         );
     }
@@ -201,7 +224,12 @@ public class ExpParamsTest {
                 // unsupported dynamic column name
                 arguments(
                         "int(?) > 1",
-                        new Object[]{"abc"}
+                        new Object[]{1.1f}
+                ),
+                // unsupported dynamic column name
+                arguments(
+                        "int(?) > 1",
+                        new Object[]{new Date()}
                 ),
                 // relations with the wrong type
                 arguments(
