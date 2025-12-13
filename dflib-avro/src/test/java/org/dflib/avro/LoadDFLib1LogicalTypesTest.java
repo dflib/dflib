@@ -15,7 +15,7 @@ import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
 
-public class Avro_LoadDFLib1TypesTest {
+public class LoadDFLib1LogicalTypesTest {
 
     @Test
     public void load() {

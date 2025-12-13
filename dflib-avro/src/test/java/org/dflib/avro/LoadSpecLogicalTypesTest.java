@@ -24,11 +24,12 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 
-public class Avro_LoadStandardLogicalTypesTest {
+public class LoadSpecLogicalTypesTest {
 
     @TempDir
     static Path outBase;
 
+    // per https://avro.apache.org/docs/1.12.0/specification/#logical-types
     static final Schema SCHEMA = new Schema.Parser().parse("""
             {
               "type":"record",
@@ -37,7 +38,6 @@ public class Avro_LoadStandardLogicalTypesTest {
               "fields":[
                 {"name":"decimal","type":{"type":"bytes", "logicalType":"decimal","precision": 18, "scale": 4}},
                 {"name":"bigDecimal","type":{"type" : "bytes", "logicalType":"big-decimal"}},
-                {"name":"bytes","type":"bytes"},
                 {"name":"ld","type":{"type":"int","logicalType":"date"}},
                 {"name":"instantMicro","type":{"type":"long","logicalType":"timestamp-micros"}},
                 {"name":"instantMilli","type":{"type":"long","logicalType":"timestamp-millis"}},
@@ -52,7 +52,6 @@ public class Avro_LoadStandardLogicalTypesTest {
     public record R1(
             BigDecimal decimal,
             BigDecimal bigDecimal,
-            byte[] bytes,
             LocalDate ld,
             Instant instantMicro,
             Instant instantMilli,
@@ -69,7 +68,6 @@ public class Avro_LoadStandardLogicalTypesTest {
         List<R1> list = List.of(
                 new R1(new BigDecimal("3567.0001"),
                         new BigDecimal("23456.102"),
-                        new byte[]{50, 51, 52},
                         LocalDate.of(2025, 12, 1),
                         LocalDateTime.of(2025, 11, 5, 2, 3, 4, 66_000).toInstant(ZoneOffset.UTC),
                         LocalDateTime.of(2025, 11, 5, 2, 3, 4, 66_000_000).toInstant(ZoneOffset.UTC),
@@ -77,11 +75,10 @@ public class Avro_LoadStandardLogicalTypesTest {
                         LocalDateTime.of(2025, 11, 5, 2, 3, 4, 66_000_000),
                         LocalTime.of(4, 5, 6, 66_000),
                         LocalTime.of(4, 5, 6, 66_000_000),
-                        UUID.nameUUIDFromBytes(new byte[] {6, 60, 120})),
+                        UUID.nameUUIDFromBytes(new byte[]{6, 60, 120})),
 
                 new R1(new BigDecimal("5567.0002"),
                         new BigDecimal("-33456.201"),
-                        new byte[]{60, 61, 62},
                         LocalDate.of(2025, 11, 3),
                         LocalDateTime.of(2024, 12, 5, 2, 3, 4, 55_000).toInstant(ZoneOffset.UTC),
                         LocalDateTime.of(2024, 12, 5, 2, 3, 4, 55_000_000).toInstant(ZoneOffset.UTC),
@@ -89,7 +86,7 @@ public class Avro_LoadStandardLogicalTypesTest {
                         LocalDateTime.of(2024, 12, 5, 2, 3, 4, 55_000_000),
                         LocalTime.of(5, 8, 6, 55_000),
                         LocalTime.of(5, 8, 6, 55_000_000),
-                        UUID.nameUUIDFromBytes(new byte[] {7, 70, 127}))
+                        UUID.nameUUIDFromBytes(new byte[]{7, 70, 127}))
         );
 
         GenericData data = new GenericData();
@@ -113,7 +110,6 @@ public class Avro_LoadStandardLogicalTypesTest {
                 GenericRecord r = new GenericData.Record(SCHEMA);
                 r.put("decimal", u.decimal());
                 r.put("bigDecimal", u.bigDecimal());
-                r.put("bytes", java.nio.ByteBuffer.wrap(u.bytes()));
                 r.put("ld", u.ld());
                 r.put("instantMicro", u.instantMicro());
                 r.put("instantMilli", u.instantMilli());
@@ -132,16 +128,14 @@ public class Avro_LoadStandardLogicalTypesTest {
 
     @Test
     public void load() throws IOException {
-        File f = createAvroFile();
-        DataFrame df = Avro.load(f);
+        DataFrame df = Avro.load(createAvroFile());
 
         new DataFrameAsserts(df,
-                "decimal", "bigDecimal", "bytes", "ld", "instantMicro", "instantMilli", "ldtMicro", "ldtMilli", "ltMicro", "ltMilli", "uuid")
+                "decimal", "bigDecimal", "ld", "instantMicro", "instantMilli", "ldtMicro", "ldtMilli", "ltMicro", "ltMilli", "uuid")
                 .expectHeight(2)
                 .expectRow(0,
                         new BigDecimal("3567.0001"),
                         new BigDecimal("23456.102"),
-                        new byte[]{50, 51, 52},
                         LocalDate.of(2025, 12, 1),
                         LocalDateTime.of(2025, 11, 5, 2, 3, 4, 66_000).toInstant(ZoneOffset.UTC),
                         LocalDateTime.of(2025, 11, 5, 2, 3, 4, 66_000_000).toInstant(ZoneOffset.UTC),
@@ -149,12 +143,11 @@ public class Avro_LoadStandardLogicalTypesTest {
                         LocalDateTime.of(2025, 11, 5, 2, 3, 4, 66_000_000),
                         LocalTime.of(4, 5, 6, 66_000),
                         LocalTime.of(4, 5, 6, 66_000_000),
-                        UUID.nameUUIDFromBytes(new byte[] {6, 60, 120}))
+                        UUID.nameUUIDFromBytes(new byte[]{6, 60, 120}))
 
                 .expectRow(1,
                         new BigDecimal("5567.0002"),
                         new BigDecimal("-33456.201"),
-                        new byte[]{60, 61, 62},
                         LocalDate.of(2025, 11, 3),
                         LocalDateTime.of(2024, 12, 5, 2, 3, 4, 55_000).toInstant(ZoneOffset.UTC),
                         LocalDateTime.of(2024, 12, 5, 2, 3, 4, 55_000_000).toInstant(ZoneOffset.UTC),
@@ -162,6 +155,6 @@ public class Avro_LoadStandardLogicalTypesTest {
                         LocalDateTime.of(2024, 12, 5, 2, 3, 4, 55_000_000),
                         LocalTime.of(5, 8, 6, 55_000),
                         LocalTime.of(5, 8, 6, 55_000_000),
-                        UUID.nameUUIDFromBytes(new byte[] {7, 70, 127}));
+                        UUID.nameUUIDFromBytes(new byte[]{7, 70, 127}));
     }
 }
