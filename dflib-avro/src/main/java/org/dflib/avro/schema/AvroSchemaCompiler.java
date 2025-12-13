@@ -1,12 +1,11 @@
 package org.dflib.avro.schema;
 
-import org.dflib.DataFrame;
-import org.dflib.Series;
-import org.dflib.avro.types.AvroTypeExtensions;
 import org.apache.avro.Conversion;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
-import org.apache.avro.generic.GenericData;
+import org.dflib.DataFrame;
+import org.dflib.Series;
+import org.dflib.avro.types.AvroTypeExtensions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,7 +145,7 @@ public class AvroSchemaCompiler {
     }
 
     protected Schema logicalTypeSchema(Class<?> type) {
-        Conversion<?> c = GenericData.get().getConversionByClass(type);
+        Conversion<?> c = AvroTypeExtensions.getGenericDataForSave().getConversionByClass(type);
         return c != null ? c.getRecommendedSchema() : null;
     }
 

@@ -3,6 +3,7 @@ package org.dflib.avro;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.avro.schema.AvroSchemaUtils;
+import org.dflib.avro.types.AvroTypeExtensions;
 import org.dflib.row.RowProxy;
 import org.apache.avro.Schema;
 import org.apache.avro.file.CodecFactory;
@@ -79,7 +80,7 @@ public class AvroSaver extends BaseSaver<AvroSaver> {
 
         DataFrame avroReadyDf = makeAvroReady(df, schema);
 
-        DatumWriter<GenericRecord> writer = new GenericDatumWriter<>(schema);
+        DatumWriter<GenericRecord> writer = new GenericDatumWriter<>(schema, AvroTypeExtensions.getGenericDataForSave());
 
         // DataFileWriter includes Schema in the output
         try (DataFileWriter<GenericRecord> outWriter = new DataFileWriter<>(writer)) {

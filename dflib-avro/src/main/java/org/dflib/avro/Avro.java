@@ -1,15 +1,12 @@
 package org.dflib.avro;
 
-import org.dflib.DataFrame;
-import org.dflib.avro.schema.AvroSchemaCompiler;
-import org.dflib.avro.types.SingleSchemaConversion;
-import org.dflib.avro.types.SingletonLogicalTypeFactory;
-import org.apache.avro.LogicalType;
-import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
 import org.dflib.ByteSource;
 import org.dflib.ByteSources;
+import org.dflib.DataFrame;
+import org.dflib.avro.schema.AvroSchemaCompiler;
+import org.dflib.avro.types.AvroTypeExtensions;
+import org.dflib.avro.types.SingleSchemaConversion;
 
 import java.io.File;
 import java.io.InputStream;
@@ -27,14 +24,9 @@ public class Avro {
      *
      * @param conversion a custom subclass of {@link SingleSchemaConversion} implementing custom type read/write logic.
      */
+    // TODO: deprecate in favor of AvroTypeExtensions?
     public static void registerCustomType(SingleSchemaConversion<?> conversion) {
-        registerCustomLogicalType(conversion.getLogicalType());
-        GenericData.get().addLogicalTypeConversion(conversion);
-    }
-
-    protected static void registerCustomLogicalType(LogicalType logicalType) {
-        LogicalTypes.LogicalTypeFactory typeFactory = new SingletonLogicalTypeFactory(logicalType);
-        LogicalTypes.register(logicalType.getName(), typeFactory);
+        AvroTypeExtensions.registerCustomType(conversion);
     }
 
     public static Schema compileSchema(DataFrame data, String namespace, String name) {

@@ -7,6 +7,7 @@ import org.dflib.Index;
 import org.dflib.ValueMapper;
 import org.dflib.avro.schema.AvroSchemaUtils;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
 class ColConfigurator {
@@ -43,15 +44,29 @@ class ColConfigurator {
     }
 
     private static Extractor<GenericRecord, ?> sparseExtractor(int pos, Schema colSchema) {
+
+        // if the main type has a logical type, it should be returned unchanged
+        if (colSchema.getLogicalType() != null) {
+            return Extractor.$col(r -> r.get(pos));
+        }
+
         return switch (colSchema.getType()) {
             // Raw numeric and boolean types can be loaded as primitives,
             // as numeric nullable types are declared as unions and will fall under the "default" case
+
             case INT -> Extractor.$int(r -> (Integer) r.get(pos));
             case FLOAT -> Extractor.$float(r -> (Float) r.get(pos));
             case DOUBLE -> Extractor.$double(r -> (Double) r.get(pos));
             case LONG -> Extractor.$long(r -> (Long) r.get(pos));
             case BOOLEAN -> Extractor.$bool(r -> (Boolean) r.get(pos));
-            case BYTES, NULL -> Extractor.$col(r -> r.get(pos));
+            case BYTES -> Extractor.$col(r -> {
+                ByteBuffer bb = (ByteBuffer) r.get(pos);
+                byte[] bytes = new byte[bb.remaining()];
+                bb.duplicate().get(bytes);
+                return bytes;
+            });
+
+            case NULL -> Extractor.$col(r -> r.get(pos));
             case ENUM -> enumExtractor(pos, colSchema);
             case STRING -> stringExtractor(pos);
             case UNION -> unionExtractor(pos, colSchema.getTypes());
@@ -80,7 +95,8 @@ class ColConfigurator {
             case ENUM -> enumExtractor(pos, otherThanNull[0]);
             case STRING -> stringExtractor(pos);
             case UNION -> unionExtractor(pos, otherThanNull[0].getTypes());
-            default -> throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + otherThanNull[0].getType());
+            default ->
+                    throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + otherThanNull[0].getType());
         };
     }
 
@@ -103,7 +119,7 @@ class ColConfigurator {
         // 2. AvroTypeExtensions.UNMAPPED_TYPE.getName().equals(colSchema.getLogicalType().getName()) -> String
         // 3. All others: avro.util.Utf8 (which is mutable and requires an immediate conversion)
         // Luckily, all 3 can be converted to a String via "toString", so treating them the same...
-        
+
         return Extractor.$col(r -> asString(r.get(pos)));
     }
 

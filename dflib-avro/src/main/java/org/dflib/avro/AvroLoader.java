@@ -118,7 +118,11 @@ public class AvroLoader {
         // See: https://avro.apache.org/docs/current/spec.html#Schema+Resolution
 
         try {
-            GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>(schema);
+            GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>(
+                    schema,
+                    schema,
+                    AvroTypeExtensions.getGenericDataForLoad());
+
             DataFileStream<GenericRecord> inReader = new DataFileStream<>(in, reader);
             Schema schema = reader.getExpected();
 
@@ -149,7 +153,11 @@ public class AvroLoader {
         // If not null, Avro will try to convert the file "writer" schema to the reader's expected format
         // See: https://avro.apache.org/docs/current/spec.html#Schema+Resolution
 
-        GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>(schema);
+        GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>(
+                schema,
+                schema,
+                AvroTypeExtensions.getGenericDataForLoad());
+        
         DataFileReader<GenericRecord> inReader = new DataFileReader<>(in, reader);
         Schema schema = reader.getExpected();
 
