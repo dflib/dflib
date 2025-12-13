@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-public class LoadSpectPrimitiveTypesTest {
+public class LoadSpecPrimitiveTypesTest {
 
     @TempDir
     static Path outBase;
