@@ -12,7 +12,6 @@ import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Path;
@@ -62,9 +61,9 @@ public class LoadSpecLogicalTypesTest {
             UUID uuid) {
     }
 
-    static File createAvroFile() throws IOException {
+    static Path createAvroFile() throws IOException {
 
-        File out = new File(outBase.toFile(), "java.avro");
+        Path out = outBase.resolve("java.avro");
         List<R1> list = List.of(
                 new R1(new BigDecimal("3567.0001"),
                         new BigDecimal("23456.102"),
@@ -104,20 +103,20 @@ public class LoadSpecLogicalTypesTest {
         var datumWriter = new GenericDatumWriter<GenericRecord>(SCHEMA, data);
 
         try (var fileWriter = new DataFileWriter<>(datumWriter)) {
-            fileWriter.create(SCHEMA, out);
+            fileWriter.create(SCHEMA, out.toFile());
 
-            for (var u : list) {
+            for (R1 o : list) {
                 GenericRecord r = new GenericData.Record(SCHEMA);
-                r.put("decimal", u.decimal());
-                r.put("bigDecimal", u.bigDecimal());
-                r.put("ld", u.ld());
-                r.put("instantMicro", u.instantMicro());
-                r.put("instantMilli", u.instantMilli());
-                r.put("ldtMicro", u.ldtMicro());
-                r.put("ldtMilli", u.ldtMilli());
-                r.put("ltMicro", u.ltMicro());
-                r.put("ltMilli", u.ltMilli());
-                r.put("uuid", u.uuid());
+                r.put("decimal", o.decimal());
+                r.put("bigDecimal", o.bigDecimal());
+                r.put("ld", o.ld());
+                r.put("instantMicro", o.instantMicro());
+                r.put("instantMilli", o.instantMilli());
+                r.put("ldtMicro", o.ldtMicro());
+                r.put("ldtMilli", o.ldtMilli());
+                r.put("ltMicro", o.ltMicro());
+                r.put("ltMilli", o.ltMilli());
+                r.put("uuid", o.uuid());
 
                 fileWriter.append(r);
             }

@@ -10,7 +10,6 @@ import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
@@ -41,9 +40,9 @@ public class LoadSpecPrimitiveTypesTest {
     public record R1(boolean b, int i, long l, float f, double d, byte[] bytes, String s) {
     }
 
-    static File createAvroFile() throws IOException {
+    static Path createAvroFile() throws IOException {
 
-        File out = new File(outBase.toFile(), "java.avro");
+        Path out = outBase.resolve("java.avro");
         List<R1> list = List.of(
                 new R1(true, 6, 896L, 8.11f, 909.01d, new byte[]{50, 51, 52}, "s1"),
                 new R1(false, 8, -196L, -3.12f, -13.01d, new byte[]{60, 61, 62}, "s2")
@@ -53,7 +52,7 @@ public class LoadSpecPrimitiveTypesTest {
         var datumWriter = new GenericDatumWriter<GenericRecord>(SCHEMA, data);
 
         try (var fileWriter = new DataFileWriter<>(datumWriter)) {
-            fileWriter.create(SCHEMA, out);
+            fileWriter.create(SCHEMA, out.toFile());
 
             for (R1 o : list) {
                 GenericRecord r = new GenericData.Record(SCHEMA);
