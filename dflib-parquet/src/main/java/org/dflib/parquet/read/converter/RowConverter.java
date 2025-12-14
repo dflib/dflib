@@ -13,7 +13,6 @@ import static org.apache.parquet.schema.LogicalTypeAnnotation.*;
 import static org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.*;
 
 
-
 public class RowConverter extends GroupConverter {
 
     private final Converter[] converters;
@@ -46,8 +45,8 @@ public class RowConverter extends GroupConverter {
     private static Converter buildPrimitiveConverters(Type parquetField, Consumer<Object> consumer) {
         PrimitiveTypeName type = parquetField.asPrimitiveType().getPrimitiveTypeName();
         return switch (type) {
-            case INT32, INT64, FLOAT, DOUBLE, BOOLEAN -> new ToPrimitiveTypeConverter(consumer);
-            default -> throw new RuntimeException(type + " deserialization not supported");
+            case INT32, INT64, FLOAT, DOUBLE, BOOLEAN, BINARY, FIXED_LEN_BYTE_ARRAY -> new ToPrimitiveTypeConverter(consumer);
+            case INT96 -> throw new RuntimeException("INT96 deserialization is deprecated and is not supported");
         };
     }
 

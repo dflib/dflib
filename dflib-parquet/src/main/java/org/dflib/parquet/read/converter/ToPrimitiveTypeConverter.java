@@ -1,8 +1,9 @@
 package org.dflib.parquet.read.converter;
 
-import java.util.function.Consumer;
-
+import org.apache.parquet.io.api.Binary;
 import org.apache.parquet.io.api.PrimitiveConverter;
+
+import java.util.function.Consumer;
 
 class ToPrimitiveTypeConverter extends PrimitiveConverter {
 
@@ -37,4 +38,8 @@ class ToPrimitiveTypeConverter extends PrimitiveConverter {
         consumer.accept(value);
     }
 
+    @Override
+    public void addBinary(Binary value) {
+        consumer.accept(value.getBytesUnsafe());
+    }
 }

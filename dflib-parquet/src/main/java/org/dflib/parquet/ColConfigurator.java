@@ -67,7 +67,8 @@ class ColConfigurator {
             case FLOAT -> Extractor.$float(r -> (Float) r[pos]);
             case DOUBLE -> Extractor.$double(r -> (Double) r[pos]);
             case BOOLEAN -> Extractor.$bool(r -> (Boolean) r[pos]);
-            default -> throw new RuntimeException(type + " deserialization not supported");
+            case BINARY, FIXED_LEN_BYTE_ARRAY -> Extractor.$col(r -> (byte[]) r[pos]);
+            case INT96 -> throw new RuntimeException("INT96 deserialization is deprecated and is not supported");
         };
     }
 

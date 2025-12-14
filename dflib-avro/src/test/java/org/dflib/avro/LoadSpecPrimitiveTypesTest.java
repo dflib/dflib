@@ -1,18 +1,11 @@
 package org.dflib.avro;
 
-import org.apache.avro.Schema;
-import org.apache.avro.file.DataFileWriter;
-import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericDatumWriter;
-import org.apache.avro.generic.GenericRecord;
 import org.dflib.DataFrame;
 import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
 public class LoadSpecPrimitiveTypesTest {
 
@@ -40,41 +33,26 @@ public class LoadSpecPrimitiveTypesTest {
     public record R1(boolean b, int i, long l, float f, double d, byte[] bytes, String s) {
     }
 
-    static Path createAvroFile() throws IOException {
+    static Path createAvroFile() {
 
-        Schema parsed = new Schema.Parser().parse(SCHEMA);
-
-        Path out = outBase.resolve("java.avro");
-        List<R1> list = List.of(
-                new R1(true, 6, 896L, 8.11f, 909.01d, new byte[]{50, 51, 52}, "s1"),
-                new R1(false, 8, -196L, -3.12f, -13.01d, new byte[]{60, 61, 62}, "s2")
-        );
-
-        GenericData data = new GenericData();
-        var datumWriter = new GenericDatumWriter<GenericRecord>(parsed, data);
-
-        try (var fileWriter = new DataFileWriter<>(datumWriter)) {
-            fileWriter.create(parsed, out.toFile());
-
-            for (R1 o : list) {
-                GenericRecord r = new GenericData.Record(parsed);
-                r.put("nl", null);
-                r.put("b", o.b());
-                r.put("i", o.i());
-                r.put("l", o.l());
-                r.put("f", o.f());
-                r.put("d", o.d());
-                r.put("bytes", java.nio.ByteBuffer.wrap(o.bytes()));
-                r.put("s", o.s());
-                fileWriter.append(r);
-            }
-        }
-
-        return out;
+        return TestAvroWriter.of(R1.class, outBase)
+                .schema(SCHEMA)
+                .writer((r, o) -> {
+                    r.put("nl", null);
+                    r.put("b", o.b());
+                    r.put("i", o.i());
+                    r.put("l", o.l());
+                    r.put("f", o.f());
+                    r.put("d", o.d());
+                    r.put("bytes", java.nio.ByteBuffer.wrap(o.bytes()));
+                    r.put("s", o.s());
+                })
+                .write(new R1(true, 6, 896L, 8.11f, 909.01d, new byte[]{50, 51, 52}, "s1"),
+                        new R1(false, 8, -196L, -3.12f, -13.01d, new byte[]{60, 61, 62}, "s2"));
     }
 
     @Test
-    public void load() throws IOException {
+    public void load() {
         DataFrame df = Avro.load(createAvroFile());
 
         new DataFrameAsserts(df, "nl", "b", "i", "l", "f", "d", "bytes", "s")
