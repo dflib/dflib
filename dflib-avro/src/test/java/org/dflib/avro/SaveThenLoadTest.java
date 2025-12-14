@@ -13,7 +13,7 @@ import java.time.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AvroSerializationTest {
+public class SaveThenLoadTest {
 
     @Test
     public void ints() {
@@ -22,7 +22,7 @@ public class AvroSerializationTest {
                 Series.of(11, 12, null)
         );
 
-        DataFrame loaded = saveAndLoad(df);
+        DataFrame loaded = saveThenLoad(df);
         new DataFrameAsserts(loaded, "c1", "c2")
                 .expectHeight(3)
                 .expectIntColumns(0)
@@ -37,7 +37,7 @@ public class AvroSerializationTest {
                 Series.of(21L, 22L, null)
         );
 
-        DataFrame loaded = saveAndLoad(df);
+        DataFrame loaded = saveThenLoad(df);
         new DataFrameAsserts(loaded, "c1", "c2")
                 .expectHeight(3)
                 .expectLongColumns(0)
@@ -52,7 +52,7 @@ public class AvroSerializationTest {
                 Series.of(30.1, 31.45, null)
         );
 
-        DataFrame loaded = saveAndLoad(df);
+        DataFrame loaded = saveThenLoad(df);
         new DataFrameAsserts(loaded, "c1", "c2")
                 .expectHeight(3)
                 .expectDoubleColumns(0)
@@ -67,7 +67,7 @@ public class AvroSerializationTest {
                 Series.of(Boolean.TRUE, Boolean.FALSE, null)
         );
 
-        DataFrame loaded = saveAndLoad(df);
+        DataFrame loaded = saveThenLoad(df);
         new DataFrameAsserts(loaded, "c1", "c2")
                 .expectHeight(3)
                 .expectBooleanColumns(0)
@@ -81,7 +81,7 @@ public class AvroSerializationTest {
                 Series.of("s1", "s2", null)
         );
 
-        DataFrame loaded = saveAndLoad(df);
+        DataFrame loaded = saveThenLoad(df);
         new DataFrameAsserts(loaded, "c1")
                 .expectHeight(3)
                 .expectColumn("c1", "s1", "s2", null);
@@ -93,7 +93,7 @@ public class AvroSerializationTest {
                 Series.of(new byte[]{1, 2, 3}, new byte[0], null)
         );
 
-        DataFrame loaded = saveAndLoad(df);
+        DataFrame loaded = saveThenLoad(df);
         new DataFrameAsserts(loaded, "c1")
                 .expectHeight(3)
                 .expectColumn("c1", new byte[]{1, 2, 3}, new byte[0], null);
@@ -109,7 +109,7 @@ public class AvroSerializationTest {
                 Series.of(Year.of(-45), Year.of(6000), null)
         );
 
-        DataFrame loaded = saveAndLoad(df);
+        DataFrame loaded = saveThenLoad(df);
         new DataFrameAsserts(loaded, "LocalDate", "LocalTime", "LocalDateTime", "YearMonth", "Year")
                 .expectHeight(3)
                 .expectColumn("LocalDate", LocalDate.of(2020, 1, 5), LocalDate.of(2019, 6, 8), null)
@@ -125,7 +125,7 @@ public class AvroSerializationTest {
                 Series.of(new BigInteger("987654321"), new BigInteger("-11111"), null)
         );
 
-        DataFrame loaded = saveAndLoad(df);
+        DataFrame loaded = saveThenLoad(df);
         new DataFrameAsserts(loaded, "c1")
                 .expectHeight(3)
                 .expectColumn("c1", new BigInteger("987654321"), new BigInteger("-11111"), null);
@@ -141,7 +141,7 @@ public class AvroSerializationTest {
                         null)
         );
 
-        DataFrame loaded = saveAndLoad(df);
+        DataFrame loaded = saveThenLoad(df);
         new DataFrameAsserts(loaded, "c1")
                 .expectHeight(4)
                 .expectColumn("c1",
@@ -158,7 +158,7 @@ public class AvroSerializationTest {
                 Series.of(Period.ofWeeks(15), Period.ofYears(5), Period.ZERO, null)
         );
 
-        DataFrame loaded = saveAndLoad(df);
+        DataFrame loaded = saveThenLoad(df);
         new DataFrameAsserts(loaded, "c1", "c2")
                 .expectHeight(4)
                 .expectColumn("c1", Duration.ofDays(350000), Duration.ofSeconds(15, 101), Duration.ZERO, null)
@@ -172,7 +172,7 @@ public class AvroSerializationTest {
                 Series.of(TestEnum2.ab, TestEnum2.x, null)
         );
 
-        DataFrame loaded = saveAndLoad(df);
+        DataFrame loaded = saveThenLoad(df);
         new DataFrameAsserts(loaded, "c1", "c2")
                 .expectHeight(3)
                 .expectColumn("c1", TestEnum1.ab, TestEnum1.m, null)
@@ -186,7 +186,7 @@ public class AvroSerializationTest {
                 Series.of(new TestUnmapped2("a"), new TestUnmapped2("b"), null)
         );
 
-        DataFrame loaded = saveAndLoad(df);
+        DataFrame loaded = saveThenLoad(df);
         new DataFrameAsserts(loaded, "c1", "c2")
                 .expectHeight(3)
                 .expectColumn("c1", "x", "y", null)
@@ -200,29 +200,22 @@ public class AvroSerializationTest {
                 Series.of(null, null)
         );
 
-        DataFrame loaded = saveAndLoad(df);
+        DataFrame loaded = saveThenLoad(df);
         new DataFrameAsserts(loaded, "c1", "c2")
                 .expectHeight(2)
                 .expectColumn("c1", null, null)
                 .expectColumn("c2", null, null);
     }
 
-    private DataFrame saveAndLoad(DataFrame df) {
-        return load(save(df));
-    }
-
-    private byte[] save(DataFrame df) {
+    private DataFrame saveThenLoad(DataFrame save) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Avro.save(df, out);
+        Avro.save(save, out);
         byte[] bytes = out.toByteArray();
         assertTrue(bytes.length > 0, "No bytes generated");
-        return bytes;
-    }
 
-    private DataFrame load(byte[] bytes) {
-        DataFrame df = Avro.load(bytes);
-        assertNotNull(df);
-        return df;
+        DataFrame load = Avro.load(bytes);
+        assertNotNull(load);
+        return load;
     }
 
     public enum TestEnum1 {

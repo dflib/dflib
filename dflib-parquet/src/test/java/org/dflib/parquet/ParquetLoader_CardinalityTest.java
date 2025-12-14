@@ -18,7 +18,7 @@ public class ParquetLoader_CardinalityTest {
     @BeforeAll
     public static void setupSrcDirs() throws URISyntaxException {
         // the file is intentionally created with "parquet" tool, not DFLib
-        _TEST1_PARQUET = new File(ParquetLoaderTest.class.getResource("test1.parquet").toURI()).getAbsoluteFile();
+        _TEST1_PARQUET = new File(SaveThenLoadTest.class.getResource("test1.parquet").toURI()).getAbsoluteFile();
     }
 
     @Test
