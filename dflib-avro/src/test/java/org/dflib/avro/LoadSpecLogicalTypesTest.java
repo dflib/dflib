@@ -29,7 +29,7 @@ public class LoadSpecLogicalTypesTest {
     static Path outBase;
 
     // per https://avro.apache.org/docs/1.12.0/specification/#logical-types
-    static final Schema SCHEMA = new Schema.Parser().parse("""
+    static final String SCHEMA = """
             {
               "type":"record",
               "name":"DataFrame",
@@ -46,7 +46,7 @@ public class LoadSpecLogicalTypesTest {
                 {"name":"ltMilli","type":{"type":"int","logicalType":"time-millis"}},
                 {"name":"uuid","type":{"type":"string","logicalType":"uuid"}}
               ]
-            }""");
+            }""";
 
     public record R1(
             BigDecimal decimal,
@@ -62,6 +62,8 @@ public class LoadSpecLogicalTypesTest {
     }
 
     static Path createAvroFile() throws IOException {
+
+        Schema parsed = new Schema.Parser().parse(SCHEMA);
 
         Path out = outBase.resolve("java.avro");
         List<R1> list = List.of(
@@ -100,13 +102,13 @@ public class LoadSpecLogicalTypesTest {
         data.addLogicalTypeConversion(new TimeConversions.TimeMillisConversion());
         data.addLogicalTypeConversion(new Conversions.UUIDConversion());
 
-        var datumWriter = new GenericDatumWriter<GenericRecord>(SCHEMA, data);
+        var datumWriter = new GenericDatumWriter<GenericRecord>(parsed, data);
 
         try (var fileWriter = new DataFileWriter<>(datumWriter)) {
-            fileWriter.create(SCHEMA, out.toFile());
+            fileWriter.create(parsed, out.toFile());
 
             for (R1 o : list) {
-                GenericRecord r = new GenericData.Record(SCHEMA);
+                GenericRecord r = new GenericData.Record(parsed);
                 r.put("decimal", o.decimal());
                 r.put("bigDecimal", o.bigDecimal());
                 r.put("ld", o.ld());

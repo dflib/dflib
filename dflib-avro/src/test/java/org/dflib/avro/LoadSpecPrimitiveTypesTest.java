@@ -20,7 +20,7 @@ public class LoadSpecPrimitiveTypesTest {
     static Path outBase;
 
     // per https://avro.apache.org/docs/1.12.0/specification/#primitive-types
-    static final Schema SCHEMA = new Schema.Parser().parse("""
+    static final String SCHEMA = """
             {
               "type":"record",
               "name":"DataFrame",
@@ -35,12 +35,14 @@ public class LoadSpecPrimitiveTypesTest {
                 {"name":"bytes","type":"bytes"},
                 {"name":"s","type":"string"}
               ]
-            }""");
+            }""";
 
     public record R1(boolean b, int i, long l, float f, double d, byte[] bytes, String s) {
     }
 
     static Path createAvroFile() throws IOException {
+
+        Schema parsed = new Schema.Parser().parse(SCHEMA);
 
         Path out = outBase.resolve("java.avro");
         List<R1> list = List.of(
@@ -49,13 +51,13 @@ public class LoadSpecPrimitiveTypesTest {
         );
 
         GenericData data = new GenericData();
-        var datumWriter = new GenericDatumWriter<GenericRecord>(SCHEMA, data);
+        var datumWriter = new GenericDatumWriter<GenericRecord>(parsed, data);
 
         try (var fileWriter = new DataFileWriter<>(datumWriter)) {
-            fileWriter.create(SCHEMA, out.toFile());
+            fileWriter.create(parsed, out.toFile());
 
             for (R1 o : list) {
-                GenericRecord r = new GenericData.Record(SCHEMA);
+                GenericRecord r = new GenericData.Record(parsed);
                 r.put("nl", null);
                 r.put("b", o.b());
                 r.put("i", o.i());
