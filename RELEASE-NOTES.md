@@ -14,6 +14,7 @@
 * #576 QL: Can't specify parameters for "col(?)" index
 * #577 Udf0 functional interface
 * #581 Support loading Avro files with "standard" logical types
+* #582 Parquet loader: support for BINARY and FIXED_LEN_BYTE_ARRAY types
 
 ## Release 2.0.0-M5
 
