@@ -18,7 +18,9 @@ import org.dflib.RowMapper;
 import org.dflib.RowPredicate;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
+import org.dflib.Udf1;
 import org.dflib.exp.ExpEvaluator;
+import org.dflib.exp.SingleValueExp;
 import org.dflib.row.MultiArrayRowBuilder;
 import org.dflib.series.RowMappedSeries;
 import org.dflib.series.SingleValueSeries;
@@ -36,7 +38,7 @@ public class FixedColumnSet implements ColumnSet {
     private final DataFrame source;
     private final UnaryOperator<Series<?>> colCompactor;
 
-    // defer index resolving until a terminal method is caller, as the DataFrame can be affected by expansions, etc.
+    // defer index resolving until a terminal method is called, as the DataFrame can be affected by expansions, etc.
     private final Function<Index, String[]> csIndexResolver;
 
     public static FixedColumnSet of(DataFrame source, Index csIndex) {
@@ -580,6 +582,20 @@ public class FixedColumnSet implements ColumnSet {
         });
 
         return doMerge(csIndex, b.getData());
+    }
+
+    @Override
+    public DataFrame mergeAll(Udf1<?, ?> udf) {
+
+        Index srcIndex = source.getColumnsIndex();
+        String[] csIndex = csIndex();
+        int w = csIndex.length;
+        Exp[] exps = new Exp[w];
+        for (int i = 0; i < w; i++) {
+            exps[i] = srcIndex.contains(csIndex[i]) ? udf.call(csIndex[i]) : new SingleValueExp("null", null);
+        }
+
+        return merge(exps);
     }
 
     @Override

@@ -253,6 +253,15 @@ public interface ColumnSet {
      */
     DataFrame merge(RowMapper mapper);
 
+
+    /**
+     * Performs a merge, applying the Udf1 parameter to each of the columns in the column set.
+     *
+     * @since 2.0.0
+     */
+    // TODO: a String version of Udf once we start supporting UDF creation from Strings
+    DataFrame mergeAll(Udf1<?, ?> udf);
+
     /**
      * Returns a new DataFrame with all the columns from the source DataFrame (and, possibly, some extra all-null columns
      * defined in the ColumnSet), with the columns from the ColumnSet renamed by applying the renaming function.

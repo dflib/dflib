@@ -10,6 +10,7 @@ import org.dflib.RowSet;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
 import org.dflib.Sorter;
+import org.dflib.Udf1;
 import org.dflib.series.RowMappedSeries;
 
 import java.util.Map;
@@ -173,6 +174,18 @@ public abstract class BaseRowSet implements RowSet {
     @Override
     public DataFrame merge(RowMapper mapper) {
         return runMerge(m -> m.mapDf(df -> df.cols(source.getColumnsIndex()).merge(mapper)));
+    }
+
+    @Override
+    public DataFrame mergeAll(Udf1<?, ?> udf) {
+        Index srcIndex = source.getColumnsIndex();
+        int w = srcIndex.size();
+        Exp[] exps = new Exp[w];
+        for (int i = 0; i < w; i++) {
+            exps[i] = udf.call(srcIndex.get(i));
+        }
+
+        return merge(exps);
     }
 
     // executes a standard merge sequence with a single customizable step

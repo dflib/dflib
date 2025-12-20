@@ -99,6 +99,13 @@ public interface RowSet {
 
     DataFrame merge(RowToValueMapper<?>... mappers);
 
+    /**
+     * Performs a merge, applying the Udf1 parameter to each of the columns within the row set selection.
+     *
+     * @since 2.0.0
+     */
+    // TODO: a String version of Udf once we start supporting UDF creation from Strings
+    DataFrame mergeAll(Udf1<?, ?> udf);
 
     /**
      * A noop sort operation. Useless on its own, and primarily exists to disambiguate {@link #sort(Sorter...)} and

@@ -18,6 +18,7 @@ import org.dflib.RowMapper;
 import org.dflib.RowPredicate;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
+import org.dflib.Udf1;
 import org.dflib.exp.ExpEvaluator;
 import org.dflib.exp.Exps;
 import org.dflib.index.StringDeduplicator;
@@ -356,6 +357,18 @@ public class DeferredColumnSet implements ColumnSet {
         });
 
         return delegate(b.getLabels()).merge(b.getData());
+    }
+
+    @Override
+    public DataFrame mergeAll(Udf1<?, ?> udf) {
+        Index index = source.getColumnsIndex();
+        int w = index.size();
+        Exp[] exps = new Exp[w];
+        for (int i = 0; i < w; i++) {
+            exps[i] = udf.call(index.get(i));
+        }
+
+        return delegate(Exps.labels(source, exps)).merge(exps);
     }
 
     @Override

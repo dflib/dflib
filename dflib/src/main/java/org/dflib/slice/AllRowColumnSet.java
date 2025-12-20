@@ -6,6 +6,7 @@ import org.dflib.Exp;
 import org.dflib.RowColumnSet;
 import org.dflib.RowMapper;
 import org.dflib.RowToValueMapper;
+import org.dflib.Udf1;
 
 import java.util.Map;
 import java.util.function.UnaryOperator;
@@ -42,6 +43,11 @@ public class AllRowColumnSet implements RowColumnSet {
     @Override
     public DataFrame merge(RowToValueMapper<?>... mappers) {
         return columnSet.merge(mappers);
+    }
+
+    @Override
+    public DataFrame mergeAll(Udf1<?, ?> udf) {
+        return columnSet.mergeAll(udf);
     }
 
     @Override

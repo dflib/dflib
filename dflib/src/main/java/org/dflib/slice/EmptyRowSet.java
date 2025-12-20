@@ -10,6 +10,7 @@ import org.dflib.RowSet;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
 import org.dflib.Sorter;
+import org.dflib.Udf1;
 import org.dflib.series.FalseSeries;
 
 import java.util.Map;
@@ -62,6 +63,11 @@ public class EmptyRowSet extends BaseRowSet {
 
     @Override
     public DataFrame merge(RowToValueMapper<?>... mappers) {
+        return source;
+    }
+
+    @Override
+    public DataFrame mergeAll(Udf1<?, ?> udf) {
         return source;
     }
 
