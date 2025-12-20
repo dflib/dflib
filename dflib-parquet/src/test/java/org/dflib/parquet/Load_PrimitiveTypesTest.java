@@ -8,7 +8,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 
-public class LoadSpecPrimitiveTypesTest {
+public class Load_PrimitiveTypesTest {
 
     @TempDir
     static Path outBase;
@@ -30,7 +30,7 @@ public class LoadSpecPrimitiveTypesTest {
     }
 
     static Path createParquetFile() {
-        return TestParquetWriter.of(R1.class, outBase)
+        return TestWriter.of(R1.class, outBase)
                 .schema(SCHEMA)
                 .writer((c, r) -> {
                     c.startMessage();

@@ -15,7 +15,7 @@
 * #577 Udf0 functional interface
 * #580 Issues with parquet types inference
 * #581 Support loading Avro files with "standard" logical types
-* #582 Parquet loader: support for BINARY and FIXED_LEN_BYTE_ARRAY types
+* #582 Parquet loader: support for all spec primitive types, including most "logical"
 * #585 "mergeAll(Udf1)"
 * #586 Parquet loader: support for MAP and LIST
 

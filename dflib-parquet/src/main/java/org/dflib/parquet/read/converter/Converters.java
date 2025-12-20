@@ -26,56 +26,76 @@ class Converters {
     private static Converter primitiveConverter(PrimitiveType type, Consumer<Object> consumer) {
 
         PrimitiveType.PrimitiveTypeName name = type.getPrimitiveTypeName();
-        LogicalTypeAnnotation logicalType = type.getLogicalTypeAnnotation();
+        LogicalTypeAnnotation lt = type.getLogicalTypeAnnotation();
 
-        if (logicalType != null) {
+        if (lt != null) {
 
-            if (logicalType.equals(LogicalTypeAnnotation.stringType())) {
+            if (lt.equals(LogicalTypeAnnotation.stringType())) {
                 return new StringConverter(consumer);
             }
 
-            if (logicalType.equals(LogicalTypeAnnotation.enumType())) {
+            if (lt.equals(LogicalTypeAnnotation.enumType())) {
                 return new StringConverter(consumer);
             }
 
-            if (logicalType instanceof LogicalTypeAnnotation.IntLogicalTypeAnnotation intType) {
+            if (lt instanceof LogicalTypeAnnotation.IntLogicalTypeAnnotation intType) {
                 return switch (intType.getBitWidth()) {
-                    case 8 -> new ToByteConverter(consumer);
-                    case 16 -> new ToShortConverter(consumer);
-                    default -> new ToPrimitiveTypeConverter(consumer);
+                    case 8 -> new ByteConverter(consumer);
+                    case 16 -> new ShortConverter(consumer);
+                    default -> new PrimitiveTypeConverter(consumer);
                 };
             }
 
-            if (logicalType.equals(LogicalTypeAnnotation.uuidType()) && name == FIXED_LEN_BYTE_ARRAY) {
+            if (lt.equals(LogicalTypeAnnotation.uuidType())) {
+                if (name != FIXED_LEN_BYTE_ARRAY) {
+                    throw new IllegalArgumentException("Can't decode as UUID: " + type);
+                }
+
                 return new UuidConverter(consumer);
             }
 
-            if (logicalType.equals(LogicalTypeAnnotation.dateType()) && name == INT32) {
+            if (lt.equals(LogicalTypeAnnotation.dateType())) {
+                if (name != INT32) {
+                    throw new IllegalArgumentException("Can't decode as DATE: " + type);
+                }
+
                 return new LocalDateConverter(consumer);
             }
 
-            if (logicalType instanceof LogicalTypeAnnotation.TimeLogicalTypeAnnotation time && (name == INT32 || name == INT64)) {
-                return new LocalTimeConverter(consumer, time.getUnit());
+            if (lt instanceof LogicalTypeAnnotation.TimeLogicalTypeAnnotation time) {
+                return switch (name) {
+                    case INT32 -> new LocalTimeMillisConverter(consumer);
+                    case INT64 -> new LocalTimeMicrosNanosConverter(consumer, time.getUnit());
+                    default -> throw new IllegalArgumentException("Can't decode as TIME: " + type);
+                };
             }
 
-            if (logicalType instanceof LogicalTypeAnnotation.TimestampLogicalTypeAnnotation ts && name == INT64) {
+            if (lt instanceof LogicalTypeAnnotation.TimestampLogicalTypeAnnotation ts) {
+                if (name != INT64) {
+                    throw new IllegalArgumentException("Can't decode as TIMESTAMP: " + type);
+                }
+
                 return ts.isAdjustedToUTC()
                         ? new InstantConverter(consumer, ts.getUnit())
                         : new LocalDateTimeConverter(consumer, ts.getUnit());
             }
 
-            if (logicalType instanceof LogicalTypeAnnotation.DecimalLogicalTypeAnnotation decimalType) {
-                return new DecimalConverter(consumer, name, decimalType.getScale());
+            if (lt instanceof LogicalTypeAnnotation.DecimalLogicalTypeAnnotation dt) {
+                return new DecimalConverter(consumer, name, dt.getScale());
             }
 
-            // TODO: should we throw on an unknown logical type instead of falling back to a bae primitive?
+            if (lt instanceof LogicalTypeAnnotation.Float16LogicalTypeAnnotation) {
+                return new Float16Converter(consumer);
+            }
+
+            // for unknown annotations fall through to the base primitive type
         }
 
         return switch (name) {
 
             // TODO: ToPrimitiveTypeConverter does boxing/unboxing. Should push primitive values to extractor directly
             case INT32, INT64, FLOAT, DOUBLE, BOOLEAN, BINARY, FIXED_LEN_BYTE_ARRAY ->
-                    new ToPrimitiveTypeConverter(consumer);
+                    new PrimitiveTypeConverter(consumer);
             case INT96 -> throw new RuntimeException("INT96 deserialization is deprecated and is not supported");
         };
     }

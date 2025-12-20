@@ -13,7 +13,10 @@ import java.util.Map;
 
 import static java.util.Arrays.asList;
 
-public class LoadSpecGroupTypes {
+public class Load_GroupTypes {
+
+    // per https://parquet.apache.org/docs/file-format/types/logicaltypes/
+    // TODO: VARIANT
 
     record RLS(List<String> ls) {
     }
@@ -27,8 +30,8 @@ public class LoadSpecGroupTypes {
     @TempDir
     static Path outBase;
 
-    static TestParquetWriter.Builder<RLS> listOfStringsWriter() {
-        return TestParquetWriter.of(RLS.class, outBase)
+    static TestWriter<RLS> listOfStringsWriter() {
+        return TestWriter.of(RLS.class, outBase)
                 .schema("""
                         message test_schema {
                             required group ls (LIST) {
@@ -66,8 +69,8 @@ public class LoadSpecGroupTypes {
                 });
     }
 
-    static TestParquetWriter.Builder<RLD> listOfDoublesWriter() {
-        return TestParquetWriter.of(RLD.class, outBase)
+    static TestWriter<RLD> listOfDoublesWriter() {
+        return TestWriter.of(RLD.class, outBase)
                 .schema("""
                         message test_schema {
                             required group ls (LIST) {
@@ -105,8 +108,8 @@ public class LoadSpecGroupTypes {
                 });
     }
 
-    static TestParquetWriter.Builder<RMSD> mapOfDoublesWriter() {
-        return TestParquetWriter.of(RMSD.class, outBase)
+    static TestWriter<RMSD> mapOfDoublesWriter() {
+        return TestWriter.of(RMSD.class, outBase)
                 .schema("""
                         message test_schema {
                             required group mp (MAP) {

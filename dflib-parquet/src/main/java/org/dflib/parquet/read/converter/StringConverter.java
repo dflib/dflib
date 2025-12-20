@@ -1,15 +1,15 @@
 package org.dflib.parquet.read.converter;
 
-import java.util.function.Consumer;
-
 import org.apache.parquet.column.Dictionary;
 import org.apache.parquet.io.api.Binary;
 import org.apache.parquet.io.api.PrimitiveConverter;
 
+import java.util.function.Consumer;
+
 class StringConverter extends PrimitiveConverter {
 
     private final Consumer<Object> consumer;
-    private String[] dict = null;
+    private String[] dict;
 
     public StringConverter(Consumer<Object> consumer) {
         this.consumer = consumer;
@@ -19,6 +19,11 @@ class StringConverter extends PrimitiveConverter {
     public void addBinary(Binary value) {
         consumer.accept(convert(value));
     }
+
+    private String convert(Binary value) {
+        return value.toStringUsingUTF8();
+    }
+
 
     @Override
     public boolean hasDictionarySupport() {
@@ -37,9 +42,5 @@ class StringConverter extends PrimitiveConverter {
     @Override
     public void addValueFromDictionary(int dictionaryId) {
         consumer.accept(dict[dictionaryId]);
-    }
-
-    private String convert(Binary value) {
-        return value.toStringUsingUTF8();
     }
 }

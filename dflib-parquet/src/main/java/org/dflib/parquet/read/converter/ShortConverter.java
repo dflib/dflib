@@ -1,14 +1,14 @@
 package org.dflib.parquet.read.converter;
 
-import java.util.function.Consumer;
-
 import org.apache.parquet.io.api.PrimitiveConverter;
 
-class ToShortConverter extends PrimitiveConverter {
+import java.util.function.Consumer;
+
+class ShortConverter extends PrimitiveConverter {
 
     private final Consumer<Object> consumer;
 
-    public ToShortConverter(Consumer<Object> consumer) {
+    public ShortConverter(Consumer<Object> consumer) {
         this.consumer = consumer;
     }
 

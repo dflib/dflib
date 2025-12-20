@@ -3,21 +3,27 @@ package org.dflib.parquet.read.converter;
 import org.apache.parquet.column.Dictionary;
 import org.apache.parquet.io.api.PrimitiveConverter;
 
-import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.function.Consumer;
 
-class LocalDateConverter extends PrimitiveConverter {
+class LocalTimeMillisConverter extends PrimitiveConverter {
 
     private final Consumer<Object> consumer;
-    private LocalDate[] dict;
 
-    public LocalDateConverter(Consumer<Object> consumer) {
+    private LocalTime[] dict;
+
+    public LocalTimeMillisConverter(Consumer<Object> consumer) {
         this.consumer = consumer;
     }
 
     @Override
-    public void addInt(int daysFromEpoch) {
-        consumer.accept(convert(daysFromEpoch));
+    public void addInt(int millisInDay) {
+        consumer.accept(convert(millisInDay));
+    }
+
+    @Override
+    public void addValueFromDictionary(int dictionaryId) {
+        consumer.accept(dict[dictionaryId]);
     }
 
     @Override
@@ -28,19 +34,15 @@ class LocalDateConverter extends PrimitiveConverter {
     @Override
     public void setDictionary(Dictionary dictionary) {
         int maxId = dictionary.getMaxId();
-        dict = new LocalDate[maxId + 1];
+        this.dict = new LocalTime[maxId + 1];
+
         for (int i = 0; i <= maxId; i++) {
             dict[i] = convert(dictionary.decodeToInt(i));
         }
     }
 
-    @Override
-    public void addValueFromDictionary(int dictionaryId) {
-        consumer.accept(dict[dictionaryId]);
-    }
-
-    private LocalDate convert(int daysFromEpoch) {
-        return LocalDate.ofEpochDay(daysFromEpoch);
+    private LocalTime convert(int time) {
+        return LocalTime.ofNanoOfDay(time * 1_000_000L);
     }
 
 }

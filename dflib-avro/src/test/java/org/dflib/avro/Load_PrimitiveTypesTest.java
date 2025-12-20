@@ -7,7 +7,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 
-public class LoadSpecPrimitiveTypesTest {
+public class Load_PrimitiveTypesTest {
 
     @TempDir
     static Path outBase;

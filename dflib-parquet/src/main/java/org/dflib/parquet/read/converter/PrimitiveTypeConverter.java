@@ -5,11 +5,11 @@ import org.apache.parquet.io.api.PrimitiveConverter;
 
 import java.util.function.Consumer;
 
-class ToPrimitiveTypeConverter extends PrimitiveConverter {
+class PrimitiveTypeConverter extends PrimitiveConverter {
 
     private final Consumer<Object> consumer;
 
-    public ToPrimitiveTypeConverter(Consumer<Object> consumer) {
+    public PrimitiveTypeConverter(Consumer<Object> consumer) {
         this.consumer = consumer;
     }
 

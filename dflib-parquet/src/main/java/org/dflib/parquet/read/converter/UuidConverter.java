@@ -1,17 +1,17 @@
 package org.dflib.parquet.read.converter;
 
-import java.nio.ByteBuffer;
-import java.util.UUID;
-import java.util.function.Consumer;
-
 import org.apache.parquet.column.Dictionary;
 import org.apache.parquet.io.api.Binary;
 import org.apache.parquet.io.api.PrimitiveConverter;
 
+import java.nio.ByteBuffer;
+import java.util.UUID;
+import java.util.function.Consumer;
+
 class UuidConverter extends PrimitiveConverter {
 
     private final Consumer<Object> consumer;
-    private UUID[] dict = null;
+    private UUID[] dict;
 
     public UuidConverter(Consumer<Object> consumer) {
         this.consumer = consumer;

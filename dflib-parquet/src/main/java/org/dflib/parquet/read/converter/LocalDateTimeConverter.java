@@ -1,19 +1,19 @@
 package org.dflib.parquet.read.converter;
 
+import org.apache.parquet.column.Dictionary;
+import org.apache.parquet.io.api.PrimitiveConverter;
+import org.apache.parquet.schema.LogicalTypeAnnotation.TimeUnit;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.function.Consumer;
 
-import org.apache.parquet.column.Dictionary;
-import org.apache.parquet.io.api.PrimitiveConverter;
-import org.apache.parquet.schema.LogicalTypeAnnotation.TimeUnit;
-
 class LocalDateTimeConverter extends PrimitiveConverter {
 
     private final Consumer<Object> consumer;
     private final LongToLocalDateTime mapper;
-    private LocalDateTime[] dict = null;
+    private LocalDateTime[] dict;
 
     public LocalDateTimeConverter(Consumer<Object> consumer, TimeUnit timeUnit) {
         this.consumer = consumer;
@@ -56,17 +56,17 @@ class LocalDateTimeConverter extends PrimitiveConverter {
     }
 
     private static LocalDateTime localDateTimeFromMillisFromEpoch(long millisFromEpoch) {
-        Instant instant = InstantRead.instantFromMillisFromEpoch(millisFromEpoch);
+        Instant instant = Instants.fromEpochMillis(millisFromEpoch);
         return localDateTimeInUTC(instant);
     }
 
     private static LocalDateTime localDateTimeFromMicrosFromEpoch(long microsFromEpoch) {
-        Instant instant = InstantRead.instantFromMicrosFromEpoch(microsFromEpoch);
+        Instant instant = Instants.fromEpochMicros(microsFromEpoch);
         return localDateTimeInUTC(instant);
     }
 
     private static LocalDateTime localDateTimeFromNanosFromEpoch(long nanosFromEpoch) {
-        Instant instant = InstantRead.instantFromNanosFromEpoch(nanosFromEpoch);
+        Instant instant = Instants.fromEpochNanos(nanosFromEpoch);
         return localDateTimeInUTC(instant);
     }
 
