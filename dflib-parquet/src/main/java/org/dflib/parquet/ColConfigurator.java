@@ -6,9 +6,6 @@ import org.apache.parquet.schema.Type;
 import org.dflib.Extractor;
 import org.dflib.Index;
 
-import static org.apache.parquet.schema.LogicalTypeAnnotation.*;
-import static org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.*;
-
 class ColConfigurator {
 
     int srcColPos;
@@ -43,76 +40,28 @@ class ColConfigurator {
     }
 
     private static Extractor<Object[], ?> sparseExtractor(int pos, Type colSchema) {
-        Extractor<Object[], ?> extractor = logicalExtractor(pos, colSchema);
 
-        if (extractor != null) {
-            return extractor;
+        // if the main type has a logical type, it should be returned unchanged
+        if (colSchema.getLogicalTypeAnnotation() != null) {
+            return Extractor.$col(r -> r[pos]);
         }
 
         if (colSchema.isPrimitive()) {
-            return primitiveExtractor(pos, colSchema);
-        }
-
-        throw new RuntimeException(colSchema.asGroupType().getName() + " deserialization not supported");
-    }
-
-    private static Extractor<Object[], ?> primitiveExtractor(int pos, Type colSchema) {
-        PrimitiveType.PrimitiveTypeName type = colSchema.asPrimitiveType().getPrimitiveTypeName();
-        if (colSchema.isRepetition(Type.Repetition.OPTIONAL)) {
-            return Extractor.$col(r -> r[pos]);
-        }
-        return switch (type) {
-            case INT32 -> Extractor.$int(r -> (Integer) r[pos]);
-            case INT64 -> Extractor.$long(r -> (Long) r[pos]);
-            case FLOAT -> Extractor.$float(r -> (Float) r[pos]);
-            case DOUBLE -> Extractor.$double(r -> (Double) r[pos]);
-            case BOOLEAN -> Extractor.$bool(r -> (Boolean) r[pos]);
-            case BINARY, FIXED_LEN_BYTE_ARRAY -> Extractor.$col(r -> (byte[]) r[pos]);
-            case INT96 -> throw new RuntimeException("INT96 deserialization is deprecated and is not supported");
-        };
-    }
-
-    private static Extractor<Object[], ?> logicalExtractor(int pos, Type colSchema) {
-        var logicalTypeAnnotation = colSchema.getLogicalTypeAnnotation();
-        if (logicalTypeAnnotation == null) {
-            return null;
-        }
-        Extractor<Object[], ?> defaultExtractor = Extractor.$col(r -> r[pos]);
-        if (logicalTypeAnnotation.equals(stringType())) {
-            return defaultExtractor;
-        }
-        if (logicalTypeAnnotation.equals(enumType())) {
-            return defaultExtractor;
-        }
-        if (logicalTypeAnnotation instanceof IntLogicalTypeAnnotation intType) {
-            if (intType.getBitWidth() == 8) {
-                return defaultExtractor;
+            PrimitiveType.PrimitiveTypeName type = colSchema.asPrimitiveType().getPrimitiveTypeName();
+            if (colSchema.isRepetition(Type.Repetition.OPTIONAL)) {
+                return Extractor.$col(r -> r[pos]);
             }
-            if (intType.getBitWidth() == 16) {
-                return defaultExtractor;
-            }
+            return switch (type) {
+                case INT32 -> Extractor.$int(r -> (Integer) r[pos]);
+                case INT64 -> Extractor.$long(r -> (Long) r[pos]);
+                case FLOAT -> Extractor.$float(r -> (Float) r[pos]);
+                case DOUBLE -> Extractor.$double(r -> (Double) r[pos]);
+                case BOOLEAN -> Extractor.$bool(r -> (Boolean) r[pos]);
+                case BINARY, FIXED_LEN_BYTE_ARRAY -> Extractor.$col(r -> r[pos]);
+                case INT96 -> throw new RuntimeException("INT96 deserialization is deprecated and is not supported");
+            };
         }
-        var primitiveTypeName = colSchema.asPrimitiveType().getPrimitiveTypeName();
-        if (logicalTypeAnnotation.equals(uuidType())
-                && primitiveTypeName == FIXED_LEN_BYTE_ARRAY) {
-            return defaultExtractor;
-        }
-        if (logicalTypeAnnotation.equals(dateType())
-                && primitiveTypeName == INT32) {
-            return defaultExtractor;
-        }
-        if (logicalTypeAnnotation instanceof TimeLogicalTypeAnnotation
-                && (primitiveTypeName == INT32 || primitiveTypeName == INT64)) {
-            return defaultExtractor;
-        }
-        if (logicalTypeAnnotation instanceof TimestampLogicalTypeAnnotation
-                && primitiveTypeName == INT64) {
-            return defaultExtractor;
-        }
-        if (logicalTypeAnnotation instanceof DecimalLogicalTypeAnnotation) {
-            return defaultExtractor;
-        }
-        return null;
-    }
 
+        return Extractor.$col(r -> r[pos]);
+    }
 }

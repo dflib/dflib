@@ -16,6 +16,7 @@
 * #581 Support loading Avro files with "standard" logical types
 * #582 Parquet loader: support for BINARY and FIXED_LEN_BYTE_ARRAY types
 * #585 "mergeAll(Udf1)"
+* #586 Parquet loader: support for MAP and LIST
 
 ## Release 2.0.0-M5
 

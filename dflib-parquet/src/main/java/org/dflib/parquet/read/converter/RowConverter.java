@@ -3,15 +3,11 @@ package org.dflib.parquet.read.converter;
 import org.apache.parquet.io.api.Converter;
 import org.apache.parquet.io.api.GroupConverter;
 import org.apache.parquet.schema.GroupType;
-import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName;
 import org.apache.parquet.schema.Type;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
-
-import static org.apache.parquet.schema.LogicalTypeAnnotation.*;
-import static org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.*;
-
 
 public class RowConverter extends GroupConverter {
 
@@ -21,78 +17,21 @@ public class RowConverter extends GroupConverter {
 
     public RowConverter(GroupType schema, Consumer<Object[]> rowConsumer) {
         this.rowConsumer = rowConsumer;
-        this.converters = new Converter[schema.getFields().size()];
-        this.row = new Object[schema.getFields().size()];
-        int cont = 0;
-        for (var schemaField : schema.getFields()) {
-            converters[cont] = converterFor(cont, schemaField, row);
-            cont++;
+
+        List<Type> fields = schema.getFields();
+        int len = fields.size();
+
+        this.converters = new Converter[len];
+        this.row = new Object[len];
+
+        for (int i = 0; i < len; i++) {
+            converters[i] = converter(fields.get(i), row, i);
         }
     }
 
-    private Converter converterFor(int idx, Type schemaField, Object[] row) {
-        Consumer<Object> consumer = value -> row[idx] = value;
-        Converter converter = buildFromLogicalTypeConverter(schemaField, consumer);
-        if (converter != null) {
-            return converter;
-        }
-        if (schemaField.isPrimitive()) {
-            return buildPrimitiveConverters(schemaField, consumer);
-        }
-        throw new RuntimeException(schemaField.asGroupType().getName() + " deserialization not supported");
-    }
-
-    private static Converter buildPrimitiveConverters(Type parquetField, Consumer<Object> consumer) {
-        PrimitiveTypeName type = parquetField.asPrimitiveType().getPrimitiveTypeName();
-        return switch (type) {
-            case INT32, INT64, FLOAT, DOUBLE, BOOLEAN, BINARY, FIXED_LEN_BYTE_ARRAY -> new ToPrimitiveTypeConverter(consumer);
-            case INT96 -> throw new RuntimeException("INT96 deserialization is deprecated and is not supported");
-        };
-    }
-
-    public static Converter buildFromLogicalTypeConverter(Type parquetField, Consumer<Object> consumer) {
-        var logicalTypeAnnotation = parquetField.getLogicalTypeAnnotation();
-        if (logicalTypeAnnotation == null) {
-            return null;
-        }
-        var primitiveTypeName = parquetField.asPrimitiveType().getPrimitiveTypeName();
-        if (logicalTypeAnnotation.equals(stringType())) {
-            return new StringConverter(consumer);
-        }
-        if (logicalTypeAnnotation.equals(enumType())) {
-            return new StringConverter(consumer);
-        }
-        if (logicalTypeAnnotation instanceof IntLogicalTypeAnnotation intType) {
-            if (intType.getBitWidth() == 8) {
-                return new ToByteConverter(consumer);
-            }
-            if (intType.getBitWidth() == 16) {
-                return new ToShortConverter(consumer);
-            }
-        }
-        if (logicalTypeAnnotation.equals(uuidType())
-                && primitiveTypeName == FIXED_LEN_BYTE_ARRAY) {
-            return new UuidConverter(consumer);
-        }
-        if (logicalTypeAnnotation.equals(dateType())
-                && primitiveTypeName == INT32) {
-            return new LocalDateConverter(consumer);
-        }
-        if (logicalTypeAnnotation instanceof TimeLogicalTypeAnnotation time
-                && (primitiveTypeName == INT32 || primitiveTypeName == INT64)) {
-            return new LocalTimeConverter(consumer, time.getUnit());
-        }
-        if (logicalTypeAnnotation instanceof TimestampLogicalTypeAnnotation timeStamp
-                && primitiveTypeName == INT64) {
-            if (timeStamp.isAdjustedToUTC()) {
-                return new InstantConverter(consumer, timeStamp.getUnit());
-            }
-            return new LocalDateTimeConverter(consumer, timeStamp.getUnit());
-        }
-        if (logicalTypeAnnotation instanceof DecimalLogicalTypeAnnotation decimalType) {
-            return new DecimalConverter(consumer, primitiveTypeName, decimalType.getScale());
-        }
-        return null;
+    private Converter converter(Type type, Object[] row, int i) {
+        Consumer<Object> consumer = value -> row[i] = value;
+        return Converters.converter(type, consumer);
     }
 
     @Override

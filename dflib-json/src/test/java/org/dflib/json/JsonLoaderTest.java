@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 
 import static org.dflib.Exp.$col;
@@ -85,6 +86,18 @@ public class JsonLoaderTest {
                 .expectHeight(2)
                 .expectRow(0, 1, Map.of("x", 1, "y", 2))
                 .expectRow(1, 2, Map.of("x", 3, "y", 4));
+    }
+
+    @Test
+    @DisplayName("$.* : root is list, objects are rows, nested lists")
+    public void listOfNestedLists() {
+        String json = "[{\"a\":1, \"b\":[1, 2]},{\"a\":2, \"b\":[3, 4]}]";
+        DataFrame df = Json.loader().load(json);
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(2)
+                .expectRow(0, 1, List.of(1, 2))
+                .expectRow(1, 2, List.of(3, 4));
     }
 
     @Test
