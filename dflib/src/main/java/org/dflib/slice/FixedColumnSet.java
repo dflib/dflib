@@ -20,7 +20,6 @@ import org.dflib.RowToValueMapper;
 import org.dflib.Series;
 import org.dflib.Udf1;
 import org.dflib.exp.ExpEvaluator;
-import org.dflib.exp.SingleValueExp;
 import org.dflib.row.MultiArrayRowBuilder;
 import org.dflib.series.RowMappedSeries;
 import org.dflib.series.SingleValueSeries;
@@ -592,7 +591,7 @@ public class FixedColumnSet implements ColumnSet {
         int w = csIndex.length;
         Exp[] exps = new Exp[w];
         for (int i = 0; i < w; i++) {
-            exps[i] = srcIndex.contains(csIndex[i]) ? udf.call(csIndex[i]) : new SingleValueExp("null", null);
+            exps[i] = srcIndex.contains(csIndex[i]) ? udf.call(csIndex[i]) : Exp.$val(null);
         }
 
         return merge(exps);

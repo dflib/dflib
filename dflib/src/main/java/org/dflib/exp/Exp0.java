@@ -11,9 +11,9 @@ import java.util.Objects;
 public abstract class Exp0<T> implements Exp<T> {
 
     private final String opName;
-    private final Class<?> type;
+    private final Class<T> type;
 
-    public Exp0(String opName, Class<?> type) {
+    public Exp0(String opName, Class<T> type) {
         this.opName = opName;
         this.type = type;
     }
@@ -53,6 +53,6 @@ public abstract class Exp0<T> implements Exp<T> {
 
     @Override
     public Class<T> getType() {
-        return (Class<T>) type;
+        return type;
     }
 }
