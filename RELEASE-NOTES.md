@@ -13,6 +13,7 @@
 * #574 Robust ECharts embedding script
 * #576 QL: Can't specify parameters for "col(?)" index
 * #577 Udf0 functional interface
+* #580 Issues with parquet types inference
 * #581 Support loading Avro files with "standard" logical types
 * #582 Parquet loader: support for BINARY and FIXED_LEN_BYTE_ARRAY types
 * #585 "mergeAll(Udf1)"
