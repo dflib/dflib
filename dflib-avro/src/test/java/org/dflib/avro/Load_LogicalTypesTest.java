@@ -55,9 +55,9 @@ public class Load_LogicalTypesTest {
             UUID uuid) {
     }
 
-    static Path createAvroFile() throws IOException {
+    static Path createAvroFile() {
 
-        return TestAvroWriter.of(R1.class, outBase)
+        return TestWriter.of(R1.class, outBase)
                 .schema(SCHEMA)
                 .customizer(d -> {
                     d.addLogicalTypeConversion(new Conversions.DecimalConversion());

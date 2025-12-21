@@ -37,7 +37,7 @@ public class LoadCustomRecordNameTest {
 
     static Path createAvroFile(String schema) {
 
-        return TestAvroWriter.of(R1.class, outBase)
+        return TestWriter.of(R1.class, outBase)
                 .schema(schema)
                 .writer((r, o) -> {
                     r.put("s1", o.s1());

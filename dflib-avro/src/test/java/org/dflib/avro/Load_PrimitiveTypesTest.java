@@ -35,7 +35,7 @@ public class Load_PrimitiveTypesTest {
 
     static Path createAvroFile() {
 
-        return TestAvroWriter.of(R1.class, outBase)
+        return TestWriter.of(R1.class, outBase)
                 .schema(SCHEMA)
                 .writer((r, o) -> {
                     r.put("nl", null);
