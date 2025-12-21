@@ -18,13 +18,12 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class Load_PrimitiveLogicalTypesTest {
+public class Load_LogicalTypesTest {
 
     @TempDir
     static Path outBase;
 
     // per https://parquet.apache.org/docs/file-format/types/logicaltypes/
-    // TODO: embedded types - JSON, BSON, GEOMETRY, GEOGRAPHY
 
     @Test
     public void string() {

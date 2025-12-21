@@ -1,6 +1,8 @@
 package org.dflib.avro;
 
+import org.apache.avro.Conversions;
 import org.apache.avro.Schema;
+import org.apache.avro.data.TimeConversions;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumWriter;
@@ -11,7 +13,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 class TestWriter<T> {
 
@@ -21,16 +23,10 @@ class TestWriter<T> {
 
     private final Path out;
     private Schema schema;
-    private Consumer<GenericData> customizer;
     private BiConsumer<GenericRecord, T> writer;
 
     private TestWriter(Path out) {
         this.out = out;
-    }
-
-    public TestWriter<T> customizer(Consumer<GenericData> customizer) {
-        this.customizer = customizer;
-        return this;
     }
 
     public TestWriter<T> writer(BiConsumer<GenericRecord, T> writer) {
@@ -49,9 +45,23 @@ class TestWriter<T> {
         Objects.requireNonNull(writer);
 
         GenericData data = new GenericData();
-        if (customizer != null) {
-            customizer.accept(data);
-        }
+
+        Stream.of(
+                        new Conversions.DecimalConversion(),
+                        new Conversions.BigDecimalConversion(),
+                        new Conversions.UUIDConversion(),
+
+                        new TimeConversions.DateConversion(),
+                        new TimeConversions.TimeMicrosConversion(),
+                        new TimeConversions.TimeMillisConversion(),
+                        new TimeConversions.TimestampMicrosConversion(),
+                        new TimeConversions.TimestampMillisConversion(),
+                        new TimeConversions.TimestampNanosConversion(),
+                        new TimeConversions.LocalTimestampMillisConversion(),
+                        new TimeConversions.LocalTimestampMicrosConversion(),
+                        new TimeConversions.LocalTimestampNanosConversion())
+
+                .forEach(data::addLogicalTypeConversion);
 
         var datumWriter = new GenericDatumWriter<GenericRecord>(schema, data);
 
