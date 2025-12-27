@@ -14,7 +14,7 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
 
-public class Load_LogicalTypesTest {
+public class LoadLogicalTypesTest {
 
     @TempDir
     static Path outBase;

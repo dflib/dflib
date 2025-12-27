@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static java.util.Arrays.asList;
 
-public class Load_GroupTypes {
+public class LoadGroupTypesTest {
 
     // per https://parquet.apache.org/docs/file-format/types/logicaltypes/
     // TODO: VARIANT

@@ -18,7 +18,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class Load_LogicalTypesTest {
+public class LoadLogicalTypesTest {
 
     @TempDir
     static Path outBase;

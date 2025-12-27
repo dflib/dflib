@@ -3,6 +3,7 @@ package org.dflib.avro;
 import org.dflib.ByteSource;
 import org.dflib.DataFrame;
 import org.dflib.junit5.DataFrameAsserts;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -18,6 +19,7 @@ import java.time.YearMonth;
 public class LoadDFLib1LogicalTypesTest {
 
     @Test
+    @DisplayName("Testing loader backwards compatibility with DFLib v1 generated Avro files")
     public void load() {
         DataFrame df = Avro.load(ByteSource.ofUrl(getClass().getResource("dflib1.avro")));
 

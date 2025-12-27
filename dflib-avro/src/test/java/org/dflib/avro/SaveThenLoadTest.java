@@ -16,6 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SaveThenLoadTest {
 
     @Test
+    public void empty() {
+        DataFrame empty = DataFrame.empty("a", "b");
+        DataFrame loaded = saveThenLoad(empty);
+        new DataFrameAsserts(loaded, empty.getColumnsIndex()).expectHeight(0);
+    }
+
+    @Test
     public void ints() {
         DataFrame df = DataFrame.byColumn("c1", "c2").of(
                 Series.ofInt(1, 2, 3),
