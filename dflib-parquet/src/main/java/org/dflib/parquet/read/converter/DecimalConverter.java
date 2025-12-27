@@ -7,7 +7,6 @@ import org.apache.parquet.schema.PrimitiveType;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
 class DecimalConverter extends PrimitiveConverter {
@@ -73,10 +72,7 @@ class DecimalConverter extends PrimitiveConverter {
     }
 
     private BigDecimal convert(Binary binary) {
-        ByteBuffer value = ByteBuffer.wrap(binary.getBytes());
-        // always copy the bytes out because BigInteger has no offset/length constructor
-        byte[] bytes = new byte[value.remaining()];
-        value.duplicate().get(bytes);
+        byte[] bytes = binary.getBytesUnsafe();
         return new BigDecimal(new BigInteger(bytes), scale);
     }
 

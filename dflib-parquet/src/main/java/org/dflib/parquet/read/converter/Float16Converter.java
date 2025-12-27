@@ -20,7 +20,7 @@ class Float16Converter extends PrimitiveConverter {
 
     private float convert(Binary value) {
 
-        byte[] bytes = value.getBytes();
+        byte[] bytes = value.getBytesUnsafe();
         short h = (short) ((bytes[1] << 8) | (bytes[0] & 0xFF));
 
         int sign = (h & 0x8000) << 16;

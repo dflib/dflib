@@ -42,7 +42,7 @@ class UuidConverter extends PrimitiveConverter {
     }
 
     private UUID convert(Binary value) {
-        ByteBuffer byteBuffer = ByteBuffer.wrap(value.getBytes());
+        ByteBuffer byteBuffer = ByteBuffer.wrap(value.getBytesUnsafe());
         long high = byteBuffer.getLong();
         long low = byteBuffer.getLong();
         return new UUID(high, low);
