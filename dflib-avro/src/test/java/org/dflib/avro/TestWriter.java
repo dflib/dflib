@@ -17,20 +17,30 @@ import java.util.stream.Stream;
 
 class TestWriter<T> {
 
+    @FunctionalInterface
+    public interface RecordWriter<T> {
+        void writeRow(Schema shema, GenericRecord out, T row);
+    }
+
     public static <T> TestWriter<T> of(Class<T> type, Path baseFolder) {
         return new TestWriter<>(baseFolder.resolve(UUID.randomUUID() + ".avro"));
     }
 
     private final Path out;
     private Schema schema;
-    private BiConsumer<GenericRecord, T> writer;
+    private RecordWriter<T> writer;
 
     private TestWriter(Path out) {
         this.out = out;
     }
 
-    public TestWriter<T> writer(BiConsumer<GenericRecord, T> writer) {
+    public TestWriter<T> writer(RecordWriter<T> writer) {
         this.writer = writer;
+        return this;
+    }
+
+    public TestWriter<T> writer(BiConsumer<GenericRecord, T> writer) {
+        this.writer = (s, o, r) -> writer.accept(o, r);
         return this;
     }
 
@@ -70,7 +80,7 @@ class TestWriter<T> {
 
             for (T o : objects) {
                 GenericRecord r = new GenericData.Record(schema);
-                writer.accept(r, o);
+                writer.writeRow(schema, r, o);
                 fileWriter.append(r);
             }
         } catch (IOException e) {

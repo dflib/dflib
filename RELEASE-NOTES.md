@@ -18,6 +18,7 @@
 * #582 Parquet loader: support for all spec primitive types, including most "logical"
 * #585 "mergeAll(Udf1)"
 * #586 Parquet loader: support for MAP and LIST
+* #587 Avro loader: support for complex types
 
 ## Release 2.0.0-M5
 
