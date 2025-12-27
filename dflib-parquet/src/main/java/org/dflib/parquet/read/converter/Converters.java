@@ -88,6 +88,10 @@ class Converters {
                 return new Float16Converter(consumer);
             }
 
+            if (lt instanceof LogicalTypeAnnotation.IntervalLogicalTypeAnnotation) {
+                return new IntervalConverter(consumer);
+            }
+
             // for unknown annotations fall through to the base primitive type
         }
 

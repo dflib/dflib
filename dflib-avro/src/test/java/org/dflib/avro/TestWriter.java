@@ -49,7 +49,8 @@ class TestWriter<T> {
         return this;
     }
 
-    public Path write(T... objects) {
+    @SafeVarargs
+    public final Path write(T... objects) {
 
         Objects.requireNonNull(schema);
         Objects.requireNonNull(writer);

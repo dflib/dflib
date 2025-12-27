@@ -20,6 +20,21 @@ class TestEncoder {
         return Binary.fromConstantByteArray(out);
     }
 
+    public static Binary intsToBytes(int[] ints) {
+        int w = ints.length;
+        ByteBuffer bb = ByteBuffer
+                .allocate(w * Integer.BYTES)
+
+                // that's how "INTERVAL" type works
+                .order(ByteOrder.LITTLE_ENDIAN);
+
+        for (int i = 0; i < w; i++) {
+            bb.putInt(ints[i]);
+        }
+
+        return Binary.fromConstantByteArray(bb.array());
+    }
+
     public static short floatToFloat16(float f) {
         int bits = Float.floatToIntBits(f);
 

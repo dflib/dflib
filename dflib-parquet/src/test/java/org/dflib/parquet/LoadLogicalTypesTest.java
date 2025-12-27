@@ -502,4 +502,35 @@ public class LoadLogicalTypesTest {
                         Instant.ofEpochSecond(1642262533, 26_002_000),
                         Instant.ofEpochSecond(1610726533, 27_003_003));
     }
+
+    @Test
+    public void interval() {
+
+        record R(int[] is) {
+        }
+
+        Path p = TestWriter.of(R.class, outBase)
+                .schema("""
+                        message test_schema { 
+                            required fixed_len_byte_array(12) is (INTERVAL);
+                        }""")
+                .writer((c, r) -> {
+                    c.startMessage();
+
+                    c.startField("is", 0);
+                    c.addBinary(TestEncoder.intsToBytes(r.is()));
+                    c.endField("is", 0);
+
+                    c.endMessage();
+                })
+                .write(new R(new int[]{1, 2, 0}),
+                        new R(new int[]{0, 0, 1_000_001}));
+
+        DataFrame df = Parquet.load(p);
+
+        new DataFrameAsserts(df, "is")
+                .expectHeight(2)
+                .expectRow(0, (Object) new int[]{1, 2, 0})
+                .expectRow(1, (Object) new int[]{0, 0, 1_000_001});
+    }
 }
