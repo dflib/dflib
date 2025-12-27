@@ -17,7 +17,6 @@ public class Load_PrimitiveTypesTest {
             {
               "type":"record",
               "name":"DataFrame",
-              "namespace":"org.dflib",
               "fields":[
                 {"name":"nl","type":"null"},
                 {"name":"b","type":"boolean"},

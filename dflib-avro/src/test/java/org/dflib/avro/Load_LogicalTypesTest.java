@@ -31,7 +31,6 @@ public class Load_LogicalTypesTest {
                         {
                           "type":"record",
                           "name":"DataFrame",
-                          "namespace":"org.dflib",
                           "fields":[
                             {"name":"uuid","type":{"type":"string","logicalType":"uuid"}}
                           ]
@@ -60,7 +59,6 @@ public class Load_LogicalTypesTest {
                         {
                           "type":"record",
                           "name":"DataFrame",
-                          "namespace":"org.dflib",
                           "fields":[
                             {"name":"ld","type":{"type":"int","logicalType":"date"}}
                           ]
@@ -88,7 +86,6 @@ public class Load_LogicalTypesTest {
                         {
                           "type":"record",
                           "name":"DataFrame",
-                          "namespace":"org.dflib",
                           "fields":[
                             {"name":"ltMicro","type":{"type":"long","logicalType":"time-micros"}},
                             {"name":"ltMilli","type":{"type":"int","logicalType":"time-millis"}}
@@ -130,7 +127,6 @@ public class Load_LogicalTypesTest {
                         {
                           "type":"record",
                           "name":"DataFrame",
-                          "namespace":"org.dflib",
                           "fields":[
                             {"name":"instantMilli","type":{"type":"long","logicalType":"timestamp-millis"}},
                             {"name":"instantMicro","type":{"type":"long","logicalType":"timestamp-micros"}},
@@ -177,7 +173,6 @@ public class Load_LogicalTypesTest {
                         {
                           "type":"record",
                           "name":"DataFrame",
-                          "namespace":"org.dflib",
                           "fields":[
                             {"name":"ldtMilli","type":{"type":"long","logicalType":"local-timestamp-millis"}},
                             {"name":"ldtMicro","type":{"type":"long","logicalType":"local-timestamp-micros"}},
@@ -224,7 +219,6 @@ public class Load_LogicalTypesTest {
                         {
                           "type":"record",
                           "name":"DataFrame",
-                          "namespace":"org.dflib",
                           "fields":[
                             {"name":"decimal","type":{"type":"bytes", "logicalType":"decimal","precision": 18, "scale": 4}},
                             {"name":"bigDecimal","type":{"type" : "bytes", "logicalType":"big-decimal"}}
