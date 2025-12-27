@@ -60,7 +60,7 @@ class TestWriter<T> {
                         new Conversions.DecimalConversion(),
                         new Conversions.BigDecimalConversion(),
                         new Conversions.UUIDConversion(),
-
+                        new Conversions.DurationConversion(),
                         new TimeConversions.DateConversion(),
                         new TimeConversions.TimeMicrosConversion(),
                         new TimeConversions.TimeMillisConversion(),

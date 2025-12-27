@@ -1,5 +1,6 @@
 package org.dflib.avro;
 
+import org.apache.avro.util.TimePeriod;
 import org.dflib.DataFrame;
 import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
@@ -247,5 +248,41 @@ public class LoadLogicalTypesTest {
                 .expectRow(1,
                         new BigDecimal("5567.0002"),
                         new BigDecimal("-33456.201"));
+    }
+
+    @Test
+    public void duration() {
+        record R(TimePeriod d, TimePeriod nullableD) {
+        }
+
+        Path p = TestWriter.of(R.class, outBase)
+                .schema("""
+                        {
+                          "type":"record",
+                          "name":"DataFrame",
+                          "fields":[
+                            {"name":"d","type":{"type":"fixed","size":12,"logicalType":"duration", "name":"D"}},
+                            {"name":"nullableD","type":["null","D"]}
+                          ]
+                        }""")
+                .writer((s, r, o) -> {
+
+                    r.put("d", o.d());
+
+                    if (o.nullableD() != null) {
+                        r.put("nullableD", o.nullableD());
+                    }
+                })
+                .write(
+                        new R(TimePeriod.of(1, 2, 0), null),
+                        new R(TimePeriod.of(2, 3, 1_000_001), TimePeriod.of(0, 0, 6)));
+
+        DataFrame df = Avro.load(p);
+
+        new DataFrameAsserts(df,
+                "d", "nullableD")
+                .expectHeight(2)
+                .expectRow(0, TimePeriod.of(1, 2, 0), null)
+                .expectRow(1, TimePeriod.of(2, 3, 1_000_001), TimePeriod.of(0, 0, 6));
     }
 }

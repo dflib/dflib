@@ -24,6 +24,7 @@ public class AvroTypeExtensions {
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new Conversions.DecimalConversion());
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new Conversions.BigDecimalConversion());
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new Conversions.UUIDConversion());
+        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new Conversions.DurationConversion());
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.DateConversion());
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.TimestampMillisConversion());
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.TimestampMicrosConversion());
