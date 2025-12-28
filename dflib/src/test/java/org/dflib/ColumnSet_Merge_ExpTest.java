@@ -71,6 +71,18 @@ public class ColumnSet_Merge_ExpTest {
     }
 
     @Test
+    public void byRange() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(1, "x", "a", 2, "y", "b")
+                .colsRange(0, 2).merge($int(0).mul(100), $int(0).mul(10));
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(2)
+                .expectRow(0, 100, 10, "a")
+                .expectRow(1, 200, 20, "b");
+    }
+
+    @Test
     public void append() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")

@@ -577,6 +577,43 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
+     * Creates a ColumnSet for the provided range of column positions. Columns may or may not already exist in the
+     * DataFrame. Non-existent columns will be added to the result of the column set operation, while the ones already
+     * in the DataFrame will be replaced by columns calculated by the operation.
+     *
+     * @since 2.0.0
+     */
+    default ColumnSet colsRange(int fromInclusive, int toExclusive) {
+        return FixedColumnSet.ofColsRange(this, fromInclusive, toExclusive);
+    }
+
+    /**
+     * Creates a ColumnSet for the range of column positions, starting at 0 and up to but excluding the "len".
+     * If <code>len</code> is negative, the selection is inverted. Instead of returning the leading columns, they are
+     * skipped, and the rest of the columns are returned.
+     *
+     * @since 2.0.0
+     */
+    default ColumnSet colsHead(int len) {
+        return len < 0
+                ? colsRange(Math.min(-len, width()), width())
+                : colsRange(0, Math.min(len, width()));
+    }
+
+    /**
+     * Creates a ColumnSet for the range of column positions, starting at (width - len) and up to but excluding the "len".
+     * If <code>len</code> is negative, the selection is inverted. Instead of returning the trailing columns, they are
+     * skipped, the columns between -len and width are returned.
+     *
+     * @since 2.0.0
+     */
+    default ColumnSet colsTail(int len) {
+        return len < 0
+                ? colsRange(0, Math.min(-len, width()))
+                : colsRange(width() - Math.min(len, width()), width());
+    }
+
+    /**
      * Creates a ColumnSet with columns from this DataFrame excluding specified column positions.
      */
     default ColumnSet colsExcept(int... columns) {

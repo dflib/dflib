@@ -1,5 +1,6 @@
 ## Release 2.0.0-M6
 
+* #439 DataFrame.colsRange(..), colsHead(..), colsTail(..)
 * #550 ECharts: custom themes don't work in Jupyter
 * #559 NumExp / QL "negate" op
 * #562 Column getColumnName() and toQL() consistency

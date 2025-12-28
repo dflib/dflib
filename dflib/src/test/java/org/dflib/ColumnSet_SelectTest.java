@@ -40,4 +40,14 @@ public class ColumnSet_SelectTest {
                 .expectRow(0, 1, "a", null)
                 .expectRow(1, 2, "b", null);
     }
+
+    @Test
+    public void byRange() {
+        DataFrame df = TEST_DF.colsRange(1, 4).select();
+
+        new DataFrameAsserts(df, "b", "c", "3")
+                .expectHeight(2)
+                .expectRow(0, "x", "a", null)
+                .expectRow(1, "y", "b", null);
+    }
 }

@@ -51,6 +51,21 @@ public class ColumnSet_Select_RowToValueMapperTest {
     }
 
     @Test
+    public void byRange() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(1, "x", "a", 2, "y", "b")
+                .colsRange(0, 2)
+                .select(
+                        r -> r.get(0, Integer.class) * 100,
+                        r -> r.get(0, Integer.class) * 10);
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(2)
+                .expectRow(0, 100, 10)
+                .expectRow(1, 200, 20);
+    }
+
+    @Test
     public void except_ByName() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(1, "x", "z", 2, "y", "a")

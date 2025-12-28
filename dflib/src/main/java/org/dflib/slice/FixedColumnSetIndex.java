@@ -44,6 +44,24 @@ public class FixedColumnSetIndex {
         return new FixedColumnSetIndex(csLabelsIndex);
     }
 
+    /**
+     * @since 2.0.0
+     */
+    public static FixedColumnSetIndex of(Index sourceIndex, int fromInclusive, int toExclusive) {
+        int sLen = sourceIndex.size();
+        int csLen = toExclusive - fromInclusive;
+
+        String[] csLabelsIndex = new String[csLen];
+        for (int i = 0; i < csLen; i++) {
+            int pos = fromInclusive + i;
+            csLabelsIndex[i] = pos < sLen
+                    ? sourceIndex.get(pos)
+                    : String.valueOf(pos);
+        }
+
+        return new FixedColumnSetIndex(csLabelsIndex);
+    }
+
     protected FixedColumnSetIndex(String[] labels) {
         this.labels = labels;
     }

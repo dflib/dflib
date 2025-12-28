@@ -72,6 +72,16 @@ public class FixedColumnSet implements ColumnSet {
     /**
      * @since 2.0.0
      */
+    public static FixedColumnSet ofColsRange(DataFrame source, int fromInclusive, int toExclusive) {
+        return new FixedColumnSet(
+                source,
+                i -> FixedColumnSetIndex.of(i, fromInclusive, toExclusive).getLabels(),
+                null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
     public static FixedColumnSet ofColsExcept(DataFrame source, String[] columns) {
         return new FixedColumnSet(source, i -> i.selectExcept(columns).toArray(), null);
     }
