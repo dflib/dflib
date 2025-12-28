@@ -167,7 +167,7 @@ public class VisualMap {
 
     protected VisualMapModel resolve() {
         return new VisualMapModel(
-                type != null ? type.name() : null,
+                type.name(),
                 min,
                 max,
                 calculable,
