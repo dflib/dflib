@@ -699,6 +699,32 @@ public interface DataFrame extends Iterable<RowProxy> {
     RowSet rowsRange(int fromInclusive, int toExclusive);
 
     /**
+     * Creates a RowSet for the range of row positions, starting at 0 and up to but excluding the "len".
+     * If <code>len</code> is negative, the selection is inverted. Instead of returning the leading rows, they are
+     * skipped, and the rest of the rows are returned.
+     *
+     * @since 2.0.0
+     */
+    default RowSet rowsHead(int len) {
+        return len < 0
+                ? rowsRange(Math.min(-len, height()), height())
+                : rowsRange(0, Math.min(len, height()));
+    }
+
+    /**
+     * Creates a RowSet for the range of row positions, starting at (height - len) and up to but excluding the "len".
+     * If <code>len</code> is negative, the selection is inverted. Instead of returning the trailing rows, they are
+     * skipped, the rows between -len and width are returned.
+     *
+     * @since 2.0.0
+     */
+    default RowSet rowsTail(int len) {
+        return len < 0
+                ? rowsRange(0, height() - Math.min(-len, height()))
+                : rowsRange(height() - Math.min(len, height()), height());
+    }
+
+    /**
      * Returns a RowSet that is a random sample of rows from this DataFrame, with the specified sample size and
      * a default random number generator.
      */
