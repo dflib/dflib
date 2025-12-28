@@ -10,7 +10,7 @@ public class LineSeriesOpts extends SeriesOpts<LineSeriesOpts> implements
     Integer yAxisIndex;
     ColumnLinkedLabel label;
     Boolean areaStyle;
-    LineSymbol symbol;
+    Symbol symbol;
     Boolean showSymbol;
     ValOrSeries<Integer> symbolSize;
     Boolean smooth;
@@ -82,11 +82,11 @@ public class LineSeriesOpts extends SeriesOpts<LineSeriesOpts> implements
     }
 
     /**
-     * Sets line chart symbol. The default is {@link LineSymbol#emptyCircle}.
+     * Sets line chart symbol. The default is {@link Symbol#emptyCircle}.
      *
      * @since 2.0.0
      */
-    public LineSeriesOpts symbol(LineSymbol symbol) {
+    public LineSeriesOpts symbol(Symbol symbol) {
         this.symbol = symbol;
         return this;
     }

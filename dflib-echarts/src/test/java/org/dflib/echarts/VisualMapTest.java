@@ -116,7 +116,7 @@ public class VisualMapTest {
 
         String s3 = ECharts.chart().visualMap(VisualMap
                 .ofPiecewise()
-                .outOfRange(VisualChannels.of().symbol(LineSymbol.circle).opacity(0.6))).plot(df1, "_tid").getChartScript();
+                .outOfRange(VisualChannels.of().symbol(Symbol.circle).opacity(0.6))).plot(df1, "_tid").getChartScript();
         assertTrue(s3.contains("outOfRange: "), s3);
         assertTrue(s3.contains("symbol: 'circle',"), s3);
         assertTrue(s3.contains("opacity: 0.6,"), s3);

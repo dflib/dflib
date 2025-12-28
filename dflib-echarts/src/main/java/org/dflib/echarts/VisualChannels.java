@@ -7,7 +7,7 @@ import org.dflib.echarts.render.option.visualmap.VisualChannelsModel;
  */
 public class VisualChannels {
 
-    private LineSymbol symbol;
+    private Symbol symbol;
     private Integer symbolSize;
     private String color;
     private Double opacity;
@@ -19,7 +19,7 @@ public class VisualChannels {
     protected VisualChannels() {
     }
 
-    public VisualChannels symbol(LineSymbol symbol) {
+    public VisualChannels symbol(Symbol symbol) {
         this.symbol = symbol;
         return this;
     }

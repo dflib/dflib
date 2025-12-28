@@ -23,6 +23,7 @@
 * #590 ECharts: VisualMap.outOfRange
 * #591 ECharts: CalendarModel.yearLabel
 * #592 ECharts: VisualMap.show
+* #593 ECharts: scatter charts to support "symbol"
 
 ## Release 2.0.0-M5
 

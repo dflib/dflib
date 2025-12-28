@@ -9,6 +9,16 @@ import static org.dflib.echarts.EChartTestDatasets.*;
 public class ScatterSeriesTest {
 
     @Test
+    public void symbol() {
+
+        String s1 = ECharts.chart().series("y1").plot(df2, "_tid").getChartScript();
+        assertFalse(s1.contains("symbol"), s1);
+
+        String s2 = ECharts.chart().series(SeriesOpts.ofScatter().symbol(Symbol.triangle), "y1").plot(df2, "_tid").getChartScript();
+        assertTrue(s2.contains("symbol: 'triangle',"), s2);
+    }
+
+    @Test
     public void symbolSize() {
 
         String s1 = ECharts.chart().series(SeriesOpts.ofScatter(), "y1").plot(df2, "_tid").getChartScript();

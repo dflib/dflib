@@ -1,9 +1,10 @@
 package org.dflib.echarts;
 
 /**
+ * A set of standard line or scatter series symbols for individual points.
+ *
  * @since 2.0.0
  */
-// TODO: same symbols seem to be used by scatter plots. So the name "line" is misleading
-public enum LineSymbol {
+public enum Symbol {
     emptyCircle, circle, rect, roundRect, triangle, diamond, pin, arrow, none;
 }

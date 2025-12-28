@@ -7,6 +7,7 @@ public abstract class ScatterSeriesOpts<SO extends ScatterSeriesOpts<SO>> extend
 
     ColumnLinkedLabel label;
     ScatterItemStyle itemStyle;
+    Symbol symbol;
     ValOrSeries<Integer> symbolSize;
 
     @Override
@@ -62,6 +63,16 @@ public abstract class ScatterSeriesOpts<SO extends ScatterSeriesOpts<SO>> extend
      */
     public SO itemStyle(ScatterItemStyle itemStyle) {
         this.itemStyle = itemStyle;
+        return (SO) this;
+    }
+
+    /**
+     * Sets an alternative chart symbol.
+     *
+     * @since 2.0.0
+     */
+    public SO symbol(Symbol symbol) {
+        this.symbol = symbol;
         return (SO) this;
     }
 
