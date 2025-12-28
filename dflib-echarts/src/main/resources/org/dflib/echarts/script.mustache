@@ -165,8 +165,24 @@ var chart_{{id}} = echarts.init(
                 itemWidth: {{{.}}},
             {{/itemWidth}}
             {{#itemHeight}}
-                itemHeight: {{{.}}}
+                itemHeight: {{{.}}},
             {{/itemHeight}}
+            {{#outOfRange}}
+                outOfRange: {
+                {{#symbol}}
+                    symbol: '{{.}}',
+                {{/symbol}}
+                {{#symbolSize}}
+                    symbolSize: {{{.}}},
+                {{/symbolSize}}
+                {{#color}}
+                    color: '{{.}}',
+                {{/color}}
+                {{#opacity}}
+                    opacity: {{{.}}},
+                {{/opacity}}
+                }
+            {{/outOfRange}}
             },
         {{/visualMaps}}
         ],

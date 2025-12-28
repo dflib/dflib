@@ -31,6 +31,7 @@ public class VisualMap {
     private Distance bottom;
     private Distance itemWidth;
     private Distance itemHeight;
+    private VisualChannels outOfRange;
 
     private VisualMap(Type type) {
         this.type = Objects.requireNonNull(type);
@@ -151,6 +152,11 @@ public class VisualMap {
         return this;
     }
 
+    public VisualMap outOfRange(VisualChannels outOfRange) {
+        this.outOfRange = outOfRange;
+        return this;
+    }
+
     enum Type {
         continuous, piecewise
     }
@@ -171,7 +177,8 @@ public class VisualMap {
                 top != null ? top.asString() : null,
                 bottom != null ? bottom.asString() : null,
                 itemWidth != null ? itemWidth.asString() : null, // ignoring 'auto' option, which is the default
-                itemHeight != null ? itemHeight.asString() : null // ignoring 'auto' option, which is the default
+                itemHeight != null ? itemHeight.asString() : null, // ignoring 'auto' option, which is the default
+                outOfRange != null ? outOfRange.resolve() : null
         );
     }
 }

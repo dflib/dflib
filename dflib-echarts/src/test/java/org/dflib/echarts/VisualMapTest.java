@@ -99,4 +99,26 @@ public class VisualMapTest {
         String s5 = ECharts.chart().visualMap(VisualMap.ofContinuous().itemWidthPct(10.1)).plot(df1, "_tid").getChartScript();
         assertTrue(s5.contains("itemWidth: '10.1%'"), s5);
     }
+
+    @Test
+    public void outOfRange() {
+
+        String s1 = ECharts.chart().visualMap(VisualMap.ofContinuous()).plot(df1, "_tid").getChartScript();
+        assertTrue(s1.contains("visualMap: ["), s1);
+        assertFalse(s1.contains("outOfRange"), s1);
+
+        String s2 = ECharts.chart().visualMap(VisualMap
+                        .ofContinuous()
+                        .outOfRange(VisualChannels.of().symbolSize(5).color("red"))).plot(df1, "_tid").getChartScript();
+        assertTrue(s2.contains("outOfRange: "), s2);
+        assertTrue(s2.contains("symbolSize: 5,"), s2);
+        assertTrue(s2.contains("color: 'red',"), s2);
+
+        String s3 = ECharts.chart().visualMap(VisualMap
+                .ofPiecewise()
+                .outOfRange(VisualChannels.of().symbol(LineSymbol.circle).opacity(0.6))).plot(df1, "_tid").getChartScript();
+        assertTrue(s3.contains("outOfRange: "), s3);
+        assertTrue(s3.contains("symbol: 'circle',"), s3);
+        assertTrue(s3.contains("opacity: 0.6,"), s3);
+    }
 }

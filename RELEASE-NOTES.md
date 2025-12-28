@@ -20,6 +20,7 @@
 * #586 Parquet loader: support for MAP and LIST
 * #587 Avro loader: support for complex types
 * #589 ECharts: YAxis.scale(..) property
+* #590 ECharts: VisualMap.outOfRange
 
 ## Release 2.0.0-M5
 
