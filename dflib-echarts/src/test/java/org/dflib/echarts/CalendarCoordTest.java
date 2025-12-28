@@ -83,4 +83,21 @@ public class CalendarCoordTest {
         String s5 =  ECharts.chart().calendar("x", CalendarCoords.ofLast12Months().leftPct(10.1)).plot(df1, "_tid").getChartScript();
         assertTrue(s5.contains("left: '10.1%'"), s5);
     }
+
+
+    @Test
+    public void yearLabel() {
+        String s1 = ECharts.chart().calendar("x").plot(df4, "_tid").getChartScript();
+        assertTrue(s1.contains("calendar: ["), s1);
+        assertFalse(s1.contains("yearLabel:"), s1);
+
+        String s2 = ECharts.chart()
+                .calendar("x", CalendarCoords.ofLast12Months().yearLabel(YearLabel.of().color("red").show(false)))
+                .plot(df4, "_tid").getChartScript();
+
+        assertTrue(s2.contains("calendar: ["), s2);
+        assertTrue(s2.contains("yearLabel:"), s2);
+        assertTrue(s2.contains("show: false,"), s2);
+        assertTrue(s2.contains("color: 'red',"), s2);
+    }
 }

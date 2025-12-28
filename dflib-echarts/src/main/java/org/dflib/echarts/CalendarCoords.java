@@ -43,6 +43,7 @@ public class CalendarCoords {
     private Distance bottom;
     private Distance width;
     private Distance height;
+    private YearLabel yearLabel;
 
     private CalendarCoords(LocalDate rangeFrom, LocalDate rangeTo) {
         this.rangeFrom = rangeFrom;
@@ -169,6 +170,14 @@ public class CalendarCoords {
         return this;
     }
 
+    /**
+     * @since 2.0.0
+     */
+    public CalendarCoords yearLabel(YearLabel yearLabel) {
+        this.yearLabel = yearLabel;
+        return this;
+    }
+
     protected CalendarModel resolve() {
 
         // ECharts bug: without top,bottom, left, right, the default width (or height, depending on orientation) must
@@ -192,7 +201,8 @@ public class CalendarCoords {
                 top != null ? top.asString() : null,
                 bottom != null ? bottom.asString() : null,
                 width != null ? width.asString() : null, // ignoring 'auto' option, which is the default
-                height != null ? height.asString() : null // ignoring 'auto' option, which is the default
+                height != null ? height.asString() : null, // ignoring 'auto' option, which is the default
+                yearLabel != null ? yearLabel.resolve() : null
         );
     }
 

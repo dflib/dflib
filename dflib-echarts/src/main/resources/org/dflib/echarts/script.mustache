@@ -214,8 +214,18 @@ var chart_{{id}} = echarts.init(
             width: {{{.}}},
         {{/width}}
         {{#height}}
-            height: {{{.}}}
+            height: {{{.}}},
         {{/height}}
+        {{#yearLabel}}
+            yearLabel: {
+            {{#showPresent}}
+                show: {{show}},
+            {{/showPresent}}
+            {{#color}}
+                color: '{{.}}',
+            {{/color}}
+            },
+        {{/yearLabel}}
         },
         {{/calendars}}
         ],

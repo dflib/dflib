@@ -14,6 +14,7 @@ public class CalendarModel {
     private final String bottom;
     private final String width;
     private final String height;
+    private final YearLabelModel yearLabel;
 
     public CalendarModel(
             String rangeFrom,
@@ -25,7 +26,8 @@ public class CalendarModel {
             String top,
             String bottom,
             String width,
-            String height) {
+            String height,
+            YearLabelModel yearLabel) {
         this.rangeFrom = Objects.requireNonNull(rangeFrom);
         this.rangeTo = Objects.requireNonNull(rangeTo);
         this.cellSize = cellSize;
@@ -36,6 +38,7 @@ public class CalendarModel {
         this.top = top;
         this.width = width;
         this.height = height;
+        this.yearLabel = yearLabel;
     }
 
     public String getRangeFrom() {
@@ -76,5 +79,9 @@ public class CalendarModel {
 
     public String getHeight() {
         return height;
+    }
+
+    public YearLabelModel getYearLabel() {
+        return yearLabel;
     }
 }
