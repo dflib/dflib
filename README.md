@@ -16,17 +16,17 @@ processing are just some of the examples. DFLib comes with connectors for many d
 CSV, Excel, RDBMS, Avro, Parquet, JSON and can be easily adapted to other formats (e.g. web-based ones like 
 Google Sheets, etc.)
 
-DFLib provides integration with Apache Echarts to visualize DataFrame data. Charts are generated in a form of HTML/JavaScript 
-code and work in Jupyter as well as regular web applications.
+While DFLib can be used in any Java application, there is a [special intergation](https://dflib.org/jjava/docs/1.x/) with 
+[Jupyter Notebook](https://jupyter.org/), a browser-based interactive environment for data exploration and analysis popular 
+among data scientists and engineers. In fact, our community maintains a [Java "kernel" for Jupyter](https://github.com/dflib/jjava), which is a 
+sister project of DFLib.
+
+DFLib provides integration with Apache ECharts to visualize DataFrame data. Charts are generated in a form of
+HTML/JavaScript code and work in Jupyter as well as regular web applications. A few examples of charts made with DFLib:
 
 ![dflib-stocks-candlestick-bar-chart](https://dflib.org/images/charts/dflib-stocks_candlestick_bar_v2.svg)
 ![dflib-player-weights-scatter-chart](https://dflib.org/images/charts/dflib-player-weights_scatter_v2.svg)
 ![dflib-github-activity-heatmap-chart](https://dflib.org/images/charts/dflib-github-activity_heatmap_v6.svg)
-
-While DFLib would work in any Java application, there is a [special intergation](https://dflib.org/jjava/docs/1.x/) with 
-[Jupyter Notebook](https://jupyter.org/), a browser-based interactive environment for data exploration and analysis popular 
-among data scientists and engineers. In fact, our community maintains a [Java "kernel" for Jupyter](https://github.com/dflib/jjava), which is a 
-sister project of DFLib.
 
 ## Project Links
 
