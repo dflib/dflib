@@ -167,6 +167,9 @@ var chart_{{id}} = echarts.init(
             {{#itemHeight}}
                 itemHeight: {{{.}}},
             {{/itemHeight}}
+            {{#showPresent}}
+                show: {{show}},
+            {{/showPresent}}
             {{#outOfRange}}
                 outOfRange: {
                 {{#symbol}}

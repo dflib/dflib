@@ -22,6 +22,7 @@
 * #589 ECharts: YAxis.scale(..) property
 * #590 ECharts: VisualMap.outOfRange
 * #591 ECharts: CalendarModel.yearLabel
+* #592 ECharts: VisualMap.show
 
 ## Release 2.0.0-M5
 

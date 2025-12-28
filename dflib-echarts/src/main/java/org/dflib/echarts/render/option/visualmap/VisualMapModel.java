@@ -16,6 +16,7 @@ public class VisualMapModel {
     private final String bottom;
     private final String itemWidth;
     private final String itemHeight;
+    private Boolean show;
     private final VisualChannelsModel outOfRange;
 
     public VisualMapModel(
@@ -30,6 +31,7 @@ public class VisualMapModel {
             String bottom,
             String itemWidth,
             String itemHeight,
+            Boolean show,
             VisualChannelsModel outOfRange) {
 
         this.bottom = bottom;
@@ -43,6 +45,7 @@ public class VisualMapModel {
         this.top = top;
         this.itemWidth = itemWidth;
         this.itemHeight = itemHeight;
+        this.show = show;
         this.outOfRange = outOfRange;
     }
 
@@ -88,6 +91,14 @@ public class VisualMapModel {
 
     public String getItemWidth() {
         return itemWidth;
+    }
+
+    public boolean isShowPresent() {
+        return show != null;
+    }
+
+    public Boolean getShow() {
+        return show;
     }
 
     public VisualChannelsModel getOutOfRange() {

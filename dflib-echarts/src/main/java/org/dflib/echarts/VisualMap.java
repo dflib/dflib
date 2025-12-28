@@ -24,13 +24,13 @@ public class VisualMap {
     private Integer max;
     private Boolean calculable;
     private Orient orient;
-
     private LeftDistance left;
     private Distance right;
     private TopDistance top;
     private Distance bottom;
     private Distance itemWidth;
     private Distance itemHeight;
+    private Boolean show;
     private VisualChannels outOfRange;
 
     private VisualMap(Type type) {
@@ -152,6 +152,11 @@ public class VisualMap {
         return this;
     }
 
+    public VisualMap show(boolean show) {
+        this.show = show;
+        return this;
+    }
+
     public VisualMap outOfRange(VisualChannels outOfRange) {
         this.outOfRange = outOfRange;
         return this;
@@ -178,6 +183,7 @@ public class VisualMap {
                 bottom != null ? bottom.asString() : null,
                 itemWidth != null ? itemWidth.asString() : null, // ignoring 'auto' option, which is the default
                 itemHeight != null ? itemHeight.asString() : null, // ignoring 'auto' option, which is the default
+                show,
                 outOfRange != null ? outOfRange.resolve() : null
         );
     }

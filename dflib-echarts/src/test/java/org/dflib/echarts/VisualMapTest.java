@@ -121,4 +121,18 @@ public class VisualMapTest {
         assertTrue(s3.contains("symbol: 'circle',"), s3);
         assertTrue(s3.contains("opacity: 0.6,"), s3);
     }
+
+    @Test
+    public void show() {
+
+        String s1 = ECharts.chart().visualMap(VisualMap.ofContinuous()).plot(df1, "_tid").getChartScript();
+        assertTrue(s1.contains("visualMap: ["), s1);
+        assertFalse(s1.contains("show:"), s1);
+
+        String s2 = ECharts.chart().visualMap(VisualMap.ofContinuous().show(true)).plot(df1, "_tid").getChartScript();
+        assertTrue(s2.contains("show: true,"), s2);
+
+        String s3 = ECharts.chart().visualMap(VisualMap.ofContinuous().show(false)).plot(df1, "_tid").getChartScript();
+        assertTrue(s3.contains("show: false,"), s3);
+    }
 }
