@@ -315,6 +315,9 @@ var chart_{{id}} = echarts.init(
         {{#position}}
             position: '{{.}}',
         {{/position}}
+        {{#scalePresent}}
+            scale: {{scale}},
+        {{/scalePresent}}
         {{#type}}
             type: '{{.}}'
         {{/type}}

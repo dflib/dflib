@@ -13,6 +13,7 @@ public class AxisModel {
     private final AxisLabelModel axisLabel;
     private final boolean boundaryGap;
     private final AxisLineModel axisLine;
+    private final Boolean scale;
 
     public AxisModel(
             Boolean alignTicks,
@@ -23,7 +24,8 @@ public class AxisModel {
             String type,
             AxisLabelModel axisLabel,
             AxisLineModel axisLine,
-            boolean boundaryGap) {
+            boolean boundaryGap,
+            Boolean scale) {
 
         this.alignTicks = alignTicks;
         this.gridIndex = gridIndex;
@@ -34,6 +36,7 @@ public class AxisModel {
         this.axisLabel = axisLabel;
         this.axisLine = axisLine;
         this.boundaryGap = boundaryGap;
+        this.scale = scale;
     }
 
     public boolean isAlignTicksPresent() {
@@ -82,5 +85,19 @@ public class AxisModel {
 
     public boolean isNoBoundaryGap() {
         return !boundaryGap;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public boolean isScalePresent() {
+        return scale != null;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Boolean getScale() {
+        return scale;
     }
 }

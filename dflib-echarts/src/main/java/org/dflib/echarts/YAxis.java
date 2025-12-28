@@ -5,6 +5,7 @@ import org.dflib.echarts.render.option.axis.AxisModel;
 public class YAxis extends Axis<YAxis> {
 
     private YAxisPosition position;
+    private Boolean scale;
 
     public static YAxis of(AxisType type) {
         return new YAxis(type);
@@ -44,6 +45,14 @@ public class YAxis extends Axis<YAxis> {
         return this;
     }
 
+    /**
+     * @since 2.0.0
+     */
+    public YAxis scale(boolean scale) {
+        this.scale = scale;
+        return this;
+    }
+
     @Override
     protected AxisModel resolve() {
         return new AxisModel(
@@ -55,7 +64,8 @@ public class YAxis extends Axis<YAxis> {
                 type.name(),
                 label != null ? label.resolve() : null,
                 line != null ? line.resolve() : null,
-                boundaryGap
+                boundaryGap,
+                scale
         );
     }
 }

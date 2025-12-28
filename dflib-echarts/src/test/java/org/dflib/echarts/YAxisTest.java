@@ -88,6 +88,19 @@ public class YAxisTest {
     }
 
     @Test
+    public void scale() {
+
+        String s1 = ECharts.chart().plot(df1, "_tid").getChartScript();
+        assertFalse(s1.contains("scale:"), s1);
+
+        String s2 = ECharts.chart().yAxis(YAxis.ofDefault().scale(true)).plot(df1, "_tid").getChartScript();
+        assertTrue(s2.contains("scale: true,"), s2);
+
+        String s3 = ECharts.chart().yAxis(YAxis.ofDefault().scale(false)).plot(df1, "_tid").getChartScript();
+        assertTrue(s3.contains("scale: false,"), s3);
+    }
+
+    @Test
     public void axisLine() {
 
         String s1 = ECharts.chart().plot(df1, "_tid").getChartScript();

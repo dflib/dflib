@@ -55,7 +55,8 @@ public class XAxis extends Axis<XAxis> {
                 type.name(),
                 label != null ? label.resolve() : null,
                 line != null ? line.resolve() : null,
-                boundaryGap
+                boundaryGap,
+                null
         );
     }
 }

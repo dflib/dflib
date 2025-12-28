@@ -19,6 +19,7 @@
 * #585 "mergeAll(Udf1)"
 * #586 Parquet loader: support for MAP and LIST
 * #587 Avro loader: support for complex types
+* #589 ECharts: YAxis.scale(..) property
 
 ## Release 2.0.0-M5
 
