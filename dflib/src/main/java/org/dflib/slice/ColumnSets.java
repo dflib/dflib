@@ -58,12 +58,14 @@ class ColumnSets {
             }
 
             int rw = r.length;
-            for (int j = 0; j < rw; j++) {
-
-                if (j >= data.size()) {
+            int dw = data.size();
+            if (dw < rw) {
+                for (int j = dw; j < rw; j++) {
                     data.add(new Object[h]);
                 }
+            }
 
+            for (int j = 0; j < rw; j++) {
                 data.get(j)[i] = r[j];
             }
         }
