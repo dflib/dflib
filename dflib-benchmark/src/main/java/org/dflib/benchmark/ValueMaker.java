@@ -16,6 +16,7 @@ import org.dflib.series.BooleanArraySeries;
 
 import java.time.LocalDate;
 import java.util.Random;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 /**
@@ -97,6 +98,12 @@ public interface ValueMaker<T> {
     static ValueMaker<String> stringSeq() {
         int[] val = new int[1];
         return () -> "data_" + val[0]++;
+    }
+
+    static <T, R> ValueMaker<R> repeatedSeq(Function<T, R> transform, T... repeatedValues) {
+        int len = repeatedValues.length;
+        int[] seq = new int[1];
+        return () -> transform.apply(repeatedValues[seq[0]++ % len]);
     }
 
     static <T> ValueMaker<T> constSeq(T t) {
