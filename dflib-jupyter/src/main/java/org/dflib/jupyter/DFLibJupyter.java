@@ -23,20 +23,21 @@ import java.util.Objects;
  */
 public class DFLibJupyter implements Extension {
 
-    private static final String STARTUP_SCRIPT = "" +
-            "import org.dflib.*;\n" +
-            "import org.dflib.http.*;\n" +
-            "import org.dflib.fs.*;\n" +
-            "import org.dflib.zip.*;\n" +
-            "import org.dflib.avro.*;\n" +
-            "import org.dflib.csv.*;\n" +
-            "import org.dflib.echarts.*;\n" +
-            "import org.dflib.excel.*;\n" +
-            "import org.dflib.jdbc.*;\n" +
-            "import org.dflib.json.*;\n" +
-            "import org.dflib.jupyter .*;\n" +
-            "import org.dflib.parquet.*;" +
-            "import static org.dflib.Exp.*;\n";
+    private static final String STARTUP_SCRIPT = """
+            import org.dflib.*;
+            import org.dflib.http.*;
+            import org.dflib.fs.*;
+            import org.dflib.zip.*;
+            import org.dflib.avro.*;
+            import org.dflib.csv.*;
+            import org.dflib.echarts.*;
+            import org.dflib.excel.*;
+            import org.dflib.jdbc.*;
+            import org.dflib.json.*;
+            import org.dflib.jupyter .*;
+            import org.dflib.parquet.*;
+            import static org.dflib.Exp.*;
+            """;
 
     private static DFLibJupyter instance;
 
