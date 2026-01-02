@@ -26,6 +26,7 @@
 * #591 ECharts: CalendarModel.yearLabel
 * #592 ECharts: VisualMap.show
 * #593 ECharts: scatter charts to support "symbol"
+* #594 "split(..)" expression should produce compact columns
 
 ## Release 2.0.0-M5
 
