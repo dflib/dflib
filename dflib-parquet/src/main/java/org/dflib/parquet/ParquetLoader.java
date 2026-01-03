@@ -137,11 +137,11 @@ public class ParquetLoader {
 
         try {
             ParquetReader<Object> reader = new DataFrameParquetReaderBuilder(inputFile, projectedSchema, rowConverter).build();
-            while (reader.read() != null) {
-            }
+            do {
+            } while (reader.read() != null);
 
         } catch (IOException e) {
-            throw new UncheckedIOException("Error reading source: " + resourceId, e);
+            throw new UncheckedIOException("Error reading Parquet source: " + resourceId, e);
         }
 
         Series<?>[] columns = new Series[w];
@@ -192,5 +192,4 @@ public class ParquetLoader {
 
         return converters;
     }
-
 }
