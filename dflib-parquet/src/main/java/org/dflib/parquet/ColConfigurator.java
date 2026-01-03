@@ -5,7 +5,6 @@ import org.dflib.Index;
 import org.dflib.parquet.read.converter.StoringConverter;
 
 class ColConfigurator {
-    int DEFAULT_CAPACITY = 1000;
 
     int srcColPos;
     String srcColName;
@@ -33,8 +32,7 @@ class ColConfigurator {
         return srcColPos >= 0 ? srcColPos : header.position(srcColName);
     }
 
-    StoringConverter converter(Type colSchema) {
-        // TODO: can we get the file height from the Parquet file to set capacity?
-        return StoringConverter.ofAccum(colSchema, DEFAULT_CAPACITY, compact);
+    StoringConverter converter(Type colSchema, int capacity) {
+        return StoringConverter.ofAccum(colSchema, capacity, compact);
     }
 }

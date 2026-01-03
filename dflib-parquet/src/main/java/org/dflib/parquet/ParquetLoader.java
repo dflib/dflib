@@ -13,6 +13,7 @@ import org.dflib.ColumnDataFrame;
 import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.Series;
+import org.dflib.parquet.meta.MetaReader;
 import org.dflib.parquet.read.BytesInputFile;
 import org.dflib.parquet.read.DataFrameParquetReaderBuilder;
 import org.dflib.parquet.read.SchemaProjector;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class ParquetLoader {
@@ -103,7 +105,7 @@ public class ParquetLoader {
     }
 
     public DataFrame load(Path filePath) {
-        return loadFromInputFile(new LocalInputFile(filePath), Parquet.schemaLoader().load(filePath), filePath.toString());
+        return loadFromInputFile(new LocalInputFile(filePath), () -> filePath.toString());
     }
 
     /**
@@ -121,18 +123,17 @@ public class ParquetLoader {
     }
 
     private DataFrame loadFromBytes(byte[] bytes, String resourceId) {
-        return loadFromInputFile(new BytesInputFile(bytes), Parquet.schemaLoader().load(bytes), resourceId);
+        return loadFromInputFile(new BytesInputFile(bytes), () -> resourceId);
     }
 
-    private DataFrame loadFromInputFile(InputFile inputFile, MessageType schema, String resourceId) {
+    private DataFrame loadFromInputFile(InputFile inputFile, Supplier<String> resourceId) {
 
-        // TODO: to avoid reading the schema twice, is it possible to defer schema extraction to
-        //  DataFrameReadSupport.init(..) ?
+        MetaReader.SchemaAndSize meta = MetaReader.schemaAndSize(inputFile, resourceId);
+        MessageType projectedSchema = projectSchema(meta.schema());
 
-        MessageType projectedSchema = projectSchema(schema);
         Index index = createIndex(projectedSchema);
         int w = index.size();
-        StoringConverter[] converters = converters(index, projectedSchema);
+        StoringConverter[] converters = converters(index, projectedSchema, meta.size());
         GroupConverter rowConverter = rowConverter(converters);
 
         try {
@@ -174,7 +175,7 @@ public class ParquetLoader {
                 : new NoNullsRowConverter(converters);
     }
 
-    private StoringConverter[] converters(Index index, GroupType schema) {
+    private StoringConverter[] converters(Index index, GroupType schema, int capacity) {
 
         Map<Integer, ColConfigurator> configurators = new HashMap<>();
         for (ColConfigurator c : colConfigurators) {
@@ -187,7 +188,7 @@ public class ParquetLoader {
         for (int i = 0; i < w; i++) {
             converters[i] = configurators
                     .computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, false))
-                    .converter(schema.getFields().get(i));
+                    .converter(schema.getFields().get(i), capacity);
         }
 
         return converters;
