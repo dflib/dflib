@@ -1,22 +1,27 @@
 package org.dflib.parquet.read.converter;
 
 import org.apache.parquet.io.api.Converter;
-import org.apache.parquet.io.api.GroupConverter;
 import org.apache.parquet.schema.Type;
+import org.dflib.builder.ObjectAccum;
+import org.dflib.builder.ObjectHolder;
+import org.dflib.builder.ValueStore;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
-class ToListConverter extends GroupConverter {
+class ToListConverter extends StoringGroupConverter<List<Object>> {
 
-    private final Consumer<Object> parentConsumer;
+    public static ToListConverter of(boolean accum, int accumCapacity, boolean allowsNulls, Type elementType) {
+        ValueStore<List<Object>> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
+        return new ToListConverter(store, allowsNulls, elementType);
+    }
+
     private final Converter elementConverter;
 
     private List<Object> elements;
 
-    public ToListConverter(Type elementType, Consumer<Object> parentConsumer) {
-        this.parentConsumer = parentConsumer;
+    protected ToListConverter(ValueStore<List<Object>> store, boolean allowsNulls, Type elementType) {
+        super(store, allowsNulls);
         this.elementConverter = new UnwrapConverter(elementType, v -> elements.add(v));
     }
 
@@ -27,7 +32,7 @@ class ToListConverter extends GroupConverter {
 
     @Override
     public void end() {
-        parentConsumer.accept(elements);
+        store.push(elements);
     }
 
     @Override

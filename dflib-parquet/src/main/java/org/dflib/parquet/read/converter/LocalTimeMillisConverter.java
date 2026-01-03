@@ -1,29 +1,33 @@
 package org.dflib.parquet.read.converter;
 
 import org.apache.parquet.column.Dictionary;
-import org.apache.parquet.io.api.PrimitiveConverter;
+import org.dflib.builder.ObjectAccum;
+import org.dflib.builder.ObjectHolder;
+import org.dflib.builder.ValueStore;
 
 import java.time.LocalTime;
-import java.util.function.Consumer;
 
-class LocalTimeMillisConverter extends PrimitiveConverter {
+class LocalTimeMillisConverter extends StoringPrimitiveConverter<LocalTime> {
 
-    private final Consumer<Object> consumer;
+    public static LocalTimeMillisConverter of(boolean accum, int accumCapacity, boolean allowsNulls) {
+        ValueStore<LocalTime> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
+        return new LocalTimeMillisConverter(store, allowsNulls);
+    }
 
     private LocalTime[] dict;
 
-    public LocalTimeMillisConverter(Consumer<Object> consumer) {
-        this.consumer = consumer;
+    protected LocalTimeMillisConverter(ValueStore<LocalTime> store, boolean allowsNulls) {
+        super(store, allowsNulls);
     }
 
     @Override
     public void addInt(int millisInDay) {
-        consumer.accept(convert(millisInDay));
+        store.push(convert(millisInDay));
     }
 
     @Override
     public void addValueFromDictionary(int dictionaryId) {
-        consumer.accept(dict[dictionaryId]);
+        store.push(dict[dictionaryId]);
     }
 
     @Override

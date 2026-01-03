@@ -28,6 +28,7 @@
 * #593 ECharts: scatter charts to support "symbol"
 * #594 "split(..)" expression should produce compact columns
 * #595 dflib-jupyter - JJava-aware logging settings
+* #596 Parquet loader optimizations
 
 ## Release 2.0.0-M5
 

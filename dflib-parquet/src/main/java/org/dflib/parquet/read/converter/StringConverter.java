@@ -2,28 +2,31 @@ package org.dflib.parquet.read.converter;
 
 import org.apache.parquet.column.Dictionary;
 import org.apache.parquet.io.api.Binary;
-import org.apache.parquet.io.api.PrimitiveConverter;
+import org.dflib.builder.ObjectAccum;
+import org.dflib.builder.ObjectHolder;
+import org.dflib.builder.ValueStore;
 
-import java.util.function.Consumer;
+class StringConverter extends StoringPrimitiveConverter<String> {
 
-class StringConverter extends PrimitiveConverter {
+    public static StringConverter of(boolean accum, int accumCapacity, boolean allowsNulls) {
+        ValueStore<String> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
+        return new StringConverter(store, allowsNulls);
+    }
 
-    private final Consumer<Object> consumer;
     private String[] dict;
 
-    public StringConverter(Consumer<Object> consumer) {
-        this.consumer = consumer;
+    protected StringConverter(ValueStore<String> store, boolean allowsNulls) {
+        super(store, allowsNulls);
     }
 
     @Override
     public void addBinary(Binary value) {
-        consumer.accept(convert(value));
+        store.push(convert(value));
     }
 
     private String convert(Binary value) {
         return value.toStringUsingUTF8();
     }
-
 
     @Override
     public boolean hasDictionarySupport() {
@@ -41,6 +44,6 @@ class StringConverter extends PrimitiveConverter {
 
     @Override
     public void addValueFromDictionary(int dictionaryId) {
-        consumer.accept(dict[dictionaryId]);
+        store.push(dict[dictionaryId]);
     }
 }

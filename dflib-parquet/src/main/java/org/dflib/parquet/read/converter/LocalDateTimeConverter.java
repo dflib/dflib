@@ -1,22 +1,28 @@
 package org.dflib.parquet.read.converter;
 
 import org.apache.parquet.column.Dictionary;
-import org.apache.parquet.io.api.PrimitiveConverter;
+import org.apache.parquet.schema.LogicalTypeAnnotation;
 import org.apache.parquet.schema.LogicalTypeAnnotation.TimeUnit;
+import org.dflib.builder.ObjectAccum;
+import org.dflib.builder.ObjectHolder;
+import org.dflib.builder.ValueStore;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.function.Consumer;
 
-class LocalDateTimeConverter extends PrimitiveConverter {
+class LocalDateTimeConverter extends StoringPrimitiveConverter<LocalDateTime> {
 
-    private final Consumer<Object> consumer;
+    public static LocalDateTimeConverter of(boolean accum, int accumCapacity, boolean allowsNulls, LogicalTypeAnnotation.TimeUnit timeUnit) {
+        ValueStore<LocalDateTime> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
+        return new LocalDateTimeConverter(store, allowsNulls, timeUnit);
+    }
+
     private final LongToLocalDateTime mapper;
     private LocalDateTime[] dict;
 
-    public LocalDateTimeConverter(Consumer<Object> consumer, TimeUnit timeUnit) {
-        this.consumer = consumer;
+    public LocalDateTimeConverter(ValueStore<LocalDateTime> store, boolean allowsNulls, TimeUnit timeUnit) {
+        super(store, allowsNulls);
         if (timeUnit == TimeUnit.MILLIS) {
             this.mapper = LocalDateTimeConverter::localDateTimeFromMillisFromEpoch;
         } else if (timeUnit == TimeUnit.MICROS) {
@@ -28,12 +34,12 @@ class LocalDateTimeConverter extends PrimitiveConverter {
 
     @Override
     public void addLong(long timeToEpoch) {
-        consumer.accept(mapper.map(timeToEpoch));
+        store.push(mapper.map(timeToEpoch));
     }
 
     @Override
     public void addValueFromDictionary(int dictionaryId) {
-        consumer.accept(dict[dictionaryId]);
+        store.push(dict[dictionaryId]);
     }
 
     @Override

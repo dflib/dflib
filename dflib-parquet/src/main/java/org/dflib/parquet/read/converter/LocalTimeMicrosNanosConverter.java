@@ -1,21 +1,26 @@
 package org.dflib.parquet.read.converter;
 
 import org.apache.parquet.column.Dictionary;
-import org.apache.parquet.io.api.PrimitiveConverter;
 import org.apache.parquet.schema.LogicalTypeAnnotation;
+import org.dflib.builder.ObjectAccum;
+import org.dflib.builder.ObjectHolder;
+import org.dflib.builder.ValueStore;
 
 import java.time.LocalTime;
-import java.util.function.Consumer;
 
-class LocalTimeMicrosNanosConverter extends PrimitiveConverter {
+class LocalTimeMicrosNanosConverter extends StoringPrimitiveConverter<LocalTime> {
 
-    private final Consumer<Object> consumer;
+    public static LocalTimeMicrosNanosConverter of(boolean accum, int accumCapacity, boolean allowsNulls, LogicalTypeAnnotation.TimeUnit timeUnit) {
+        ValueStore<LocalTime> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
+        return new LocalTimeMicrosNanosConverter(store, allowsNulls, timeUnit);
+    }
+
     private final long factor;
 
     private LocalTime[] dict;
 
-    public LocalTimeMicrosNanosConverter(Consumer<Object> consumer, LogicalTypeAnnotation.TimeUnit timeUnit) {
-        this.consumer = consumer;
+    protected LocalTimeMicrosNanosConverter(ValueStore<LocalTime> store, boolean allowsNulls, LogicalTypeAnnotation.TimeUnit timeUnit) {
+        super(store, allowsNulls);
         this.factor = switch (timeUnit) {
             case NANOS -> 1L;
             case MICROS -> 1_000L;
@@ -25,12 +30,12 @@ class LocalTimeMicrosNanosConverter extends PrimitiveConverter {
 
     @Override
     public void addLong(long microsOrNanos) {
-        consumer.accept(convert(microsOrNanos));
+        store.push(convert(microsOrNanos));
     }
 
     @Override
     public void addValueFromDictionary(int dictionaryId) {
-        consumer.accept(dict[dictionaryId]);
+        store.push(dict[dictionaryId]);
     }
 
     @Override

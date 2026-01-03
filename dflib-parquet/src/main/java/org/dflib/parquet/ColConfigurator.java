@@ -1,10 +1,8 @@
 package org.dflib.parquet;
 
-import org.apache.parquet.schema.GroupType;
-import org.apache.parquet.schema.PrimitiveType;
 import org.apache.parquet.schema.Type;
-import org.dflib.Extractor;
 import org.dflib.Index;
+import org.dflib.parquet.read.converter.StoringConverter;
 
 class ColConfigurator {
 
@@ -34,34 +32,9 @@ class ColConfigurator {
         return srcColPos >= 0 ? srcColPos : header.position(srcColName);
     }
 
-    Extractor<Object[], ?> extractor(int srcPos, GroupType schema) {
-        Extractor<Object[], ?> e = sparseExtractor(srcPos, schema.getFields().get(srcPos));
-        return compact ? e.compact() : e;
-    }
-
-    private static Extractor<Object[], ?> sparseExtractor(int pos, Type colSchema) {
-
-        // if the main type has a logical type, it should be returned unchanged
-        if (colSchema.getLogicalTypeAnnotation() != null) {
-            return Extractor.$col(r -> r[pos]);
-        }
-
-        if (colSchema.isPrimitive()) {
-            PrimitiveType.PrimitiveTypeName type = colSchema.asPrimitiveType().getPrimitiveTypeName();
-            if (colSchema.isRepetition(Type.Repetition.OPTIONAL)) {
-                return Extractor.$col(r -> r[pos]);
-            }
-            return switch (type) {
-                case INT32 -> Extractor.$int(r -> (Integer) r[pos]);
-                case INT64 -> Extractor.$long(r -> (Long) r[pos]);
-                case FLOAT -> Extractor.$float(r -> (Float) r[pos]);
-                case DOUBLE -> Extractor.$double(r -> (Double) r[pos]);
-                case BOOLEAN -> Extractor.$bool(r -> (Boolean) r[pos]);
-                case BINARY, FIXED_LEN_BYTE_ARRAY -> Extractor.$col(r -> r[pos]);
-                case INT96 -> throw new RuntimeException("INT96 deserialization is deprecated and is not supported");
-            };
-        }
-
-        return Extractor.$col(r -> r[pos]);
+    // TODO: introduce compact ValueAccums ("compact" is the only flag influenced by ColConfigurator...
+    //  The rest is purely based on Parquet schema)
+    StoringConverter converter(Type colSchema) {
+        return StoringConverter.of(colSchema, true);
     }
 }

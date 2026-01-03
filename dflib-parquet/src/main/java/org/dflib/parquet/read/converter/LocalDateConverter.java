@@ -1,23 +1,28 @@
 package org.dflib.parquet.read.converter;
 
 import org.apache.parquet.column.Dictionary;
-import org.apache.parquet.io.api.PrimitiveConverter;
+import org.dflib.builder.ObjectAccum;
+import org.dflib.builder.ObjectHolder;
+import org.dflib.builder.ValueStore;
 
 import java.time.LocalDate;
-import java.util.function.Consumer;
 
-class LocalDateConverter extends PrimitiveConverter {
+class LocalDateConverter extends StoringPrimitiveConverter<LocalDate> {
 
-    private final Consumer<Object> consumer;
+    public static LocalDateConverter of(boolean accum, int accumCapacity, boolean allowsNulls) {
+        ValueStore<LocalDate> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
+        return new LocalDateConverter(store, allowsNulls);
+    }
+
     private LocalDate[] dict;
 
-    public LocalDateConverter(Consumer<Object> consumer) {
-        this.consumer = consumer;
+    protected LocalDateConverter(ValueStore<LocalDate> store, boolean allowsNulls) {
+        super(store, allowsNulls);
     }
 
     @Override
     public void addInt(int daysFromEpoch) {
-        consumer.accept(convert(daysFromEpoch));
+        store.push(convert(daysFromEpoch));
     }
 
     @Override
@@ -36,7 +41,7 @@ class LocalDateConverter extends PrimitiveConverter {
 
     @Override
     public void addValueFromDictionary(int dictionaryId) {
-        consumer.accept(dict[dictionaryId]);
+        store.push(dict[dictionaryId]);
     }
 
     private LocalDate convert(int daysFromEpoch) {

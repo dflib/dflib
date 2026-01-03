@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -189,26 +191,36 @@ public class LoadGroupTypesTest {
     @Test
     public void listOfDoubles() {
 
-        Path p = listOfDoublesWriter().write(new RLD(List.of(8.0, 5.1, -0.9)), new RLD(List.of(6.5)));
+        List<Double> withNulls = new ArrayList<>();
+        withNulls.add(null);
+        withNulls.add(5.0);
+
+        Path p = listOfDoublesWriter().write(new RLD(List.of(8.0, 5.1, -0.9)), new RLD(List.of(6.5)), new RLD(withNulls));
 
         DataFrame df = Parquet.load(p);
 
         new DataFrameAsserts(df, "ls")
-                .expectHeight(2)
+                .expectHeight(3)
                 .expectRow(0, List.of(8.0, 5.1, -0.9))
-                .expectRow(1, List.of(6.5));
+                .expectRow(1, List.of(6.5))
+                .expectRow(2, withNulls);
     }
 
     @Test
     public void mapOfDoubles() {
 
-        Path p = mapOfDoublesWriter().write(new RMSD(Map.of("s1", 8.0, "s2", -9.88)), new RMSD(Map.of("s3", 3.2)));
+        Map<String, Double> withNulls = new HashMap<>();
+        withNulls.put("s4", null);
+        withNulls.put("s5", 5.0);
+
+        Path p = mapOfDoublesWriter().write(new RMSD(Map.of("s1", 8.0, "s2", -9.88)), new RMSD(Map.of("s3", 3.2)), new RMSD(withNulls));
 
         DataFrame df = Parquet.load(p);
 
         new DataFrameAsserts(df, "mp")
-                .expectHeight(2)
+                .expectHeight(3)
                 .expectRow(0, Map.of("s1", 8.0, "s2", -9.88))
-                .expectRow(1, Map.of("s3", 3.2));
+                .expectRow(1, Map.of("s3", 3.2))
+                .expectRow(2, withNulls);
     }
 }

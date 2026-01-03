@@ -1,22 +1,27 @@
 package org.dflib.parquet.read.converter;
 
 import org.apache.parquet.io.api.Converter;
-import org.apache.parquet.io.api.GroupConverter;
 import org.apache.parquet.schema.Type;
+import org.dflib.builder.ObjectAccum;
+import org.dflib.builder.ObjectHolder;
+import org.dflib.builder.ValueStore;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
-class ToMapConverter extends GroupConverter {
+class ToMapConverter extends StoringGroupConverter<Map<Object, Object>> {
 
-    private final Consumer<Object> parentConsumer;
+    public static ToMapConverter of(boolean accum, int accumCapacity, boolean allowsNulls, Type keyType, Type valueType) {
+        ValueStore<Map<Object, Object>> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
+        return new ToMapConverter(store, allowsNulls, keyType, valueType);
+    }
+
     private final Converter kvConverter;
 
     private Map<Object, Object> elements;
 
-    public ToMapConverter(Type keyType, Type valueType, Consumer<Object> parentConsumer) {
-        this.parentConsumer = parentConsumer;
+    protected ToMapConverter(ValueStore<Map<Object, Object>> store, boolean allowsNulls, Type keyType, Type valueType) {
+        super(store, allowsNulls);
 
         // note that we can't use a method ref here (elements::put), as elements is null initially
         // and is reset on every run
@@ -30,7 +35,7 @@ class ToMapConverter extends GroupConverter {
 
     @Override
     public void end() {
-        parentConsumer.accept(elements);
+        store.push(elements);
     }
 
     @Override

@@ -22,15 +22,18 @@ public class ParquetLoader_CardinalityTest {
 
     @BeforeAll
     static void createParquetFile() {
-        record R(Integer a, String b, BigDecimal c) {
+        record R(Integer a, String b, BigDecimal c, Boolean d, Long e, long f) {
         }
 
         testFile = TestWriter.of(R.class, outBase)
                 .schema("""
-                        message test_schema { 
+                        message test_schema {
                             optional int32 a;
                             optional binary b (STRING);
-                            optional int64 c (DECIMAL(18,2)); 
+                            optional int64 c (DECIMAL(18,2));
+                            optional boolean d;
+                            optional int64 e;
+                            required int64 f;
                         }""")
                 .writer((c, r) -> {
                     c.startMessage();
@@ -53,66 +56,103 @@ public class ParquetLoader_CardinalityTest {
                         c.endField("c", 2);
                     }
 
+                    if (r.d() != null) {
+                        c.startField("d", 3);
+                        c.addBoolean(r.d());
+                        c.endField("d", 3);
+                    }
+
+                    if (r.e() != null) {
+                        c.startField("e", 4);
+                        c.addLong(r.e());
+                        c.endField("e", 4);
+                    }
+
+                    c.startField("f", 5);
+                    c.addLong(r.f());
+                    c.endField("f", 5);
+
                     c.endMessage();
                 })
+                // using large enough values for Long and Integer so that Long.valueOf(..) and Integer.valueOf(..) cache is bypassed
                 .write(
-                        new R(1, "ab", new BigDecimal("609.1")),
-                        new R(40000, "ab", new BigDecimal("12.6")),
-                        new R(40000, "bc", new BigDecimal("609.1")),
-                        new R(30000, "bc", new BigDecimal("12.6")),
-                        new R(30000, null, new BigDecimal("609.1")),
-                        new R(null, "bc", new BigDecimal("609.1"))
+                        new R(1, "ab", new BigDecimal("609.1"), true, null, 0L),
+                        new R(40000, "ab", new BigDecimal("12.6"), false, 66L, 66L),
+                        new R(40000, "bc", new BigDecimal("609.1"), true, 66L, 66L),
+                        new R(30000, "bc", new BigDecimal("12.6"), null, 68_000L, 68_000L),
+                        new R(30000, null, new BigDecimal("609.1"), true, -66_000L, -66_000L),
+                        new R(null, "bc", new BigDecimal("609.1"), true, -66_000L, -66_000L)
                 );
     }
 
     @Test
-    public void valueCardinality() {
+    public void defaultCardinality() {
         DataFrame df = new ParquetLoader().load(testFile);
 
-        new DataFrameAsserts(df, "a", "b", "c")
+        new DataFrameAsserts(df, "a", "b", "c", "d", "e", "f")
                 .expectHeight(6)
-                .expectRow(0, 1, "ab", new BigDecimal("609.10"))
-                .expectRow(1, 40000, "ab", new BigDecimal("12.60"))
-                .expectRow(2, 40000, "bc", new BigDecimal("609.10"))
-                .expectRow(3, 30000, "bc", new BigDecimal("12.60"))
-                .expectRow(4, 30000, null, new BigDecimal("609.10"))
-                .expectRow(5, null, "bc", new BigDecimal("609.10"));
+                .expectRow(0, 1, "ab", new BigDecimal("609.10"), true, null, 0L)
+                .expectRow(1, 40000, "ab", new BigDecimal("12.60"), false, 66L, 66L)
+                .expectRow(2, 40000, "bc", new BigDecimal("609.10"), true, 66L, 66L)
+                .expectRow(3, 30000, "bc", new BigDecimal("12.60"), null, 68_000L, 68_000L)
+                .expectRow(4, 30000, null, new BigDecimal("609.10"), true, -66_000L, -66_000L)
+                .expectRow(5, null, "bc", new BigDecimal("609.10"), true, -66_000L, -66_000L);
 
         DataFrame idCardinality = df.cols().select(
                 $col("a").mapVal(System::identityHashCode),
                 $col("b").mapVal(System::identityHashCode),
-                $col("c").mapVal(System::identityHashCode));
+                $col("c").mapVal(System::identityHashCode),
+                $col("d").mapVal(System::identityHashCode),
+                $col("e").mapVal(System::identityHashCode),
+                $col("f").mapVal(System::identityHashCode));
 
-        assertEquals(6, idCardinality.getColumn(0).unique().size());
 
         // Converters using dictionaries will internally compact values, so we'd see lower cardinality
+        assertEquals(4, idCardinality.getColumn(0).unique().size());
         assertEquals(3, idCardinality.getColumn(1).unique().size());
         assertEquals(2, idCardinality.getColumn(2).unique().size());
+        assertEquals(3, idCardinality.getColumn(3).unique().size());
+        assertEquals(4, idCardinality.getColumn(4).unique().size());
+
+        // primitive columns are resolved without DFLib cache, only using Java Long.valueOf(..) cache for smaller values
+        assertEquals(5, idCardinality.getColumn(5).unique().size());
     }
 
     @Test
-    public void valueCardinality_compactCol_Name() {
+    public void compactCardinality() {
         DataFrame df = new ParquetLoader()
                 .compactCol("a")
                 .compactCol("b")
+                .compactCol("c")
+                .compactCol("d")
+                .compactCol("e")
+                .compactCol("f")
                 .load(testFile);
 
-        new DataFrameAsserts(df, "a", "b", "c")
+        new DataFrameAsserts(df, "a", "b", "c", "d", "e", "f")
                 .expectHeight(6)
-                .expectRow(0, 1, "ab", new BigDecimal("609.10"))
-                .expectRow(1, 40000, "ab", new BigDecimal("12.60"))
-                .expectRow(2, 40000, "bc", new BigDecimal("609.10"))
-                .expectRow(3, 30000, "bc", new BigDecimal("12.60"))
-                .expectRow(4, 30000, null, new BigDecimal("609.10"))
-                .expectRow(5, null, "bc", new BigDecimal("609.10"));
+                .expectRow(0, 1, "ab", new BigDecimal("609.10"), true, null, 0L)
+                .expectRow(1, 40000, "ab", new BigDecimal("12.60"), false, 66L, 66L)
+                .expectRow(2, 40000, "bc", new BigDecimal("609.10"), true, 66L, 66L)
+                .expectRow(3, 30000, "bc", new BigDecimal("12.60"), null, 68_000L, 68_000L)
+                .expectRow(4, 30000, null, new BigDecimal("609.10"), true, -66_000L, -66_000L)
+                .expectRow(5, null, "bc", new BigDecimal("609.10"), true, -66_000L, -66_000L);
 
         DataFrame idCardinality = df.cols().select(
                 $col("a").mapVal(System::identityHashCode),
                 $col("b").mapVal(System::identityHashCode),
-                $col("c").mapVal(System::identityHashCode));
+                $col("c").mapVal(System::identityHashCode),
+                $col("d").mapVal(System::identityHashCode),
+                $col("e").mapVal(System::identityHashCode),
+                $col("f").mapVal(System::identityHashCode));
 
         assertEquals(4, idCardinality.getColumn(0).unique().size());
         assertEquals(3, idCardinality.getColumn(1).unique().size());
         assertEquals(2, idCardinality.getColumn(2).unique().size());
+        assertEquals(3, idCardinality.getColumn(3).unique().size());
+        assertEquals(4, idCardinality.getColumn(4).unique().size());
+
+        // primitive columns are resolved without DFLib cache, only using Java Long.valueOf(..) cache for smaller values
+        assertEquals(5, idCardinality.getColumn(5).unique().size());
     }
 }

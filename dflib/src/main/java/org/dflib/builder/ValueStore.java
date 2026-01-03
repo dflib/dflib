@@ -2,7 +2,6 @@ package org.dflib.builder;
 
 /**
  * An abstraction of a mutable primitives-aware store of values.
-
  */
 public interface ValueStore<T> {
 
@@ -15,48 +14,58 @@ public interface ValueStore<T> {
     }
 
     default void pushBool(boolean v) {
-        throw new UnsupportedOperationException("No support for 'boolean' values");
+        Object vo = v;
+        push((T) vo);
     }
 
     default void replaceBool(int pos, boolean v) {
-        throw new UnsupportedOperationException("No support for 'boolean' values");
+        Object vo = v;
+        replace(pos, (T) vo);
     }
 
     default void pushInt(int v) {
-        throw new UnsupportedOperationException("No support for 'int' values");
+        Object vo = v;
+        push((T) vo);
     }
 
     default void replaceInt(int pos, int v) {
-        throw new UnsupportedOperationException("No support for 'int' values");
+        Object vo = v;
+        replace(pos, (T) vo);
     }
 
     default void pushLong(long v) {
-        throw new UnsupportedOperationException("No support for 'long' values");
+        Object vo = v;
+        push((T) vo);
     }
 
     default void replaceLong(int pos, long v) {
-        throw new UnsupportedOperationException("No support for 'long' values");
+        Object vo = v;
+        replace(pos, (T) vo);
     }
 
     /**
      * @since 1.1.0
      */
     default void pushFloat(float v) {
-        throw new UnsupportedOperationException("No support for 'float' values");
+        Object vo = v;
+        push((T) vo);
     }
 
     /**
      * @since 1.1.0
      */
     default void replaceFloat(int pos, float v) {
-        throw new UnsupportedOperationException("No support for 'float' values");
+        Object vo = v;
+        replace(pos, (T) vo);
     }
 
     default void pushDouble(double v) {
-        throw new UnsupportedOperationException("No support for 'double' values");
+        Object vo = v;
+        push((T) vo);
     }
 
     default void replaceDouble(int pos, double v) {
-        throw new UnsupportedOperationException("No support for 'double' values");
+        Object vo = v;
+        replace(pos, (T) vo);
     }
 }

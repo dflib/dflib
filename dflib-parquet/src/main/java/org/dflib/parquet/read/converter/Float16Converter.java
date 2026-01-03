@@ -1,21 +1,29 @@
 package org.dflib.parquet.read.converter;
 
 import org.apache.parquet.io.api.Binary;
-import org.apache.parquet.io.api.PrimitiveConverter;
+import org.dflib.builder.FloatAccum;
+import org.dflib.builder.FloatHolder;
+import org.dflib.builder.ObjectAccum;
+import org.dflib.builder.ObjectHolder;
+import org.dflib.builder.ValueStore;
 
-import java.util.function.Consumer;
+class Float16Converter extends StoringPrimitiveConverter<Float> {
 
-class Float16Converter extends PrimitiveConverter {
+    public static Float16Converter of(boolean accum, int accumCapacity, boolean allowsNulls) {
+        ValueStore<Float> store = allowsNulls
+                ? (accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>())
+                : (accum ? new FloatAccum(accumCapacity) : new FloatHolder());
 
-    private final Consumer<Object> consumer;
+        return new Float16Converter(store, allowsNulls);
+    }
 
-    public Float16Converter(Consumer<Object> consumer) {
-        this.consumer = consumer;
+    protected Float16Converter(ValueStore<Float> store, boolean allowsNulls) {
+        super(store, allowsNulls);
     }
 
     @Override
     public void addBinary(Binary value) {
-        consumer.accept(convert(value));
+        store.pushFloat(convert(value));
     }
 
     private float convert(Binary value) {

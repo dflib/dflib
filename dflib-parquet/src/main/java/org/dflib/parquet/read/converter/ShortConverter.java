@@ -1,20 +1,22 @@
 package org.dflib.parquet.read.converter;
 
-import org.apache.parquet.io.api.PrimitiveConverter;
+import org.dflib.builder.ObjectAccum;
+import org.dflib.builder.ObjectHolder;
+import org.dflib.builder.ValueStore;
 
-import java.util.function.Consumer;
+class ShortConverter extends StoringPrimitiveConverter<Short> {
 
-class ShortConverter extends PrimitiveConverter {
+    public static ShortConverter of(boolean accum, int accumCapacity, boolean allowsNulls) {
+        ValueStore<Short> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
+        return new ShortConverter(store, allowsNulls);
+    }
 
-    private final Consumer<Object> consumer;
-
-    public ShortConverter(Consumer<Object> consumer) {
-        this.consumer = consumer;
+    protected ShortConverter(ValueStore<Short> store, boolean allowsNulls) {
+        super(store, allowsNulls);
     }
 
     @Override
     public void addInt(int value) {
-        consumer.accept((short) value);
+        store.push((short) value);
     }
-
 }

@@ -2,44 +2,50 @@ package org.dflib.parquet.read.converter;
 
 import org.apache.parquet.column.Dictionary;
 import org.apache.parquet.io.api.Binary;
-import org.apache.parquet.io.api.PrimitiveConverter;
 import org.apache.parquet.schema.PrimitiveType;
+import org.dflib.builder.ObjectAccum;
+import org.dflib.builder.ObjectHolder;
+import org.dflib.builder.ValueStore;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.function.Consumer;
 
-class DecimalConverter extends PrimitiveConverter {
+class DecimalConverter extends StoringPrimitiveConverter<BigDecimal> {
 
-    private final Consumer<Object> consumer;
+
+    public static DecimalConverter of(boolean accum, int accumCapacity, boolean allowNulls, PrimitiveType.PrimitiveTypeName type, int scale) {
+        ValueStore<BigDecimal> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
+        return new DecimalConverter(store, allowNulls, type, scale);
+    }
+
     private final PrimitiveType.PrimitiveTypeName type;
     private final int scale;
     private BigDecimal[] dict;
 
-    public DecimalConverter(Consumer<Object> consumer, PrimitiveType.PrimitiveTypeName type, int scale) {
-        this.consumer = consumer;
+    protected DecimalConverter(ValueStore<BigDecimal> store, boolean allowsNulls, PrimitiveType.PrimitiveTypeName type, int scale) {
+        super(store, allowsNulls);
         this.type = type;
         this.scale = scale;
     }
 
     @Override
     public void addBinary(Binary value) {
-        consumer.accept(convert(value));
+        store.push(convert(value));
     }
 
     @Override
     public void addInt(int value) {
-        consumer.accept(convert(value));
+        store.push(convert(value));
     }
 
     @Override
     public void addLong(long value) {
-        consumer.accept(convert(value));
+        store.push(convert(value));
     }
 
     @Override
     public void addValueFromDictionary(int dictionaryId) {
-        consumer.accept(dict[dictionaryId]);
+        store.push(dict[dictionaryId]);
     }
 
     @Override

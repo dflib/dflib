@@ -1,21 +1,27 @@
 package org.dflib.parquet.read.converter;
 
 import org.apache.parquet.column.Dictionary;
-import org.apache.parquet.io.api.PrimitiveConverter;
+import org.apache.parquet.schema.LogicalTypeAnnotation;
 import org.apache.parquet.schema.LogicalTypeAnnotation.TimeUnit;
+import org.dflib.builder.ObjectAccum;
+import org.dflib.builder.ObjectHolder;
+import org.dflib.builder.ValueStore;
 import org.dflib.parquet.read.converter.Instants.LongToInstant;
 
 import java.time.Instant;
-import java.util.function.Consumer;
 
-class InstantConverter extends PrimitiveConverter {
+class InstantConverter extends StoringPrimitiveConverter<Instant> {
 
-    private final Consumer<Object> consumer;
+    public static InstantConverter of(boolean accum, int accumCapacity, boolean allowsNulls, LogicalTypeAnnotation.TimeUnit timeUnit) {
+        ValueStore<Instant> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
+        return new InstantConverter(store, allowsNulls, timeUnit);
+    }
+
     private final LongToInstant mapper;
     private Instant[] dict;
 
-    public InstantConverter(Consumer<Object> consumer, TimeUnit timeUnit) {
-        this.consumer = consumer;
+    protected InstantConverter(ValueStore<Instant> store, boolean allowsNulls, TimeUnit timeUnit) {
+        super(store, allowsNulls);
         this.mapper = switch (timeUnit) {
             case MILLIS -> Instants::fromEpochMillis;
             case MICROS -> Instants::fromEpochMicros;
@@ -25,12 +31,12 @@ class InstantConverter extends PrimitiveConverter {
 
     @Override
     public void addLong(long timeToEpoch) {
-        consumer.accept(mapper.map(timeToEpoch));
+        store.push(mapper.map(timeToEpoch));
     }
 
     @Override
     public void addValueFromDictionary(int dictionaryId) {
-        consumer.accept(dict[dictionaryId]);
+        store.push(dict[dictionaryId]);
     }
 
     @Override

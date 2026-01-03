@@ -1,23 +1,27 @@
 package org.dflib.parquet.read.converter;
 
 import org.apache.parquet.io.api.Binary;
-import org.apache.parquet.io.api.PrimitiveConverter;
+import org.dflib.builder.ObjectAccum;
+import org.dflib.builder.ObjectHolder;
+import org.dflib.builder.ValueStore;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.function.Consumer;
 
-class IntervalConverter extends PrimitiveConverter {
+class IntervalConverter extends StoringPrimitiveConverter<int[]> {
 
-    private final Consumer<Object> consumer;
+    public static IntervalConverter of(boolean accum, int accumCapacity, boolean allowsNulls) {
+        ValueStore<int[]> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
+        return new IntervalConverter(store, allowsNulls);
+    }
 
-    public IntervalConverter(Consumer<Object> consumer) {
-        this.consumer = consumer;
+    protected IntervalConverter(ValueStore<int[]> store, boolean allowsNulls) {
+        super(store, allowsNulls);
     }
 
     @Override
     public void addBinary(Binary value) {
-        consumer.accept(convert(value));
+        store.push(convert(value));
     }
 
     private int[] convert(Binary value) {

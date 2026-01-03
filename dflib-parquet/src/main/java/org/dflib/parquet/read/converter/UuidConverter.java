@@ -2,24 +2,29 @@ package org.dflib.parquet.read.converter;
 
 import org.apache.parquet.column.Dictionary;
 import org.apache.parquet.io.api.Binary;
-import org.apache.parquet.io.api.PrimitiveConverter;
+import org.dflib.builder.ObjectAccum;
+import org.dflib.builder.ObjectHolder;
+import org.dflib.builder.ValueStore;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;
-import java.util.function.Consumer;
 
-class UuidConverter extends PrimitiveConverter {
+class UuidConverter extends StoringPrimitiveConverter<UUID> {
 
-    private final Consumer<Object> consumer;
+    public static UuidConverter of(boolean accum, int accumCapacity, boolean allowsNulls) {
+        ValueStore<UUID> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
+        return new UuidConverter(store, allowsNulls);
+    }
+
     private UUID[] dict;
 
-    public UuidConverter(Consumer<Object> consumer) {
-        this.consumer = consumer;
+    protected UuidConverter(ValueStore<UUID> store, boolean allowsNulls) {
+        super(store, allowsNulls);
     }
 
     @Override
     public void addBinary(Binary value) {
-        consumer.accept(convert(value));
+        store.push(convert(value));
     }
 
     @Override
@@ -38,7 +43,7 @@ class UuidConverter extends PrimitiveConverter {
 
     @Override
     public void addValueFromDictionary(int dictionaryId) {
-        consumer.accept(dict[dictionaryId]);
+        store.push(dict[dictionaryId]);
     }
 
     private UUID convert(Binary value) {

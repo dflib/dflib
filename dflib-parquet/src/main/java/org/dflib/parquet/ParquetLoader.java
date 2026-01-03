@@ -3,18 +3,22 @@ package org.dflib.parquet;
 import org.apache.parquet.hadoop.ParquetReader;
 import org.apache.parquet.io.InputFile;
 import org.apache.parquet.io.LocalInputFile;
+import org.apache.parquet.io.api.GroupConverter;
 import org.apache.parquet.schema.GroupType;
 import org.apache.parquet.schema.MessageType;
 import org.apache.parquet.schema.Type;
-import org.dflib.DataFrame;
-import org.dflib.Extractor;
-import org.dflib.Index;
-import org.dflib.builder.DataFrameAppender;
 import org.dflib.ByteSource;
 import org.dflib.ByteSources;
+import org.dflib.ColumnDataFrame;
+import org.dflib.DataFrame;
+import org.dflib.Index;
+import org.dflib.Series;
+import org.dflib.parquet.read.BytesInputFile;
 import org.dflib.parquet.read.DataFrameParquetReaderBuilder;
 import org.dflib.parquet.read.SchemaProjector;
-import org.dflib.parquet.read.BytesInputFile;
+import org.dflib.parquet.read.converter.NoNullsRowConverter;
+import org.dflib.parquet.read.converter.NullAwareRowConverter;
+import org.dflib.parquet.read.converter.StoringConverter;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class ParquetLoader {
 
@@ -125,26 +130,26 @@ public class ParquetLoader {
         //  DataFrameReadSupport.init(..) ?
 
         MessageType projectedSchema = projectSchema(schema);
-
         Index index = createIndex(projectedSchema);
-
-        DataFrameAppender<Object[]> appender = DataFrame.byArrayRow(extractors(index, projectedSchema))
-                .columnIndex(index)
-                .appender();
+        int w = index.size();
+        StoringConverter[] converters = converters(index, projectedSchema);
+        GroupConverter rowConverter = rowConverter(converters);
 
         try {
-            ParquetReader<Object[]> reader = new DataFrameParquetReaderBuilder(inputFile, projectedSchema).build();
-
-            Object[] row;
-            while ((row = reader.read()) != null) {
-                appender.append(row);
+            ParquetReader<Object> reader = new DataFrameParquetReaderBuilder(inputFile, projectedSchema, rowConverter).build();
+            while (reader.read() != null) {
             }
 
         } catch (IOException e) {
             throw new UncheckedIOException("Error reading source: " + resourceId, e);
         }
 
-        return appender.toDataFrame();
+        Series<?>[] columns = new Series[w];
+        for (int i = 0; i < w; i++) {
+            columns[i] = converters[i].accum().toSeries();
+        }
+
+        return new ColumnDataFrame(null, index, columns);
     }
 
     private MessageType projectSchema(MessageType schema) {
@@ -158,7 +163,18 @@ public class ParquetLoader {
         return Index.of(labels);
     }
 
-    private Extractor<Object[], ?>[] extractors(Index index, GroupType schema) {
+    private GroupConverter rowConverter(StoringConverter[] converters) {
+        StoringConverter[] nullableConverters = Stream
+                .of(converters)
+                .filter(StoringConverter::allowsNulls)
+                .toArray(StoringConverter[]::new);
+
+        return nullableConverters.length > 0
+                ? new NullAwareRowConverter(converters, nullableConverters)
+                : new NoNullsRowConverter(converters);
+    }
+
+    private StoringConverter[] converters(Index index, GroupType schema) {
 
         Map<Integer, ColConfigurator> configurators = new HashMap<>();
         for (ColConfigurator c : colConfigurators) {
@@ -167,13 +183,14 @@ public class ParquetLoader {
         }
 
         int w = schema.getFields().size();
-        Extractor<Object[], ?>[] extractors = new Extractor[w];
+        StoringConverter[] converters = new StoringConverter[w];
         for (int i = 0; i < w; i++) {
-            ColConfigurator cc = configurators.computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, false));
-            extractors[i] = cc.extractor(i, schema);
+            converters[i] = configurators
+                    .computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, false))
+                    .converter(schema.getFields().get(i));
         }
 
-        return extractors;
+        return converters;
     }
 
 }

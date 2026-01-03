@@ -6,52 +6,43 @@ import org.apache.parquet.hadoop.api.ReadSupport;
 import org.apache.parquet.io.api.GroupConverter;
 import org.apache.parquet.io.api.RecordMaterializer;
 import org.apache.parquet.schema.MessageType;
-import org.dflib.parquet.read.converter.RowConverter;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
-class DataFrameReadSupport extends ReadSupport<Object[]> {
+class DataFrameReadSupport extends ReadSupport<Object> {
 
-    private final MessageType projection;
+    private final MessageType schema;
+    private final GroupConverter rowConverter;
 
-    DataFrameReadSupport(MessageType projection) {
-        this.projection = projection;
-    }
-
-    @Override
-    public RecordMaterializer<Object[]> prepareForRead(
-            Configuration configuration,
-            Map<String, String> keyValueMetaData,
-            MessageType fileSchema,
-            ReadContext readContext) {
-        return new DataFrameMaterializer(readContext.getRequestedSchema());
+    public DataFrameReadSupport(MessageType schema, GroupConverter rowConverter) {
+        this.schema = schema;
+        this.rowConverter = rowConverter;
     }
 
     @Override
     public ReadContext init(InitContext initContext) {
-        Map<String, String> metadata = new LinkedHashMap<>();
-        return new ReadContext(projection, metadata);
+        return new ReadContext(schema, Map.of());
     }
 
-    private static class DataFrameMaterializer extends RecordMaterializer<Object[]> {
+    @Override
+    public RecordMaterializer<Object> prepareForRead(
+            Configuration configuration,
+            Map<String, String> keyValueMetaData,
+            MessageType fileSchema,
+            ReadContext readContext) {
 
-        private final GroupConverter root;
-        private Object[] value;
+        Object resultPlaceholder = new Object();
 
-        public DataFrameMaterializer(MessageType requestedSchema) {
-            this.root = new RowConverter(requestedSchema, v -> this.value = v);
-        }
+        return new RecordMaterializer<>() {
+            @Override
+            public Object getCurrentRecord() {
+                return resultPlaceholder;
+            }
 
-        @Override
-        public Object[] getCurrentRecord() {
-            return value;
-        }
-
-        @Override
-        public GroupConverter getRootConverter() {
-            return root;
-        }
-
+            @Override
+            public GroupConverter getRootConverter() {
+                return rowConverter;
+            }
+        };
     }
 }

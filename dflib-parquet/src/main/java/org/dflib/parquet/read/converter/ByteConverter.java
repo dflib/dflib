@@ -1,19 +1,22 @@
 package org.dflib.parquet.read.converter;
 
-import org.apache.parquet.io.api.PrimitiveConverter;
+import org.dflib.builder.ObjectAccum;
+import org.dflib.builder.ObjectHolder;
+import org.dflib.builder.ValueStore;
 
-import java.util.function.Consumer;
+class ByteConverter extends StoringPrimitiveConverter<Byte> {
 
-class ByteConverter extends PrimitiveConverter {
+    public static ByteConverter of(boolean accum, int accumCapacity, boolean allowNulls) {
+        ValueStore<Byte> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
+        return new ByteConverter(store, allowNulls);
+    }
 
-    private final Consumer<Object> consumer;
-
-    public ByteConverter(Consumer<Object> consumer) {
-        this.consumer = consumer;
+    protected ByteConverter(ValueStore<Byte> store, boolean allowsNulls) {
+        super(store, allowsNulls);
     }
 
     @Override
     public void addInt(int value) {
-        consumer.accept((byte) value);
+        store.push((byte) value);
     }
 }
