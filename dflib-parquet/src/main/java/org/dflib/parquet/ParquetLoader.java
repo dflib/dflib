@@ -132,7 +132,6 @@ public class ParquetLoader {
         MessageType projectedSchema = projectSchema(meta.schema());
 
         Index index = createIndex(projectedSchema);
-        int w = index.size();
         StoringConverter[] converters = converters(index, projectedSchema, meta.size());
         GroupConverter rowConverter = rowConverter(converters);
 
@@ -145,6 +144,7 @@ public class ParquetLoader {
             throw new UncheckedIOException("Error reading Parquet source: " + resourceId, e);
         }
 
+        int w = index.size();
         Series<?>[] columns = new Series[w];
         for (int i = 0; i < w; i++) {
             columns[i] = converters[i].accum().toSeries();
