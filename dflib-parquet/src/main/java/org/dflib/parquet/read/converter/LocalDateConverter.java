@@ -9,25 +9,20 @@ import java.time.LocalDate;
 
 class LocalDateConverter extends StoringPrimitiveConverter<LocalDate> {
 
-    public static LocalDateConverter of(boolean accum, int accumCapacity, boolean allowsNulls) {
+    public static LocalDateConverter of(boolean accum, int accumCapacity, boolean dictionarySupport, boolean allowsNulls) {
         ValueStore<LocalDate> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
-        return new LocalDateConverter(store, allowsNulls);
+        return new LocalDateConverter(store, dictionarySupport, allowsNulls);
     }
 
     private LocalDate[] dict;
 
-    protected LocalDateConverter(ValueStore<LocalDate> store, boolean allowsNulls) {
-        super(store, allowsNulls);
+    protected LocalDateConverter(ValueStore<LocalDate> store, boolean dictionarySupport, boolean allowsNulls) {
+        super(store, dictionarySupport, allowsNulls);
     }
 
     @Override
     public void addInt(int daysFromEpoch) {
         store.push(convert(daysFromEpoch));
-    }
-
-    @Override
-    public boolean hasDictionarySupport() {
-        return true;
     }
 
     @Override

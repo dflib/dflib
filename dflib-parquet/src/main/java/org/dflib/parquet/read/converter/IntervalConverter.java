@@ -16,7 +16,7 @@ class IntervalConverter extends StoringPrimitiveConverter<int[]> {
     }
 
     protected IntervalConverter(ValueStore<int[]> store, boolean allowsNulls) {
-        super(store, allowsNulls);
+        super(store, false, allowsNulls);
     }
 
     @Override

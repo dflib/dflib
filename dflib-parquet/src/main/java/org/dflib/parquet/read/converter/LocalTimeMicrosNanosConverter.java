@@ -10,17 +10,17 @@ import java.time.LocalTime;
 
 class LocalTimeMicrosNanosConverter extends StoringPrimitiveConverter<LocalTime> {
 
-    public static LocalTimeMicrosNanosConverter of(boolean accum, int accumCapacity, boolean allowsNulls, LogicalTypeAnnotation.TimeUnit timeUnit) {
+    public static LocalTimeMicrosNanosConverter of(boolean accum, int accumCapacity, boolean dictionarySupport, boolean allowsNulls, LogicalTypeAnnotation.TimeUnit timeUnit) {
         ValueStore<LocalTime> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
-        return new LocalTimeMicrosNanosConverter(store, allowsNulls, timeUnit);
+        return new LocalTimeMicrosNanosConverter(store, dictionarySupport, allowsNulls, timeUnit);
     }
 
     private final long factor;
 
     private LocalTime[] dict;
 
-    protected LocalTimeMicrosNanosConverter(ValueStore<LocalTime> store, boolean allowsNulls, LogicalTypeAnnotation.TimeUnit timeUnit) {
-        super(store, allowsNulls);
+    protected LocalTimeMicrosNanosConverter(ValueStore<LocalTime> store, boolean dictionarySupport, boolean allowsNulls, LogicalTypeAnnotation.TimeUnit timeUnit) {
+        super(store, dictionarySupport, allowsNulls);
         this.factor = switch (timeUnit) {
             case NANOS -> 1L;
             case MICROS -> 1_000L;
@@ -36,11 +36,6 @@ class LocalTimeMicrosNanosConverter extends StoringPrimitiveConverter<LocalTime>
     @Override
     public void addValueFromDictionary(int dictionaryId) {
         store.push(dict[dictionaryId]);
-    }
-
-    @Override
-    public boolean hasDictionarySupport() {
-        return true;
     }
 
     @Override

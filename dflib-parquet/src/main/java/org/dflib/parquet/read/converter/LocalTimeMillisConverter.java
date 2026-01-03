@@ -9,15 +9,15 @@ import java.time.LocalTime;
 
 class LocalTimeMillisConverter extends StoringPrimitiveConverter<LocalTime> {
 
-    public static LocalTimeMillisConverter of(boolean accum, int accumCapacity, boolean allowsNulls) {
+    public static LocalTimeMillisConverter of(boolean accum, int accumCapacity, boolean dictionarySupport, boolean allowsNulls) {
         ValueStore<LocalTime> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
-        return new LocalTimeMillisConverter(store, allowsNulls);
+        return new LocalTimeMillisConverter(store, dictionarySupport, allowsNulls);
     }
 
     private LocalTime[] dict;
 
-    protected LocalTimeMillisConverter(ValueStore<LocalTime> store, boolean allowsNulls) {
-        super(store, allowsNulls);
+    protected LocalTimeMillisConverter(ValueStore<LocalTime> store, boolean dictionarySupport, boolean allowsNulls) {
+        super(store, dictionarySupport, allowsNulls);
     }
 
     @Override
@@ -28,11 +28,6 @@ class LocalTimeMillisConverter extends StoringPrimitiveConverter<LocalTime> {
     @Override
     public void addValueFromDictionary(int dictionaryId) {
         store.push(dict[dictionaryId]);
-    }
-
-    @Override
-    public boolean hasDictionarySupport() {
-        return true;
     }
 
     @Override

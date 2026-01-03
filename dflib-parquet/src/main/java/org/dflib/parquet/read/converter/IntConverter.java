@@ -11,18 +11,18 @@ class IntConverter extends StoringPrimitiveConverter<Integer> {
 
     // TODO: support dictionary when nulls are allowed?
 
-    public static IntConverter of(boolean accum, int accumCapacity, boolean allowsNulls) {
+    public static IntConverter of(boolean accum, int accumCapacity, boolean dictionarySupport, boolean allowsNulls) {
         ValueStore<Integer> store = allowsNulls
                 ? (accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>())
                 : (accum ? new IntAccum(accumCapacity) : new IntHolder());
 
-        return new IntConverter(store, allowsNulls);
+        return new IntConverter(store, dictionarySupport, allowsNulls);
     }
 
     private Integer[] dict;
 
-    protected IntConverter(ValueStore<Integer> store, boolean allowsNulls) {
-        super(store, allowsNulls);
+    protected IntConverter(ValueStore<Integer> store, boolean dictionarySupport, boolean allowsNulls) {
+        super(store, dictionarySupport, allowsNulls);
     }
 
     @Override
@@ -33,7 +33,7 @@ class IntConverter extends StoringPrimitiveConverter<Integer> {
     @Override
     public boolean hasDictionarySupport() {
         // if we are boxing to non-primitives, we might as well use the dictionary
-        return allowsNulls;
+        return allowsNulls && dictionarySupport;
     }
 
     @Override

@@ -106,15 +106,16 @@ public class ParquetLoader_CardinalityTest {
                 $col("e").mapVal(System::identityHashCode),
                 $col("f").mapVal(System::identityHashCode));
 
-
         // Converters using dictionaries will internally compact values, so we'd see lower cardinality
-        assertEquals(4, idCardinality.getColumn(0).unique().size());
-        assertEquals(3, idCardinality.getColumn(1).unique().size());
-        assertEquals(2, idCardinality.getColumn(2).unique().size());
-        assertEquals(3, idCardinality.getColumn(3).unique().size());
-        assertEquals(4, idCardinality.getColumn(4).unique().size());
+        assertEquals(6, idCardinality.getColumn(0).unique().size());
+        assertEquals(6, idCardinality.getColumn(1).unique().size());
+        assertEquals(6, idCardinality.getColumn(2).unique().size());
 
-        // primitive columns are resolved without DFLib cache, only using Java Long.valueOf(..) cache for smaller values
+        // Boolean has fixed cardinality
+        assertEquals(3, idCardinality.getColumn(3).unique().size());
+
+        // Long (and Integer) columns cardinality is reduced due to Java Long.valueOf(..) caching of small values
+        assertEquals(5, idCardinality.getColumn(4).unique().size());
         assertEquals(5, idCardinality.getColumn(5).unique().size());
     }
 

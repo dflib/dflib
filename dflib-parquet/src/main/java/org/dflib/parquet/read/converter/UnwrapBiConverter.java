@@ -13,8 +13,9 @@ class UnwrapBiConverter extends GroupConverter {
     private final BiConsumer<Object, Object> parentConsumer;
 
     public UnwrapBiConverter(Type unwrapType1, Type unwrapType2, BiConsumer<Object, Object> parentConsumer) {
-        this.childConverter1 = StoringConverter.of(unwrapType1, false);
-        this.childConverter2 = StoringConverter.of(unwrapType2, false);
+        // TODO: pass "dictionarySupport" in the constructor
+        this.childConverter1 = StoringConverter.of(unwrapType1, false, true);
+        this.childConverter2 = StoringConverter.of(unwrapType2, false, true);
         this.parentConsumer = parentConsumer;
     }
 

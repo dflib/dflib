@@ -12,7 +12,8 @@ class UnwrapConverter extends GroupConverter {
     private final Consumer<Object> parentStore;
 
     public UnwrapConverter(Type unwrapType, Consumer<Object> parentStore) {
-        this.childConverter = StoringConverter.of(unwrapType, false);
+        // TODO: pass "dictionarySupport" in the constructor
+        this.childConverter = StoringConverter.of(unwrapType, false, true);
         this.parentStore = parentStore;
     }
 

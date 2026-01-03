@@ -13,7 +13,7 @@ class BytesConverter extends StoringPrimitiveConverter<byte[]> {
     }
 
     protected BytesConverter(ValueStore<byte[]> store, boolean allowsNulls) {
-        super(store, allowsNulls);
+        super(store, false, allowsNulls);
     }
 
     @Override

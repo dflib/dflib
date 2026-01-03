@@ -9,18 +9,18 @@ import org.dflib.builder.ValueStore;
 
 class DoubleConverter extends StoringPrimitiveConverter<Double> {
 
-    public static DoubleConverter of(boolean accum, int accumCapacity, boolean allowsNulls) {
+    public static DoubleConverter of(boolean accum, int accumCapacity, boolean dictionarySupport, boolean allowsNulls) {
         ValueStore<Double> store = allowsNulls
                 ? (accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>())
                 : (accum ? new DoubleAccum(accumCapacity) : new DoubleHolder());
 
-        return new DoubleConverter(store, allowsNulls);
+        return new DoubleConverter(store, dictionarySupport, allowsNulls);
     }
 
     private Double[] dict;
 
-    protected DoubleConverter(ValueStore<Double> store, boolean allowsNulls) {
-        super(store, allowsNulls);
+    protected DoubleConverter(ValueStore<Double> store, boolean dictionarySupport, boolean allowsNulls) {
+        super(store, dictionarySupport, allowsNulls);
     }
 
     @Override
@@ -31,7 +31,7 @@ class DoubleConverter extends StoringPrimitiveConverter<Double> {
     @Override
     public boolean hasDictionarySupport() {
         // if we are boxing to non-primitives, we might as well use the dictionary
-        return allowsNulls;
+        return allowsNulls && dictionarySupport;
     }
 
     @Override

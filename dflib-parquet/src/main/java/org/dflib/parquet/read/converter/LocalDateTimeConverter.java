@@ -13,16 +13,16 @@ import java.time.ZoneOffset;
 
 class LocalDateTimeConverter extends StoringPrimitiveConverter<LocalDateTime> {
 
-    public static LocalDateTimeConverter of(boolean accum, int accumCapacity, boolean allowsNulls, LogicalTypeAnnotation.TimeUnit timeUnit) {
+    public static LocalDateTimeConverter of(boolean accum, int accumCapacity, boolean dictionarySupport, boolean allowsNulls, LogicalTypeAnnotation.TimeUnit timeUnit) {
         ValueStore<LocalDateTime> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
-        return new LocalDateTimeConverter(store, allowsNulls, timeUnit);
+        return new LocalDateTimeConverter(store, dictionarySupport, allowsNulls, timeUnit);
     }
 
     private final LongToLocalDateTime mapper;
     private LocalDateTime[] dict;
 
-    public LocalDateTimeConverter(ValueStore<LocalDateTime> store, boolean allowsNulls, TimeUnit timeUnit) {
-        super(store, allowsNulls);
+    protected LocalDateTimeConverter(ValueStore<LocalDateTime> store, boolean dictionarySupport, boolean allowsNulls, TimeUnit timeUnit) {
+        super(store, dictionarySupport, allowsNulls);
         if (timeUnit == TimeUnit.MILLIS) {
             this.mapper = LocalDateTimeConverter::localDateTimeFromMillisFromEpoch;
         } else if (timeUnit == TimeUnit.MICROS) {
@@ -40,11 +40,6 @@ class LocalDateTimeConverter extends StoringPrimitiveConverter<LocalDateTime> {
     @Override
     public void addValueFromDictionary(int dictionaryId) {
         store.push(dict[dictionaryId]);
-    }
-
-    @Override
-    public boolean hasDictionarySupport() {
-        return true;
     }
 
     @Override

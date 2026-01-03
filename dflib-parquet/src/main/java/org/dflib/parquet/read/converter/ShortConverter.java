@@ -12,7 +12,7 @@ class ShortConverter extends StoringPrimitiveConverter<Short> {
     }
 
     protected ShortConverter(ValueStore<Short> store, boolean allowsNulls) {
-        super(store, allowsNulls);
+        super(store, false, allowsNulls);
     }
 
     @Override

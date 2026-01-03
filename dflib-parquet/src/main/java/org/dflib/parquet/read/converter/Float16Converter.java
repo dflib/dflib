@@ -18,7 +18,7 @@ class Float16Converter extends StoringPrimitiveConverter<Float> {
     }
 
     protected Float16Converter(ValueStore<Float> store, boolean allowsNulls) {
-        super(store, allowsNulls);
+        super(store, false, allowsNulls);
     }
 
     @Override

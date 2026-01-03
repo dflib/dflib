@@ -31,10 +31,8 @@ class ColConfigurator {
     int srcPos(Index header) {
         return srcColPos >= 0 ? srcColPos : header.position(srcColName);
     }
-
-    // TODO: introduce compact ValueAccums ("compact" is the only flag influenced by ColConfigurator...
-    //  The rest is purely based on Parquet schema)
+    
     StoringConverter converter(Type colSchema) {
-        return StoringConverter.of(colSchema, true);
+        return StoringConverter.of(colSchema, true, compact);
     }
 }

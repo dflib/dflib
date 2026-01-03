@@ -12,16 +12,16 @@ import java.time.Instant;
 
 class InstantConverter extends StoringPrimitiveConverter<Instant> {
 
-    public static InstantConverter of(boolean accum, int accumCapacity, boolean allowsNulls, LogicalTypeAnnotation.TimeUnit timeUnit) {
+    public static InstantConverter of(boolean accum, int accumCapacity, boolean dictionarySupport, boolean allowsNulls, LogicalTypeAnnotation.TimeUnit timeUnit) {
         ValueStore<Instant> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
-        return new InstantConverter(store, allowsNulls, timeUnit);
+        return new InstantConverter(store, dictionarySupport, allowsNulls, timeUnit);
     }
 
     private final LongToInstant mapper;
     private Instant[] dict;
 
-    protected InstantConverter(ValueStore<Instant> store, boolean allowsNulls, TimeUnit timeUnit) {
-        super(store, allowsNulls);
+    protected InstantConverter(ValueStore<Instant> store, boolean dictionarySupport, boolean allowsNulls, TimeUnit timeUnit) {
+        super(store, dictionarySupport, allowsNulls);
         this.mapper = switch (timeUnit) {
             case MILLIS -> Instants::fromEpochMillis;
             case MICROS -> Instants::fromEpochMicros;
@@ -37,11 +37,6 @@ class InstantConverter extends StoringPrimitiveConverter<Instant> {
     @Override
     public void addValueFromDictionary(int dictionaryId) {
         store.push(dict[dictionaryId]);
-    }
-
-    @Override
-    public boolean hasDictionarySupport() {
-        return true;
     }
 
     @Override

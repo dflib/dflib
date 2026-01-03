@@ -12,18 +12,30 @@ import java.math.BigInteger;
 
 class DecimalConverter extends StoringPrimitiveConverter<BigDecimal> {
 
+    public static DecimalConverter of(
+            boolean accum,
+            int accumCapacity,
+            boolean dictionarySupport,
+            boolean allowNulls,
+            PrimitiveType.PrimitiveTypeName type,
+            int scale) {
 
-    public static DecimalConverter of(boolean accum, int accumCapacity, boolean allowNulls, PrimitiveType.PrimitiveTypeName type, int scale) {
         ValueStore<BigDecimal> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
-        return new DecimalConverter(store, allowNulls, type, scale);
+        return new DecimalConverter(store, dictionarySupport, allowNulls, type, scale);
     }
 
     private final PrimitiveType.PrimitiveTypeName type;
     private final int scale;
     private BigDecimal[] dict;
 
-    protected DecimalConverter(ValueStore<BigDecimal> store, boolean allowsNulls, PrimitiveType.PrimitiveTypeName type, int scale) {
-        super(store, allowsNulls);
+    protected DecimalConverter(
+            ValueStore<BigDecimal> store,
+            boolean dictionarySupport,
+            boolean allowsNulls,
+            PrimitiveType.PrimitiveTypeName type,
+            int scale) {
+
+        super(store, dictionarySupport, allowsNulls);
         this.type = type;
         this.scale = scale;
     }
@@ -46,11 +58,6 @@ class DecimalConverter extends StoringPrimitiveConverter<BigDecimal> {
     @Override
     public void addValueFromDictionary(int dictionaryId) {
         store.push(dict[dictionaryId]);
-    }
-
-    @Override
-    public boolean hasDictionarySupport() {
-        return true;
     }
 
     @Override

@@ -11,25 +11,20 @@ import java.util.UUID;
 
 class UuidConverter extends StoringPrimitiveConverter<UUID> {
 
-    public static UuidConverter of(boolean accum, int accumCapacity, boolean allowsNulls) {
+    public static UuidConverter of(boolean accum, int accumCapacity, boolean dictionarySupport, boolean allowsNulls) {
         ValueStore<UUID> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
-        return new UuidConverter(store, allowsNulls);
+        return new UuidConverter(store, dictionarySupport, allowsNulls);
     }
 
     private UUID[] dict;
 
-    protected UuidConverter(ValueStore<UUID> store, boolean allowsNulls) {
-        super(store, allowsNulls);
+    protected UuidConverter(ValueStore<UUID> store, boolean dictionarySupport, boolean allowsNulls) {
+        super(store, dictionarySupport, allowsNulls);
     }
 
     @Override
     public void addBinary(Binary value) {
         store.push(convert(value));
-    }
-
-    @Override
-    public boolean hasDictionarySupport() {
-        return true;
     }
 
     @Override

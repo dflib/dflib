@@ -8,15 +8,15 @@ import org.dflib.builder.ValueStore;
 
 class StringConverter extends StoringPrimitiveConverter<String> {
 
-    public static StringConverter of(boolean accum, int accumCapacity, boolean allowsNulls) {
+    public static StringConverter of(boolean accum, int accumCapacity, boolean dictionarySupport, boolean allowsNulls) {
         ValueStore<String> store = accum ? new ObjectAccum<>(accumCapacity) : new ObjectHolder<>();
-        return new StringConverter(store, allowsNulls);
+        return new StringConverter(store, dictionarySupport, allowsNulls);
     }
 
     private String[] dict;
 
-    protected StringConverter(ValueStore<String> store, boolean allowsNulls) {
-        super(store, allowsNulls);
+    protected StringConverter(ValueStore<String> store, boolean dictionarySupport, boolean allowsNulls) {
+        super(store, dictionarySupport, allowsNulls);
     }
 
     @Override
@@ -26,11 +26,6 @@ class StringConverter extends StoringPrimitiveConverter<String> {
 
     private String convert(Binary value) {
         return value.toStringUsingUTF8();
-    }
-
-    @Override
-    public boolean hasDictionarySupport() {
-        return true;
     }
 
     @Override

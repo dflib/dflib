@@ -10,16 +10,23 @@ import org.dflib.builder.ValueStore;
 public abstract class StoringPrimitiveConverter<T> extends PrimitiveConverter implements StoringConverter {
 
     protected final ValueStore<T> store;
+    protected final boolean dictionarySupport;
     protected final boolean allowsNulls;
 
-    protected StoringPrimitiveConverter(ValueStore<T> store, boolean allowsNulls) {
+    protected StoringPrimitiveConverter(ValueStore<T> store, boolean dictionarySupport, boolean allowsNulls) {
         this.store = store;
+        this.dictionarySupport = dictionarySupport;
         this.allowsNulls = allowsNulls;
     }
 
     @Override
     public boolean allowsNulls() {
         return allowsNulls;
+    }
+
+    @Override
+    public boolean hasDictionarySupport() {
+        return dictionarySupport;
     }
 
     @Override

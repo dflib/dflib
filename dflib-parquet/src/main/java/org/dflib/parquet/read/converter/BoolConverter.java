@@ -17,7 +17,7 @@ class BoolConverter extends StoringPrimitiveConverter<Boolean> {
     }
 
     protected BoolConverter(ValueStore<Boolean> store, boolean allowsNulls) {
-        super(store, allowsNulls);
+        super(store, false, allowsNulls);
     }
 
     @Override
