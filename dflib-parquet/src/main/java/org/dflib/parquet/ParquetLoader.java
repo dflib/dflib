@@ -105,7 +105,7 @@ public class ParquetLoader {
     }
 
     public DataFrame load(Path filePath) {
-        return loadFromInputFile(new LocalInputFile(filePath), () -> filePath.toString());
+        return loadFromInputFile(new LocalInputFile(filePath), filePath::toString);
     }
 
     /**
