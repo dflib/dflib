@@ -63,7 +63,7 @@ ECharts
 ```
 
 * [dflib #597](https://github.com/dflib/dflib/issues/597): While Parquet file loading became much faster due to other 
-improvement, implicit column compaction was turned off for consistency, that can result higher memory usage (and sometimes
+improvement, implicit column compaction was turned off for consistency, that can result in higher memory usage (and sometimes
 slower loads). You need to explicitly tag all your lower-cardinality columns as "compact" to get the best performance:
 
 ```java
