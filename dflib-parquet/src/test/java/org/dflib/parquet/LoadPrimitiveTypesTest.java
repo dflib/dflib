@@ -65,7 +65,7 @@ public class LoadPrimitiveTypesTest {
 
                     c.endMessage();
                 })
-                .write(new R1(true, 6, 896L, 8.11f, 909.01d, new byte[]{50}, new byte[]{50, 51, 52}),
+                .write(new R1(true, 6, 896L, 8.11f, 909.01d, new byte[]{50}, new byte[]{53, 51, 10}),
                         new R1(false, 8, -196L, -3.12f, -13.01d, new byte[]{60, 61}, new byte[]{50, 51, 52}));
     }
 
@@ -75,7 +75,7 @@ public class LoadPrimitiveTypesTest {
 
         new DataFrameAsserts(df, "b", "i", "l", "f", "d", "bytes", "bytesFixed")
                 .expectHeight(2)
-                .expectRow(0, true, 6, 896L, 8.11f, 909.01d, new byte[]{50}, new byte[]{50, 51, 52})
+                .expectRow(0, true, 6, 896L, 8.11f, 909.01d, new byte[]{50}, new byte[]{53, 51, 10})
                 .expectRow(1, false, 8, -196L, -3.12f, -13.01d, new byte[]{60, 61}, new byte[]{50, 51, 52});
     }
 }

@@ -18,7 +18,7 @@ class BytesConverter extends StoringPrimitiveConverter<byte[]> {
 
     @Override
     public void addBinary(Binary value) {
-        // TODO: unsafe ?? does it work in a multi-row sceanrio
+        // looks like "unsafe" are actually safe for us. The buffer is not resued for different values
         store.push(value.getBytesUnsafe());
     }
 }
