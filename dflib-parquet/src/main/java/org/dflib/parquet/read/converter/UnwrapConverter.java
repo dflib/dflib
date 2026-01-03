@@ -13,7 +13,7 @@ class UnwrapConverter extends GroupConverter {
 
     public UnwrapConverter(Type unwrapType, Consumer<Object> parentStore) {
         // TODO: pass "dictionarySupport" in the constructor
-        this.childConverter = StoringConverter.of(unwrapType, false, true);
+        this.childConverter = StoringConverter.ofValue(unwrapType, true);
         this.parentStore = parentStore;
     }
 

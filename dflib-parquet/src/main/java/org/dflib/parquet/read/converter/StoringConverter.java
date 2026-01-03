@@ -18,8 +18,6 @@ import static org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.*;
  */
 public interface StoringConverter {
 
-    int DEFAULT_CAPACITY = 1000;
-
     // Since Parquet base Converter is a class, we can't make ValueStoreConverter both a Converter and a Store.
     // So implementing converters will simply return "this" here.
     Converter converter();
@@ -36,14 +34,22 @@ public interface StoringConverter {
         return (ValueHolder<?>) store();
     }
 
-    static StoringConverter of(Type colSchema, boolean accum, boolean dictionarySupport) {
+    static StoringConverter ofAccum(Type colSchema, int capacity, boolean dictionarySupport) {
+        return of(colSchema, true, capacity, dictionarySupport);
+    }
+
+    static StoringConverter ofValue(Type colSchema, boolean dictionarySupport) {
+        return of(colSchema, false, -1, dictionarySupport);
+    }
+
+    private static StoringConverter of(Type colSchema, boolean accum, int accumCapacity, boolean dictionarySupport) {
 
         boolean allowsNulls = colSchema.getRepetition() == Type.Repetition.OPTIONAL;
 
         if (colSchema.isPrimitive()) {
-            return primitiveConverter(colSchema.asPrimitiveType(), accum, dictionarySupport, allowsNulls);
+            return primitiveConverter(colSchema.asPrimitiveType(), accum, accumCapacity, dictionarySupport, allowsNulls);
         } else if (colSchema instanceof GroupType gt) {
-            return groupConverter(gt, accum, allowsNulls);
+            return groupConverter(gt, accum, accumCapacity, allowsNulls);
         }
 
         throw new RuntimeException(colSchema + " deserialization is not supported");
@@ -52,6 +58,7 @@ public interface StoringConverter {
     private static StoringConverter primitiveConverter(
             PrimitiveType colSchema,
             boolean accum,
+            int accumCapacity,
             boolean dictionarySupport,
             boolean allowsNulls) {
 
@@ -61,22 +68,22 @@ public interface StoringConverter {
         if (lt != null) {
 
             if (lt.equals(LogicalTypeAnnotation.stringType())) {
-                return StringConverter.of(accum, DEFAULT_CAPACITY, dictionarySupport, allowsNulls);
+                return StringConverter.of(accum, accumCapacity, dictionarySupport, allowsNulls);
             }
 
             if (lt.equals(LogicalTypeAnnotation.enumType())) {
-                return StringConverter.of(accum, DEFAULT_CAPACITY, dictionarySupport, allowsNulls);
+                return StringConverter.of(accum, accumCapacity, dictionarySupport, allowsNulls);
             }
 
             if (lt instanceof LogicalTypeAnnotation.IntLogicalTypeAnnotation intType) {
                 return switch (intType.getBitWidth()) {
                     // TODO: we don't have primitive byte and short Series.. The data is passed as ints anyways,
                     //  so should we produce IntSeries for those? ByteSeries actually sounds like a good addition to DFLib
-                    case 8 -> ByteConverter.of(accum, DEFAULT_CAPACITY, allowsNulls);
-                    case 16 -> ShortConverter.of(accum, DEFAULT_CAPACITY, allowsNulls);
+                    case 8 -> ByteConverter.of(accum, accumCapacity, allowsNulls);
+                    case 16 -> ShortConverter.of(accum, accumCapacity, allowsNulls);
 
-                    case 32 -> IntConverter.of(accum, DEFAULT_CAPACITY, dictionarySupport, allowsNulls);
-                    case 64 -> LongConverter.of(accum, DEFAULT_CAPACITY, dictionarySupport, allowsNulls);
+                    case 32 -> IntConverter.of(accum, accumCapacity, dictionarySupport, allowsNulls);
+                    case 64 -> LongConverter.of(accum, accumCapacity, dictionarySupport, allowsNulls);
 
                     default -> throw new IllegalArgumentException("Invalid bit width for an int type: " + colSchema);
                 };
@@ -87,7 +94,7 @@ public interface StoringConverter {
                     throw new IllegalArgumentException("Can't decode as UUID, must be a 'FIXED_LEN_BYTE_ARRAY': " + colSchema);
                 }
 
-                return UuidConverter.of(accum, DEFAULT_CAPACITY, dictionarySupport, allowsNulls);
+                return UuidConverter.of(accum, accumCapacity, dictionarySupport, allowsNulls);
             }
 
             if (lt.equals(LogicalTypeAnnotation.dateType())) {
@@ -95,14 +102,14 @@ public interface StoringConverter {
                     throw new IllegalArgumentException("Can't decode as DATE: " + colSchema);
                 }
 
-                return LocalDateConverter.of(accum, DEFAULT_CAPACITY, dictionarySupport, allowsNulls);
+                return LocalDateConverter.of(accum, accumCapacity, dictionarySupport, allowsNulls);
             }
 
             if (lt instanceof LogicalTypeAnnotation.TimeLogicalTypeAnnotation time) {
                 return switch (name) {
-                    case INT32 -> LocalTimeMillisConverter.of(accum, DEFAULT_CAPACITY, dictionarySupport, allowsNulls);
+                    case INT32 -> LocalTimeMillisConverter.of(accum, accumCapacity, dictionarySupport, allowsNulls);
                     case INT64 ->
-                            LocalTimeMicrosNanosConverter.of(accum, DEFAULT_CAPACITY, dictionarySupport, allowsNulls, time.getUnit());
+                            LocalTimeMicrosNanosConverter.of(accum, accumCapacity, dictionarySupport, allowsNulls, time.getUnit());
                     default -> throw new IllegalArgumentException("Can't decode as TIME: " + colSchema);
                 };
             }
@@ -113,49 +120,49 @@ public interface StoringConverter {
                 }
 
                 return ts.isAdjustedToUTC()
-                        ? InstantConverter.of(accum, DEFAULT_CAPACITY, dictionarySupport, allowsNulls, ts.getUnit())
-                        : LocalDateTimeConverter.of(accum, DEFAULT_CAPACITY, dictionarySupport, allowsNulls, ts.getUnit());
+                        ? InstantConverter.of(accum, accumCapacity, dictionarySupport, allowsNulls, ts.getUnit())
+                        : LocalDateTimeConverter.of(accum, accumCapacity, dictionarySupport, allowsNulls, ts.getUnit());
             }
 
             if (lt instanceof LogicalTypeAnnotation.DecimalLogicalTypeAnnotation dt) {
-                return DecimalConverter.of(accum, DEFAULT_CAPACITY, dictionarySupport, allowsNulls, name, dt.getScale());
+                return DecimalConverter.of(accum, accumCapacity, dictionarySupport, allowsNulls, name, dt.getScale());
             }
 
             if (lt instanceof LogicalTypeAnnotation.Float16LogicalTypeAnnotation) {
-                return Float16Converter.of(accum, DEFAULT_CAPACITY, allowsNulls);
+                return Float16Converter.of(accum, accumCapacity, allowsNulls);
             }
 
             if (lt instanceof LogicalTypeAnnotation.IntervalLogicalTypeAnnotation) {
-                return IntervalConverter.of(accum, DEFAULT_CAPACITY, allowsNulls);
+                return IntervalConverter.of(accum, accumCapacity, allowsNulls);
             }
 
             // for unknown annotations fall through to the base primitive type
         }
 
         return switch (name) {
-            case INT32 -> IntConverter.of(accum, DEFAULT_CAPACITY, dictionarySupport, allowsNulls);
-            case INT64 -> LongConverter.of(accum, DEFAULT_CAPACITY, dictionarySupport, allowsNulls);
-            case FLOAT -> FloatConverter.of(accum, DEFAULT_CAPACITY, dictionarySupport, allowsNulls);
-            case DOUBLE -> DoubleConverter.of(accum, DEFAULT_CAPACITY, dictionarySupport, allowsNulls);
-            case BOOLEAN -> BoolConverter.of(accum, DEFAULT_CAPACITY, allowsNulls);
-            case BINARY, FIXED_LEN_BYTE_ARRAY -> BytesConverter.of(accum, DEFAULT_CAPACITY, allowsNulls);
+            case INT32 -> IntConverter.of(accum, accumCapacity, dictionarySupport, allowsNulls);
+            case INT64 -> LongConverter.of(accum, accumCapacity, dictionarySupport, allowsNulls);
+            case FLOAT -> FloatConverter.of(accum, accumCapacity, dictionarySupport, allowsNulls);
+            case DOUBLE -> DoubleConverter.of(accum, accumCapacity, dictionarySupport, allowsNulls);
+            case BOOLEAN -> BoolConverter.of(accum, accumCapacity, allowsNulls);
+            case BINARY, FIXED_LEN_BYTE_ARRAY -> BytesConverter.of(accum, accumCapacity, allowsNulls);
             case INT96 -> throw new RuntimeException("INT96 deserialization is deprecated and is not supported");
         };
     }
 
-    private static StoringConverter groupConverter(GroupType colSchema, boolean accum, boolean allowsNulls) {
+    private static StoringConverter groupConverter(GroupType colSchema, boolean accum, int accumCapacity, boolean allowsNulls) {
         LogicalTypeAnnotation logicalType = colSchema.getLogicalTypeAnnotation();
 
         if (logicalType instanceof LogicalTypeAnnotation.ListLogicalTypeAnnotation) {
 
             if (colSchema.getType(0) instanceof GroupType et && colSchema.getType(0).isRepetition(Type.Repetition.REPEATED)) {
-                return ToListConverter.of(accum, DEFAULT_CAPACITY, allowsNulls, et.getType(0));
+                return ToListConverter.of(accum, accumCapacity, allowsNulls, et.getType(0));
             } else {
                 throw new RuntimeException("Expected a 'repeated group' type within the LIST group. Got: " + colSchema.getType(0));
             }
         } else if (logicalType instanceof LogicalTypeAnnotation.MapLogicalTypeAnnotation) {
             if (colSchema.getType(0) instanceof GroupType et && colSchema.getType(0).isRepetition(Type.Repetition.REPEATED)) {
-                return ToMapConverter.of(accum, DEFAULT_CAPACITY, allowsNulls, et.getType(0), et.getType(1));
+                return ToMapConverter.of(accum, accumCapacity, allowsNulls, et.getType(0), et.getType(1));
             } else {
                 throw new RuntimeException("Expected a 'repeated group' type within the MAP group. Got: " + colSchema.getType(0));
             }
