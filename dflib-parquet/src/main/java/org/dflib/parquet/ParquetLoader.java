@@ -1,6 +1,7 @@
 package org.dflib.parquet;
 
 import org.apache.parquet.hadoop.ParquetReader;
+import org.apache.parquet.io.InputFile;
 import org.apache.parquet.io.LocalInputFile;
 import org.apache.parquet.schema.GroupType;
 import org.apache.parquet.schema.MessageType;
@@ -97,31 +98,7 @@ public class ParquetLoader {
     }
 
     public DataFrame load(Path filePath) {
-        try {
-
-            // TODO: to avoid reading the schema twice, is it possible to defer schema extraction to
-            //  DataFrameReadSupport.init(..) ?
-
-            MessageType fileSchema = Parquet.schemaLoader().load(filePath);
-            MessageType projectedSchema = projectSchema(fileSchema);
-
-            Index index = createIndex(projectedSchema);
-
-            DataFrameAppender<Object[]> appender = DataFrame.byArrayRow(extractors(index, projectedSchema))
-                    .columnIndex(index)
-                    .appender();
-
-            LocalInputFile inputFile = new LocalInputFile(filePath);
-            ParquetReader<Object[]> reader = new DataFrameParquetReaderBuilder(inputFile, projectedSchema).build();
-
-            Object[] row;
-            while ((row = reader.read()) != null) {
-                appender.append(row);
-            }
-            return appender.toDataFrame();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        return loadFromInputFile(new LocalInputFile(filePath), Parquet.schemaLoader().load(filePath), filePath.toString());
     }
 
     /**
@@ -139,27 +116,35 @@ public class ParquetLoader {
     }
 
     private DataFrame loadFromBytes(byte[] bytes, String resourceId) {
+        return loadFromInputFile(new BytesInputFile(bytes), Parquet.schemaLoader().load(bytes), resourceId);
+    }
+
+    private DataFrame loadFromInputFile(InputFile inputFile, MessageType schema, String resourceId) {
+
+        // TODO: to avoid reading the schema twice, is it possible to defer schema extraction to
+        //  DataFrameReadSupport.init(..) ?
+
+        MessageType projectedSchema = projectSchema(schema);
+
+        Index index = createIndex(projectedSchema);
+
+        DataFrameAppender<Object[]> appender = DataFrame.byArrayRow(extractors(index, projectedSchema))
+                .columnIndex(index)
+                .appender();
+
         try {
-            MessageType fileSchema = Parquet.schemaLoader().load(bytes);
-            MessageType projectedSchema = projectSchema(fileSchema);
-
-            Index index = createIndex(projectedSchema);
-
-            DataFrameAppender<Object[]> appender = DataFrame.byArrayRow(extractors(index, projectedSchema))
-                    .columnIndex(index)
-                    .appender();
-
-            BytesInputFile inputFile = new BytesInputFile(bytes);
             ParquetReader<Object[]> reader = new DataFrameParquetReaderBuilder(inputFile, projectedSchema).build();
 
             Object[] row;
             while ((row = reader.read()) != null) {
                 appender.append(row);
             }
-            return appender.toDataFrame();
+
         } catch (IOException e) {
             throw new UncheckedIOException("Error reading source: " + resourceId, e);
         }
+
+        return appender.toDataFrame();
     }
 
     private MessageType projectSchema(MessageType schema) {
