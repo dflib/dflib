@@ -72,18 +72,34 @@ public class Avro {
     }
 
 
+    /**
+     * @deprecated use {@link Avro#schemaLoader()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static Schema loadSchema(Path path) {
-        return schemaLoader().load(path);
+        return schemaLoader().loadFromJson(path);
     }
 
+    /**
+     * @deprecated use {@link Avro#schemaLoader()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static Schema loadSchema(File file) {
-        return schemaLoader().load(file);
+        return schemaLoader().loadFromJson(file);
     }
 
+    /**
+     * @deprecated use {@link Avro#schemaLoader()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static Schema loadSchema(String filePath) {
-        return schemaLoader().load(filePath);
+        return schemaLoader().loadFromJson(filePath);
     }
 
+    /**
+     * @deprecated use {@link Avro#schemaLoader()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static Schema loadSchema(InputStream in) {
         return schemaLoader().load(in);
     }
@@ -125,35 +141,67 @@ public class Avro {
         return new AvroSaver();
     }
 
+    /**
+     * @deprecated use {@link Avro#schemaSaver()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static void saveSchema(DataFrame df, Path filePath) {
         schemaSaver().save(df, filePath);
     }
 
+    /**
+     * @deprecated use {@link Avro#schemaSaver()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static void saveSchema(DataFrame df, String filePath) {
         schemaSaver().save(df, filePath);
     }
 
+    /**
+     * @deprecated use {@link Avro#schemaSaver()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static void saveSchema(DataFrame df, File file) {
         schemaSaver().save(df, file);
     }
 
+    /**
+     * @deprecated use {@link Avro#schemaSaver()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static void saveSchema(DataFrame df, OutputStream out) {
         schemaSaver().save(df, out);
     }
 
+    /**
+     * @deprecated use {@link Avro#schemaSaver()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static void saveSchema(Schema schema, String filePath) {
         schemaSaver().save(schema, filePath);
     }
 
 
+    /**
+     * @deprecated use {@link Avro#schemaSaver()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static void saveSchema(Schema schema, Path filePath) {
         schemaSaver().save(schema, filePath);
     }
 
+    /**
+     * @deprecated use {@link Avro#schemaSaver()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static void saveSchema(Schema schema, File file) {
         schemaSaver().save(schema, file);
     }
 
+    /**
+     * @deprecated use {@link Avro#schemaSaver()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static void saveSchema(Schema schema, OutputStream out) {
         schemaSaver().save(schema, out);
     }

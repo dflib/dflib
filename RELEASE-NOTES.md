@@ -30,6 +30,7 @@
 * #595 dflib-jupyter - JJava-aware logging settings
 * #596 Parquet loader optimizations
 * #597 ParquetLoader: align value cardinality with explicit compaction settings
+* #598 AvroSchemaLoader: support loading schema from Avro files
 
 ## Release 2.0.0-M5
 

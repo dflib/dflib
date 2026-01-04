@@ -66,7 +66,7 @@ public class AvroLoader {
 
     public DataFrame load(File file) {
         try (SeekableFileInput in = new SeekableFileInput(file)) {
-            return load(in);
+            return loadFromSeekable(in);
         } catch (IOException e) {
             throw new RuntimeException("Error reading Avro file: " + file, e);
         }
@@ -96,7 +96,7 @@ public class AvroLoader {
 
     public DataFrame load(byte[] bytes) {
         try (SeekableByteArrayInput in = new SeekableByteArrayInput(bytes)) {
-            return load(in);
+            return loadFromSeekable(in);
         } catch (IOException e) {
             throw new RuntimeException("Error reading Avro bytes", e);
         }

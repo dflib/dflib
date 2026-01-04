@@ -34,7 +34,7 @@ public class SaveSchemaTest {
                 );
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Avro.saveSchema(df, out);
+        Avro.schemaSaver().save(df, out);
 
         assertEquals("""
                         {"type":"record","name":"DataFrame","namespace":"org.dflib","fields":[\
@@ -63,7 +63,7 @@ public class SaveSchemaTest {
                 .fields().name("c").type(Schema.create(Schema.Type.BYTES)).noDefault()
                 .endRecord();
 
-        Avro.saveSchema(schema, out);
+        Avro.schemaSaver().save(schema, out);
 
         assertEquals("""
                         {"type":"record","name":"x","namespace":"com.foo","fields":[{"name":"c","type":"bytes"}]}""",
