@@ -8,13 +8,14 @@ import org.apache.avro.file.SeekableFileInput;
 import org.apache.avro.file.SeekableInput;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
+import org.dflib.ByteSource;
+import org.dflib.ByteSources;
 import org.dflib.DataFrame;
 import org.dflib.Extractor;
 import org.dflib.Index;
+import org.dflib.avro.schema.SchemaProjector;
 import org.dflib.avro.types.AvroTypeExtensions;
 import org.dflib.builder.DataFrameAppender;
-import org.dflib.ByteSource;
-import org.dflib.ByteSources;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +33,7 @@ public class AvroLoader {
     }
 
     private Schema schema;
+    private SchemaProjector schemaProjector;
     private final List<ColConfigurator> colConfigurators;
 
     public AvroLoader() {
@@ -41,10 +43,49 @@ public class AvroLoader {
     /**
      * Sets an explicit "reader" schema. If not set, embedded "writer" schema of the file will be used. Of course
      * the reader and the writer schema may differ, but should match each other per set of rules described in the
-     * <a href="https://avro.apache.org/docs/current/spec.html#Schema+Resolution">Avro specification</a>.
+     * <a href="https://avro.apache.org/docs/1.12.0/specification/#schema-resolution">Avro specification</a>.
      */
     public AvroLoader schema(Schema schema) {
         this.schema = schema;
+        return this;
+    }
+
+    /**
+     * Configures the loader to only process the specified columns, and include them in the DataFrame in the specified
+     * order.
+     *
+     * @return this loader instance
+     * @since 2.0.0
+     */
+    public AvroLoader cols(String... columns) {
+        this.schemaProjector = SchemaProjector.ofCols(columns);
+        return this;
+    }
+
+    /**
+     * @return this loader instance
+     * @since 2.0.0
+     */
+    public AvroLoader cols(int... columns) {
+        this.schemaProjector = SchemaProjector.ofCols(columns);
+        return this;
+    }
+
+    /**
+     * @return this loader instance
+     * @since 2.0.0
+     */
+    public AvroLoader colsExcept(String... columns) {
+        this.schemaProjector = SchemaProjector.ofColsExcept(columns);
+        return this;
+    }
+
+    /**
+     * @return this loader instance
+     * @since 2.0.0
+     */
+    public AvroLoader colsExcept(int... columns) {
+        this.schemaProjector = SchemaProjector.ofColsExcept(columns);
         return this;
     }
 
@@ -119,18 +160,22 @@ public class AvroLoader {
 
         try {
             GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>(
-                    schema,
-                    schema,
+                    null,
+                    null,
                     AvroTypeExtensions.getGenericDataForLoad());
 
+            // side effect - initializes "actual" schema on the "reader"
             DataFileStream<GenericRecord> inReader = new DataFileStream<>(in, reader);
-            Schema schema = reader.getExpected();
 
-            Index index = createIndex(schema);
+            Schema expectedSchema = expectedSchema(reader.getSchema());
+            reader.setExpected(expectedSchema);
+
+            Index index = createIndex(expectedSchema);
             DataFrameAppender<GenericRecord> appender = DataFrame
-                    .byRow(extractors(index, schema))
+                    .byRow(extractors(index, expectedSchema))
                     .columnIndex(index)
                     .appender();
+
 
             // reuse "record" flyweight
             GenericRecord record = null;
@@ -154,16 +199,19 @@ public class AvroLoader {
         // See: https://avro.apache.org/docs/current/spec.html#Schema+Resolution
 
         GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>(
-                schema,
-                schema,
+                null,
+                null,
                 AvroTypeExtensions.getGenericDataForLoad());
-        
-        DataFileReader<GenericRecord> inReader = new DataFileReader<>(in, reader);
-        Schema schema = reader.getExpected();
 
-        Index index = createIndex(schema);
+        // side effect - initializes "actual" schema on the "reader"
+        DataFileReader<GenericRecord> inReader = new DataFileReader<>(in, reader);
+
+        Schema expectedSchema = expectedSchema(reader.getSchema());
+        reader.setExpected(expectedSchema);
+
+        Index index = createIndex(expectedSchema);
         DataFrameAppender<GenericRecord> appender = DataFrame
-                .byRow(extractors(index, schema))
+                .byRow(extractors(index, expectedSchema))
                 .columnIndex(index)
                 .appender();
 
@@ -203,5 +251,13 @@ public class AvroLoader {
         }
 
         return extractors;
+    }
+
+    private Schema expectedSchema(Schema actualSchema) {
+        Schema expectedSchema = this.schema != null ? this.schema : actualSchema;
+
+        return schemaProjector != null
+                ? schemaProjector.project(expectedSchema)
+                : expectedSchema;
     }
 }

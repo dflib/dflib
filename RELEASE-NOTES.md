@@ -31,6 +31,7 @@
 * #596 Parquet loader optimizations
 * #597 ParquetLoader: align value cardinality with explicit compaction settings
 * #598 AvroSchemaLoader: support loading schema from Avro files
+* #599 AvroLoader: column filtering
 
 ## Release 2.0.0-M5
 
