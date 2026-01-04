@@ -34,6 +34,7 @@ public class AvroLoader {
 
     private Schema schema;
     private SchemaProjector schemaProjector;
+    private boolean compactAllCols;
     private final List<ColConfigurator> colConfigurators;
 
     public AvroLoader() {
@@ -90,19 +91,56 @@ public class AvroLoader {
     }
 
     /**
-     * Configures an Avro column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
+     * Compacts all read columns
+     *
+     * @since 2.0.0
      */
-    public AvroLoader compactCol(int column) {
-        colConfigurators.add(ColConfigurator.objectCol(column, true));
+    public AvroLoader compactCols() {
+        this.compactAllCols = true;
+        this.colConfigurators.clear();
+        return this;
+    }
+
+    /**
+     * Configures Avro columns to be compacted during loading. Should be used to save memory for low-cardinality columns.
+     */
+    public AvroLoader compactCols(int... columns) {
+        compactAllCols = false;
+        for (int c : columns) {
+            colConfigurators.add(ColConfigurator.objectCol(c, true));
+        }
+        return this;
+    }
+
+    /**
+     * Configures Avro columns to be compacted during loading. Should be used to save memory for low-cardinality columns.
+     */
+    public AvroLoader compactCols(String... columns) {
+        compactAllCols = false;
+        for (String c : columns) {
+            colConfigurators.add(ColConfigurator.objectCol(c, true));
+        }
         return this;
     }
 
     /**
      * Configures an Avro column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
+     *
+     * @deprecated in favor og {@link #compactCols(int...)}
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public AvroLoader compactCol(int column) {
+        return compactCols(column);
+    }
+
+    /**
+     * Configures an Avro column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
+     *
+     * @deprecated in favor og {@link #compactCols(String...)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public AvroLoader compactCol(String column) {
-        colConfigurators.add(ColConfigurator.objectCol(column, true));
-        return this;
+        return compactCols(column);
     }
 
     public DataFrame load(File file) {
@@ -238,15 +276,19 @@ public class AvroLoader {
         // TODO: do we need to explicitly sort field by "order" to recreate save order?
 
         Map<Integer, ColConfigurator> configurators = new HashMap<>();
-        for (ColConfigurator c : colConfigurators) {
-            // later configs override earlier configs at the same position
-            configurators.put(c.srcPos(index), c);
+
+        // presumably "colConfigurators" will be empty if "compactAllCols == true", still doing a paranoid check
+        if (!compactAllCols) {
+            for (ColConfigurator c : colConfigurators) {
+                // later configs override earlier configs at the same position
+                configurators.put(c.srcPos(index), c);
+            }
         }
 
-        int w = schema.getFields().size();
+        int w = index.size();
         Extractor<GenericRecord, ?>[] extractors = new Extractor[w];
         for (int i = 0; i < w; i++) {
-            ColConfigurator cc = configurators.computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, false));
+            ColConfigurator cc = configurators.computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, compactAllCols));
             extractors[i] = cc.extractor(i, schema);
         }
 

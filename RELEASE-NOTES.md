@@ -32,6 +32,7 @@
 * #597 ParquetLoader: align value cardinality with explicit compaction settings
 * #598 AvroSchemaLoader: support loading schema from Avro files
 * #599 AvroLoader: column filtering
+* #600 AvroLoader, ParquetLoader: compactCols(..)
 
 ## Release 2.0.0-M5
 

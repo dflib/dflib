@@ -36,6 +36,7 @@ public class ParquetLoader {
 
     private SchemaProjector schemaProjector;
     private final List<ColConfigurator> colConfigurators;
+    private boolean compactAllCols;
 
     public ParquetLoader() {
         this.colConfigurators = new ArrayList<>();
@@ -77,23 +78,62 @@ public class ParquetLoader {
     }
 
     /**
-     * Configures a Parquet column to be loaded with value compaction. Should be used to save memory for low-cardinality
-     * columns. Note that Parquet already does compaction on String columns by default, but some other column types
-     * can take advantage of an explicit compaction.
+     * Configures all Parquet columns to be compacted during load. Should be used to save memory for low-cardinality
+     * columns. Note that Parquet format is already compacted, so this operation doesn't incur much overhead, and in fact
+     * can be faster than no compaction.
+     *
+     * @since 2.0.0
      */
-    public ParquetLoader compactCol(int column) {
-        colConfigurators.add(ColConfigurator.objectCol(column, true));
+    public ParquetLoader compactCols() {
+        this.compactAllCols = true;
+        this.colConfigurators.clear();
         return this;
     }
 
     /**
-     * Configures a Parquet column to be loaded with value compaction. Should be used to save memory for low-cardinality
-     * columns. Note that Parquet already does compaction on String columns by default, but some other column types
-     * can take advantage of an explicit compaction.
+     * Configures Parquet columns to be compacted during load. Should be used to save memory for low-cardinality
+     * columns. Note that Parquet format is already compacted, so this operation doesn't incur much overhead, and in fact
+     * can be faster than no compaction.
+     *
+     * @since 2.0.0
      */
-    public ParquetLoader compactCol(String column) {
-        colConfigurators.add(ColConfigurator.objectCol(column, true));
+    public ParquetLoader compactCols(int... cols) {
+        this.compactAllCols = false;
+        for (int c : cols) {
+            colConfigurators.add(ColConfigurator.objectCol(c, true));
+        }
         return this;
+    }
+
+    /**
+     * Configures Parquet columns to be compacted during load. Should be used to save memory for low-cardinality
+     * columns. Note that Parquet format is already compacted, so this operation doesn't incur much overhead, and in fact
+     * can be faster than no compaction.
+     *
+     * @since 2.0.0
+     */
+    public ParquetLoader compactCols(String... cols) {
+        this.compactAllCols = false;
+        for (String c : cols) {
+            colConfigurators.add(ColConfigurator.objectCol(c, true));
+        }
+        return this;
+    }
+
+    /**
+     * @deprecated in favor of {@link #compactCols(int...)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public ParquetLoader compactCol(int column) {
+        return compactCols(column);
+    }
+
+    /**
+     * @deprecated in favor of {@link #compactCols(String...)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public ParquetLoader compactCol(String column) {
+        return compactCol(column);
     }
 
     public DataFrame load(File file) {
@@ -178,16 +218,20 @@ public class ParquetLoader {
     private StoringConverter[] converters(Index index, GroupType schema, int capacity) {
 
         Map<Integer, ColConfigurator> configurators = new HashMap<>();
-        for (ColConfigurator c : colConfigurators) {
-            // later configs override earlier configs at the same position
-            configurators.put(c.srcPos(index), c);
+
+        // presumably "colConfigurators" will be empty if "compactAllCols == true", still doing a paranoid check
+        if (!compactAllCols) {
+            for (ColConfigurator c : colConfigurators) {
+                // later configs override earlier configs at the same position
+                configurators.put(c.srcPos(index), c);
+            }
         }
 
         int w = schema.getFields().size();
         StoringConverter[] converters = new StoringConverter[w];
         for (int i = 0; i < w; i++) {
             converters[i] = configurators
-                    .computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, false))
+                    .computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, compactAllCols))
                     .converter(schema.getFields().get(i), capacity);
         }
 
