@@ -7,6 +7,7 @@ import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 import org.apache.avro.data.TimeConversions;
 import org.apache.avro.generic.GenericData;
+import org.dflib.avro.write.GenericDataForSave;
 
 
 public class AvroTypeExtensions {
@@ -16,49 +17,56 @@ public class AvroTypeExtensions {
 
     static {
 
-        GENERIC_DATA_FOR_SAVE = new GenericData();
-
+        GENERIC_DATA_FOR_SAVE = new GenericDataForSave();
         GENERIC_DATA_FOR_LOAD = new GenericData();
 
-        // add Avro logical types to "load" data so that we can read files produced by other tools
+        // TODO: saver also should have these... use "registerConversion" , write tests for UUID, Instant, etc.
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new Conversions.DecimalConversion());
-        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new Conversions.BigDecimalConversion());
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new Conversions.UUIDConversion());
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new Conversions.DurationConversion());
-        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.DateConversion());
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.TimestampMillisConversion());
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.TimestampMicrosConversion());
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.TimestampNanosConversion());
-        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.LocalTimestampMillisConversion());
-        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.LocalTimestampMicrosConversion());
-        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.LocalTimestampNanosConversion());
-        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.TimeMicrosConversion());
-        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.TimeMillisConversion());
 
-        registerLogicalType(BigDecimalConversion.TYPE);
+
+        registerConversion(new Conversions.BigDecimalConversion());
+        registerConversion(new TimeConversions.DateConversion());
+        registerConversion(new TimeConversions.LocalTimestampMillisConversion());
+        registerConversion(new TimeConversions.LocalTimestampMicrosConversion());
+        registerConversion(new TimeConversions.LocalTimestampNanosConversion());
+        registerConversion(new TimeConversions.TimeMicrosConversion());
+        registerConversion(new TimeConversions.TimeMillisConversion());
+
+        // custom DFLib logical types
+        registerConversion(new BigIntegerConversion());
+        registerConversion(new DurationConversion());
+        registerConversion(new PeriodConversion());
+        registerConversion(new YearMonthConversion());
+        registerConversion(new YearConversion());
+        registerConversion(new UnmappedConversion());
+
         registerLogicalType(BigIntegerConversion.TYPE);
-        registerLogicalType(ByteArrayConversion.TYPE);
         registerLogicalType(DurationConversion.TYPE);
-        registerLogicalType(LocalDateConversion.TYPE);
-        registerLogicalType(LocalDateTimeConversion.TYPE);
-        registerLogicalType(LocalTimeConversion.TYPE);
         registerLogicalType(PeriodConversion.TYPE);
         registerLogicalType(YearMonthConversion.TYPE);
         registerLogicalType(YearConversion.TYPE);
         registerLogicalType(UnmappedConversion.TYPE);
 
-        registerConversion(new BigDecimalConversion());
-        registerConversion(new BigIntegerConversion());
-        registerConversion(new ByteArrayConversion());
-        registerConversion(new DurationConversion());
-        registerConversion(new LocalDateConversion());
-        registerConversion(new LocalDateTimeConversion());
-        registerConversion(new LocalTimeConversion());
-        registerConversion(new PeriodConversion());
-        registerConversion(new YearMonthConversion());
-        registerConversion(new YearConversion());
+        configureLegacyDFLibV1Extensions();
+    }
 
-        registerConversion(new UnmappedConversion());
+    private static void configureLegacyDFLibV1Extensions() {
+        registerLogicalType(BigDecimalConversion.TYPE);
+        registerLogicalType(ByteArrayConversion.TYPE);
+        registerLogicalType(LocalDateConversion.TYPE);
+        registerLogicalType(LocalTimeConversion.TYPE);
+        registerLogicalType(LocalDateTimeConversion.TYPE);
+
+        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new BigDecimalConversion());
+        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new ByteArrayConversion());
+        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new LocalDateConversion());
+        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new LocalTimeConversion());
+        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new LocalDateTimeConversion());
     }
 
     /**

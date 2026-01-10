@@ -30,8 +30,26 @@ public class AvroSchemaCompiler {
     private static final String DEFAULT_NAME = "DataFrame";
     private static final String DEFAULT_NAMESPACE = "org.dflib";
 
+    private static final String LOCAL_TIMESTAMP_MILLIS_TYPE = "local-timestamp-millis";
+    private static final String LOCAL_TIMESTAMP_MICROS_TYPE = "local-timestamp-micros";
+    private static final String LOCAL_TIMESTAMP_NANOS_TYPE = "local-timestamp-nanos";
+
+    private static final String TIME_MILLIS_TYPE = "time-millis";
+    private static final String TIME_MICROS_TYPE = "time-micros";
+
     protected String name;
     protected String namespace;
+    private SchemaTimeUnit timeUnit;
+
+    /**
+     * Sets the rounding unit for times and timestamps. The default is {@link SchemaTimeUnit#MICROS}.
+     *
+     * @since 2.0.0
+     */
+    public AvroSchemaCompiler timeUnit(SchemaTimeUnit timeUnit) {
+        this.timeUnit = timeUnit;
+        return this;
+    }
 
     /**
      * Sets the schema name of the generated Avro file. Optional. The default will be "DataFrame".
@@ -53,6 +71,7 @@ public class AvroSchemaCompiler {
 
         String name = this.name != null ? this.name : DEFAULT_NAME;
         String namespace = this.namespace != null ? this.namespace : DEFAULT_NAMESPACE;
+        SchemaTimeUnit timeUnit = this.timeUnit != null ? this.timeUnit : SchemaTimeUnit.MICROS;
 
         SchemaBuilder.FieldAssembler<Schema> fields = SchemaBuilder
                 .record(name)
@@ -60,18 +79,25 @@ public class AvroSchemaCompiler {
                 .fields();
 
         for (String column : df.getColumnsIndex()) {
-            createSchemaField(fields, column, df.getColumn(column));
+            createSchemaField(fields, column, timeUnit, df.getColumn(column));
         }
 
         return fields.endRecord();
     }
 
-    protected void createSchemaField(SchemaBuilder.FieldAssembler<Schema> builder, String columnName, Series<?> column) {
+    protected void createSchemaField(
+            SchemaBuilder.FieldAssembler<Schema> builder,
+            String columnName,
+            SchemaTimeUnit timeUnit,
+            Series<?> column) {
+
         validateColumnName(columnName);
-        builder.name(columnName).type(createColumnSchema(column)).noDefault();
+        builder.name(columnName)
+                .type(createColumnSchema(column, timeUnit))
+                .noDefault();
     }
 
-    protected Schema createColumnSchema(Series<?> column) {
+    protected Schema createColumnSchema(Series<?> column, SchemaTimeUnit timeUnit) {
 
         Class<?> type = column.getInferredType();
 
@@ -114,9 +140,12 @@ public class AvroSchemaCompiler {
             case "java.lang.String":
                 return makeNullable(Schema.create(Schema.Type.STRING));
 
+            case "byte[]":
+                return makeNullable(Schema.create(Schema.Type.BYTES));
+
             // 3. Try to find a conversion to a "logical type"
             default:
-                Schema logicalTypeSchema = logicalTypeSchema(type);
+                Schema logicalTypeSchema = logicalTypeSchema(type, timeUnit);
                 if (logicalTypeSchema != null) {
                     return makeNullable(logicalTypeSchema);
                 }
@@ -145,9 +174,20 @@ public class AvroSchemaCompiler {
         return schema;
     }
 
-    protected Schema logicalTypeSchema(Class<?> type) {
+    protected Schema logicalTypeSchema(Class<?> type, SchemaTimeUnit timeUnit) {
+
         Conversion<?> c = AvroTypeExtensions.getGenericDataForSave().getConversionByClass(type);
-        return c != null ? c.getRecommendedSchema() : null;
+        if (c == null) {
+            return null;
+        }
+
+        return switch (c.getLogicalTypeName()) {
+            // switch to a time-unit specific type if needed
+            case LOCAL_TIMESTAMP_MILLIS_TYPE, LOCAL_TIMESTAMP_MICROS_TYPE, LOCAL_TIMESTAMP_NANOS_TYPE ->
+                    timeUnit.localTimestampSchema;
+            case TIME_MICROS_TYPE, TIME_MILLIS_TYPE -> timeUnit.timeSchema;
+            default -> c.getRecommendedSchema();
+        };
     }
 
     protected Schema nullsOnlySchema(Series<?> column) {

@@ -6,7 +6,11 @@ import org.apache.avro.Schema;
 
 import java.time.LocalTime;
 
-
+/**
+ * @deprecated as we can use standard "time-micros" or "time-millis" logical type for LocalTime encoding. Preserved for
+ * decoding Avro files created with DFLib 1.x.
+ */
+@Deprecated(since = "2.0.0")
 public class LocalTimeConversion extends Conversion<LocalTime> {
 
     static final String NAME = "dflib-localtime";

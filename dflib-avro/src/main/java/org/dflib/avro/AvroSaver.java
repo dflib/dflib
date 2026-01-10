@@ -1,18 +1,18 @@
 package org.dflib.avro;
 
-import org.dflib.DataFrame;
-import org.dflib.Exp;
-import org.dflib.avro.schema.AvroSchemaUtils;
-import org.dflib.avro.types.AvroTypeExtensions;
-import org.dflib.row.RowProxy;
 import org.apache.avro.Schema;
 import org.apache.avro.file.CodecFactory;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.file.SyncableFileOutputStream;
 import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.io.DatumWriter;
+import org.dflib.DataFrame;
+import org.dflib.Exp;
+import org.dflib.avro.schema.AvroSchemaUtils;
+import org.dflib.avro.schema.SchemaTimeUnit;
+import org.dflib.avro.types.AvroTypeExtensions;
+import org.dflib.avro.write.GenericRecordWriter;
+import org.dflib.row.RowProxy;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,11 +33,22 @@ public class AvroSaver extends BaseSaver<AvroSaver> {
     }
 
     /**
-     * Save data with the explicit Schema. If not set, a Schema will be generated automatically based on the
-     * DataFrame contents.
+     * Save data with an explicit Schema. If not set, a Schema will be generated automatically based on the DataFrame
+     * metadata.
      */
     public AvroSaver schema(Schema schema) {
         this.schema = schema;
+        return this;
+    }
+
+    /**
+     * Sets a specific time precision for dynamically compiled save schema.
+     *
+     * @since 2.0.0
+     */
+    // TODO: per-column time unit
+    public AvroSaver timeUnit(SchemaTimeUnit timeUnit) {
+        this.schemaBuilder.timeUnit(timeUnit);
         return this;
     }
 
@@ -80,7 +91,7 @@ public class AvroSaver extends BaseSaver<AvroSaver> {
 
         DataFrame avroReadyDf = makeAvroReady(df, schema);
 
-        DatumWriter<GenericRecord> writer = new GenericDatumWriter<>(schema, AvroTypeExtensions.getGenericDataForSave());
+        GenericRecordWriter writer = new GenericRecordWriter(schema, AvroTypeExtensions.getGenericDataForSave());
 
         // DataFileWriter includes Schema in the output
         try (DataFileWriter<GenericRecord> outWriter = new DataFileWriter<>(writer)) {

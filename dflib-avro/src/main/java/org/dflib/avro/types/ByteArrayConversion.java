@@ -7,6 +7,11 @@ import org.apache.avro.Schema;
 import java.nio.ByteBuffer;
 
 
+/**
+ * @deprecated as we can use a standard "bytes" primitive type for byte[] encoding. Preserved for decoding Avro files
+ * created with DFLib 1.x.
+ */
+@Deprecated(since = "2.0.0")
 public class ByteArrayConversion extends Conversion<byte[]> {
 
     static final String NAME = "dflib-bytearray";

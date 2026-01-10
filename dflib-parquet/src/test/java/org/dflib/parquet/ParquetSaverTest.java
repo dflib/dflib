@@ -277,7 +277,7 @@ public class ParquetSaverTest {
             DataFrame df = DataFrame.foldByRow("a").of(bigDec1, bigDec2, bigDec3);
 
             Path file = outBase.resolve("bigDecimalColumn.parquet");
-            Parquet.saver().bigDecimal(20, 5).save(df, file);
+            Parquet.saver().decimalSize(20, 5).save(df, file);
 
             String schema = getSchema(file);
             assertTrue(schema.contains("optional binary a (DECIMAL(20,5));"));
@@ -298,7 +298,7 @@ public class ParquetSaverTest {
             DataFrame df = DataFrame.foldByRow("a").of(bigDec1, bigDec2, bigDec3);
 
             Path file = outBase.resolve("bigDecimalColumn.parquet");
-            Parquet.saver().bigDecimal(18, 3).save(df, file);
+            Parquet.saver().decimalSize(18, 3).save(df, file);
 
             String schema = getSchema(file);
             assertTrue(schema.contains("optional int64 a (DECIMAL(18,3));"));
@@ -320,7 +320,7 @@ public class ParquetSaverTest {
             DataFrame df = DataFrame.foldByRow("a").of(bigDec1, bigDec2, bigDec3);
 
             Path file = outBase.resolve("bigDecimalColumn.parquet");
-            Parquet.saver().bigDecimal(9, 4).save(df, file);
+            Parquet.saver().decimalSize(9, 4).save(df, file);
 
             String schema = getSchema(file);
             assertTrue(schema.contains("optional int32 a (DECIMAL(9,4));"));

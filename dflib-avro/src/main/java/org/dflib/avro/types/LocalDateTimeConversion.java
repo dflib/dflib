@@ -8,7 +8,11 @@ import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-
+/**
+ * @deprecated as we can use a standard "local-timestamp-" logical types for LocalDateTime encoding. Preserved for
+ * decoding Avro files created with DFLib 1.x.
+ */
+@Deprecated(since = "2.0.0")
 public class LocalDateTimeConversion extends Conversion<LocalDateTime> {
 
     static final String NAME = "dflib-localdatetime";

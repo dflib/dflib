@@ -8,9 +8,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 
-
-// Avro has its own "decimal" logical type mapping to BigDecimal. But it requires predefined scale and precision.
-// This would be too limiting for a DataFrame column
+/**
+ * @deprecated as we can use a standard "decimal" logical type for BigDecimal encoding. Preserved for decoding Avro files
+ * created with DFLib 1.x.
+ */
+@Deprecated(since = "2.0.0")
 public class BigDecimalConversion extends Conversion<BigDecimal> {
 
     static final String NAME = "dflib-bigdecimal";

@@ -1,5 +1,6 @@
 package org.dflib.avro;
 
+import org.dflib.avro.schema.SchemaTimeUnit;
 import org.dflib.junit5.DataFrameAsserts;
 import org.dflib.DataFrame;
 import org.dflib.Series;
@@ -110,8 +111,8 @@ public class SaveThenLoadTest {
     public void dateTimes() {
         DataFrame df = DataFrame.byColumn("LocalDate", "LocalTime", "LocalDateTime", "YearMonth", "Year").of(
                 Series.of(LocalDate.of(2020, 1, 5), LocalDate.of(2019, 6, 8), null),
-                Series.of(LocalTime.of(4, 0, 1, 11), LocalTime.of(23, 59, 59), null),
-                Series.of(LocalDateTime.of(2200, 11, 5, 1, 2, 15, 9), LocalDateTime.of(1776, 6, 8, 6, 7, 8), null),
+                Series.of(LocalTime.of(4, 0, 1, 33_011_001), LocalTime.of(23, 59, 59), null),
+                Series.of(LocalDateTime.of(2200, 11, 5, 1, 2, 15, 33_011_001), LocalDateTime.of(1776, 6, 8, 6, 7, 8), null),
                 Series.of(YearMonth.of(1651, 2), YearMonth.of(5000, 3), null),
                 Series.of(Year.of(-45), Year.of(6000), null)
         );
@@ -120,10 +121,24 @@ public class SaveThenLoadTest {
         new DataFrameAsserts(loaded, "LocalDate", "LocalTime", "LocalDateTime", "YearMonth", "Year")
                 .expectHeight(3)
                 .expectColumn("LocalDate", LocalDate.of(2020, 1, 5), LocalDate.of(2019, 6, 8), null)
-                .expectColumn("LocalTime", LocalTime.of(4, 0, 1, 11), LocalTime.of(23, 59, 59), null)
-                .expectColumn("LocalDateTime", LocalDateTime.of(2200, 11, 5, 1, 2, 15, 9), LocalDateTime.of(1776, 6, 8, 6, 7, 8), null)
+                .expectColumn("LocalTime", LocalTime.of(4, 0, 1, 33_011_000), LocalTime.of(23, 59, 59), null)
+                .expectColumn("LocalDateTime", LocalDateTime.of(2200, 11, 5, 1, 2, 15, 33_011_000), LocalDateTime.of(1776, 6, 8, 6, 7, 8), null)
                 .expectColumn("YearMonth", YearMonth.of(1651, 2), YearMonth.of(5000, 3), null)
                 .expectColumn("Year", Year.of(-45), Year.of(6000), null);
+    }
+
+    @Test
+    public void times_Millis() {
+        DataFrame df = DataFrame.byColumn("LocalTime", "LocalDateTime").of(
+                Series.of(LocalTime.of(4, 0, 1, 33_011_001), LocalTime.of(23, 59, 59), null),
+                Series.of(LocalDateTime.of(2200, 11, 5, 1, 2, 15, 33_011_001), LocalDateTime.of(1776, 6, 8, 6, 7, 8), null)
+        );
+
+        DataFrame loaded = saveThenLoad(df, SchemaTimeUnit.MILLIS);
+        new DataFrameAsserts(loaded, "LocalTime", "LocalDateTime")
+                .expectHeight(3)
+                .expectColumn("LocalTime", LocalTime.of(4, 0, 1, 33_000_000), LocalTime.of(23, 59, 59), null)
+                .expectColumn("LocalDateTime", LocalDateTime.of(2200, 11, 5, 1, 2, 15, 33_000_000), LocalDateTime.of(1776, 6, 8, 6, 7, 8), null);
     }
 
     @Test
@@ -215,8 +230,12 @@ public class SaveThenLoadTest {
     }
 
     private DataFrame saveThenLoad(DataFrame save) {
+        return saveThenLoad(save, null);
+    }
+
+    private DataFrame saveThenLoad(DataFrame save, SchemaTimeUnit timeUnit) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Avro.save(save, out);
+        Avro.saver().timeUnit(timeUnit).save(save, out);
         byte[] bytes = out.toByteArray();
         assertTrue(bytes.length > 0, "No bytes generated");
 

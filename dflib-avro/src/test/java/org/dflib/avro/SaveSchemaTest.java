@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -18,7 +19,7 @@ public class SaveSchemaTest {
     public void dataFrameSchema() {
 
         DataFrame df = DataFrame.byColumn(
-                        "int", "Integer", "long", "Long", "double", "Double", "bool", "Bool", "String", "byte_array", "LocalDate")
+                        "int", "Integer", "long", "Long", "double", "Double", "bool", "Bool", "String", "byte_array", "LocalDate", "LocalTime")
                 .of(
                         Series.ofInt(1, 2),
                         Series.of(11, null),
@@ -30,7 +31,8 @@ public class SaveSchemaTest {
                         Series.of(Boolean.TRUE, null),
                         Series.of("s1", null),
                         Series.of(new byte[]{1, 2, 3}, null),
-                        Series.of(LocalDate.of(2020, 1, 5), null)
+                        Series.of(LocalDate.of(2020, 1, 5), null),
+                        Series.of(LocalTime.of(1, 2, 3), null)
                 );
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -47,8 +49,10 @@ public class SaveSchemaTest {
                         {"name":"bool","type":"boolean"},\
                         {"name":"Bool","type":["boolean","null"]},\
                         {"name":"String","type":["string","null"]},\
-                        {"name":"byte_array","type":[{"type":"bytes","logicalType":"dflib-bytearray"},"null"]},\
-                        {"name":"LocalDate","type":[{"type":"long","logicalType":"dflib-localdate"},"null"]}]}""",
+                        {"name":"byte_array","type":["bytes","null"]},\
+                        {"name":"LocalDate","type":[{"type":"int","logicalType":"date"},"null"]},\
+                        {"name":"LocalTime","type":[{"type":"long","logicalType":"time-micros"},"null"]}\
+                        ]}""",
                 out.toString(StandardCharsets.UTF_8));
     }
 

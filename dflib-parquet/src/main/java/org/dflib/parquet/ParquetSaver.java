@@ -20,8 +20,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 public class ParquetSaver {
 
     private boolean createMissingDirs;
@@ -39,7 +37,18 @@ public class ParquetSaver {
         return this;
     }
 
+    /**
+     * @deprecated in favor of {@link #decimalSize(int, int)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public ParquetSaver bigDecimal(int precision, int scale) {
+        return decimalSize(precision, scale);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public ParquetSaver decimalSize(int precision, int scale) {
         this.decimalConfig = new DecimalConfig(precision, scale);
         return this;
     }

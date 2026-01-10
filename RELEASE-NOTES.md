@@ -33,6 +33,7 @@
 * #598 AvroSchemaLoader: support loading schema from Avro files
 * #599 AvroLoader: column filtering
 * #600 AvroLoader, ParquetLoader: compactCols(..)
+* #601 AvroSaver: use spec types where possible
 
 ## Release 2.0.0-M5
 

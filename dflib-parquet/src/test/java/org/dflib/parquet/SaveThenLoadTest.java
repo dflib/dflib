@@ -221,7 +221,7 @@ public class SaveThenLoadTest {
             var bigDec3 = new BigDecimal("12389137372521.35839");
 
             DataFrame df = DataFrame.foldByRow("a").of(bigDec1, bigDec2, bigDec3);
-            DataFrame dfRead = saveThenLoad(df, "lowPrecision", s -> s.bigDecimal(20, 5));
+            DataFrame dfRead = saveThenLoad(df, "lowPrecision", s -> s.decimalSize(20, 5));
 
             new DataFrameAsserts(dfRead, "a")
                     .expectHeight(3)
@@ -238,7 +238,7 @@ public class SaveThenLoadTest {
             var bigDec3 = new BigDecimal("1238913737252.135");
 
             DataFrame df = DataFrame.foldByRow("a").of(bigDec1, bigDec2, bigDec3);
-            DataFrame dfRead = saveThenLoad(df, "lowPrecision", s -> s.bigDecimal(18, 3));
+            DataFrame dfRead = saveThenLoad(df, "lowPrecision", s -> s.decimalSize(18, 3));
 
             new DataFrameAsserts(dfRead, "a")
                     .expectHeight(3)
@@ -255,7 +255,7 @@ public class SaveThenLoadTest {
             var bigDec3 = new BigDecimal("12389.1373");
 
             DataFrame df = DataFrame.foldByRow("a").of(bigDec1, bigDec2, bigDec3);
-            DataFrame dfRead = saveThenLoad(df, "lowPrecision", s -> s.bigDecimal(9, 4));
+            DataFrame dfRead = saveThenLoad(df, "lowPrecision", s -> s.decimalSize(9, 4));
 
             new DataFrameAsserts(dfRead, "a")
                     .expectHeight(3)

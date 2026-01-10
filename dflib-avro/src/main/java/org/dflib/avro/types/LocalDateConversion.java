@@ -7,6 +7,11 @@ import org.apache.avro.Schema;
 import java.time.LocalDate;
 
 
+/**
+ * @deprecated as we can use a standard "date" logical type for LocalDate encoding. Preserved for decoding Avro files
+ * created with DFLib 1.x.
+ */
+@Deprecated(since = "2.0.0")
 public class LocalDateConversion extends Conversion<LocalDate> {
 
     static final String NAME = "dflib-localdate";
