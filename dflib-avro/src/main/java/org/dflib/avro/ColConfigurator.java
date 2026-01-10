@@ -123,10 +123,13 @@ class ColConfigurator {
 
     private static ValueMapper<Object, ?> asBytes() {
         return v -> {
-            ByteBuffer bb = (ByteBuffer) v;
-            byte[] bytes = new byte[bb.remaining()];
-            bb.duplicate().get(bytes);
-            return bytes;
+            if (v instanceof ByteBuffer bb) {
+                byte[] bytes = new byte[bb.remaining()];
+                bb.duplicate().get(bytes);
+                return bytes;
+            } else {
+                return null;
+            }
         };
     }
 
