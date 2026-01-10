@@ -46,53 +46,53 @@ class ParquetSchemaCompiler {
 
         String name = column.getInferredTypeName();
         switch (name) {
-        case "int":
-            return primitive(PrimitiveTypeName.INT32, Repetition.REQUIRED).named(columnName);
-        case "java.lang.Integer":
-            return primitive(PrimitiveTypeName.INT32, OPTIONAL).named(columnName);
+            case "int":
+                return primitive(PrimitiveTypeName.INT32, Repetition.REQUIRED).named(columnName);
+            case "java.lang.Integer":
+                return primitive(PrimitiveTypeName.INT32, OPTIONAL).named(columnName);
 
-        case "long":
-            return primitive(PrimitiveTypeName.INT64, Repetition.REQUIRED).named(columnName);
-        case "java.lang.Long":
-            return primitive(PrimitiveTypeName.INT64, OPTIONAL).named(columnName);
+            case "long":
+                return primitive(PrimitiveTypeName.INT64, Repetition.REQUIRED).named(columnName);
+            case "java.lang.Long":
+                return primitive(PrimitiveTypeName.INT64, OPTIONAL).named(columnName);
 
-        case "java.lang.Byte":
-            return primitive(PrimitiveTypeName.INT32, OPTIONAL).as(intType(8, true)).named(columnName);
-        case "java.lang.Short":
-            return primitive(PrimitiveTypeName.INT32, OPTIONAL).as(intType(16, true)).named(columnName);
-        case "java.lang.Float":
-            return primitive(PrimitiveTypeName.FLOAT, OPTIONAL).named(columnName);
+            case "java.lang.Byte":
+                return primitive(PrimitiveTypeName.INT32, OPTIONAL).as(intType(8, true)).named(columnName);
+            case "java.lang.Short":
+                return primitive(PrimitiveTypeName.INT32, OPTIONAL).as(intType(16, true)).named(columnName);
+            case "java.lang.Float":
+                return primitive(PrimitiveTypeName.FLOAT, OPTIONAL).named(columnName);
 
-        case "double":
-            return primitive(PrimitiveTypeName.DOUBLE, Repetition.REQUIRED).named(columnName);
-        case "java.lang.Double":
-            return primitive(PrimitiveTypeName.DOUBLE, OPTIONAL).named(columnName);
+            case "double":
+                return primitive(PrimitiveTypeName.DOUBLE, Repetition.REQUIRED).named(columnName);
+            case "java.lang.Double":
+                return primitive(PrimitiveTypeName.DOUBLE, OPTIONAL).named(columnName);
 
-        case "boolean":
-            return primitive(PrimitiveTypeName.BOOLEAN, Repetition.REQUIRED).named(columnName);
-        case "java.lang.Boolean":
-            return primitive(PrimitiveTypeName.BOOLEAN, OPTIONAL).named(columnName);
+            case "boolean":
+                return primitive(PrimitiveTypeName.BOOLEAN, Repetition.REQUIRED).named(columnName);
+            case "java.lang.Boolean":
+                return primitive(PrimitiveTypeName.BOOLEAN, OPTIONAL).named(columnName);
 
-        case "java.lang.String":
-            return primitive(BINARY, OPTIONAL).as(stringType()).named(columnName);
+            case "java.lang.String":
+                return primitive(BINARY, OPTIONAL).as(stringType()).named(columnName);
 
-        case "java.util.UUID":
-            return primitive(FIXED_LEN_BYTE_ARRAY, OPTIONAL).as(uuidType())
-                    .length(UUIDLogicalTypeAnnotation.BYTES)
-                    .named(columnName);
-        case "java.time.LocalDate":
-            return primitive(PrimitiveTypeName.INT32, OPTIONAL).as(dateType()).named(columnName);
-        case "java.time.LocalTime":
-            return localTime(columnName, writeConfiguration.timeUnit());
-        case "java.time.LocalDateTime":
-            return localDateTime(columnName, writeConfiguration.timeUnit());
-        case "java.time.Instant":
-            return instant(columnName, writeConfiguration.timeUnit());
+            case "java.util.UUID":
+                return primitive(FIXED_LEN_BYTE_ARRAY, OPTIONAL).as(uuidType())
+                        .length(UUIDLogicalTypeAnnotation.BYTES)
+                        .named(columnName);
+            case "java.time.LocalDate":
+                return primitive(PrimitiveTypeName.INT32, OPTIONAL).as(dateType()).named(columnName);
+            case "java.time.LocalTime":
+                return localTime(columnName, writeConfiguration.timeUnit());
+            case "java.time.LocalDateTime":
+                return localDateTime(columnName, writeConfiguration.timeUnit());
+            case "java.time.Instant":
+                return instant(columnName, writeConfiguration.timeUnit());
 
-        case "java.math.BigDecimal":
-            return decimalTypeItem(columnName, writeConfiguration.decimalConfig());
-        default:
-            throw new RuntimeException(name + " not supported in Parquet");
+            case "java.math.BigDecimal":
+                return decimalTypeItem(columnName, writeConfiguration.decimalConfig());
+            default:
+                throw new RuntimeException(name + " not supported in Parquet");
         }
     }
 
@@ -116,30 +116,27 @@ class ParquetSchemaCompiler {
     }
 
     private static LogicalTypeAnnotation.TimeUnit toParquetTimeUnit(TimeUnit timeUnit) {
-        switch (timeUnit) {
-        case MILLIS:
-            return LogicalTypeAnnotation.TimeUnit.MILLIS;
-        case MICROS:
-            return LogicalTypeAnnotation.TimeUnit.MICROS;
-        case NANOS:
-            return LogicalTypeAnnotation.TimeUnit.NANOS;
-        default:
-            return LogicalTypeAnnotation.TimeUnit.MICROS;
-        }
+        return switch (timeUnit) {
+            case MILLIS -> LogicalTypeAnnotation.TimeUnit.MILLIS;
+            case MICROS -> LogicalTypeAnnotation.TimeUnit.MICROS;
+            case NANOS -> LogicalTypeAnnotation.TimeUnit.NANOS;
+        };
     }
 
     private Type decimalTypeItem(String name, DecimalConfig decimalConfig) {
         if (decimalConfig == null) {
-            throw new RuntimeException("If BigDecimall is used, a Default Decimal configuration "
-                    + "must be provided in the setup of ParquetSaver");
+            throw new RuntimeException("If BigDecimal is used, a decimal configuration must be provided in the setup of ParquetSaver");
         }
-        var decimalType = decimalType(decimalConfig.scale(), decimalConfig.precision());
+
+        LogicalTypeAnnotation decimalType = decimalType(decimalConfig.scale(), decimalConfig.precision());
         if (decimalConfig.precision() <= 9) {
             return primitive(PrimitiveTypeName.INT32, OPTIONAL).as(decimalType).named(name);
         }
+
         if (decimalConfig.precision() <= 18) {
             return primitive(PrimitiveTypeName.INT64, OPTIONAL).as(decimalType).named(name);
         }
+
         return primitive(PrimitiveTypeName.BINARY, OPTIONAL).as(decimalType).named(name);
     }
 }
