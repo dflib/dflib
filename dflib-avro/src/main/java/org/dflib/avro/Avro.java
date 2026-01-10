@@ -20,20 +20,12 @@ import java.util.Map;
 public class Avro {
 
     /**
-     * @deprecated in favor of {@link #registerConversion(LogicalType, Conversion)}
+     * @deprecated in favor of {@link AvroTypeExtensions#registerLogicalType(LogicalType)} and {@link AvroTypeExtensions#registerConversion(Conversion)}
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public static void registerCustomType(SingleSchemaConversion<?> conversion) {
-        registerConversion(conversion.getLogicalType(), conversion);
-    }
-
-    /**
-     * Allows to register a custom "conversion" for a user-defined Avro logical type.
-     *
-     * @since 2.0.0
-     */
-    public static void registerConversion(LogicalType logicalType, Conversion<?> conversion) {
-        AvroTypeExtensions.registerConversion(logicalType, conversion);
+        AvroTypeExtensions.registerLogicalType(conversion.getLogicalType());
+        AvroTypeExtensions.registerConversion(conversion);
     }
 
     public static Schema compileSchema(DataFrame data, String namespace, String name) {

@@ -35,28 +35,36 @@ public class AvroTypeExtensions {
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.TimeMicrosConversion());
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.TimeMillisConversion());
 
-        registerConversion(BigDecimalConversion.TYPE, new BigDecimalConversion());
-        registerConversion(BigIntegerConversion.TYPE, new BigIntegerConversion());
-        registerConversion(ByteArrayConversion.TYPE, new ByteArrayConversion());
-        registerConversion(DurationConversion.TYPE, new DurationConversion());
-        registerConversion(LocalDateConversion.TYPE, new LocalDateConversion());
-        registerConversion(LocalDateTimeConversion.TYPE, new LocalDateTimeConversion());
-        registerConversion(LocalTimeConversion.TYPE, new LocalTimeConversion());
-        registerConversion(PeriodConversion.TYPE, new PeriodConversion());
-        registerConversion(YearMonthConversion.TYPE, new YearMonthConversion());
-        registerConversion(YearConversion.TYPE, new YearConversion());
+        registerLogicalType(BigDecimalConversion.TYPE);
+        registerLogicalType(BigIntegerConversion.TYPE);
+        registerLogicalType(ByteArrayConversion.TYPE);
+        registerLogicalType(DurationConversion.TYPE);
+        registerLogicalType(LocalDateConversion.TYPE);
+        registerLogicalType(LocalDateTimeConversion.TYPE);
+        registerLogicalType(LocalTimeConversion.TYPE);
+        registerLogicalType(PeriodConversion.TYPE);
+        registerLogicalType(YearMonthConversion.TYPE);
+        registerLogicalType(YearConversion.TYPE);
+        registerLogicalType(UnmappedConversion.TYPE);
 
-        registerConversion(UnmappedConversion.TYPE, new UnmappedConversion());
+        registerConversion(new BigDecimalConversion());
+        registerConversion(new BigIntegerConversion());
+        registerConversion(new ByteArrayConversion());
+        registerConversion(new DurationConversion());
+        registerConversion(new LocalDateConversion());
+        registerConversion(new LocalDateTimeConversion());
+        registerConversion(new LocalTimeConversion());
+        registerConversion(new PeriodConversion());
+        registerConversion(new YearMonthConversion());
+        registerConversion(new YearConversion());
+
+        registerConversion(new UnmappedConversion());
     }
 
     /**
-     * An extension point to register a conversion for a custom type mapped to an underlying Avro simple type.
-     * DFLib already provides a collection of type extensions to map various common value types to Avro. This
-     * method allows to cover the types that are not (yet) included in DFLib.
-     *
      * @since 2.0.0
      */
-    public static void registerConversion(LogicalType logicalType, Conversion<?> conversion) {
+    public static void registerLogicalType(LogicalType logicalType) {
 
         LogicalTypes.LogicalTypeFactory typeFactory = new LogicalTypes.LogicalTypeFactory() {
             @Override
@@ -71,6 +79,16 @@ public class AvroTypeExtensions {
         };
 
         LogicalTypes.register(logicalType.getName(), typeFactory);
+    }
+
+    /**
+     * An extension point to register a conversion for a custom type mapped to an underlying Avro simple type.
+     * DFLib already provides a collection of type extensions to map various common value types to Avro. This
+     * method allows to cover the types that are not (yet) included in DFLib.
+     *
+     * @since 2.0.0
+     */
+    public static void registerConversion(Conversion<?> conversion) {
         GENERIC_DATA_FOR_SAVE.addLogicalTypeConversion(conversion);
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(conversion);
     }
