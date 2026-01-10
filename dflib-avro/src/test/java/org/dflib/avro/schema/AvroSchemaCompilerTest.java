@@ -139,7 +139,7 @@ public class AvroSchemaCompilerTest {
     }
 
     @Test
-    public void decimalPrecision_Default() {
+    public void bigDecimal() {
 
         DataFrame df = DataFrame.byColumn("d").of(Series.of(new BigDecimal("123.456"), new BigDecimal("1.4567")));
         Schema schema = new AvroSchemaCompiler().compileSchema(df);
