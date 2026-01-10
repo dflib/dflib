@@ -30,12 +30,15 @@ public class AvroSchemaCompiler {
     private static final String DEFAULT_NAME = "DataFrame";
     private static final String DEFAULT_NAMESPACE = "org.dflib";
 
+    // standard logical types for which we can apply "timeUnit"
     private static final String LOCAL_TIMESTAMP_MILLIS_TYPE = "local-timestamp-millis";
     private static final String LOCAL_TIMESTAMP_MICROS_TYPE = "local-timestamp-micros";
     private static final String LOCAL_TIMESTAMP_NANOS_TYPE = "local-timestamp-nanos";
-
     private static final String TIME_MILLIS_TYPE = "time-millis";
     private static final String TIME_MICROS_TYPE = "time-micros";
+    private static final String TIMESTAMP_MILLIS_TYPE = "timestamp-millis";
+    private static final String TIMESTAMP_MICROS_TYPE = "timestamp-micros";
+    private static final String TIMESTAMP_NANOS_TYPE = "timestamp-nanos";
 
     protected String name;
     protected String namespace;
@@ -186,6 +189,7 @@ public class AvroSchemaCompiler {
             case LOCAL_TIMESTAMP_MILLIS_TYPE, LOCAL_TIMESTAMP_MICROS_TYPE, LOCAL_TIMESTAMP_NANOS_TYPE ->
                     timeUnit.localTimestampSchema;
             case TIME_MICROS_TYPE, TIME_MILLIS_TYPE -> timeUnit.timeSchema;
+            case TIMESTAMP_MILLIS_TYPE, TIMESTAMP_MICROS_TYPE, TIMESTAMP_NANOS_TYPE -> timeUnit.timestampSchema;
             default -> c.getRecommendedSchema();
         };
     }

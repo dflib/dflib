@@ -20,15 +20,8 @@ public class AvroTypeExtensions {
         GENERIC_DATA_FOR_SAVE = new GenericDataForSave();
         GENERIC_DATA_FOR_LOAD = new GenericData();
 
-        // TODO: saver also should have these... use "registerConversion" , write tests for UUID, Instant, etc.
-        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new Conversions.DecimalConversion());
-        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new Conversions.UUIDConversion());
-        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new Conversions.DurationConversion());
-        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.TimestampMillisConversion());
-        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.TimestampMicrosConversion());
-        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.TimestampNanosConversion());
-
-
+        // 1. standard conversions
+        registerConversion(new Conversions.DurationConversion());
         registerConversion(new Conversions.BigDecimalConversion());
         registerConversion(new TimeConversions.DateConversion());
         registerConversion(new TimeConversions.LocalTimestampMillisConversion());
@@ -36,15 +29,15 @@ public class AvroTypeExtensions {
         registerConversion(new TimeConversions.LocalTimestampNanosConversion());
         registerConversion(new TimeConversions.TimeMicrosConversion());
         registerConversion(new TimeConversions.TimeMillisConversion());
+        registerConversion(new TimeConversions.TimestampMillisConversion());
+        registerConversion(new TimeConversions.TimestampMicrosConversion());
+        registerConversion(new TimeConversions.TimestampNanosConversion());
+        registerConversion(new Conversions.UUIDConversion());
+        
+        // 1.1 Don't add DecimalConversion to the save "data", as it will conflict with BigDecimalConversion
+        GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new Conversions.DecimalConversion());
 
-        // custom DFLib logical types
-        registerConversion(new BigIntegerConversion());
-        registerConversion(new DurationConversion());
-        registerConversion(new PeriodConversion());
-        registerConversion(new YearMonthConversion());
-        registerConversion(new YearConversion());
-        registerConversion(new UnmappedConversion());
-
+        // 2.1 custom DFLib logical types
         registerLogicalType(BigIntegerConversion.TYPE);
         registerLogicalType(DurationConversion.TYPE);
         registerLogicalType(PeriodConversion.TYPE);
@@ -52,16 +45,22 @@ public class AvroTypeExtensions {
         registerLogicalType(YearConversion.TYPE);
         registerLogicalType(UnmappedConversion.TYPE);
 
-        configureLegacyDFLibV1Extensions();
-    }
+        // 2.2 conversions for custom DFLib logical types
+        registerConversion(new BigIntegerConversion());
+        registerConversion(new DurationConversion());
+        registerConversion(new PeriodConversion());
+        registerConversion(new YearMonthConversion());
+        registerConversion(new YearConversion());
+        registerConversion(new UnmappedConversion());
 
-    private static void configureLegacyDFLibV1Extensions() {
+        // 3.1 Legacy custom DFLib logical types
         registerLogicalType(BigDecimalConversion.TYPE);
         registerLogicalType(ByteArrayConversion.TYPE);
         registerLogicalType(LocalDateConversion.TYPE);
         registerLogicalType(LocalTimeConversion.TYPE);
         registerLogicalType(LocalDateTimeConversion.TYPE);
 
+        // 3.2 Conversions for legacy custom DFLib logical types... Only needed for load, and never for save
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new BigDecimalConversion());
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new ByteArrayConversion());
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new LocalDateConversion());

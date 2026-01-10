@@ -34,6 +34,7 @@
 * #599 AvroLoader: column filtering
 * #600 AvroLoader, ParquetLoader: compactCols(..)
 * #601 AvroSaver: use spec types where possible
+* #602 AvroSaver: support for UUID, Instant values
 
 ## Release 2.0.0-M5
 

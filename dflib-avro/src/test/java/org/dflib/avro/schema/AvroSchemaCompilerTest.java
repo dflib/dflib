@@ -7,8 +7,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -148,6 +150,54 @@ public class AvroSchemaCompilerTest {
         assertEquals("""
                 {"type":"record","name":"DataFrame","namespace":"org.dflib","fields":[\
                 {"name":"d","type":[{"type":"bytes","logicalType":"big-decimal"},"null"]}]}""", schema.toString());
+    }
+
+    @Test
+    public void instantDefault() {
+
+        DataFrame df = DataFrame.byColumn("i").of(Series.of(Instant.now()));
+        Schema schema = new AvroSchemaCompiler().compileSchema(df);
+
+        Assertions.assertNotNull(schema);
+        assertEquals("""
+                {"type":"record","name":"DataFrame","namespace":"org.dflib","fields":[\
+                {"name":"i","type":[{"type":"long","logicalType":"timestamp-micros"},"null"]}]}""", schema.toString());
+    }
+
+    @Test
+    public void instantMillis() {
+
+        DataFrame df = DataFrame.byColumn("i").of(Series.of(Instant.now()));
+        Schema schema = new AvroSchemaCompiler().timeUnit(SchemaTimeUnit.MILLIS).compileSchema(df);
+
+        Assertions.assertNotNull(schema);
+        assertEquals("""
+                {"type":"record","name":"DataFrame","namespace":"org.dflib","fields":[\
+                {"name":"i","type":[{"type":"long","logicalType":"timestamp-millis"},"null"]}]}""", schema.toString());
+    }
+
+    @Test
+    public void instantNanos() {
+
+        DataFrame df = DataFrame.byColumn("i").of(Series.of(Instant.now()));
+        Schema schema = new AvroSchemaCompiler().timeUnit(SchemaTimeUnit.NANOS).compileSchema(df);
+
+        Assertions.assertNotNull(schema);
+        assertEquals("""
+                {"type":"record","name":"DataFrame","namespace":"org.dflib","fields":[\
+                {"name":"i","type":[{"type":"long","logicalType":"timestamp-nanos"},"null"]}]}""", schema.toString());
+    }
+
+    @Test
+    public void uuid() {
+
+        DataFrame df = DataFrame.foldByRow("i").of(UUID.randomUUID());
+        Schema schema = new AvroSchemaCompiler().compileSchema(df);
+
+        Assertions.assertNotNull(schema);
+        assertEquals("""
+                {"type":"record","name":"DataFrame","namespace":"org.dflib","fields":[\
+                {"name":"i","type":[{"type":"string","logicalType":"uuid"},"null"]}]}""", schema.toString());
     }
 
     public enum _TestEnum {

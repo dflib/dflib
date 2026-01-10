@@ -1,15 +1,23 @@
 package org.dflib.avro;
 
-import org.dflib.avro.schema.SchemaTimeUnit;
-import org.dflib.junit5.DataFrameAsserts;
 import org.dflib.DataFrame;
 import org.dflib.Series;
+import org.dflib.avro.schema.SchemaTimeUnit;
+import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.*;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneOffset;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -171,6 +179,67 @@ public class SaveThenLoadTest {
                         new BigDecimal("-111.11"),
                         new BigDecimal(0),
                         null);
+    }
+
+    @Test
+    public void instant() {
+        DataFrame df = DataFrame.byColumn("c1").of(Series.of(
+                LocalDateTime.of(2026, 1, 2, 3, 4, 5, 1_002_003).toInstant(ZoneOffset.UTC),
+                LocalDateTime.of(2025, 8, 9, 10, 11, 12).toInstant(ZoneOffset.UTC),
+                null));
+
+        DataFrame loaded = saveThenLoad(df);
+        new DataFrameAsserts(loaded, "c1")
+                .expectHeight(3)
+                .expectColumn("c1",
+                        LocalDateTime.of(2026, 1, 2, 3, 4, 5, 1_002_000).toInstant(ZoneOffset.UTC),
+                        LocalDateTime.of(2025, 8, 9, 10, 11, 12).toInstant(ZoneOffset.UTC),
+                        null);
+    }
+
+    @Test
+    public void instantMillis() {
+        DataFrame df = DataFrame.byColumn("c1").of(Series.of(
+                LocalDateTime.of(2026, 1, 2, 3, 4, 5, 1_002_003).toInstant(ZoneOffset.UTC),
+                LocalDateTime.of(2025, 8, 9, 10, 11, 12).toInstant(ZoneOffset.UTC),
+                null));
+
+        DataFrame loaded = saveThenLoad(df, SchemaTimeUnit.MILLIS);
+        new DataFrameAsserts(loaded, "c1")
+                .expectHeight(3)
+                .expectColumn("c1",
+                        LocalDateTime.of(2026, 1, 2, 3, 4, 5, 1_000_000).toInstant(ZoneOffset.UTC),
+                        LocalDateTime.of(2025, 8, 9, 10, 11, 12).toInstant(ZoneOffset.UTC),
+                        null);
+    }
+
+    @Test
+    public void instantNanos() {
+        DataFrame df = DataFrame.byColumn("c1").of(Series.of(
+                LocalDateTime.of(2026, 1, 2, 3, 4, 5, 1_002_003).toInstant(ZoneOffset.UTC),
+                LocalDateTime.of(2025, 8, 9, 10, 11, 12).toInstant(ZoneOffset.UTC),
+                null));
+
+        DataFrame loaded = saveThenLoad(df, SchemaTimeUnit.NANOS);
+        new DataFrameAsserts(loaded, "c1")
+                .expectHeight(3)
+                .expectColumn("c1",
+                        LocalDateTime.of(2026, 1, 2, 3, 4, 5, 1_002_003).toInstant(ZoneOffset.UTC),
+                        LocalDateTime.of(2025, 8, 9, 10, 11, 12).toInstant(ZoneOffset.UTC),
+                        null);
+    }
+
+    @Test
+    public void uuid() {
+        UUID uuid1 = UUID.randomUUID();
+        UUID uuid2 = UUID.randomUUID();
+
+        DataFrame df = DataFrame.foldByRow("c1").of(uuid1, uuid2, null);
+
+        DataFrame loaded = saveThenLoad(df, SchemaTimeUnit.NANOS);
+        new DataFrameAsserts(loaded, "c1")
+                .expectHeight(3)
+                .expectColumn("c1", uuid1, uuid2, null);
     }
 
     @Test
