@@ -1,5 +1,6 @@
 package org.dflib.avro.types;
 
+import org.apache.avro.Conversion;
 import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 
@@ -10,17 +11,25 @@ import java.nio.ByteBuffer;
 
 // Avro has its own "decimal" logical type mapping to BigDecimal. But it requires predefined scale and precision.
 // This would be too limiting for a DataFrame column
-public class BigDecimalConversion extends SingleSchemaConversion<BigDecimal> {
+public class BigDecimalConversion extends Conversion<BigDecimal> {
 
     static final String NAME = "dflib-bigdecimal";
+    static final LogicalType TYPE = new SingleSchemaLogicalType(NAME, Schema.Type.BYTES);
+    static final Schema RECOMMENDED_SCHEMA = TYPE.addToSchema(Schema.create(Schema.Type.BYTES));
 
-    public BigDecimalConversion() {
-        super(NAME, Schema.Type.BYTES);
+    @Override
+    public String getLogicalTypeName() {
+        return NAME;
     }
 
     @Override
     public Class<BigDecimal> getConvertedType() {
         return BigDecimal.class;
+    }
+
+    @Override
+    public Schema getRecommendedSchema() {
+        return RECOMMENDED_SCHEMA;
     }
 
     @Override

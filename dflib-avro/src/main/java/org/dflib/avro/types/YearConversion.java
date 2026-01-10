@@ -1,22 +1,31 @@
 package org.dflib.avro.types;
 
+import org.apache.avro.Conversion;
 import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 
 import java.time.Year;
 
 
-public class YearConversion extends SingleSchemaConversion<Year> {
+public class YearConversion extends Conversion<Year> {
 
     static final String NAME = "dflib-year";
+    static final LogicalType TYPE = new SingleSchemaLogicalType(NAME, Schema.Type.INT);
+    static final Schema RECOMMENDED_SCHEMA = TYPE.addToSchema(Schema.create(Schema.Type.INT));
 
-    public YearConversion() {
-        super(NAME, Schema.Type.INT);
+    @Override
+    public String getLogicalTypeName() {
+        return NAME;
     }
 
     @Override
     public Class<Year> getConvertedType() {
         return Year.class;
+    }
+
+    @Override
+    public Schema getRecommendedSchema() {
+        return RECOMMENDED_SCHEMA;
     }
 
     @Override

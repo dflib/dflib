@@ -1,22 +1,31 @@
 package org.dflib.avro.types;
 
+import org.apache.avro.Conversion;
 import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 
 import java.time.YearMonth;
 
 
-public class YearMonthConversion extends SingleSchemaConversion<YearMonth> {
+public class YearMonthConversion extends Conversion<YearMonth> {
 
     static final String NAME = "dflib-yearmonth";
+    static final LogicalType TYPE = new SingleSchemaLogicalType(NAME, Schema.Type.LONG);
+    static final Schema RECOMMENDED_SCHEMA = TYPE.addToSchema(Schema.create(Schema.Type.LONG));
 
-    public YearMonthConversion() {
-        super(NAME, Schema.Type.LONG);
+    @Override
+    public String getLogicalTypeName() {
+        return NAME;
     }
 
     @Override
     public Class<YearMonth> getConvertedType() {
         return YearMonth.class;
+    }
+
+    @Override
+    public Schema getRecommendedSchema() {
+        return RECOMMENDED_SCHEMA;
     }
 
     @Override
@@ -30,6 +39,6 @@ public class YearMonthConversion extends SingleSchemaConversion<YearMonth> {
 
     @Override
     public Long toLong(YearMonth value, Schema schema, LogicalType type) {
-        return  (long) value.getYear() << 32 | value.getMonthValue() & 0xFFFFFFFFL;
+        return (long) value.getYear() << 32 | value.getMonthValue() & 0xFFFFFFFFL;
     }
 }

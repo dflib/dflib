@@ -6,6 +6,7 @@ import org.apache.avro.SchemaBuilder;
 import org.dflib.DataFrame;
 import org.dflib.Series;
 import org.dflib.avro.types.AvroTypeExtensions;
+import org.dflib.avro.types.UnmappedConversion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -166,7 +167,7 @@ public class AvroSchemaCompiler {
 
     protected Schema unmappedValueSchema(Class<?> type) {
         LOGGER.warn("Unmapped schema type '{}'. Will use 'toString()' conversion and will deserialize as String", type.getName());
-        return AvroTypeExtensions.UNMAPPED_TYPE.getRecommendedSchema();
+        return UnmappedConversion.RECOMMENDED_SCHEMA;
     }
 
     protected Schema makeNullable(Schema schema) {

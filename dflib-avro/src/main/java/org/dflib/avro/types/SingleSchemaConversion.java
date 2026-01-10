@@ -5,6 +5,10 @@ import org.apache.avro.Schema;
 
 import java.util.Objects;
 
+/**
+ * @deprecated subclass {@link Conversion} directly for custom conversions.
+ */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public abstract class SingleSchemaConversion<T> extends Conversion<T> {
 
     private final SingleSchemaLogicalType logicalType;

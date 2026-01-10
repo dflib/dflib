@@ -1,22 +1,31 @@
 package org.dflib.avro.types;
 
+import org.apache.avro.Conversion;
 import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 
 import java.nio.ByteBuffer;
 import java.time.Duration;
 
-public class DurationConversion extends SingleSchemaConversion<Duration> {
+public class DurationConversion extends Conversion<Duration> {
 
     static final String NAME = "dflib-duration";
+    static final LogicalType TYPE = new SingleSchemaLogicalType(NAME, Schema.Type.BYTES);
+    static final Schema RECOMMENDED_SCHEMA = TYPE.addToSchema(Schema.create(Schema.Type.BYTES));
 
-    public DurationConversion() {
-        super(NAME, Schema.Type.BYTES);
+    @Override
+    public String getLogicalTypeName() {
+        return NAME;
     }
 
     @Override
     public Class<Duration> getConvertedType() {
         return Duration.class;
+    }
+
+    @Override
+    public Schema getRecommendedSchema() {
+        return RECOMMENDED_SCHEMA;
     }
 
     @Override

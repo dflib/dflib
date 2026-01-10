@@ -1,8 +1,8 @@
 package org.dflib.avro.schema;
 
-import org.dflib.avro.types.AvroTypeExtensions;
 import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
+import org.dflib.avro.types.UnmappedConversion;
 
 
 public class AvroSchemaUtils {
@@ -42,7 +42,7 @@ public class AvroSchemaUtils {
         }
 
         LogicalType t = schema.getLogicalType();
-        return t != null && t.getName().equals(AvroTypeExtensions.UNMAPPED_TYPE.getName());
+        return t != null && t.getName().equals(UnmappedConversion.NAME);
     }
 
     private static <T extends Enum<T>> Class<T> enumTypeForName(String name) {

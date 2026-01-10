@@ -1,5 +1,7 @@
 package org.dflib.avro;
 
+import org.apache.avro.Conversion;
+import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 import org.dflib.ByteSource;
 import org.dflib.ByteSources;
@@ -18,15 +20,20 @@ import java.util.Map;
 public class Avro {
 
     /**
-     * An extension point to register a conversion for a custom type mapped to an underlying Avro simple type.
-     * DFLib already provides a collection of type extensions to map various common value types to Avro. This
-     * method allows to cover the types that are not (yet) included in DFLib.
-     *
-     * @param conversion a custom subclass of {@link SingleSchemaConversion} implementing custom type read/write logic.
+     * @deprecated in favor of {@link #registerConversion(LogicalType, Conversion)}
      */
-    // TODO: deprecate in favor of AvroTypeExtensions?
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static void registerCustomType(SingleSchemaConversion<?> conversion) {
-        AvroTypeExtensions.registerCustomType(conversion);
+        registerConversion(conversion.getLogicalType(), conversion);
+    }
+
+    /**
+     * Allows to register a custom "conversion" for a user-defined Avro logical type.
+     *
+     * @since 2.0.0
+     */
+    public static void registerConversion(LogicalType logicalType, Conversion<?> conversion) {
+        AvroTypeExtensions.registerConversion(logicalType, conversion);
     }
 
     public static Schema compileSchema(DataFrame data, String namespace, String name) {

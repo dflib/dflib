@@ -1,6 +1,8 @@
 package org.dflib.avro.types;
 
+import org.apache.avro.Conversion;
 import org.apache.avro.Conversions;
+import org.apache.avro.LogicalType;
 import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 import org.apache.avro.data.TimeConversions;
@@ -8,8 +10,6 @@ import org.apache.avro.generic.GenericData;
 
 
 public class AvroTypeExtensions {
-
-    public static final SingleSchemaLogicalType UNMAPPED_TYPE = new SingleSchemaLogicalType("dflib-unmapped", Schema.Type.STRING);
 
     private static final GenericData GENERIC_DATA_FOR_SAVE;
     private static final GenericData GENERIC_DATA_FOR_LOAD;
@@ -35,18 +35,18 @@ public class AvroTypeExtensions {
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.TimeMicrosConversion());
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(new TimeConversions.TimeMillisConversion());
 
-        registerCustomType(new BigDecimalConversion());
-        registerCustomType(new BigIntegerConversion());
-        registerCustomType(new ByteArrayConversion());
-        registerCustomType(new DurationConversion());
-        registerCustomType(new LocalDateConversion());
-        registerCustomType(new LocalDateTimeConversion());
-        registerCustomType(new LocalTimeConversion());
-        registerCustomType(new PeriodConversion());
-        registerCustomType(new YearMonthConversion());
-        registerCustomType(new YearConversion());
+        registerConversion(BigDecimalConversion.TYPE, new BigDecimalConversion());
+        registerConversion(BigIntegerConversion.TYPE, new BigIntegerConversion());
+        registerConversion(ByteArrayConversion.TYPE, new ByteArrayConversion());
+        registerConversion(DurationConversion.TYPE, new DurationConversion());
+        registerConversion(LocalDateConversion.TYPE, new LocalDateConversion());
+        registerConversion(LocalDateTimeConversion.TYPE, new LocalDateTimeConversion());
+        registerConversion(LocalTimeConversion.TYPE, new LocalTimeConversion());
+        registerConversion(PeriodConversion.TYPE, new PeriodConversion());
+        registerConversion(YearMonthConversion.TYPE, new YearMonthConversion());
+        registerConversion(YearConversion.TYPE, new YearConversion());
 
-        registerCustomType(new UnmappedConversion(UNMAPPED_TYPE));
+        registerConversion(UnmappedConversion.TYPE, new UnmappedConversion());
     }
 
     /**
@@ -54,12 +54,23 @@ public class AvroTypeExtensions {
      * DFLib already provides a collection of type extensions to map various common value types to Avro. This
      * method allows to cover the types that are not (yet) included in DFLib.
      *
-     * @param conversion a custom subclass of {@link SingleSchemaConversion} implementing custom type read/write logic.
-     * @since 2.0
+     * @since 2.0.0
      */
-    public static void registerCustomType(SingleSchemaConversion<?> conversion) {
-        LogicalTypes.LogicalTypeFactory typeFactory = new SingletonLogicalTypeFactory(conversion.getLogicalType());
-        LogicalTypes.register(conversion.getLogicalType().getName(), typeFactory);
+    public static void registerConversion(LogicalType logicalType, Conversion<?> conversion) {
+
+        LogicalTypes.LogicalTypeFactory typeFactory = new LogicalTypes.LogicalTypeFactory() {
+            @Override
+            public LogicalType fromSchema(Schema schema) {
+                return logicalType;
+            }
+
+            @Override
+            public String getTypeName() {
+                return logicalType.getName();
+            }
+        };
+
+        LogicalTypes.register(logicalType.getName(), typeFactory);
         GENERIC_DATA_FOR_SAVE.addLogicalTypeConversion(conversion);
         GENERIC_DATA_FOR_LOAD.addLogicalTypeConversion(conversion);
     }
