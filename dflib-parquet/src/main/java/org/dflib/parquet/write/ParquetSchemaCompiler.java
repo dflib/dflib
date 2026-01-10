@@ -83,14 +83,14 @@ class ParquetSchemaCompiler {
         case "java.time.LocalDate":
             return primitive(PrimitiveTypeName.INT32, OPTIONAL).as(dateType()).named(columnName);
         case "java.time.LocalTime":
-            return localTime(columnName, writeConfiguration.getTimeUnit());
+            return localTime(columnName, writeConfiguration.timeUnit());
         case "java.time.LocalDateTime":
-            return localDateTime(columnName, writeConfiguration.getTimeUnit());
+            return localDateTime(columnName, writeConfiguration.timeUnit());
         case "java.time.Instant":
-            return instant(columnName, writeConfiguration.getTimeUnit());
+            return instant(columnName, writeConfiguration.timeUnit());
 
         case "java.math.BigDecimal":
-            return decimalTypeItem(columnName, writeConfiguration.getDecimalConfig());
+            return decimalTypeItem(columnName, writeConfiguration.decimalConfig());
         default:
             throw new RuntimeException(name + " not supported in Parquet");
         }
@@ -133,11 +133,11 @@ class ParquetSchemaCompiler {
             throw new RuntimeException("If BigDecimall is used, a Default Decimal configuration "
                     + "must be provided in the setup of ParquetSaver");
         }
-        var decimalType = decimalType(decimalConfig.getScale(), decimalConfig.getPrecision());
-        if (decimalConfig.getPrecision() <= 9) {
+        var decimalType = decimalType(decimalConfig.scale(), decimalConfig.precision());
+        if (decimalConfig.precision() <= 9) {
             return primitive(PrimitiveTypeName.INT32, OPTIONAL).as(decimalType).named(name);
         }
-        if (decimalConfig.getPrecision() <= 18) {
+        if (decimalConfig.precision() <= 18) {
             return primitive(PrimitiveTypeName.INT64, OPTIONAL).as(decimalType).named(name);
         }
         return primitive(PrimitiveTypeName.BINARY, OPTIONAL).as(decimalType).named(name);

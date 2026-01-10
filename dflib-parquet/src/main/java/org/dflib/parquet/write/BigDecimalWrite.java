@@ -17,9 +17,9 @@ class BigDecimalWrite {
     private final DecimalMapper mapper;
 
     public BigDecimalWrite(DecimalConfig decimalConfig) {
-        this.precision = decimalConfig.getPrecision();
-        this.scale = decimalConfig.getScale();
-        this.mapper = calcMapper(decimalConfig.getPrecision());
+        this.precision = decimalConfig.precision();
+        this.scale = decimalConfig.scale();
+        this.mapper = calcMapper(decimalConfig.precision());
     }
 
     void write(RecordConsumer recordConsumer, Object value) {

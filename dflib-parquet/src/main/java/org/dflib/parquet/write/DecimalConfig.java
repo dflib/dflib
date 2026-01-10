@@ -1,11 +1,6 @@
 package org.dflib.parquet.write;
 
-
-
-public class DecimalConfig {
-
-    private final int precision;
-    private final int scale;
+public record DecimalConfig(int precision, int scale) {
 
     public DecimalConfig(int precision, int scale) {
         this.precision = precision;
@@ -20,13 +15,4 @@ public class DecimalConfig {
             throw new IllegalArgumentException("scale must be less than or equal to the precision");
         }
     }
-
-    public int getPrecision() {
-        return precision;
-    }
-
-    public int getScale() {
-        return scale;
-    }
-
 }

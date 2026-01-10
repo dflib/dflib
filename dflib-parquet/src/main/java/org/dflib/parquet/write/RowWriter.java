@@ -79,13 +79,13 @@ class RowWriter {
             return new FieldWriter(column, v -> recordConsumer.addBinary(uuidToBinary(v)));
 
         case "java.math.BigDecimal":
-            BigDecimalWrite bigDecimalWrite = new BigDecimalWrite(writeConfiguration.getDecimalConfig());
+            BigDecimalWrite bigDecimalWrite = new BigDecimalWrite(writeConfiguration.decimalConfig());
             return new FieldWriter(column, v -> bigDecimalWrite.write(recordConsumer, v));
 
         case "java.time.LocalDate":
             return new FieldWriter(column, v -> recordConsumer.addInteger((int) ((LocalDate) v).toEpochDay()));
         case "java.time.LocalTime":
-            switch (writeConfiguration.getTimeUnit()) {
+            switch (writeConfiguration.timeUnit()) {
             case MILLIS:
                 return new FieldWriter(column,
                         v -> recordConsumer.addInteger((int) (((LocalTime) v).toNanoOfDay() / 1_000_000L)));
@@ -94,13 +94,13 @@ class RowWriter {
             case NANOS:
                 return new FieldWriter(column, v -> recordConsumer.addLong(((LocalTime) v).toNanoOfDay()));
             default:
-                throw new IllegalArgumentException("Invalid " + writeConfiguration.getTimeUnit());
+                throw new IllegalArgumentException("Invalid " + writeConfiguration.timeUnit());
             }
         case "java.time.LocalDateTime":
-            LocalDateTimeToLong localDateMapper = getLocalDateTimeMapper(writeConfiguration.getTimeUnit());
+            LocalDateTimeToLong localDateMapper = getLocalDateTimeMapper(writeConfiguration.timeUnit());
             return new FieldWriter(column, v -> recordConsumer.addLong(localDateMapper.map((LocalDateTime) v)));
         case "java.time.Instant":
-            InstantToLong instantMapper = getInstantMapper(writeConfiguration.getTimeUnit());
+            InstantToLong instantMapper = getInstantMapper(writeConfiguration.timeUnit());
             return new FieldWriter(column, v -> recordConsumer.addLong(instantMapper.map((Instant) v)));
 
         default:
