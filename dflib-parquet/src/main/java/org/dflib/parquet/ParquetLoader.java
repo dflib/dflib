@@ -25,22 +25,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+/**
+ * Loads .parquet files as DataFrames.
+ */
 public class ParquetLoader {
 
     private SchemaProjector schemaProjector;
-    private final List<ColConfigurator> colConfigurators;
-    private boolean compactAllCols;
-
-    public ParquetLoader() {
-        this.colConfigurators = new ArrayList<>();
-    }
 
     /**
      * Configures the loader to only process the specified columns, and include them in the DataFrame in the specified
@@ -78,62 +72,19 @@ public class ParquetLoader {
     }
 
     /**
-     * Configures all Parquet columns to be compacted during load. Should be used to save memory for low-cardinality
-     * columns. Note that Parquet format is already compacted, so this operation doesn't incur much overhead, and in fact
-     * can be faster than no compaction.
-     *
-     * @since 2.0.0
-     */
-    public ParquetLoader compactCols() {
-        this.compactAllCols = true;
-        this.colConfigurators.clear();
-        return this;
-    }
-
-    /**
-     * Configures Parquet columns to be compacted during load. Should be used to save memory for low-cardinality
-     * columns. Note that Parquet format is already compacted, so this operation doesn't incur much overhead, and in fact
-     * can be faster than no compaction.
-     *
-     * @since 2.0.0
-     */
-    public ParquetLoader compactCols(int... cols) {
-        this.compactAllCols = false;
-        for (int c : cols) {
-            colConfigurators.add(ColConfigurator.objectCol(c, true));
-        }
-        return this;
-    }
-
-    /**
-     * Configures Parquet columns to be compacted during load. Should be used to save memory for low-cardinality
-     * columns. Note that Parquet format is already compacted, so this operation doesn't incur much overhead, and in fact
-     * can be faster than no compaction.
-     *
-     * @since 2.0.0
-     */
-    public ParquetLoader compactCols(String... cols) {
-        this.compactAllCols = false;
-        for (String c : cols) {
-            colConfigurators.add(ColConfigurator.objectCol(c, true));
-        }
-        return this;
-    }
-
-    /**
-     * @deprecated in favor of {@link #compactCols(int...)}
+     * @deprecated the loader compacts columns by defaults already, so this method has no effect on anything.
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public ParquetLoader compactCol(int column) {
-        return compactCols(column);
+        return this;
     }
 
     /**
-     * @deprecated in favor of {@link #compactCols(String...)}
+     * @deprecated the loader compacts columns by defaults already, so this method has no effect on anything.
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public ParquetLoader compactCol(String column) {
-        return compactCol(column);
+        return this;
     }
 
     public DataFrame load(File file) {
@@ -216,23 +167,13 @@ public class ParquetLoader {
     }
 
     private StoringConverter[] converters(Index index, GroupType schema, int capacity) {
-
-        Map<Integer, ColConfigurator> configurators = new HashMap<>();
-
-        // presumably "colConfigurators" will be empty if "compactAllCols == true", still doing a paranoid check
-        if (!compactAllCols) {
-            for (ColConfigurator c : colConfigurators) {
-                // later configs override earlier configs at the same position
-                configurators.put(c.srcPos(index), c);
-            }
-        }
-
         int w = schema.getFields().size();
         StoringConverter[] converters = new StoringConverter[w];
         for (int i = 0; i < w; i++) {
-            converters[i] = configurators
-                    .computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, compactAllCols))
-                    .converter(schema.getFields().get(i), capacity);
+
+            // Use compaction (aka "dictionarySupport") by default. ".parquet" files are already compact, so this doesn't
+            // result in any performance overhead, and in fact is usually faster than ignoring dictionaries
+            converters[i] = StoringConverter.ofAccum(schema.getFields().get(i), capacity, true);
         }
 
         return converters;

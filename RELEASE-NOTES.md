@@ -1,3 +1,7 @@
+## Release 2.0.0-M7
+
+* #604 ParquetLoader to use compaction by default
+
 ## Release 2.0.0-M6
 
 * #439 DataFrame.colsRange(..), colsHead(..), colsTail(..)
