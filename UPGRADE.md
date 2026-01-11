@@ -68,10 +68,14 @@ slower loads). You need to explicitly tag all your lower-cardinality columns as 
 
 ```java
 Parquet.loader()
-  .compactCol("a")
-  .compactCol("c")
+  .compactCols("a", "c")
   .load("my.parquet");
 ```
+
+* [dflib #601](https://github.com/dflib/dflib/issues/601): When saving to `.avro`, we stopped using the following 
+DFLib-specific logical types: `dflib-bytes`, `dflib-localdate`, `dflib-localtime`, `dflib-localdatetime`, `dflib-bigdecimal`,
+replacing them with proper types from the Avro specification. DFLib 2 will be able to read `.avro` files created in
+DFLib 1 (so it is backwards compatible), but DFLib 1 may not be always able to properly convert the types produced by v2.
 
 ## 1.1.0
 
