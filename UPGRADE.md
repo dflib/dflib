@@ -76,6 +76,10 @@ ECharts
 ```
 
 ### [dflib #597](https://github.com/dflib/dflib/issues/597)
+
+_This advice only applies to 2.0.0-M6. In M7 we simply made compaction the default that can not be changed. This just
+gives the best performance out of the box without any known downsides. So ignore it for any other versions._
+
 While Parquet file loading became much faster due to other improvement, implicit column compaction was turned off for 
 consistency, that can result in higher memory usage (and sometimes slower loads). You need to explicitly tag all your 
 lower-cardinality columns as "compact" to get the best performance:
