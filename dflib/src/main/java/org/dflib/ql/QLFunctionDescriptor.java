@@ -60,7 +60,7 @@ public class QLFunctionDescriptor {
         if (o == null || getClass() != o.getClass()) return false;
 
         QLFunctionDescriptor that = (QLFunctionDescriptor) o;
-        return name.equals(that.name) && returnType == that.returnType && Arrays.equals(argTypes, that.argTypes);
+        return name.equals(that.name) && Arrays.equals(argTypes, that.argTypes);
     }
 
     public String name() {
@@ -81,10 +81,7 @@ public class QLFunctionDescriptor {
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + returnType.hashCode();
-        result = 31 * result + Arrays.hashCode(argTypes);
-        return result;
+        return 31 * name.hashCode() + Arrays.hashCode(argTypes);
     }
 
     public static class Builder {

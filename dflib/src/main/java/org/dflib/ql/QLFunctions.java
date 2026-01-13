@@ -41,6 +41,7 @@ public class QLFunctions {
 
     public QLFunctionDescriptor function(String name, QLFunctionDescriptor.TypeClassifier type, List<QLFunctionDescriptor.TypeClassifier> argTypes) {
         return descriptorsForTypeAndName(name, type)
+                // TODO: polymorphic functions support
                 .filter(d -> d.returnType() == type)
                 .filter(d -> d.argTypes().length == argTypes.size())
                 .filter(d -> {
