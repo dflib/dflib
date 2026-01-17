@@ -49,8 +49,8 @@
 
         <slf4j.version>2.0.16</slf4j.version>
         <log4j.version>2.23.1</log4j.version>
-        <bootique.version>3.0-M6</bootique.version>
-        <testcontainers.version>1.20.4</testcontainers.version>
+        <bootique.version>3.0-RC1</bootique.version>
+        <testcontainers.version>1.21.4</testcontainers.version>
         <junit5.version>5.11.3</junit5.version>
         <jsonpath.version>2.9.0</jsonpath.version>
         <avro.version>1.12.1</avro.version>
@@ -145,6 +145,12 @@
                 <groupId>io.bootique.jdbc</groupId>
                 <artifactId>bootique-jdbc-junit5-testcontainers</artifactId>
                 <version>${bootique.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.testcontainers</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>io.bootique.jetty</groupId>

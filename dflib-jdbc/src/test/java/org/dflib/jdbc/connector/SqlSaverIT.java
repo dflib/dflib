@@ -190,7 +190,7 @@ public class SqlSaverIT extends BaseDbTest {
         int[] cs = connector.sqlSaver(sql).save(updateData);
         assertArrayEquals(new int[]{2, 1}, cs);
 
-        DataFrame saved = connector.tableLoader("t1").load();
+        DataFrame saved = connector.tableLoader("t1").load().sort("id");
         new DataFrameAsserts(saved, "id", "name", "salary")
                 .expectHeight(2)
                 .expectRow(0, 1L, "nx", 50_000.01)
