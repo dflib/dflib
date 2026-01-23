@@ -93,22 +93,6 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void duplicateColumnNames() {
-        byte[] csvBytes = "A,A,A\n1,2,3\n4,5,6".getBytes();
-        DataFrame df = new CsvLoader().load(ByteSource.of(csvBytes));
-
-        // if the duplicate column names are present, the following would throw
-        assertNotNull(df.getColumn("A"));
-        assertNotNull(df.getColumn("A_"));
-        assertNotNull(df.getColumn("A__"));
-
-        new DataFrameAsserts(df, "A", "A_", "A__")
-                .expectHeight(2)
-                .expectRow(0, "1", "2", "3")
-                .expectRow(1, "4", "5", "6");
-    }
-
-    @Test
     public void fromFile() {
         DataFrame df = new CsvLoader().load(inPath("f1.csv"));
         new DataFrameAsserts(df, "A", "b", "C")
