@@ -51,8 +51,11 @@ public class CsvLoaderTest extends BaseCsvTest {
 
     @Test
     public void fromByteSource() {
-        byte[] csvBytes = "A,b,C\n1,2,3\n4,5,6".getBytes();
-        DataFrame df = new CsvLoader().load(ByteSource.of(csvBytes));
+        String csv = """
+                A,b,C
+                1,2,3
+                4,5,6""";
+        DataFrame df = new CsvLoader().load(ByteSource.of(csv.getBytes()));
 
         new DataFrameAsserts(df, "A", "b", "C")
                 .expectHeight(2)
@@ -62,8 +65,11 @@ public class CsvLoaderTest extends BaseCsvTest {
 
     @Test
     public void fromByteSource_Encoding() {
-        byte[] csvBytes = "A,b,C\n1,2,3\n4,5,6".getBytes(StandardCharsets.UTF_16BE);
-        DataFrame df = new CsvLoader().encoding("UTF-16BE").load(ByteSource.of(csvBytes));
+        String csv = """
+                A,b,C
+                1,2,3
+                4,5,6""";
+        DataFrame df = new CsvLoader().encoding("UTF-16BE").load(ByteSource.of(csv.getBytes(StandardCharsets.UTF_16BE)));
 
         new DataFrameAsserts(df, "A", "b", "C")
                 .expectHeight(2)
@@ -73,11 +79,17 @@ public class CsvLoaderTest extends BaseCsvTest {
 
     @Test
     public void fromByteSources() {
-        byte[] csvBytes1 = "A,b,C\n1,2,3\n4,5,6".getBytes();
-        byte[] csvBytes2 = "X,y,Z\n7,8,9\n10,11,12".getBytes();
+        String csv1 = """
+                A,b,C
+                1,2,3
+                4,5,6""";
+        String csv2 = """
+                X,y,Z
+                7,8,9
+                10,11,12""";
 
         Map<String, DataFrame> dfs = new CsvLoader().loadAll(ByteSources.of(
-                Map.of("b1", ByteSource.of(csvBytes1), "b2", ByteSource.of(csvBytes2))));
+                Map.of("b1", ByteSource.of(csv1.getBytes()), "b2", ByteSource.of(csv2.getBytes()))));
 
         assertEquals(2, dfs.size());
 

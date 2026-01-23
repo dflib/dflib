@@ -8,11 +8,15 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CsvLoader_ImperfectSourceTest {
-    
+
     @Test
     public void duplicateColumnNames() {
-        byte[] csvBytes = "A,A,A\n1,2,3\n4,5,6".getBytes();
-        DataFrame df = new CsvLoader().load(ByteSource.of(csvBytes));
+        String csv = """
+                A,A,A
+                1,2,3
+                4,5,6""";
+
+        DataFrame df = new CsvLoader().load(ByteSource.of(csv.getBytes()));
 
         // if the duplicate column names are present, the following would throw
         assertNotNull(df.getColumn("A"));
