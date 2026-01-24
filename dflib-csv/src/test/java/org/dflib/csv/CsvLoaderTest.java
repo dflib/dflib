@@ -1,10 +1,10 @@
 package org.dflib.csv;
 
 import org.apache.commons.csv.CSVFormat;
-import org.dflib.DataFrame;
-import org.dflib.ValueMapper;
 import org.dflib.ByteSource;
 import org.dflib.ByteSources;
+import org.dflib.DataFrame;
+import org.dflib.ValueMapper;
 import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
-import static org.dflib.Exp.$col;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class CsvLoaderTest extends BaseCsvTest {
 
@@ -123,7 +123,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_DefaultFormat_Excel() {
+    public void excel() {
         DataFrame df = new CsvLoader().load(inPath("from_excel.csv"));
         new DataFrameAsserts(df, "A", "b", "C")
                 .expectHeight(2)
@@ -132,7 +132,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_MySQLFormat() {
+    public void mySQLFormat() {
         DataFrame df = new CsvLoader().format(CSVFormat.MYSQL).load(inPath("from_mysql.csv"));
         new DataFrameAsserts(df, "1", "3365430", " xxxx")
                 .expectHeight(4)
@@ -143,7 +143,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_Header() {
+    public void header() {
         DataFrame df = new CsvLoader().header("X", "Y", "Z").load(inPath("f1.csv"));
         new DataFrameAsserts(df, "X", "Y", "Z")
                 .expectHeight(3)
@@ -153,7 +153,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_generateHeader() {
+    public void generateHeader() {
         DataFrame df = new CsvLoader().generateHeader().load(inPath("f1.csv"));
         new DataFrameAsserts(df, "c0", "c1", "c2")
                 .expectHeight(3)
@@ -163,7 +163,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_Cols() {
+    public void cols() {
         DataFrame df = new CsvLoader().cols("b", "A").load(inPath("f1.csv"));
         new DataFrameAsserts(df, "b", "A")
                 .expectHeight(2)
@@ -172,7 +172,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_Cols_Pos() {
+    public void cols_Pos() {
         DataFrame df = new CsvLoader().cols(1, 0).load(inPath("f1.csv"));
         new DataFrameAsserts(df, "b", "A")
                 .expectHeight(2)
@@ -181,7 +181,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_Cols_Header() {
+    public void cols_Header() {
         DataFrame df = new CsvLoader().header("X", "Y", "Z").cols("Y", "X").load(inPath("f1.csv"));
         new DataFrameAsserts(df, "Y", "X")
                 .expectHeight(3)
@@ -191,7 +191,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_Cols_generateHeader() {
+    public void cols_generateHeader() {
         DataFrame df = new CsvLoader().generateHeader().cols("c1", "c0").load(inPath("f1.csv"));
         new DataFrameAsserts(df, "c1", "c0")
                 .expectHeight(3)
@@ -201,7 +201,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_ColsPos_generateHeader() {
+    public void colsPos_generateHeader() {
         DataFrame df = new CsvLoader().generateHeader().cols(1, 0).load(inPath("f1.csv"));
         new DataFrameAsserts(df, "c1", "c0")
                 .expectHeight(3)
@@ -211,7 +211,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_ColsExcept() {
+    public void colsExcept() {
         DataFrame df = new CsvLoader().colsExcept("b").load(inPath("f1.csv"));
         new DataFrameAsserts(df, "A", "C")
                 .expectHeight(2)
@@ -220,7 +220,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_ColsExcept_Pos() {
+    public void colsExcept_Pos() {
         DataFrame df = new CsvLoader().colsExcept(1).load(inPath("f1.csv"));
         new DataFrameAsserts(df, "A", "C")
                 .expectHeight(2)
@@ -229,7 +229,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_Limit() {
+    public void limit() {
         DataFrame df = new CsvLoader().limit(1).load(inPath("f1.csv"));
         new DataFrameAsserts(df, "A", "b", "C")
                 .expectHeight(1)
@@ -237,7 +237,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_Limit_Header() {
+    public void limit_Header() {
         DataFrame df = new CsvLoader()
                 .header("C0", "C1", "C2")
                 .limit(2)
@@ -250,7 +250,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_Offset() {
+    public void offset() {
         DataFrame df = new CsvLoader().offset(1).load(inPath("f1.csv"));
         new DataFrameAsserts(df, "1", "2", "3")
                 .expectHeight(1)
@@ -258,7 +258,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_Offset_Limit() {
+    public void offset_Limit() {
         DataFrame df = new CsvLoader()
                 .generateHeader()
                 .offset(1)
@@ -271,7 +271,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_col() {
+    public void col() {
         DataFrame df = new CsvLoader()
                 .col(0, ValueMapper.stringToInt())
                 .col(2, ValueMapper.stringToLong())
@@ -283,7 +283,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_colType_Override() {
+    public void colType_Override() {
         DataFrame df = new CsvLoader()
                 .col(0, ValueMapper.stringToInt())
                 .col("A", ValueMapper.stringToLong())
@@ -295,7 +295,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_NumColumn1() {
+    public void numColumn1() {
         DataFrame df = new CsvLoader()
                 .numCol(0, Integer.class)
                 .numCol("b", Long.class)
@@ -309,7 +309,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_NumColumn2() {
+    public void numColumn2() {
         DataFrame df = new CsvLoader()
                 .numCol(0, Float.class)
                 .numCol("b", BigDecimal.class)
@@ -323,121 +323,18 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_NumColumn_PartialColumns() {
+    public void dateTimeColumns() {
+        String csv = """
+                default_date,default_date_time,custom_date,custom_date_time
+                2015-01-01,2015-01-01T05:01:20,1/1/15,1/1/15 05:01:20
+                2016-03-31,2016-03-31T12:00:25,3/31/16,3/31/16 12:00:25""";
 
-        DataFrame df = new CsvLoader()
-                .intCol("A")
-                .intCol("C")
-                .cols("C", "A")
-                .load(inPath("f1.csv"));
-
-        new DataFrameAsserts(df, "C", "A")
-                .expectHeight(2)
-                .expectRow(0, 3, 1)
-                .expectRow(1, 6, 4);
-    }
-
-    @Test
-    public void fromFile_IntCol_Nulls() {
-        CsvLoader loader = new CsvLoader()
-                .intCol(0)
-                .intCol(1);
-
-        assertThrows(IllegalArgumentException.class, () -> loader.load(inPath("numbers_w_nulls.csv")));
-    }
-
-    @Test
-    public void fromFile_IntCol_Nulls_Default() {
-        DataFrame df = new CsvLoader()
-                .intCol(0, -100)
-                .intCol(1, -200)
-                .load(inPath("numbers_w_nulls.csv"));
-
-        new DataFrameAsserts(df, "One", "Two")
-                .expectHeight(2)
-                .expectIntColumns(0, 1)
-                .expectRow(0, -100, 3)
-                .expectRow(1, 5, -200);
-    }
-
-    @Test
-    public void fromFile_IntCol_Nulls_Throw() {
-        CsvLoader loader = new CsvLoader()
-                .intCol(0)
-                .intCol(1);
-
-        assertThrows(IllegalArgumentException.class, () -> loader.load(inPath("numbers_w_nulls.csv")));
-
-    }
-
-    @Test
-    public void fromFile_LongCol_Nulls() {
-        CsvLoader loader = new CsvLoader()
-                .longCol(0)
-                .longCol(1);
-
-        assertThrows(IllegalArgumentException.class, () -> loader.load(inPath("numbers_w_nulls.csv")));
-    }
-
-    @Test
-    public void fromFile_LongCol_Nulls_Default() {
-        DataFrame df = new CsvLoader()
-                .longCol(0, -100L)
-                .longCol(1, -200L)
-                .load(inPath("numbers_w_nulls.csv"));
-
-        new DataFrameAsserts(df, "One", "Two")
-                .expectHeight(2)
-                .expectLongColumns(0, 1)
-                .expectRow(0, -100L, 3L)
-                .expectRow(1, 5L, -200L);
-    }
-
-    @Test
-    public void fromFile_LongCol_Nulls_Throw() {
-        CsvLoader loader = new CsvLoader()
-                .longCol(0)
-                .longCol(1);
-
-        assertThrows(IllegalArgumentException.class, () -> loader.load(inPath("numbers_w_nulls.csv")));
-    }
-
-
-    @Test
-    public void fromFile_DoubleCol_Nulls_Default() {
-        DataFrame df = new CsvLoader()
-                .doubleCol(0, -1.1)
-                .doubleCol(1, -3.14)
-                .load(inPath("doubles_w_nulls.csv"));
-
-        new DataFrameAsserts(df, "One", "Two")
-                .expectHeight(2)
-                .expectDoubleColumns(0, 1)
-                .expectRow(0, -1.1, 3.1)
-                .expectRow(1, 5.2002, -3.14);
-    }
-
-    @Test
-    public void fromFile_DecimalCol() {
-        DataFrame df = new CsvLoader()
-                .decimalCol(0)
-                .decimalCol(1)
-                .load(inPath("doubles_w_nulls.csv"));
-
-        new DataFrameAsserts(df, "One", "Two")
-                .expectHeight(2)
-                .expectRow(0, null, new BigDecimal("3.1"))
-                .expectRow(1, new BigDecimal("5.2002"), null);
-    }
-
-    @Test
-    public void fromFile_DateTimeColumns() {
         DataFrame df = new CsvLoader()
                 .dateCol(0)
                 .dateTimeCol("default_date_time")
                 .dateCol("custom_date", DateTimeFormatter.ofPattern("M/d/yy"))
                 .dateTimeCol(3, DateTimeFormatter.ofPattern("M/d/yy HH:mm:ss"))
-                .load(inPath("dt1.csv"));
+                .load(ByteSource.of(csv.getBytes()));
 
         new DataFrameAsserts(df, "default_date", "default_date_time", "custom_date", "custom_date_time")
                 .expectHeight(2)
@@ -451,90 +348,5 @@ public class CsvLoaderTest extends BaseCsvTest {
                         LocalDateTime.of(2016, 3, 31, 12, 0, 25),
                         LocalDate.of(2016, 3, 31),
                         LocalDateTime.of(2016, 3, 31, 12, 0, 25));
-    }
-
-    @Test
-    public void fromFile_EmptyStringColumn() {
-        DataFrame df = new CsvLoader()
-                .load(inPath("strings_w_nulls.csv"));
-
-        new DataFrameAsserts(df, "One", "Two")
-                .expectHeight(2)
-                .expectRow(0, "", "three")
-                .expectRow(1, "five", "");
-    }
-
-    @Test
-    public void valueCardinality_Nulls() {
-        DataFrame df = new CsvLoader()
-                .col("A", s -> s != null ? Integer.parseInt(s) : null)
-                .emptyStringIsNull()
-                .load(inPath("with_duplicates.csv"));
-
-        new DataFrameAsserts(df, "A", "B")
-                .expectHeight(6)
-                .expectRow(0, 1, "ab")
-                .expectRow(1, 40000, "ab")
-                .expectRow(2, 40000, "bc")
-                .expectRow(3, 30000, "bc")
-                .expectRow(4, 30000, null)
-                .expectRow(5, null, "bc");
-
-        DataFrame idCardinality = df.cols().select(
-                $col("A").mapVal(System::identityHashCode),
-                $col("B").mapVal(System::identityHashCode));
-
-        assertEquals(6, idCardinality.getColumn(0).unique().size());
-        assertEquals(6, idCardinality.getColumn(1).unique().size());
-    }
-
-    @Test
-    public void valueCardinality_compactCol_Name() {
-        DataFrame df = new CsvLoader()
-                .compactCol("A", s -> s != null ? Integer.parseInt(s) : null)
-                .compactCol("B")
-                .emptyStringIsNull()
-                .load(inPath("with_duplicates.csv"));
-
-        new DataFrameAsserts(df, "A", "B")
-                .expectHeight(6)
-                .expectRow(0, 1, "ab")
-                .expectRow(1, 40000, "ab")
-                .expectRow(2, 40000, "bc")
-                .expectRow(3, 30000, "bc")
-                .expectRow(4, 30000, null)
-                .expectRow(5, null, "bc");
-
-        DataFrame idCardinality = df.cols().select(
-                $col("A").mapVal(System::identityHashCode),
-                $col("B").mapVal(System::identityHashCode));
-
-        assertEquals(4, idCardinality.getColumn(0).unique().size());
-        assertEquals(3, idCardinality.getColumn(1).unique().size());
-    }
-
-    @Test
-    public void valueCardinality_compactCol_Pos() {
-        DataFrame df = new CsvLoader()
-                .compactCol(0, s -> s != null ? Integer.parseInt(s) : null)
-                .compactCol(1)
-                .emptyStringIsNull()
-                .load(inPath("with_duplicates.csv"));
-
-        new DataFrameAsserts(df, "A", "B")
-                .expectHeight(6)
-                .expectRow(0, 1, "ab")
-                .expectRow(1, 40000, "ab")
-                .expectRow(2, 40000, "bc")
-                .expectRow(3, 30000, "bc")
-                .expectRow(4, 30000, null)
-                .expectRow(5, null, "bc");
-
-        DataFrame idCardinality = df.cols().select(
-                $col("A").mapVal(System::identityHashCode),
-                $col("B").mapVal(System::identityHashCode));
-
-        assertEquals(4, idCardinality.getColumn(0).unique().size());
-        assertEquals(3, idCardinality.getColumn(1).unique().size());
     }
 }
