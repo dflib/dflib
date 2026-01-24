@@ -1,6 +1,7 @@
 ## Release 2.0.0-M7
 
 * #604 ParquetLoader to use compaction by default
+* #607 CsvLoader.nullPadRows()
 
 ## Release 2.0.0-M6
 

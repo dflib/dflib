@@ -56,6 +56,7 @@ public class CsvLoader {
 
     private Codec compressionCodec;
     private boolean checkByteOrderMark;
+    private boolean nullPadRows;
 
     public CsvLoader() {
         this.format = CSVFormat.DEFAULT;
@@ -476,7 +477,7 @@ public class CsvLoader {
     }
 
     /**
-     * Convert missing values to nulls instead of empty strings. Equivalent to calling <code>nullString("")</code>
+     * Read empty cells as nulls instead of empty strings. Equivalent to calling <code>nullString("")</code>
      *
      * @see #nullString(String)
      */
@@ -485,13 +486,24 @@ public class CsvLoader {
     }
 
     /**
-     * Configures the loader to treat the <code>nullString</code> value as a null in tbe resulting DataFrame
+     * Configures the loader to read as nulls cells whose values are equal to the "nullString" argument.
      *
      * @see #emptyStringIsNull()
      * @since 1.2.0
      */
     public CsvLoader nullString(String nullString) {
         this.format = format.builder().setNullString(Objects.requireNonNull(nullString)).build();
+        return this;
+    }
+
+    /**
+     * If any CSV rows are shorter than the header, pad those with nulls. If not set, and such condition is encountered,
+     * an exception is thrown.
+     *
+     * @since 2.0.0
+     */
+    public CsvLoader nullPadRows() {
+        this.nullPadRows = true;
         return this;
     }
 
@@ -627,7 +639,7 @@ public class CsvLoader {
         for (int i = 0; i < w; i++) {
             int csvPos = csvPositions[i];
             ColConfigurator cc = configurators.computeIfAbsent(csvPos, ii -> ColConfigurator.objectCol(ii, false));
-            extractors[i] = cc.extractor(csvHeader);
+            extractors[i] = cc.extractor(csvHeader, nullPadRows);
         }
 
         return extractors;
