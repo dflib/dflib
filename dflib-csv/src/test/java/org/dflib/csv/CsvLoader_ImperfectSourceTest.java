@@ -73,4 +73,31 @@ public class CsvLoader_ImperfectSourceTest {
                 .expectRow(1, "3", "4", -1)
                 .expectRow(2, "5", null, -1);
     }
+
+    @Test
+    public void headerMismatch() {
+        ByteSource csv = ByteSource.of("""
+                0,1
+                2,3""".getBytes());
+
+        assertThrows(ArrayIndexOutOfBoundsException.class, () ->
+                new CsvLoader().header("A", "B", "C").load(csv));
+    }
+
+    @Test
+    public void headerMismatch_nullPadRows() {
+        ByteSource csv = ByteSource.of("""
+                0,1
+                2,3""".getBytes());
+
+        DataFrame df = new CsvLoader()
+                .header("A", "B", "C")
+                .nullPadRows()
+                .load(csv);
+
+        new DataFrameAsserts(df, "A", "B", "C")
+                .expectHeight(2)
+                .expectRow(0, "0", "1", null)
+                .expectRow(1, "2", "3", null);
+    }
 }
