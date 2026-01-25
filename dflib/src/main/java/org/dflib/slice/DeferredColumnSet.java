@@ -365,6 +365,8 @@ public class DeferredColumnSet implements ColumnSet {
         int w = index.size();
         Exp[] exps = new Exp[w];
         for (int i = 0; i < w; i++) {
+            // Passing a String column name instead of position (which is logically equivalent) to resolve the UDF
+            // so that UDF can reference a column name if needed and name itself properly.
             exps[i] = udf.call(index.get(i));
         }
 
@@ -417,6 +419,26 @@ public class DeferredColumnSet implements ColumnSet {
                 null,
                 Index.of(b.getLabels()),
                 compactColsIfNeeded(b.getData()));
+    }
+
+    @Override
+    public DataFrame selectAll(Udf1<?, ?> udf) {
+
+        Index index = source.getColumnsIndex();
+        int w = index.size();
+        Exp[] exps = new Exp[w];
+        for (int i = 0; i < w; i++) {
+            // Passing a String column name instead of position (which is logically equivalent) to resolve the UDF
+            // so that UDF can reference a column name if needed and name itself properly.
+            exps[i] = udf.call(index.get(i));
+        }
+
+        Series<?>[] columns = ExpEvaluator.eval(source, exps);
+
+        return new ColumnDataFrame(
+                null,
+                Index.ofDeduplicated(Exps.labels(source, exps)),
+                compactColsIfNeeded(columns));
     }
 
     @Deprecated

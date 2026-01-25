@@ -625,6 +625,20 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
+    public DataFrame selectAll(Udf1<?, ?> udf) {
+
+        Index srcIndex = source.getColumnsIndex();
+        String[] csIndex = csIndex();
+        int w = csIndex.length;
+        Exp[] exps = new Exp[w];
+        for (int i = 0; i < w; i++) {
+            exps[i] = srcIndex.contains(csIndex[i]) ? udf.call(csIndex[i]) : Exp.$val(null);
+        }
+
+        return select(exps);
+    }
+
+    @Override
     public DataFrame agg(Exp<?>... aggregatingExps) {
         String[] csIndex = csIndex();
 

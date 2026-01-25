@@ -325,6 +325,14 @@ public interface ColumnSet {
     DataFrame select(RowMapper mapper);
 
     /**
+     * Returns a DataFrame, applying the Udf1 parameter to each of the columns in the column set.
+     *
+     * @since 2.0.0
+     */
+    // TODO: a String version of Udf once we start supporting UDF creation from Strings
+    DataFrame selectAll(Udf1<?, ?> udf);
+
+    /**
      * Returns a DataFrame with columns produced from the expression that resolves each row to an iterable
      * of values. For a ColumnSet with defined width, if the splitExp does not generate enough values for a given
      * row, the rest will be filled with nulls, and if it generates extra values, they will be ignored. For a dynamic
