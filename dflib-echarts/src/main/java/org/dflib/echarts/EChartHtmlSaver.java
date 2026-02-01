@@ -161,11 +161,12 @@ public class EChartHtmlSaver {
         );
 
         boolean direct = out instanceof Writer;
-        Writer writer = direct ? (Writer) out : new StringWriter();
-        htmlTemplate().execute(writer, model);
+        Writer out1 = direct ? (Writer) out : new StringWriter();
+
+        htmlTemplate().execute(out1, model);
 
         if (!direct) {
-            out.append(writer.toString());
+            out.append(out1.toString());
         }
     }
 

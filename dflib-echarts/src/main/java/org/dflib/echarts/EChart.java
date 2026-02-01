@@ -6,6 +6,7 @@ import org.dflib.echarts.render.ContainerModel;
 import org.dflib.echarts.render.InitOptsModel;
 import org.dflib.echarts.render.ScriptModel;
 import org.dflib.echarts.render.util.ElementIdGenerator;
+import org.dflib.echarts.render.util.Minifier;
 import org.dflib.echarts.render.util.Renderer;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class EChart {
     private List<String> themeUrls;
     private Integer width;
     private Integer height;
+    private boolean minifyJS;
 
     @Deprecated(since = "2.0.0", forRemoval = true)
     protected EChart() {
@@ -37,10 +39,21 @@ public class EChart {
     protected EChart(ElementIdGenerator idGenerator) {
         this.idGenerator = idGenerator;
         this.option = Option.of();
+        this.minifyJS = true;
     }
 
     public EChart renderAsSvg() {
         this.renderer = RendererType.svg;
+        return this;
+    }
+
+    /**
+     * By default, chart JS is minified. This method would suppress minification, that may be useful for debugging.
+     *
+     * @since 2.0.0
+     */
+    public EChart doNotMinifyJS() {
+        this.minifyJS = false;
         return this;
     }
 
@@ -381,12 +394,14 @@ public class EChart {
                 option.resolve(dataFrame)
         );
 
+        String script = Renderer.renderScript(scriptModel);
+
         return new EChartHtml(
                 divContainerId,
                 echartsUrl(),
                 themeUrls != null ? themeUrls : List.of(),
                 Renderer.renderContainer(containerModel),
-                Renderer.renderScript(scriptModel),
+                minifyJS ? Minifier.minify(script) : script,
                 idGenerator,
                 containerModel,
                 scriptModel

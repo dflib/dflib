@@ -4,6 +4,7 @@
 * #604 ParquetLoader to use compaction by default
 * #607 CsvLoader.nullPadRows()
 * #608 selectAll(Udf1)
+* #609 ECharts: minify generated JavaScript
 
 ## Release 2.0.0-M6
 

@@ -7,16 +7,88 @@ import static org.dflib.echarts.EChartTestDatasets.*;
 
 public class EChartTest {
 
+    @Deprecated
+    @Test
+    public void plot_getExternalScript() {
+        EChartHtml ch = ECharts.chart().xAxis("x").series("y1", "y2").plot(df2);
+        assertTrue(ch.getExternalScript().contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js'></script>"), ch.getExternalScript());
+    }
+
     @Test
     public void plot() {
         EChartHtml ch = ECharts.chart().xAxis("x").series("y1", "y2").plot(df2);
-        assertTrue(ch.getExternalScript().contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js'></script>"), ch.getExternalScript());
         assertTrue(ch.getChartDiv().contains("<div id='dfl_ech_"), ch.getChartDiv());
         assertTrue(ch.getChartScript().contains("['L0','A','B','C'],"), ch.getChartScript());
         assertTrue(ch.getChartScript().contains("['y1',10,11,14],"), ch.getChartScript());
         assertTrue(ch.getChartScript().contains("['y2',20,25,28]"), ch.getChartScript());
         assertTrue(ch.getChartScript().contains("name: 'y1',"), ch.getChartScript());
         assertTrue(ch.getChartScript().contains("name: 'y2',"), ch.getChartScript());
+    }
+
+    @Test
+    public void plotWithId() {
+        EChartHtml ch = ECharts.chart().xAxis("x").series("y1", "y2").plot(df2, "dfl_t_123");
+        assertEquals("""
+                <div id='dfl_t_123' class='dfl_ech' style='width: 600px;height:400px;'></div>""", ch.getChartDiv());
+        assertEquals("""
+                var chart_dfl_t_123 = echarts.init(document.getElementById('dfl_t_123'),null,);\
+                var option_dfl_t_123 = {dataset: {source: [['L0','A','B','C'],['y1',10,11,14],['y2',20,25,28]]},\
+                xAxis: [{type: 'category'},],yAxis: [{type: 'value'},],series: [{name: 'y1',encode: {x: 0,y: 1,},\
+                seriesLayoutBy: 'row',type: 'line'},{name: 'y2',encode: {x: 0,y: 2,},\
+                seriesLayoutBy: 'row',type: 'line'},]};\
+                option_dfl_t_123 && chart_dfl_t_123.setOption(option_dfl_t_123);""", ch.getChartScript());
+    }
+
+    @Test
+    public void plotDoNotMinifyJS() {
+        EChartHtml ch = ECharts.chart().xAxis("x").series("y1", "y2").doNotMinifyJS().plot(df2, "dfl_t_123");
+        assertEquals("""
+                <div id='dfl_t_123' class='dfl_ech' style='width: 600px;height:400px;'></div>""", ch.getChartDiv());
+        assertEquals("""
+                var chart_dfl_t_123 = echarts.init(
+                        document.getElementById('dfl_t_123'),
+                        null,
+                   );
+                    var option_dfl_t_123 = {
+                        dataset: {
+                            source: [
+                                ['L0','A','B','C'],
+                                ['y1',10,11,14],
+                                ['y2',20,25,28]
+                            ]
+                        },
+                        xAxis: [
+                        {
+                            type: 'category'
+                        },
+                        ],
+                        yAxis: [
+                        {
+                            type: 'value'
+                        },
+                        ],
+                        series: [
+                            {
+                                name: 'y1',
+                                encode: {
+                                    x: 0,
+                                    y: 1,
+                                },
+                                seriesLayoutBy: 'row',
+                                type: 'line'
+                            },
+                            {
+                                name: 'y2',
+                                encode: {
+                                    x: 0,
+                                    y: 2,
+                                },
+                                seriesLayoutBy: 'row',
+                                type: 'line'
+                            },
+                        ]
+                    };
+                    option_dfl_t_123 && chart_dfl_t_123.setOption(option_dfl_t_123);""", ch.getChartScript());
     }
 
     @Test
