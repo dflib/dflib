@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
  */
 public class EChartHtmlSaver {
 
-    private static final Mustache DEFAULT_PAGE_TEMPLATE = Renderer.loadTemplate("html_page.mustache");
-    private static final Mustache DEFAULT_EMBEDDED_TEMPLATE = Renderer.loadTemplate("html_embedded.mustache");
+    private static final Mustache DEFAULT_PAGE_TEMPLATE = Renderer.loadTemplate("page.html.mustache");
+    private static final Mustache DEFAULT_EMBEDDED_TEMPLATE = Renderer.loadTemplate("embedded.html.mustache");
 
     private boolean createMissingDirs;
     private String title;

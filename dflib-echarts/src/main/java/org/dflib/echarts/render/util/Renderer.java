@@ -15,8 +15,8 @@ import java.net.URL;
 
 public class Renderer {
 
-    private static final Mustache CONTAINER_TEMPLATE = loadTemplate("container.mustache");
-    private static final Mustache SCRIPT_TEMPLATE = loadTemplate("script.mustache");
+    private static final Mustache CONTAINER_TEMPLATE = loadTemplate("container.html.mustache");
+    private static final Mustache SCRIPT_TEMPLATE = loadTemplate("chart.js.mustache");
 
 
     /**
