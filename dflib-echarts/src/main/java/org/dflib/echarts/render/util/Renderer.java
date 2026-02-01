@@ -64,7 +64,7 @@ public class Renderer {
     /**
      * @since 2.0.0
      */
-    public static String renderEchartsLoaderScript(String id) {
+    public static String renderEchartsLoadScript(String id) {
         return ECHARTS_LOAD_SCRIPT_TEMPLATE.execute(new StringWriter(), Map.of("id", id)).toString();
     }
 

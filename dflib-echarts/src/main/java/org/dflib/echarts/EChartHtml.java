@@ -3,53 +3,66 @@ package org.dflib.echarts;
 import org.dflib.echarts.render.ContainerModel;
 import org.dflib.echarts.render.ScriptModel;
 import org.dflib.echarts.render.util.ElementIdGenerator;
+import org.dflib.echarts.render.util.JSMinifier;
 import org.dflib.echarts.render.util.Renderer;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * Contains rendered JavaScript and HTML parts of a chart.
  */
 public class EChartHtml {
 
-    private final String divId;
+    private final String chartDivId;
     private final String echartsUrl;
     private final List<String> themeUrls;
-    private final String chartDiv;
-    private final String chartScript;
-    private final Function<String, String> echartsLoadScriptMaker;
 
-    // Storing the immutable models of the chart here to be able to re-render with other IDs
     private final ElementIdGenerator idGenerator;
-    private final ContainerModel containerModel;
-    private final ScriptModel scriptModel;
+
+    // Storing the immutable models of the chart to be able to re-render with other IDs
+    private final ContainerModel chartDivModel;
+    private final ScriptModel chartScriptModel;
+    private final boolean minifyJS;
 
     /**
      * @since 2.0.0
      */
     public EChartHtml(
-            String divId,
+            String chartDivId,
             String echartsUrl,
             List<String> themeUrls,
-            String chartDiv,
-            String chartScript,
-            Function<String, String> echartsLoadScriptMaker,
             ElementIdGenerator idGenerator,
-            ContainerModel containerModel,
-            ScriptModel scriptModel) {
+            ContainerModel chartDivModel,
+            ScriptModel chartScriptModel,
+            boolean minifyJS) {
 
-        this.divId = Objects.requireNonNull(divId);
+        this.chartDivId = Objects.requireNonNull(chartDivId);
         this.echartsUrl = echartsUrl;
         this.themeUrls = themeUrls;
-        this.chartDiv = chartDiv;
-        this.chartScript = chartScript;
-        this.echartsLoadScriptMaker = echartsLoadScriptMaker;
-
         this.idGenerator = idGenerator;
-        this.containerModel = containerModel;
-        this.scriptModel = scriptModel;
+        this.chartDivModel = chartDivModel;
+        this.chartScriptModel = chartScriptModel;
+        this.minifyJS = minifyJS;
+    }
+
+
+    /**
+     * Set the policy for JS minification when rendering. The default set by {@link EChart} is true.
+     *
+     * @since 2.0.0
+     */
+    public EChartHtml minifyJS(boolean minify) {
+        return this.minifyJS == minify
+                ? this
+                : new EChartHtml(
+                chartDivId,
+                echartsUrl,
+                themeUrls,
+                idGenerator,
+                chartDivModel,
+                chartScriptModel,
+                minify);
     }
 
     /**
@@ -67,24 +80,18 @@ public class EChartHtml {
      * @since 2.0.0
      */
     public EChartHtml plotWithDivId(String newId) {
-        return divId.equals(newId) ? this : renderWithId(newId);
+        return chartDivId.equals(newId) ? this : renderWithId(newId);
     }
 
     private EChartHtml renderWithId(String newId) {
-
-        ContainerModel containerModelWithId = containerModel.id(newId);
-        ScriptModel scriptModelWithId = scriptModel.id(newId);
-
         return new EChartHtml(
                 newId,
                 echartsUrl,
                 themeUrls,
-                Renderer.renderContainer(containerModelWithId),
-                Renderer.renderScript(scriptModelWithId),
-                echartsLoadScriptMaker,
                 idGenerator,
-                containerModelWithId,
-                scriptModelWithId
+                chartDivModel.id(newId),
+                chartScriptModel.id(newId),
+                minifyJS
         );
     }
 
@@ -94,8 +101,8 @@ public class EChartHtml {
      *
      * @since 2.0.0
      */
-    public String getDivId() {
-        return divId;
+    public String getChartDivId() {
+        return chartDivId;
     }
 
     /**
@@ -118,22 +125,24 @@ public class EChartHtml {
     /**
      * @since 2.0.0
      */
-    public String getChartDiv() {
-        return chartDiv;
+    public String renderChartDiv() {
+        return Renderer.renderContainer(chartDivModel);
     }
 
     /**
      * @since 2.0.0
      */
-    public String getChartScript() {
-        return chartScript;
+    public String renderChartScript() {
+        String s = Renderer.renderScript(chartScriptModel);
+        return minifyJS ? JSMinifier.minify(s) : s;
     }
 
     /**
      * @since 2.0.0
      */
-    public Function<String, String> getEchartsLoadScriptMaker() {
-        return echartsLoadScriptMaker;
+    public String renderEchartsLoadScript() {
+        String s = Renderer.renderEchartsLoadScript(chartDivId);
+        return minifyJS ? JSMinifier.minify(s) : s;
     }
 
     /**
@@ -141,7 +150,7 @@ public class EChartHtml {
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public String getContainer() {
-        return chartDiv;
+        return Renderer.renderContainer(chartDivModel);
     }
 
     /**
@@ -158,7 +167,8 @@ public class EChartHtml {
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public String getScript() {
-        String script = chartScript != null ? chartScript : "";
+        String script1 = Renderer.renderScript(chartScriptModel);
+        String script = script1 != null ? script1 : "";
         return "<script type='text/javascript'>" + script + "</script>";
     }
 }

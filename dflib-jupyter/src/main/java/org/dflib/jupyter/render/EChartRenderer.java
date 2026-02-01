@@ -37,7 +37,7 @@ public class EChartRenderer implements RenderFunction<EChartHtml> {
 
         if (canRender) {
             // We must ensure a unique chart <div> ID to prevent JavaScript conflicts on the Notebook page.
-            EChartHtml chartToRender = shouldResetDivId(chart.getDivId()) ? chart.plotWithNewDivId() : chart;
+            EChartHtml chartToRender = shouldResetDivId(chart.getChartDivId()) ? chart.plotWithNewDivId() : chart;
             String content = toString(chartToRender);
             SUPPORTED_TYPES.forEach(t -> context.renderIfRequested(t, () -> content));
         }

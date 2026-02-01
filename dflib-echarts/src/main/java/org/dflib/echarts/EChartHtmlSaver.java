@@ -172,10 +172,10 @@ public class EChartHtmlSaver {
 
     private HtmlChartModel toModel(EChartHtml chartHtml) {
         return new HtmlChartModel(
-                chartHtml.getDivId(),
-                chartHtml.getChartDiv(),
-                chartHtml.getChartScript(),
-                chartHtml.getEchartsLoadScriptMaker());
+                chartHtml.getChartDivId(),
+                chartHtml::renderChartDiv,
+                chartHtml::renderChartScript,
+                chartHtml::renderEchartsLoadScript);
     }
 
     private Mustache htmlTemplate() {

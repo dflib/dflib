@@ -18,14 +18,14 @@ public class BoxplotSeriesTest {
 
         String s1 = ECharts.chart()
                 .series(SeriesOpts.ofBoxplot(), "min", "q1", "median", "q3", "max")
-                .plot(df, "_tid").getChartScript();
+                .plot(df, "_tid").renderChartScript();
         assertFalse(s1.contains("xAxisIndex"), s1);
 
         String s2 = ECharts.chart()
                 .xAxis("on")
                 .xAxis("on2")
                 .series(SeriesOpts.ofBoxplot().xAxisIndex(1), "min", "q1", "median", "q3", "max")
-                .plot(df, "_tid").getChartScript();
+                .plot(df, "_tid").renderChartScript();
         assertTrue(s2.contains("['L0','2024-08-12','2024-08-13','2024-08-14'],"), s2);
         assertTrue(s2.contains("['L1','2024-07-12','2024-07-13','2024-07-14']"), s2);
         assertTrue(s2.contains("type: 'boxplot'"), s2);
@@ -46,14 +46,14 @@ public class BoxplotSeriesTest {
 
         String s1 = ECharts.chart()
                 .series(SeriesOpts.ofBoxplot(), "min", "q1", "median", "q3", "max")
-                .plot(df, "_tid").getChartScript();
+                .plot(df, "_tid").renderChartScript();
         assertFalse(s1.contains("itemStyle:"), s1);
 
         String s2 = ECharts.chart()
                 .xAxis("on")
                 .xAxis("on2")
                 .series(SeriesOpts.ofBoxplot().itemStyle(style), "min", "q1", "median", "q3", "max")
-                .plot(df, "_tid").getChartScript();
+                .plot(df, "_tid").renderChartScript();
 
         assertTrue(s2.contains("type: 'boxplot'"), s2);
         assertTrue(s2.contains("itemStyle"), s2);
@@ -67,10 +67,10 @@ public class BoxplotSeriesTest {
     @Test
     public void data() {
 
-        String s1 = ECharts.chart().plot(df, "_tid").getChartScript();
+        String s1 = ECharts.chart().plot(df, "_tid").renderChartScript();
         assertTrue(s1.contains("dataset"), s1);
 
-        String s2 = ECharts.chart().series(SeriesOpts.ofBoxplot(), "min", "q1", "median", "q3", "max").plot(df, "_tid").getChartScript();
+        String s2 = ECharts.chart().series(SeriesOpts.ofBoxplot(), "min", "q1", "median", "q3", "max").plot(df, "_tid").renderChartScript();
         assertTrue(s2.contains("dataset"), s2);
         assertTrue(s2.contains("['L0',1,2,3]"), s2);
         assertTrue(s2.contains("['min',15,18,15],"), s2);
@@ -90,7 +90,7 @@ public class BoxplotSeriesTest {
         String s2 = ECharts.chart()
                 .series(SeriesOpts.ofBoxplot(), "min", "q1", "median", "q3", "max")
                 .series(SeriesOpts.ofLine(), "median")
-                .plot(df, "_tid").getChartScript();
+                .plot(df, "_tid").renderChartScript();
 
         assertTrue(s2.contains("dataset"), s2);
         assertTrue(s2.contains("['L0',1,2,3]"), s2);
