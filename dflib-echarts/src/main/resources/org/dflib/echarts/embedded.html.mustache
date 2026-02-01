@@ -1,23 +1,6 @@
 {{#charts}}
 {{{chartDiv}}}
 <script type='text/javascript'>
-{{{echartsLoadScript}}}
-
-(async function () {
-    const cs = document.currentScript;
-    if (!window.echarts || !window.echarts.init) {
-        await dflibEchartLoad_{{id}}('{{{echartsUrl}}}', cs);
-
-        if (!window.echarts || !window.echarts.init) {
-            console.error('ECharts failed to load!');
-            return;
-        }
-    }
-
-    {{#themeUrls}}
-    await dflibEchartLoad_{{id}}('{{{.}}}', cs);
-    {{/themeUrls}}
-    {{{chartScript}}}
-})();
+{{{chartScript}}}
 </script>
 {{/charts}}

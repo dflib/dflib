@@ -2,6 +2,7 @@ package org.dflib.echarts;
 
 import org.dflib.DataFrame;
 import org.dflib.Index;
+import org.dflib.echarts.render.ChartModel;
 import org.dflib.echarts.render.ContainerModel;
 import org.dflib.echarts.render.InitOptsModel;
 import org.dflib.echarts.render.ScriptModel;
@@ -450,13 +451,13 @@ public class EChart {
     @Deprecated(since = "2.0.0", forRemoval = true)
     protected String generateScript(String id, DataFrame df) {
 
-        ScriptModel model = new ScriptModel(
+        ScriptModel script = new ScriptModel(
                 id,
                 this.theme,
                 this.renderer != null ? new InitOptsModel(renderer.name()) : null,
                 option.resolve(df)
         );
-        return Renderer.renderScript(model);
+        return Renderer.renderChart(new ChartModel(script, false, null, null));
     }
 
     protected String newId() {

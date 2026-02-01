@@ -69,6 +69,7 @@ public class EChartRenderer implements RenderFunction<EChartHtml> {
 
         ECharts.saver()
                 .defaultEmbeddedTemplate()
+                .loadECharts(true)
                 .save(out, chart);
 
         return out.toString();

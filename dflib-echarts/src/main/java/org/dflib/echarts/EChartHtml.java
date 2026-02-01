@@ -1,5 +1,6 @@
 package org.dflib.echarts;
 
+import org.dflib.echarts.render.ChartModel;
 import org.dflib.echarts.render.ContainerModel;
 import org.dflib.echarts.render.ScriptModel;
 import org.dflib.echarts.render.util.ElementIdGenerator;
@@ -133,15 +134,15 @@ public class EChartHtml {
      * @since 2.0.0
      */
     public String renderChartScript() {
-        String s = Renderer.renderScript(chartScriptModel);
-        return minifyJS ? JSMinifier.minify(s) : s;
+        return renderChartScript(false);
     }
 
     /**
      * @since 2.0.0
      */
-    public String renderEchartsLoadScript() {
-        String s = Renderer.renderEchartsLoadScript(chartDivId);
+    public String renderChartScript(boolean loadECharts) {
+        ChartModel model = new ChartModel(chartScriptModel, loadECharts, echartsUrl, themeUrls);
+        String s = Renderer.renderChart(model);
         return minifyJS ? JSMinifier.minify(s) : s;
     }
 
@@ -167,7 +168,8 @@ public class EChartHtml {
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public String getScript() {
-        String script1 = Renderer.renderScript(chartScriptModel);
+        ChartModel model = new ChartModel(chartScriptModel, false, null, null);
+        String script1 = Renderer.renderChart(model);
         String script = script1 != null ? script1 : "";
         return "<script type='text/javascript'>" + script + "</script>";
     }

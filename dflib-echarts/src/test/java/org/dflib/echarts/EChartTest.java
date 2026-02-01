@@ -88,7 +88,8 @@ public class EChartTest {
                             },
                         ]
                     };
-                    option_dfl_t_123 && chart_dfl_t_123.setOption(option_dfl_t_123);""", ch.renderChartScript());
+                    option_dfl_t_123 && chart_dfl_t_123.setOption(option_dfl_t_123);
+                """, ch.renderChartScript());
     }
 
     @Test

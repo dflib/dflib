@@ -9,8 +9,7 @@ import java.util.function.Supplier;
 public record HtmlChartModel(
         String id,
         Supplier<String> chartDivMaker,
-        Supplier<String> chartScriptMaker,
-        Supplier<String> echartsLoadScriptMaker) {
+        Supplier<String> chartScriptMaker) {
 
     public String chartDiv() {
         return chartDivMaker.get();
@@ -18,9 +17,5 @@ public record HtmlChartModel(
 
     public String chartScript() {
         return chartScriptMaker.get();
-    }
-
-    public String echartsLoadScript() {
-        return echartsLoadScriptMaker.get();
     }
 }

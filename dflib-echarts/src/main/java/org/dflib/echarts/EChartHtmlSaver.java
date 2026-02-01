@@ -29,6 +29,7 @@ public class EChartHtmlSaver {
     private String title;
     private URL htmlTemplate;
     private Mustache compiledHtmlTemplate;
+    private boolean loadECharts;
 
     /**
      * Instructs the saver to create any missing directories in the file path.
@@ -57,13 +58,21 @@ public class EChartHtmlSaver {
         return this;
     }
 
-
     /**
      * Sets the HTML template to the default "embedded" template. This template is designed to be rendered inside
-     * some other dynamically generated HTML page. E.g., it may be used in Jupyter notebook cells.
+     * some other dynamically generated HTML page. E.g., it may be used in Jupyter notebook cells. In most cases with
+     * this template, you should also call {@link #loadECharts(boolean)} to set importing to "true".
      */
     public EChartHtmlSaver defaultEmbeddedTemplate() {
         this.compiledHtmlTemplate = DEFAULT_EMBEDDED_TEMPLATE;
+        return this;
+    }
+
+    /**
+     * Whether the ECharts import should be included in the rendered script. False by default.
+     */
+    public EChartHtmlSaver loadECharts(boolean loadECharts) {
+        this.loadECharts = loadECharts;
         return this;
     }
 
@@ -174,8 +183,7 @@ public class EChartHtmlSaver {
         return new HtmlChartModel(
                 chartHtml.getChartDivId(),
                 chartHtml::renderChartDiv,
-                chartHtml::renderChartScript,
-                chartHtml::renderEchartsLoadScript);
+                () -> chartHtml.renderChartScript(loadECharts));
     }
 
     private Mustache htmlTemplate() {

@@ -3,8 +3,8 @@ package org.dflib.echarts.render.util;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import org.dflib.echarts.ECharts;
+import org.dflib.echarts.render.ChartModel;
 import org.dflib.echarts.render.ContainerModel;
-import org.dflib.echarts.render.ScriptModel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,13 +12,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.net.URL;
-import java.util.Map;
 
 public class Renderer {
 
     private static final Mustache CONTAINER_TEMPLATE = loadTemplate("container.html.mustache");
     private static final Mustache SCRIPT_TEMPLATE = loadTemplate("chart.js.mustache");
-    private static final Mustache ECHARTS_LOAD_SCRIPT_TEMPLATE = loadTemplate("echarts_load.js.mustache");
 
     /**
      * Loads a Mustache template, resolving the name against classpath
@@ -57,15 +55,8 @@ public class Renderer {
     /**
      * @since 2.0.0
      */
-    public static String renderScript(ScriptModel model) {
+    public static String renderChart(ChartModel model) {
         return SCRIPT_TEMPLATE.execute(new StringWriter(), model).toString();
-    }
-
-    /**
-     * @since 2.0.0
-     */
-    public static String renderEchartsLoadScript(String id) {
-        return ECHARTS_LOAD_SCRIPT_TEMPLATE.execute(new StringWriter(), Map.of("id", id)).toString();
     }
 
     public static String quotedValue(Object value) {
