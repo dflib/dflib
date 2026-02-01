@@ -1,15 +1,12 @@
 package org.dflib.echarts.render.util;
 
-import java.io.IOException;
-import java.io.Writer;
-
 /**
  * A simple and fast HTML/JavaScript minifier that strips leading spaces, removes comments, and concatenates multiple
  * lines.
  *
  * @since 2.0.0
  */
-public class Minifier {
+public class JSMinifier {
 
     /**
      * Minifies HTML/JavaScript string by removing leading spaces, comments, and concatenating lines. Performs the
@@ -136,47 +133,5 @@ public class Minifier {
         }
 
         return result.toString();
-    }
-
-    /**
-     * Creates a Writer that minifies JavaScript as it's being written to the underlying writer.
-     * The minifying writer performs streaming minification, maintaining state across multiple write calls.
-     *
-     * @param writer the underlying writer to write minified output to
-     * @return a Writer that minifies data before writing to the underlying writer
-     */
-    public static Writer minifyingWriter(Writer writer) {
-        return new MinifyingWriter(writer);
-    }
-
-    private static class MinifyingWriter extends Writer {
-        private final Writer delegate;
-        private final StringBuilder inputBuffer;
-
-        MinifyingWriter(Writer delegate) {
-            this.delegate = delegate;
-            this.inputBuffer = new StringBuilder();
-        }
-
-        @Override
-        public void write(char[] cbuf, int off, int len) {
-            inputBuffer.append(cbuf, off, len);
-        }
-
-        @Override
-        public void flush() throws IOException {
-            if (!inputBuffer.isEmpty()) {
-                String minified = minify(inputBuffer.toString());
-                delegate.write(minified);
-                inputBuffer.setLength(0);
-            }
-            delegate.flush();
-        }
-
-        @Override
-        public void close() throws IOException {
-            flush();
-            delegate.close();
-        }
     }
 }

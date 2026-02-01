@@ -7,6 +7,7 @@ import org.dflib.echarts.render.util.Renderer;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Contains rendered JavaScript and HTML parts of a chart.
@@ -18,6 +19,7 @@ public class EChartHtml {
     private final List<String> themeUrls;
     private final String chartDiv;
     private final String chartScript;
+    private final Function<String, String> echartsLoadScriptMaker;
 
     // Storing the immutable models of the chart here to be able to re-render with other IDs
     private final ElementIdGenerator idGenerator;
@@ -33,6 +35,7 @@ public class EChartHtml {
             List<String> themeUrls,
             String chartDiv,
             String chartScript,
+            Function<String, String> echartsLoadScriptMaker,
             ElementIdGenerator idGenerator,
             ContainerModel containerModel,
             ScriptModel scriptModel) {
@@ -42,6 +45,7 @@ public class EChartHtml {
         this.themeUrls = themeUrls;
         this.chartDiv = chartDiv;
         this.chartScript = chartScript;
+        this.echartsLoadScriptMaker = echartsLoadScriptMaker;
 
         this.idGenerator = idGenerator;
         this.containerModel = containerModel;
@@ -77,6 +81,7 @@ public class EChartHtml {
                 themeUrls,
                 Renderer.renderContainer(containerModelWithId),
                 Renderer.renderScript(scriptModelWithId),
+                echartsLoadScriptMaker,
                 idGenerator,
                 containerModelWithId,
                 scriptModelWithId
@@ -122,6 +127,13 @@ public class EChartHtml {
      */
     public String getChartScript() {
         return chartScript;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Function<String, String> getEchartsLoadScriptMaker() {
+        return echartsLoadScriptMaker;
     }
 
     /**

@@ -12,12 +12,13 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.Map;
 
 public class Renderer {
 
     private static final Mustache CONTAINER_TEMPLATE = loadTemplate("container.html.mustache");
     private static final Mustache SCRIPT_TEMPLATE = loadTemplate("chart.js.mustache");
-
+    private static final Mustache ECHARTS_LOAD_SCRIPT_TEMPLATE = loadTemplate("echarts_load.js.mustache");
 
     /**
      * Loads a Mustache template, resolving the name against classpath
@@ -58,6 +59,13 @@ public class Renderer {
      */
     public static String renderScript(ScriptModel model) {
         return SCRIPT_TEMPLATE.execute(new StringWriter(), model).toString();
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public static String renderEchartsLoaderScript(String id) {
+        return ECHARTS_LOAD_SCRIPT_TEMPLATE.execute(new StringWriter(), Map.of("id", id)).toString();
     }
 
     public static String quotedValue(Object value) {

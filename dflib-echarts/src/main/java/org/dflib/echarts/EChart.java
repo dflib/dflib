@@ -6,7 +6,7 @@ import org.dflib.echarts.render.ContainerModel;
 import org.dflib.echarts.render.InitOptsModel;
 import org.dflib.echarts.render.ScriptModel;
 import org.dflib.echarts.render.util.ElementIdGenerator;
-import org.dflib.echarts.render.util.Minifier;
+import org.dflib.echarts.render.util.JSMinifier;
 import org.dflib.echarts.render.util.Renderer;
 
 import java.util.ArrayList;
@@ -401,7 +401,8 @@ public class EChart {
                 echartsUrl(),
                 themeUrls != null ? themeUrls : List.of(),
                 Renderer.renderContainer(containerModel),
-                minifyJS ? Minifier.minify(script) : script,
+                minifyJS ? JSMinifier.minify(script) : script,
+                id -> minifyJS ? JSMinifier.minify(Renderer.renderEchartsLoaderScript(id)) : Renderer.renderEchartsLoaderScript(id),
                 idGenerator,
                 containerModel,
                 scriptModel
@@ -439,6 +440,7 @@ public class EChart {
                 themeUrls != null ? themeUrls : List.of(),
                 "",
                 "",
+                id -> "",
                 idGenerator,
                 null,
                 null
@@ -456,6 +458,7 @@ public class EChart {
                 themeUrls != null ? themeUrls : List.of(),
                 "",
                 generateScript(id, df),
+                id1 -> Renderer.renderEchartsLoaderScript(id),
                 idGenerator,
                 null,
                 null

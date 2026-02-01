@@ -157,7 +157,7 @@ public class EChartHtmlSaver {
                 this.title != null ? this.title : "DFLib Chart",
                 charts.length > 0 ? charts[0].getEchartsUrl() : "",
                 themeUrls,
-                Arrays.stream(charts).map(c -> new HtmlChartModel(c.getDivId(), c.getChartDiv(), c.getChartScript())).collect(Collectors.toList())
+                Arrays.stream(charts).map(this::toModel).collect(Collectors.toList())
         );
 
         boolean direct = out instanceof Writer;
@@ -168,6 +168,14 @@ public class EChartHtmlSaver {
         if (!direct) {
             out.append(out1.toString());
         }
+    }
+
+    private HtmlChartModel toModel(EChartHtml chartHtml) {
+        return new HtmlChartModel(
+                chartHtml.getDivId(),
+                chartHtml.getChartDiv(),
+                chartHtml.getChartScript(),
+                chartHtml.getEchartsLoadScriptMaker());
     }
 
     private Mustache htmlTemplate() {

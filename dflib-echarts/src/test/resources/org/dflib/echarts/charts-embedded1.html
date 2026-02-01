@@ -1,39 +1,6 @@
 <div id='dfl_ech_1' class='dfl_ech' style='width: 600px;height:400px;'></div>
 <script type='text/javascript'>
-function dflibEchartLoad_dfl_ech_1(src, currentScript) {
-  const savedDefine = window.define;
-  const savedAmd = savedDefine && savedDefine.amd;
-
-  // Temporarily disable AMD detection so UMD chooses globalThis/window branch
-  if (savedDefine && savedAmd) {
-    try { delete savedDefine.amd; } catch { savedDefine.amd = undefined; }
-  }
-
-  return new Promise((resolve, reject) => {
-    const s = document.createElement("script");
-    s.src = src;
-
-    s.onload = () => {
-      // restore AMD flag
-      if (savedDefine) savedDefine.amd = savedAmd;
-
-      // verify
-      if (window.echarts && typeof window.echarts.init === "function") resolve(window.echarts);
-      else reject(new Error("ECharts loaded, but window.echarts.init is missing"));
-    };
-
-    s.onerror = (e) => {
-      // restore AMD flag
-      if (savedDefine) savedDefine.amd = savedAmd;
-      reject(e);
-    };
-
-    // insert safely even if currentScript becomes detached
-    const parent = currentScript && currentScript.parentNode;
-    if (parent) parent.insertBefore(s, currentScript);
-    else (document.head || document.documentElement).appendChild(s);
-  });
-}
+function dflibEchartLoad_dfl_ech_1(src, currentScript) {const savedDefine = window.define;const savedAmd = savedDefine && savedDefine.amd;if (savedDefine && savedAmd) {try { delete savedDefine.amd; } catch { savedDefine.amd = undefined; }}return new Promise((resolve, reject) => {const s = document.createElement("script");s.src = src;s.onload = () => {if (savedDefine) savedDefine.amd = savedAmd;if (window.echarts && typeof window.echarts.init === "function") resolve(window.echarts);else reject(new Error("ECharts loaded, but window.echarts.init is missing"));};s.onerror = (e) => {if (savedDefine) savedDefine.amd = savedAmd;reject(e);};const parent = currentScript && currentScript.parentNode;if (parent) parent.insertBefore(s, currentScript);else (document.head || document.documentElement).appendChild(s);});}
 
 (async function () {
     const cs = document.currentScript;
@@ -51,40 +18,7 @@ function dflibEchartLoad_dfl_ech_1(src, currentScript) {
 </script>
 <div id='dfl_ech_2' class='dfl_ech' style='width: 600px;height:400px;'></div>
 <script type='text/javascript'>
-function dflibEchartLoad_dfl_ech_2(src, currentScript) {
-  const savedDefine = window.define;
-  const savedAmd = savedDefine && savedDefine.amd;
-
-  // Temporarily disable AMD detection so UMD chooses globalThis/window branch
-  if (savedDefine && savedAmd) {
-    try { delete savedDefine.amd; } catch { savedDefine.amd = undefined; }
-  }
-
-  return new Promise((resolve, reject) => {
-    const s = document.createElement("script");
-    s.src = src;
-
-    s.onload = () => {
-      // restore AMD flag
-      if (savedDefine) savedDefine.amd = savedAmd;
-
-      // verify
-      if (window.echarts && typeof window.echarts.init === "function") resolve(window.echarts);
-      else reject(new Error("ECharts loaded, but window.echarts.init is missing"));
-    };
-
-    s.onerror = (e) => {
-      // restore AMD flag
-      if (savedDefine) savedDefine.amd = savedAmd;
-      reject(e);
-    };
-
-    // insert safely even if currentScript becomes detached
-    const parent = currentScript && currentScript.parentNode;
-    if (parent) parent.insertBefore(s, currentScript);
-    else (document.head || document.documentElement).appendChild(s);
-  });
-}
+function dflibEchartLoad_dfl_ech_2(src, currentScript) {const savedDefine = window.define;const savedAmd = savedDefine && savedDefine.amd;if (savedDefine && savedAmd) {try { delete savedDefine.amd; } catch { savedDefine.amd = undefined; }}return new Promise((resolve, reject) => {const s = document.createElement("script");s.src = src;s.onload = () => {if (savedDefine) savedDefine.amd = savedAmd;if (window.echarts && typeof window.echarts.init === "function") resolve(window.echarts);else reject(new Error("ECharts loaded, but window.echarts.init is missing"));};s.onerror = (e) => {if (savedDefine) savedDefine.amd = savedAmd;reject(e);};const parent = currentScript && currentScript.parentNode;if (parent) parent.insertBefore(s, currentScript);else (document.head || document.documentElement).appendChild(s);});}
 
 (async function () {
     const cs = document.currentScript;
