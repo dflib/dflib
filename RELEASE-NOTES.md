@@ -1,5 +1,6 @@
 ## Release 2.0.0-M7
 
+* #410 ECharts can not be displayed in VSCode
 * #604 ParquetLoader to use compaction by default
 * #607 CsvLoader.nullPadRows()
 * #608 selectAll(Udf1)
