@@ -8,6 +8,7 @@ import java.util.Collection;
 
 import static java.util.Arrays.asList;
 
+@Deprecated
 public class SeriesConcatTest {
 
     @Test

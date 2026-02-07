@@ -2,9 +2,14 @@ package org.dflib.concat;
 
 import org.dflib.IntSeries;
 import org.dflib.Series;
+import org.dflib.union.SeriesUnion;
 
 import java.util.stream.StreamSupport;
 
+/**
+ * @deprecated in favor of {@link SeriesUnion}
+ */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class SeriesConcat {
 
     /**
@@ -12,26 +17,11 @@ public class SeriesConcat {
      */
     @SafeVarargs
     public static <T> Series<T> concat(Series<T>... concat) {
-
-        int clen = concat.length;
-        if (clen == 0) {
-            return Series.of();
-        } else if (clen == 1) {
-            return concat[0];
-        }
-
-        Series[] other = new Series[clen - 1];
-        System.arraycopy(concat, 1, other, 0, clen - 1);
-
-        return concat[0].concat(other);
+        return SeriesUnion.of(concat);
     }
 
-    /**
-     * @deprecated unused internally; use either {@link #concat(Series[])} or {@link Series#concat(Series[])}
-     */
-    @Deprecated(since = "2.0.0", forRemoval = true)
     public static <T> Series<T> concat(Iterable<Series<T>> concat) {
-        return concat(StreamSupport.stream(concat.spliterator(), false).toArray(Series[]::new));
+        return SeriesUnion.of(StreamSupport.stream(concat.spliterator(), false).toArray(Series[]::new));
     }
 
     public static IntSeries intConcat(IntSeries... concat) {

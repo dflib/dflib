@@ -190,6 +190,7 @@ public interface BooleanSeries extends Series<Boolean> {
     }
 
     @Override
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default Series<Boolean> concat(Series<? extends Boolean>... other) {
 
         int olen = other.length;
@@ -223,29 +224,16 @@ public interface BooleanSeries extends Series<Boolean> {
         return Series.ofBool(data);
     }
 
+    /**
+     * @deprecated in favor of {@link #unionBool(BooleanSeries...)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default BooleanSeries concatBool(BooleanSeries... other) {
-        if (other.length == 0) {
-            return this;
-        }
 
-        int size = size();
-
-        int h = size;
-        for (BooleanSeries s : other) {
-            h += s.size();
-        }
-
-        boolean[] data = new boolean[h];
-        copyToBool(data, 0, 0, size);
-
-        int offset = size;
-        for (BooleanSeries s : other) {
-            int len = s.size();
-            s.copyToBool(data, 0, offset, len);
-            offset += len;
-        }
-
-        return Series.ofBool(data);
+        BooleanSeries[] all = new BooleanSeries[other.length + 1];
+        all[0] = this;
+        System.arraycopy(other, 0, all, 1, other.length);
+        return Series.unionBool(all);
     }
 
     @Override

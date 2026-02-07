@@ -187,6 +187,7 @@ public interface DoubleSeries extends Series<Double> {
     }
 
     @Override
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default Series<Double> concat(Series<? extends Double>... other) {
 
         int olen = other.length;
@@ -220,29 +221,16 @@ public interface DoubleSeries extends Series<Double> {
         return Series.ofDouble(data);
     }
 
+    /**
+     * @deprecated in favor of {@link #unionDouble(DoubleSeries...)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default DoubleSeries concatDouble(DoubleSeries... other) {
-        if (other.length == 0) {
-            return this;
-        }
 
-        int size = size();
-
-        int h = size;
-        for (DoubleSeries s : other) {
-            h += s.size();
-        }
-
-        double[] data = new double[h];
-        copyToDouble(data, 0, 0, size);
-
-        int offset = size;
-        for (DoubleSeries s : other) {
-            int len = s.size();
-            s.copyToDouble(data, 0, offset, len);
-            offset += len;
-        }
-
-        return Series.ofDouble(data);
+        DoubleSeries[] all = new DoubleSeries[other.length + 1];
+        all[0] = this;
+        System.arraycopy(other, 0, all, 1, other.length);
+        return Series.unionDouble(all);
     }
 
     @Override

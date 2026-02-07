@@ -5,6 +5,7 @@ import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.JoinType;
 import org.dflib.Series;
+import org.dflib.union.SeriesUnion;
 
 import java.util.EnumMap;
 import java.util.LinkedHashSet;
@@ -107,15 +108,13 @@ public class VConcat {
         for (int i = 0; i < w; i++) {
 
             String col = concatIndex.get(i);
-            Series<?> s0 = concatColumn(concat[0], col);
+            Series[] cols = new Series[clen];
 
-            Series[] s1Plus = new Series[clen - 1];
-
-            for (int j = 1; j < clen; j++) {
-                s1Plus[j - 1] = concatColumn(concat[j], col);
+            for (int j = 0; j < clen; j++) {
+                cols[j] = concatColumn(concat[j], col);
             }
 
-            concatCols[i] = s0.concat(s1Plus);
+            concatCols[i] = SeriesUnion.of(cols);
         }
 
         return new ColumnDataFrame(null, concatIndex, concatCols);

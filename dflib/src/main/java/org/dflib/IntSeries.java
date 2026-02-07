@@ -188,6 +188,7 @@ public interface IntSeries extends Series<Integer> {
     }
 
     @Override
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default Series<Integer> concat(Series<? extends Integer>... other) {
 
         int olen = other.length;
@@ -221,29 +222,16 @@ public interface IntSeries extends Series<Integer> {
         return Series.ofInt(data);
     }
 
+    /**
+     * @deprecated in favor of {@link #unionInt(IntSeries...)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default IntSeries concatInt(IntSeries... other) {
-        if (other.length == 0) {
-            return this;
-        }
 
-        int size = size();
-
-        int h = size;
-        for (IntSeries s : other) {
-            h += s.size();
-        }
-
-        int[] data = new int[h];
-        copyToInt(data, 0, 0, size);
-
-        int offset = size;
-        for (IntSeries s : other) {
-            int len = s.size();
-            s.copyToInt(data, 0, offset, len);
-            offset += len;
-        }
-
-        return Series.ofInt(data);
+        IntSeries[] all = new IntSeries[other.length + 1];
+        all[0] = this;
+        System.arraycopy(other, 0, all, 1, other.length);
+        return Series.unionInt(all);
     }
 
     @Override

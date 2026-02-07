@@ -189,6 +189,7 @@ public interface FloatSeries extends Series<Float> {
     }
 
     @Override
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default Series<Float> concat(Series<? extends Float>... other) {
 
         int olen = other.length;
@@ -222,29 +223,16 @@ public interface FloatSeries extends Series<Float> {
         return Series.ofFloat(data);
     }
 
+    /**
+     * @deprecated in favor of {@link #unionFloat(FloatSeries...)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default FloatSeries concatFloat(FloatSeries... other) {
-        if (other.length == 0) {
-            return this;
-        }
 
-        int size = size();
-
-        int h = size;
-        for (FloatSeries s : other) {
-            h += s.size();
-        }
-
-        float[] data = new float[h];
-        copyToFloat(data, 0, 0, size);
-
-        int offset = size;
-        for (FloatSeries s : other) {
-            int len = s.size();
-            s.copyToFloat(data, 0, offset, len);
-            offset += len;
-        }
-
-        return Series.ofFloat(data);
+        FloatSeries[] all = new FloatSeries[other.length + 1];
+        all[0] = this;
+        System.arraycopy(other, 0, all, 1, other.length);
+        return Series.unionFloat(all);
     }
 
     @Override

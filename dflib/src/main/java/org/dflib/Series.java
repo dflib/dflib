@@ -4,6 +4,7 @@ import org.dflib.agg.SeriesAggregator;
 import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.SeriesByElementBuilder;
 import org.dflib.builder.ValueCompactor;
+import org.dflib.union.SeriesUnion;
 import org.dflib.op.ReplaceOp;
 import org.dflib.series.ArraySeries;
 import org.dflib.series.ColumnMappedSeries;
@@ -35,6 +36,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
+import java.util.stream.StreamSupport;
 
 import static java.util.Arrays.asList;
 
@@ -105,6 +107,90 @@ public interface Series<T> extends Iterable<T> {
         } else {
             return new SingleValueSeries<>(value, size);
         }
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    static <T> Series<T> union(Iterable<Series<?>> series) {
+        return SeriesUnion.of(StreamSupport.stream(series.spliterator(), false).toArray(Series[]::new));
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    static <T> Series<T> union(Series<?>... series) {
+        return SeriesUnion.of(series);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    static IntSeries unionInt(Iterable<IntSeries> series) {
+        return SeriesUnion.ofInt(StreamSupport.stream(series.spliterator(), false).toArray(IntSeries[]::new));
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    static IntSeries unionInt(IntSeries... series) {
+        return SeriesUnion.ofInt(series);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    static LongSeries unionLong(Iterable<LongSeries> series) {
+        return SeriesUnion.ofLong(StreamSupport.stream(series.spliterator(), false).toArray(LongSeries[]::new));
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    static LongSeries unionLong(LongSeries... series) {
+        return SeriesUnion.ofLong(series);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    static DoubleSeries unionDouble(Iterable<DoubleSeries> series) {
+        return SeriesUnion.ofDouble(StreamSupport.stream(series.spliterator(), false).toArray(DoubleSeries[]::new));
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    static DoubleSeries unionDouble(DoubleSeries... series) {
+        return SeriesUnion.ofDouble(series);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    static FloatSeries unionFloat(Iterable<FloatSeries> series) {
+        return SeriesUnion.ofFloat(StreamSupport.stream(series.spliterator(), false).toArray(FloatSeries[]::new));
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    static FloatSeries unionFloat(FloatSeries... series) {
+        return SeriesUnion.ofFloat(series);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    static BooleanSeries unionBool(Iterable<BooleanSeries> series) {
+        return SeriesUnion.ofBool(StreamSupport.stream(series.spliterator(), false).toArray(BooleanSeries[]::new));
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    static BooleanSeries unionBool(BooleanSeries... series) {
+        return SeriesUnion.ofBool(series);
     }
 
     /**
@@ -489,30 +575,15 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * Combines this Series with multiple other Series. This is an operation similar to SQL "UNION"
+     *
+     * @deprecated in favor of {@link #union(Series[])}
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default Series<T> concat(Series<? extends T>... other) {
-        if (other.length == 0) {
-            return this;
-        }
-
-        int size = size();
-
-        int h = size;
-        for (Series<? extends T> s : other) {
-            h += s.size();
-        }
-
-        T[] data = (T[]) new Object[h];
-        copyTo(data, 0, 0, size);
-
-        int offset = size;
-        for (Series<? extends T> s : other) {
-            int len = s.size();
-            s.copyTo(data, 0, offset, len);
-            offset += len;
-        }
-
-        return new ArraySeries<>(data);
+        Series<T>[] all = new Series[other.length + 1];
+        all[0] = this;
+        System.arraycopy(other, 0, all, 1, other.length);
+        return Series.union(all);
     }
 
     /**
@@ -774,7 +845,7 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * @deprecated in favor of {@link #vConcat(String, String, String)} 
+     * @deprecated in favor of {@link #vConcat(String, String, String)}
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     default String concat(String separator, String prefix, String suffix) {

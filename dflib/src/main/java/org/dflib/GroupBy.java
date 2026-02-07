@@ -1,6 +1,6 @@
 package org.dflib;
 
-import org.dflib.concat.SeriesConcat;
+import org.dflib.union.SeriesUnion;
 import org.dflib.concat.VConcat;
 import org.dflib.exp.ExpEvaluator;
 import org.dflib.exp.Exps;
@@ -189,8 +189,8 @@ public class GroupBy {
             shifted[i++] = group.getColumn(column).shift(offset, filler);
         }
 
-        IntSeries groupsIndexAll = SeriesConcat.intConcat(groupsIndex.values());
-        Series<T> shiftedAll = SeriesConcat.concat(shifted);
+        IntSeries groupsIndexAll = SeriesUnion.ofInt(groupsIndex.values().toArray(new IntSeries[0]));
+        Series<T> shiftedAll = SeriesUnion.of(shifted);
 
         return shiftedAll.select(groupsIndexAll.sortIndexInt());
     }
@@ -293,7 +293,7 @@ public class GroupBy {
      * @return a new DataFrame made from recombined groups.
      */
     public DataFrame select() {
-        IntSeries index = SeriesConcat.intConcat(groupsIndex.values());
+        IntSeries index = SeriesUnion.ofInt(groupsIndex.values().toArray(new IntSeries[0]));
 
         return columnSetIndex != null
                 ? source.rows(index).cols(columnSetIndex.getIndex()).select()

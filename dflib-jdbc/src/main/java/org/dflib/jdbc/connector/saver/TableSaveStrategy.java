@@ -3,7 +3,7 @@ package org.dflib.jdbc.connector.saver;
 import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.Series;
-import org.dflib.concat.SeriesConcat;
+import org.dflib.union.SeriesUnion;
 import org.dflib.jdbc.SaveOp;
 import org.dflib.jdbc.connector.JdbcConnector;
 import org.dflib.jdbc.connector.StatementBuilder;
@@ -64,7 +64,7 @@ public abstract class TableSaveStrategy {
                 results.add(doInsertOrUpdate(c, sdf));
             }
 
-            return () -> SeriesConcat.concat(results.stream().map(Supplier::get).toArray(Series[]::new));
+            return () -> SeriesUnion.of(results.stream().map(Supplier::get).toArray(Series[]::new));
         });
     }
 

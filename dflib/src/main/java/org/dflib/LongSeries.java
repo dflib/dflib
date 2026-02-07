@@ -184,6 +184,7 @@ public interface LongSeries extends Series<Long> {
     }
 
     @Override
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default Series<Long> concat(Series<? extends Long>... other) {
 
         int olen = other.length;
@@ -217,29 +218,16 @@ public interface LongSeries extends Series<Long> {
         return Series.ofLong(data);
     }
 
+    /**
+     * @deprecated in favor of {@link #unionLong(LongSeries...)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default LongSeries concatLong(LongSeries... other) {
-        if (other.length == 0) {
-            return this;
-        }
 
-        int size = size();
-
-        int h = size;
-        for (LongSeries s : other) {
-            h += s.size();
-        }
-
-        long[] data = new long[h];
-        copyToLong(data, 0, 0, size);
-
-        int offset = size;
-        for (LongSeries s : other) {
-            int len = s.size();
-            s.copyToLong(data, 0, offset, len);
-            offset += len;
-        }
-
-        return Series.ofLong(data);
+        LongSeries[] all = new LongSeries[other.length + 1];
+        all[0] = this;
+        System.arraycopy(other, 0, all, 1, other.length);
+        return Series.unionLong(all);
     }
 
     @Override

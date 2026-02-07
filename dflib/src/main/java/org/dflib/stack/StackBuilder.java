@@ -5,7 +5,7 @@ import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.IntSeries;
 import org.dflib.Series;
-import org.dflib.concat.SeriesConcat;
+import org.dflib.union.SeriesUnion;
 import org.dflib.series.IndexedSeries;
 import org.dflib.series.IntSequenceSeries;
 import org.dflib.series.SingleValueSeries;
@@ -104,9 +104,9 @@ public class StackBuilder {
         }
 
         return new ColumnDataFrame(null, stackedIndex(),
-                SeriesConcat.intConcat(rows),
-                SeriesConcat.concat(columns),
-                SeriesConcat.concat(values)
+                SeriesUnion.ofInt(rows),
+                SeriesUnion.of(columns),
+                SeriesUnion.of(values)
         );
     }
 
@@ -136,9 +136,9 @@ public class StackBuilder {
         }
 
         return new ColumnDataFrame(null, stackedIndex(),
-                SeriesConcat.concat(rows),
-                SeriesConcat.concat(columns),
-                SeriesConcat.concat(values)
+                SeriesUnion.of(rows),
+                SeriesUnion.of(columns),
+                SeriesUnion.of(values)
         );
     }
 
@@ -162,9 +162,9 @@ public class StackBuilder {
         }
 
         return new ColumnDataFrame(null, stackedIndex(),
-                SeriesConcat.intConcat(rows),
+                SeriesUnion.ofInt(rows),
                 Series.of(columns),
-                SeriesConcat.concat(values)
+                SeriesUnion.of(values)
         );
     }
 
@@ -194,9 +194,9 @@ public class StackBuilder {
         }
 
         return new ColumnDataFrame(null, stackedIndex(),
-                SeriesConcat.concat(rows),
+                SeriesUnion.of(rows),
                 Series.of(columns),
-                SeriesConcat.concat(values)
+                SeriesUnion.of(values)
         );
     }
 }

@@ -1,7 +1,7 @@
 package org.dflib;
 
 import org.dflib.agg.SeriesAggregator;
-import org.dflib.concat.SeriesConcat;
+import org.dflib.union.SeriesUnion;
 
 import java.util.Collection;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class SeriesGroupBy<T> {
      * @return a new Series made from recombined groups.
      */
     public Series<T> toSeries() {
-        IntSeries index = SeriesConcat.intConcat(groupsIndex.values());
+        IntSeries index = SeriesUnion.ofInt(groupsIndex.values().toArray(new IntSeries[0]));
 
         // this should hopefully preserve the nature of any primitive-based Series
         return ungrouped.select(index);

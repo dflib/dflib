@@ -5,7 +5,7 @@ import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.IntSeries;
 import org.dflib.Series;
-import org.dflib.concat.SeriesConcat;
+import org.dflib.union.SeriesUnion;
 import org.dflib.series.IndexedSeries;
 import org.dflib.series.IntSequenceSeries;
 import org.dflib.series.SingleValueSeries;
@@ -35,9 +35,9 @@ public class Stacker {
         }
 
         return new ColumnDataFrame(null, Index.of(ROW_LABEL, COLUMN_LABEL, VALUE_LABEL),
-                SeriesConcat.intConcat(rows),
-                SeriesConcat.concat(columns),
-                SeriesConcat.concat(values)
+                SeriesUnion.ofInt(rows),
+                SeriesUnion.of(columns),
+                SeriesUnion.of(values)
         );
     }
 
@@ -58,9 +58,9 @@ public class Stacker {
         }
 
         return new ColumnDataFrame(null, Index.of(ROW_LABEL, COLUMN_LABEL, VALUE_LABEL),
-                SeriesConcat.intConcat(rows),
-                SeriesConcat.concat(columns),
-                SeriesConcat.concat(values)
+                SeriesUnion.ofInt(rows),
+                SeriesUnion.of(columns),
+                SeriesUnion.of(values)
         );
     }
 }

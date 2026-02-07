@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+@Deprecated
 public class Series_ConcatTest {
 
     @ParameterizedTest
