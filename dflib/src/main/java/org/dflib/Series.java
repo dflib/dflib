@@ -766,17 +766,37 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Aggregating operation, concatenating Series values into a single String using the provided element separator.
+     * @deprecated in favor of {@link #vConcat(String)}
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default String concat(String separator) {
+        return vConcat(separator);
+    }
+
+    /**
+     * @deprecated in favor of {@link #vConcat(String, String, String)} 
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default String concat(String separator, String prefix, String suffix) {
+        return vConcat(separator, prefix, suffix);
+    }
+
+    /**
+     * An aggregating operation, concatenating Series values into a single String using the provided element separator.
+     *
+     * @since 2.0.0
+     */
+    default String vConcat(String separator) {
         return reduce(Exp.$col("").vConcat(separator));
     }
 
     /**
-     * Aggregating operation, concatenating Series values into a single String using the provided element separator,
+     * An agggregating operation, concatenating Series values into a single String using the provided element separator,
      * prefix and suffix.
+     *
+     * @since 2.0.0
      */
-    default String concat(String separator, String prefix, String suffix) {
+    default String vConcat(String separator, String prefix, String suffix) {
         return reduce(Exp.$col("").vConcat(separator, prefix, suffix));
     }
 

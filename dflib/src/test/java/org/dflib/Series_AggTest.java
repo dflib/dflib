@@ -71,14 +71,14 @@ public class Series_AggTest {
     @ParameterizedTest
     @EnumSource(SeriesType.class)
     public void concat(SeriesType type) {
-        String concat = type.createSeries("a", "b", "cd", "e", "fg").concat("_");
+        String concat = type.createSeries("a", "b", "cd", "e", "fg").vConcat("_");
         assertEquals("a_b_cd_e_fg", concat);
     }
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
     public void concat_PrefixSuffix(SeriesType type) {
-        String concat = type.createSeries("a", "b", "cd", "e", "fg").concat("_", "[", "]");
+        String concat = type.createSeries("a", "b", "cd", "e", "fg").vConcat("_", "[", "]");
         assertEquals("[a_b_cd_e_fg]", concat);
     }
 }
