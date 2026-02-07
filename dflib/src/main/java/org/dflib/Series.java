@@ -851,7 +851,7 @@ public interface Series<T> extends Iterable<T> {
     @Override
     default Iterator<T> iterator() {
 
-        return new Iterator<T>() {
+        return new Iterator<>() {
 
             final int len = Series.this.size();
             int i;
