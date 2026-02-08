@@ -102,7 +102,7 @@ public class DataFrameUnion {
                     Series<?>[] cols = new Series[len];
 
                     for (int j = 0; j < len; j++) {
-                        cols[j] = concatColumn(dfs[j], col);
+                        cols[j] = unionColumn(dfs[j], col);
                     }
 
                     concatCols[i] = SeriesUnion.of(cols);
@@ -113,7 +113,7 @@ public class DataFrameUnion {
         };
     }
 
-    private Series<?> concatColumn(DataFrame df, String col) {
+    private Series<?> unionColumn(DataFrame df, String col) {
         return df.getColumnsIndex().contains(col)
                 ? df.getColumn(col)
                 : Series.ofVal(null, df.height());
