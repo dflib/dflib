@@ -5,6 +5,7 @@
 * #607 CsvLoader.nullPadRows()
 * #608 selectAll(Udf1)
 * #609 ECharts: minify generated JavaScript
+* #612 "concat" / "vConcat" naming ambiguity
 
 ## Release 2.0.0-M6
 
