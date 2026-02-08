@@ -14,6 +14,7 @@ import org.dflib.sample.Sampler;
 import org.dflib.select.RowIndexer;
 import org.dflib.slice.FixedColumnSet;
 import org.dflib.stack.StackBuilder;
+import org.dflib.union.DataFrameUnion;
 import org.dflib.window.Window;
 
 import java.util.Iterator;
@@ -24,6 +25,7 @@ import java.util.Random;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+import java.util.stream.StreamSupport;
 
 /**
  * An immutable 2D data container with support for a variety of data transformations, queries, joins, etc. Every such
@@ -132,6 +134,54 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     static DataFrameFoldByColumnBuilder foldByColumn(Index columnIndex) {
         return new DataFrameFoldByColumnBuilder(columnIndex);
+    }
+
+    /**
+     * Vertically concatenates columns of multiple DataFrames, producing a single "taller" DataFrame. Column data is
+     * merged by name. Only columns present in all DataFrames are included in the result. This is a form of
+     * {@link #union(JoinType, DataFrame...)} with the {@link JoinType#inner} semantics.
+     *
+     * @since 2.0.0
+     */
+    static DataFrame union(Iterable<DataFrame> dfs) {
+        return union(StreamSupport.stream(dfs.spliterator(), false).toArray(DataFrame[]::new));
+    }
+
+    /**
+     * Vertically concatenates columns of multiple DataFrames, producing a single "taller" DataFrame. Column data is
+     * merged by name. Only columns present in all DataFrames are included in the result. This is a form of
+     * {@link #union(JoinType, DataFrame...)} with the {@link JoinType#inner} semantics.
+     *
+     * @since 2.0.0
+     */
+    static DataFrame union(DataFrame... dfs) {
+        return union(JoinType.inner, dfs);
+    }
+
+    /**
+     * Vertically concatenates columns of multiple DataFrames, producing a single "taller" DataFrame. Column data is
+     * merged by name. Which columns are included in the final result is determined by the "how" parameter. E.g.,
+     * {@link JoinType#full} results in a superset of all columns from all DataFrames, {@link JoinType#inner} - a subset
+     * of the columns found in every DataFrame, {@link JoinType#left} - the columns in the first DataFrame,
+     * {@link JoinType#right} - the columns in the last DataFrame
+     *
+     * @since 2.0.0
+     */
+    static DataFrame union(JoinType semantics, Iterable<DataFrame> dfs) {
+        return union(semantics, StreamSupport.stream(dfs.spliterator(), false).toArray(DataFrame[]::new));
+    }
+
+    /**
+     * Vertically concatenates columns of multiple DataFrames, producing a single "taller" DataFrame. Column data is
+     * merged by name. Which columns are included in the final result is determined by the "how" parameter. E.g.,
+     * {@link JoinType#full} results in a superset of all columns from all DataFrames, {@link JoinType#inner} - a subset
+     * of the columns found in every DataFrame, {@link JoinType#left} - the columns in the first DataFrame,
+     * {@link JoinType#right} - the columns in the last DataFrame
+     *
+     * @since 2.0.0
+     */
+    static DataFrame union(JoinType semantics, DataFrame... dfs) {
+        return DataFrameUnion.of(semantics).union(dfs);
     }
 
     /**
@@ -244,18 +294,18 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * Appends a single row in the bottom of the DataFrame. The row is specified as a map of column names to values.
      * Missing values will be represented as nulls, and extra values with no matching DataFrame columns will be ignored.
-     * Be aware that this operation can be really slow, as DataFrame is optimized for columnar operations, not row appends.
+     * Be aware that this is fairly slow, as DataFrame is optimized for columnar operations, not row appends.
      * If you are appending more than one row, consider creating a new DataFrame and then concatenating it with this one
-     * using {@link #vConcat(DataFrame...)}.
+     * using {@link #union(DataFrame...)}.
      */
     DataFrame addRow(Map<String, Object> row);
 
     /**
      * Inserts a single row in the specified position of the DataFrame. The row is specified as a map of column names to values.
      * Missing values will be represented as nulls, and extra values with no matching DataFrame columns will be ignored.
-     * Be aware that this operation can be really slow, as DataFrame is optimized for columnar operations, not row appends.
-     * If you are appending more than one row, consider creating a new DataFrame and then concatenating it with this one
-     * using {@link #vConcat(DataFrame...)}.
+     * Be aware that this is fairly slow, as DataFrame is optimized for columnar operations, not row expansion.
+     * If you are inserting more than one row, consider creating a new DataFrame and then concatenating it with this one
+     * using {@link #union(DataFrame...)}.
      *
      * @since 1.2.0
      */
@@ -334,9 +384,19 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @param dfs DataFrames to concatenate with this one
      * @return a new "taller" DataFrame
+     * @deprecated in favor of {@link #union(JoinType, DataFrame...)}
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default DataFrame vConcat(DataFrame... dfs) {
-        return vConcat(JoinType.left, dfs);
+        if (dfs.length == 0) {
+            return this;
+        }
+
+        DataFrame[] combined = new DataFrame[dfs.length + 1];
+        combined[0] = this;
+        System.arraycopy(dfs, 0, combined, 1, dfs.length);
+
+        return DataFrame.union(JoinType.left, combined);
     }
 
     /**
@@ -347,8 +407,20 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param how determines which columns are included in concatenated result
      * @param dfs DataFrames to concatenate with this one
      * @return a new "taller" DataFrame
+     * @deprecated in favor of {@link #union(JoinType, DataFrame...)}
      */
-    DataFrame vConcat(JoinType how, DataFrame... dfs);
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default DataFrame vConcat(JoinType how, DataFrame... dfs) {
+        if (dfs.length == 0) {
+            return this;
+        }
+
+        DataFrame[] combined = new DataFrame[dfs.length + 1];
+        combined[0] = this;
+        System.arraycopy(dfs, 0, combined, 1, dfs.length);
+
+        return DataFrame.union(how, combined);
+    }
 
     /**
      * A shorter-named equivalent of {@link #innerJoin(DataFrame)}

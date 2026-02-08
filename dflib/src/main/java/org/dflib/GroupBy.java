@@ -1,12 +1,11 @@
 package org.dflib;
 
-import org.dflib.union.SeriesUnion;
-import org.dflib.concat.VConcat;
 import org.dflib.exp.ExpEvaluator;
 import org.dflib.exp.Exps;
 import org.dflib.series.EmptySeries;
 import org.dflib.slice.FixedColumnSetIndex;
 import org.dflib.sort.IntComparator;
+import org.dflib.union.SeriesUnion;
 import org.dflib.window.DenseRanker;
 import org.dflib.window.Ranker;
 
@@ -337,7 +336,7 @@ public class GroupBy {
             }
         }
 
-        return VConcat.concat(JoinType.inner, dfs);
+        return DataFrame.union(JoinType.inner, dfs);
     }
 
     /**
@@ -382,7 +381,7 @@ public class GroupBy {
         }
 
 
-        return VConcat.concat(JoinType.inner, dfs);
+        return DataFrame.union(JoinType.inner, dfs);
     }
 
     /**

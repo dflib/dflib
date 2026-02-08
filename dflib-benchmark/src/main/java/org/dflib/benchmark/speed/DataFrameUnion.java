@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameVConcat {
+public class DataFrameUnion {
 
     @Param("1000000")
     public int rows;
@@ -90,30 +90,25 @@ public class DataFrameVConcat {
     }
 
     @Benchmark
-    public Object vConcat() {
-        return df1
-                .vConcat(df3)
-                .materialize().iterator();
+    public Object union() {
+        return DataFrame.union(df1, df3).materialize().iterator();
     }
 
     @Benchmark
-    public Object vConcat_SameCols() {
-        return df1
-                .vConcat(df2)
-                .materialize().iterator();
+    public Object sameCols() {
+        return DataFrame.union(df1, df2).materialize().iterator();
+
     }
 
     @Benchmark
-    public Object vConcat_Primitives() {
-        return df4
-                .vConcat(df6)
-                .materialize().iterator();
+    public Object primitives() {
+        return DataFrame.union(df4, df6).materialize().iterator();
+
     }
 
     @Benchmark
-    public Object vConcat_Primitives_SameCols() {
-        return df4
-                .vConcat(df5)
-                .materialize().iterator();
+    public Object primitives_SameCols() {
+        return DataFrame.union(df4, df5).materialize().iterator();
+
     }
 }

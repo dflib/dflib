@@ -13,6 +13,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
+/**
+ * @deprecated in favor of {@link org.dflib.union.DataFrameUnion}
+ */
+@Deprecated(forRemoval = true)
 public class VConcat {
     private static final EnumMap<JoinType, VConcat> JOINERS = new EnumMap<>(JoinType.class);
 
