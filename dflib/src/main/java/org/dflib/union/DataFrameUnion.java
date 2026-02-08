@@ -88,8 +88,10 @@ public class DataFrameUnion {
             default -> {
                 int len = dfs.length;
                 Index[] indices = new Index[len];
+                int unionH = 0;
                 for (int i = 0; i < len; i++) {
                     indices[i] = dfs[i].getColumnsIndex();
+                    unionH += dfs[i].height();
                 }
 
                 Index concatIndex = zipper.apply(indices);
@@ -101,11 +103,12 @@ public class DataFrameUnion {
                     String col = concatIndex.get(i);
                     Series<?>[] cols = new Series[len];
 
+
                     for (int j = 0; j < len; j++) {
                         cols[j] = unionColumn(dfs[j], col);
                     }
 
-                    concatCols[i] = SeriesUnion.of(cols);
+                    concatCols[i] = SeriesUnion.of(unionH, cols);
                 }
 
                 yield new ColumnDataFrame(null, concatIndex, concatCols);
