@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameHConcat {
+public class DataFramePositionalJoin {
 
     @Param("1000000")
     public int rows;
@@ -53,11 +53,21 @@ public class DataFrameHConcat {
                 .of(c20, c21, c22, c23);
     }
 
+    @Deprecated
     @Benchmark
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public Object hConcat() {
         return df1
                 .hConcat(df2)
+                .materialize().iterator();
+    }
+
+    @Benchmark
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public Object positionalJoin() {
+        return df1
+                .innerJoin(df2).positional()
+                .select()
                 .materialize().iterator();
     }
 }
