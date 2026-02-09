@@ -3,6 +3,7 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
+@Deprecated
 public class DataFrame_HConcat_Test {
 
     @Test

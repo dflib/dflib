@@ -7,6 +7,7 @@ import org.dflib.builder.DataFrameByRecordRowBuilder;
 import org.dflib.builder.DataFrameByRowBuilder;
 import org.dflib.builder.DataFrameFoldByColumnBuilder;
 import org.dflib.builder.DataFrameFoldByRowBuilder;
+import org.dflib.concat.HConcat;
 import org.dflib.join.Join;
 import org.dflib.pivot.PivotBuilder;
 import org.dflib.row.RowProxy;
@@ -359,7 +360,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @param df another DataFrame.
      * @return a new "wider" DataFrame that is a combination of columns from this DataFrame and a DataFrame argument.
+     * @deprecated in favor of positional join, e.g. {@code innerJoin(df).positional().select()}
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default DataFrame hConcat(DataFrame df) {
         return hConcat(JoinType.inner, df);
     }
@@ -373,10 +376,21 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param df  another DataFrame
      * @param how semantics of concat operation
      * @return a new "wider" DataFrame that is a combination of columns from this DataFrame and a DataFrame argument
+     * @deprecated in favor of positional join, e.g. {@code leftJoin(df).positional().select()}
      */
-    DataFrame hConcat(JoinType how, DataFrame df);
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default DataFrame hConcat(JoinType how, DataFrame df) {
+        Index zipIndex = getColumnsIndex().expand(df.getColumnsIndex().toArrayNoCopy());
+        return new HConcat(how).concat(zipIndex, this, df);
+    }
 
-    DataFrame hConcat(Index zippedColumns, JoinType how, DataFrame df, RowCombiner c);
+    /**
+     * @deprecated in favor of positional join, e.g. {@code leftJoin(df).positional().select()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default DataFrame hConcat(Index zippedColumns, JoinType how, DataFrame df, RowCombiner c) {
+        return new HConcat(how).concat(zippedColumns, this, df, c);
+    }
 
     /**
      * A form of {@link #vConcat(JoinType, DataFrame...)} with "left" join semantics. I.e. all columns

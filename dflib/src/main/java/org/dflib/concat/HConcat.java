@@ -5,6 +5,7 @@ import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.Series;
 import org.dflib.JoinType;
+import org.dflib.join.Join;
 import org.dflib.row.MultiArrayRowBuilder;
 import org.dflib.RowCombiner;
 import org.dflib.row.RowProxy;
@@ -13,6 +14,10 @@ import org.dflib.series.ArraySeries;
 import java.util.Iterator;
 import java.util.function.UnaryOperator;
 
+/**
+ * @deprecated in favor of {@link Join#positional()}
+ */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class HConcat {
 
     private final JoinType semantics;

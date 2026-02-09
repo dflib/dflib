@@ -29,6 +29,7 @@ public class Join {
     private Hasher leftHasher;
     private Hasher rightHasher;
     private JoinPredicate predicate;
+    private boolean positional;
     private String indicatorColumn;
 
     private boolean userColumns;
@@ -65,6 +66,7 @@ public class Join {
         this.leftHasher = combineHashers(this.leftHasher, left);
         this.rightHasher = combineHashers(this.rightHasher, right);
         this.predicate = null;
+        this.positional = false;
         return this;
     }
 
@@ -79,6 +81,23 @@ public class Join {
      */
     public Join predicatedBy(JoinPredicate predicate) {
         this.predicate = predicate;
+        this.leftHasher = null;
+        this.rightHasher = null;
+        this.positional = false;
+
+        return this;
+    }
+
+    /**
+     * Sets the join to match rows by their position in the DataFrame rather than by a key or predicate.
+     * This is a "zip" operation with join semantics controlling how mismatched heights are handled.
+     *
+     * @return this builder instance
+     * @since 2.0.0
+     */
+    public Join positional() {
+        this.positional = true;
+        this.predicate = null;
         this.leftHasher = null;
         this.rightHasher = null;
 
@@ -226,7 +245,9 @@ public class Join {
     }
 
     private IntSeries[] rowSelectors() {
-        if (predicate != null) {
+        if (positional) {
+            return new PositionalJoiner(type).rowSelectors(leftFrame, rightFrame);
+        } else if (predicate != null) {
             return new NestedLoopJoiner(predicate, type).rowSelectors(leftFrame, rightFrame);
         } else if (leftHasher != null && rightHasher != null) {
             return new HashJoiner(leftHasher, rightHasher, type).rowSelectors(leftFrame, rightFrame);

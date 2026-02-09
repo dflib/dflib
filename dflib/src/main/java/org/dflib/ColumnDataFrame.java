@@ -1,6 +1,5 @@
 package org.dflib;
 
-import org.dflib.concat.HConcat;
 import org.dflib.groupby.Grouper;
 import org.dflib.row.ColumnsRowProxy;
 import org.dflib.row.RowProxy;
@@ -136,17 +135,6 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         return new ColumnDataFrame(null, columnsIndex, newColumnsData);
-    }
-
-    @Override
-    public DataFrame hConcat(JoinType how, DataFrame df) {
-        Index zipIndex = getColumnsIndex().expand(df.getColumnsIndex().toArrayNoCopy());
-        return new HConcat(how).concat(zipIndex, this, df);
-    }
-
-    @Override
-    public DataFrame hConcat(Index zippedColumns, JoinType how, DataFrame df, RowCombiner c) {
-        return new HConcat(how).concat(zippedColumns, this, df, c);
     }
 
     @Override
