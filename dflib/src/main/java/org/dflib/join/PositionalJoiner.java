@@ -1,12 +1,13 @@
 package org.dflib.join;
 
 import org.dflib.DataFrame;
-import org.dflib.IntSeries;
 import org.dflib.JoinType;
 import org.dflib.Series;
-import org.dflib.series.IntSequenceSeries;
+import org.dflib.builder.ObjectAccum;
+import org.dflib.series.ArraySeries;
+import org.dflib.series.SingleValueSeries;
 
-import java.util.Arrays;
+import java.util.function.UnaryOperator;
 
 /**
  * A DataFrame joiner that matches rows by their position (index) in the DataFrame rather than by key or predicate.
@@ -14,63 +15,83 @@ import java.util.Arrays;
  *
  * @since 2.0.0
  */
-public class PositionalJoiner extends BaseJoiner {
+public class PositionalJoiner {
 
-    public PositionalJoiner(JoinType semantics) {
-        super(semantics);
+    private final JoinType type;
+
+    public PositionalJoiner(JoinType type) {
+        this.type = type;
     }
 
-    @Override
-    protected IntSeries[] innerJoin(DataFrame lf, DataFrame rf) {
-        int h = Math.min(lf.height(), rf.height());
-        IntSeries range = new IntSequenceSeries(0, h);
-        return new IntSeries[]{range, range};
-    }
+    public Series<?>[] buildColumns(
+            DataFrame leftFrame,
+            DataFrame rightFrame,
+            String indicatorColumn,
+            int[] positions) {
 
-    @Override
-    protected IntSeries[] leftJoin(DataFrame lf, DataFrame rf) {
-        int lh = lf.height();
-        int rh = rf.height();
+        int lh = leftFrame.height();
+        int rh = rightFrame.height();
+        int h = targetHeight(lh, rh);
 
-        IntSeries li = new IntSequenceSeries(0, lh);
-        IntSeries ri = paddedRange(rh, lh);
+        UnaryOperator<Series<?>> lt = seriesTrimmer(lh, h);
+        UnaryOperator<Series<?>> rt = seriesTrimmer(rh, h);
 
-        return new IntSeries[]{li, ri};
-    }
+        int llen = leftFrame.width();
+        int rlen = rightFrame.width();
+        int lrlen = llen + rlen;
+        int len = positions.length;
 
-    @Override
-    protected IntSeries[] rightJoin(DataFrame lf, DataFrame rf) {
-        int lh = lf.height();
-        int rh = rf.height();
-
-        IntSeries li = paddedRange(lh, rh);
-        IntSeries ri = new IntSequenceSeries(0, rh);
-
-        return new IntSeries[]{li, ri};
-    }
-
-    @Override
-    protected IntSeries[] fullJoin(DataFrame lf, DataFrame rf) {
-        int lh = lf.height();
-        int rh = rf.height();
-        int h = Math.max(lh, rh);
-
-        IntSeries li = paddedRange(lh, h);
-        IntSeries ri = paddedRange(rh, h);
-
-        return new IntSeries[]{li, ri};
-    }
-
-    private IntSeries paddedRange(int sourceHeight, int desiredHeight) {
-        if (sourceHeight >= desiredHeight) {
-            return new IntSequenceSeries(0, desiredHeight);
+        Series[] data = new Series[len];
+        for (int i = 0; i < len; i++) {
+            int si = positions[i];
+            if (si < llen) {
+                data[i] = lt.apply(leftFrame.getColumn(si));
+            } else if (si < lrlen) {
+                data[i] = rt.apply(rightFrame.getColumn(si - llen));
+            } else if (si == lrlen && indicatorColumn != null) {
+                data[i] = buildIndicator(lh, rh, h);
+            } else {
+                data[i] = new SingleValueSeries<>(null, h);
+            }
         }
 
-        int[] data = new int[desiredHeight];
-        for (int i = 0; i < sourceHeight; i++) {
-            data[i] = i;
+        return data;
+    }
+
+    private int targetHeight(int lh, int rh) {
+        return switch (type) {
+            case full -> Math.max(lh, rh);
+            case right -> rh;
+            case left -> lh;
+            case inner -> Math.min(lh, rh);
+        };
+    }
+
+    private UnaryOperator<Series<?>> seriesTrimmer(int seriesHeight, int desiredHeight) {
+        if (seriesHeight < desiredHeight) {
+            return s -> padSeries(s, desiredHeight - seriesHeight);
+        } else if (seriesHeight > desiredHeight) {
+            return s -> s.selectRange(0, desiredHeight);
+        } else {
+            return UnaryOperator.identity();
         }
-        Arrays.fill(data, sourceHeight, desiredHeight, -1);
-        return Series.ofInt(data);
+    }
+
+    private <T> Series<T> padSeries(Series<T> series, int paddingSize) {
+        Object[] padded = new Object[series.size() + paddingSize];
+        series.copyTo(padded, 0, 0, series.size());
+        return new ArraySeries(padded);
+    }
+
+    private Series<JoinIndicator> buildIndicator(int lh, int rh, int h) {
+        ObjectAccum<JoinIndicator> appender = new ObjectAccum<>(h);
+        for (int i = 0; i < h; i++) {
+            appender.push(
+                    i >= lh
+                            ? JoinIndicator.right_only
+                            : i >= rh ? JoinIndicator.left_only : JoinIndicator.both
+            );
+        }
+        return appender.toSeries();
     }
 }

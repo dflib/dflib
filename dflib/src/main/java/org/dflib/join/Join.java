@@ -147,38 +147,34 @@ public class Join {
 
     public DataFrame select() {
         JoinIndex index = colSelector.apply(defaultJoinIndex());
-        IntSeries[] selectors = rowSelectors();
 
         return new ColumnDataFrame(null,
                 index.getIndex(),
-                merge(selectors[0], selectors[1], index.getPositions()));
+                buildColumns(index.getPositions()));
     }
 
     public DataFrame selectAs(UnaryOperator<String> renamer) {
         JoinIndex index = colSelector.apply(defaultJoinIndex());
-        IntSeries[] selectors = rowSelectors();
 
         return new ColumnDataFrame(null,
                 index.getIndex().replace(renamer),
-                merge(selectors[0], selectors[1], index.getPositions()));
+                buildColumns(index.getPositions()));
     }
 
     public DataFrame selectAs(String... newColumnNames) {
         JoinIndex index = colSelector.apply(defaultJoinIndex());
-        IntSeries[] selectors = rowSelectors();
 
         return new ColumnDataFrame(null,
                 Index.of(newColumnNames),
-                merge(selectors[0], selectors[1], index.getPositions()));
+                buildColumns(index.getPositions()));
     }
 
     public DataFrame selectAs(Map<String, String> oldToNewNames) {
         JoinIndex index = colSelector.apply(defaultJoinIndex());
-        IntSeries[] selectors = rowSelectors();
 
         return new ColumnDataFrame(null,
                 index.getIndex().replace(oldToNewNames),
-                merge(selectors[0], selectors[1], index.getPositions()));
+                buildColumns(index.getPositions()));
     }
 
     /**
@@ -206,7 +202,6 @@ public class Join {
         }
 
         JoinIndex allAliasesIndex = defaultIndex.colsExpandAliases();
-        IntSeries[] selectors = rowSelectors();
 
         // Select the full DataFrame first, and then apply expressions, as exps can reference columns in the join that are not
         // a part of the result
@@ -214,7 +209,7 @@ public class Join {
         // Since "merge" doesn't check for duplicate columns, first merge unique columns, and then expand them to
         // include aliases via "pick"
 
-        Series<?>[] uniqueColumns = merge(selectors[0], selectors[1], defaultIndex.getPositions());
+        Series<?>[] uniqueColumns = buildColumns(defaultIndex.getPositions());
 
         DataFrame allAliasesDf = new ColumnDataFrame(
                 null,
@@ -244,10 +239,17 @@ public class Join {
         return possiblyNull != null ? possiblyNull.and(mustBeNotNull) : mustBeNotNull;
     }
 
-    private IntSeries[] rowSelectors() {
+    private Series<?>[] buildColumns(int[] positions) {
         if (positional) {
-            return new PositionalJoiner(type).rowSelectors(leftFrame, rightFrame);
-        } else if (predicate != null) {
+            return new PositionalJoiner(type).buildColumns(leftFrame, rightFrame, indicatorColumn, positions);
+        }
+
+        IntSeries[] selectors = rowSelectors();
+        return merge(selectors[0], selectors[1], positions);
+    }
+
+    private IntSeries[] rowSelectors() {
+        if (predicate != null) {
             return new NestedLoopJoiner(predicate, type).rowSelectors(leftFrame, rightFrame);
         } else if (leftHasher != null && rightHasher != null) {
             return new HashJoiner(leftHasher, rightHasher, type).rowSelectors(leftFrame, rightFrame);
