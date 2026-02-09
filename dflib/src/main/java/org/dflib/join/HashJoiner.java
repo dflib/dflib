@@ -16,7 +16,7 @@ import java.util.Set;
  * two custom "hash" functions for the rows on the left and the right sides of the join, each producing values, whose
  * equality can be used as a join condition. Should theoretically have O(N + M) performance.
  */
-public class HashJoiner extends BaseJoiner {
+public class HashJoiner extends ConditionalJoiner {
 
     private final Hasher leftHasher;
     private final Hasher rightHasher;

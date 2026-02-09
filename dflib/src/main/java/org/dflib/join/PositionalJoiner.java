@@ -15,14 +15,13 @@ import java.util.function.UnaryOperator;
  *
  * @since 2.0.0
  */
-public class PositionalJoiner {
-
-    private final JoinType type;
+public class PositionalJoiner extends Joiner {
 
     public PositionalJoiner(JoinType type) {
-        this.type = type;
+        super(type);
     }
 
+    @Override
     public Series<?>[] buildColumns(
             DataFrame leftFrame,
             DataFrame rightFrame,

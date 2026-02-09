@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * A DataFrame joiner based on rows comparing predicate. Should theoretically have O(N * M) performance.
  */
-public class NestedLoopJoiner extends BaseJoiner {
+public class NestedLoopJoiner extends ConditionalJoiner {
 
     private final JoinPredicate joinPredicate;
 

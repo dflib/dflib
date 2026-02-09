@@ -5,12 +5,8 @@ import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Hasher;
 import org.dflib.Index;
-import org.dflib.IntSeries;
 import org.dflib.JoinType;
 import org.dflib.Series;
-import org.dflib.builder.ObjectAccum;
-import org.dflib.series.IndexedSeries;
-import org.dflib.series.SingleValueSeries;
 
 import java.util.Map;
 import java.util.Objects;
@@ -240,50 +236,19 @@ public class Join {
     }
 
     private Series<?>[] buildColumns(int[] positions) {
-        if (positional) {
-            return new PositionalJoiner(type).buildColumns(leftFrame, rightFrame, indicatorColumn, positions);
-        }
-
-        IntSeries[] selectors = rowSelectors();
-        return merge(selectors[0], selectors[1], positions);
+        return joiner().buildColumns(leftFrame, rightFrame, indicatorColumn, positions);
     }
 
-    private IntSeries[] rowSelectors() {
-        if (predicate != null) {
-            return new NestedLoopJoiner(predicate, type).rowSelectors(leftFrame, rightFrame);
+    private Joiner joiner() {
+        if (positional) {
+            return new PositionalJoiner(type);
+        } else if (predicate != null) {
+            return new NestedLoopJoiner(predicate, type);
         } else if (leftHasher != null && rightHasher != null) {
-            return new HashJoiner(leftHasher, rightHasher, type).rowSelectors(leftFrame, rightFrame);
+            return new HashJoiner(leftHasher, rightHasher, type);
         } else {
             throw new IllegalStateException("No join condition set. Either join columns, Hashers or a predicate must be specified");
         }
-    }
-
-    private Series<?>[] merge(IntSeries leftIndex, IntSeries rightIndex, int[] positions) {
-
-        int llen = leftFrame.width();
-        int rlen = rightFrame.width();
-        int lrlen = llen + rlen;
-        int len = positions.length;
-        int h = leftIndex.size();
-
-        // We do not check for duplicate column positions here and recalculate each column. So to expand columns with
-        // aliases, first do "merge" on a set of unique columns, and then call "pick" to arrange / duplicate columns.
-        Series[] data = new Series[len];
-        for (int i = 0; i < len; i++) {
-
-            int si = positions[i];
-            if (si < llen) {
-                data[i] = new IndexedSeries<>(leftFrame.getColumn(si), leftIndex);
-            } else if (si < lrlen) {
-                data[i] = new IndexedSeries<>(rightFrame.getColumn(si - llen), rightIndex);
-            } else if (si == lrlen && indicatorColumn != null) {
-                data[i] = buildIndicator(leftIndex, rightIndex);
-            } else {
-                data[i] = new SingleValueSeries<>(null, h);
-            }
-        }
-
-        return data;
     }
 
     private Series<?>[] pick(Series<?>[] cols, int[] positions) {
@@ -298,19 +263,4 @@ public class Join {
         return data;
     }
 
-    private Series<JoinIndicator> buildIndicator(IntSeries leftIndex, IntSeries rightIndex) {
-
-        int h = leftIndex.size();
-        ObjectAccum<JoinIndicator> appender = new ObjectAccum<>(h);
-
-        for (int i = 0; i < h; i++) {
-            appender.push(
-                    leftIndex.getInt(i) < 0
-                            ? JoinIndicator.right_only
-                            : rightIndex.getInt(i) < 0 ? JoinIndicator.left_only : JoinIndicator.both
-            );
-        }
-
-        return appender.toSeries();
-    }
 }
