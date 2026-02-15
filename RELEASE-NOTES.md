@@ -7,6 +7,7 @@
 * #609 ECharts: minify generated JavaScript
 * #612 "concat" / "vConcat" naming ambiguity
 * #613 Recast hConcat(..) as positional join
+* #614 CsvSaver to save to OutputStream
 
 ## Release 2.0.0-M6
 

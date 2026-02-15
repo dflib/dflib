@@ -3,7 +3,6 @@ package org.dflib.codec;
 import org.dflib.ByteSource;
 
 import java.io.OutputStream;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -17,7 +16,11 @@ public interface Codec {
     Codec GZIP = new GzipCodec();
 
     static Optional<Codec> ofUri(String uri) {
-        Objects.requireNonNull(uri);
+
+        // null may be encountered when savers are sendin output to an in-memory stream
+        if (uri == null) {
+            return Optional.empty();
+        }
 
         int dot = uri.lastIndexOf('.');
         if (dot < 0 || dot == uri.length() - 1) {

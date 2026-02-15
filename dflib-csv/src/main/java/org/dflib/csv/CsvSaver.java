@@ -30,7 +30,8 @@ public class CsvSaver {
 
     /**
      * Sets a compression codec for this saver. If not set, the saver will try to determine compression preferences
-     * using the target file extension. So this method is especially useful if the target is not a file.
+     * using the target file extension. So this method is especially useful if the target is not a file. Ignored when
+     * saving to character-based sinks. E.g., {@link #save(DataFrame, Appendable)}.
      *
      * @since 2.0.0
      */
@@ -98,6 +99,22 @@ public class CsvSaver {
         save(df, new File(fileName));
     }
 
+    /**
+     * @since 2.0.0
+     */
+    public void save(DataFrame df, OutputStream out) {
+
+        try (Writer writer = new OutputStreamWriter(compressIfNeeded(out, null))) {
+            doSave(df, writer);
+        } catch (IOException e) {
+            throw new RuntimeException("Error writing CSV: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Saves a CSV to an Appendable. Ignores compression settings. If compression is essential for in-memory saving,
+     * use {@link #save(DataFrame, OutputStream)}.
+     */
     public void save(DataFrame df, Appendable out) {
         try {
             // producing a char stream, so no compression by definition

@@ -8,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -24,6 +25,10 @@ public class CsvSaver_GzipCompressionTest {
 
     private static String readAndUncompress(Path path) throws IOException {
         byte[] bytes = Files.readAllBytes(path);
+        return readAndUncompress(bytes);
+    }
+
+    private static String readAndUncompress(byte[] bytes) throws IOException {
         StringBuilder buf = new StringBuilder();
 
         try (Reader r = new InputStreamReader(new GZIPInputStream(new ByteArrayInputStream(bytes)))) {
@@ -114,6 +119,22 @@ public class CsvSaver_GzipCompressionTest {
         Path out = outBase.resolve(filePath);
         Csv.saver().save(df, out);
         String csv = readAndUncompress(out);
+
+        assertEquals("A,B\r\n" +
+                "1,2\r\n" +
+                "3,4\r\n", csv);
+    }
+
+    @Test
+    public void save_ToOutputStream() throws IOException {
+
+        DataFrame df = DataFrame.foldByRow("A", "B").of(
+                1, 2,
+                3, 4);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Csv.saver().compression(Codec.GZIP).save(df, out);
+        String csv = readAndUncompress(out.toByteArray());
 
         assertEquals("A,B\r\n" +
                 "1,2\r\n" +

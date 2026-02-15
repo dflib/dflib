@@ -5,6 +5,7 @@ import org.dflib.ByteSource;
 import org.dflib.ByteSources;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.file.Path;
 import java.util.Map;
@@ -60,6 +61,13 @@ public class Csv {
     }
 
     public static void save(DataFrame df, Appendable out) {
+        saver().save(df, out);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public static void save(DataFrame df, OutputStream out) {
         saver().save(df, out);
     }
 

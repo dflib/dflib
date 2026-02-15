@@ -4,6 +4,7 @@ import org.dflib.DataFrame;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
@@ -86,6 +87,20 @@ public class CsvSaver_SaveTargetsTest {
                 3, 4);
 
         StringWriter out = new StringWriter();
+        Csv.saver().save(df, out);
+        assertEquals("A,B\r\n" +
+                "1,2\r\n" +
+                "3,4\r\n", out.toString());
+    }
+
+    @Test
+    public void save_ToOutputStream() {
+
+        DataFrame df = DataFrame.foldByRow("A", "B").of(
+                1, 2,
+                3, 4);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
         Csv.saver().save(df, out);
         assertEquals("A,B\r\n" +
                 "1,2\r\n" +
