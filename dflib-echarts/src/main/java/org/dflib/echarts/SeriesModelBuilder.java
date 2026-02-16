@@ -148,6 +148,7 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
+                null,
                 so.itemStyle != null ? so.itemStyle.resolve(itemStyleColorDimension) : null,
                 null
         );
@@ -177,6 +178,7 @@ class SeriesModelBuilder {
                 symbolSize,
                 so.xAxisIndex,
                 so.yAxisIndex,
+                null,
                 null,
                 null,
                 null,
@@ -233,6 +235,7 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
+                null,
                 so.itemStyle != null ? so.itemStyle.resolve(itemStyleColorDimension) : null,
                 null
         );
@@ -274,6 +277,7 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
+                null,
                 so.itemStyle != null ? so.itemStyle.resolve(itemStyleColorDimension) : null,
                 null
         );
@@ -307,6 +311,7 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
+                so.geoIndex,
                 null,
                 null,
                 null,
@@ -335,6 +340,7 @@ class SeriesModelBuilder {
                 null,
                 so.xAxisIndex,
                 so.yAxisIndex,
+                null,
                 null,
                 null,
                 null,
@@ -372,6 +378,7 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
+                null,
                 so.itemStyle != null ? so.itemStyle.resolve() : null,
                 null
         );
@@ -390,6 +397,7 @@ class SeriesModelBuilder {
                 new EncodeModel(null, null, null, itemNameDimension, valueDim, null, null),
                 labelModel,
                 datasetSeriesLayoutBy,
+                null,
                 null,
                 null,
                 null,
@@ -444,6 +452,7 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
+                null,
                 null
         );
     }
@@ -468,6 +477,7 @@ class SeriesModelBuilder {
                 null,
                 null,
                 so.calendarIndex,
+                null,
                 null,
                 null,
                 null,

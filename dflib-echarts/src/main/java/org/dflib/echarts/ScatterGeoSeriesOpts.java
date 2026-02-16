@@ -3,10 +3,13 @@ package org.dflib.echarts;
 /**
  * @since 2.0.0
  */
-public class ScatterGeoSeriesOpts extends ScatterSeriesOpts<ScatterGeoSeriesOpts> implements SeriesOptsGeoCoordinates {
+public class ScatterGeoSeriesOpts extends ScatterSeriesOpts<ScatterGeoSeriesOpts> implements
+        SeriesOptsCoordsGeo,
+        SeriesOptsLonLat {
 
     String latColumn;
     String lonColumn;
+    Integer geoIndex;
 
     @Override
     public CoordinateSystemType getCoordinateSystemType() {
@@ -23,9 +26,19 @@ public class ScatterGeoSeriesOpts extends ScatterSeriesOpts<ScatterGeoSeriesOpts
         return latColumn;
     }
 
+    @Override
+    public Integer getGeoIndex() {
+        return geoIndex;
+    }
+
     public ScatterGeoSeriesOpts coordinates(String lonColumn, String latColumn) {
         this.lonColumn = lonColumn;
         this.latColumn = latColumn;
+        return this;
+    }
+
+    public ScatterGeoSeriesOpts geoIndex(Integer geoIndex) {
+        this.geoIndex = geoIndex;
         return this;
     }
 }

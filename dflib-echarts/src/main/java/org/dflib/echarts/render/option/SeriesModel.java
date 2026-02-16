@@ -29,6 +29,7 @@ public class SeriesModel {
     private final Integer yAxisIndex;
     private final Integer singleAxisIndex;
     private final Integer calendarIndex;
+    private final Integer geoIndex;
     private final RadiusModel radius;
     private final CenterModel center;
     private final Integer startAngle;
@@ -59,6 +60,7 @@ public class SeriesModel {
             Integer yAxisIndex,
             Integer singleAxisIndex,
             Integer calendarIndex,
+            Integer geoIndex,
             RadiusModel radius,
             CenterModel center,
             Integer startAngle,
@@ -85,6 +87,7 @@ public class SeriesModel {
         this.yAxisIndex = yAxisIndex;
         this.singleAxisIndex = singleAxisIndex;
         this.calendarIndex = calendarIndex;
+        this.geoIndex = geoIndex;
         this.radius = radius;
         this.center = center;
         this.startAngle = startAngle;
@@ -117,7 +120,7 @@ public class SeriesModel {
             String roseType) {
 
         this(name, type, null, encode, label, seriesLayoutBy, null, areaStyle, null, showSymbol, stack, null, smooth, null,
-                xAxisIndex, yAxisIndex, null, null, radius, center, startAngle, endAngle, roseType, null, null);
+                xAxisIndex, yAxisIndex, null, null, null, radius, center, startAngle, endAngle, roseType, null, null);
     }
 
     /**
@@ -147,7 +150,7 @@ public class SeriesModel {
             LineStyleModel lineStyle) {
         this(name, type, null, encode, label, seriesLayoutBy, null, areaStyle, null, showSymbol, stack, null, smooth,
                 symbolSize != null ? String.valueOf(symbolSize) : null,
-                xAxisIndex, yAxisIndex, null, null, radius, center, startAngle, endAngle, roseType, itemStyle, lineStyle);
+                xAxisIndex, yAxisIndex, null, null, null, radius, center, startAngle, endAngle, roseType, itemStyle, lineStyle);
     }
 
     public String getName() {
@@ -212,6 +215,13 @@ public class SeriesModel {
      */
     public Integer getCalendarIndex() {
         return calendarIndex;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Integer getGeoIndex() {
+        return geoIndex;
     }
 
     public RadiusModel getRadius() {

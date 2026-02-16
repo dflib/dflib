@@ -124,7 +124,7 @@ class DatasetBuilder {
         int len = series.size();
         for (int i = 0; i < len; i++) {
 
-            if (series.get(i) instanceof SeriesOptsGeoCoordinates gc) {
+            if (series.get(i) instanceof SeriesOptsLonLat gc) {
                 if (gc.getLatSeries() != null) {
                     appendUnnamedRow(dataFrame.getColumn(gc.getLatSeries()), DatasetRowType.lat, i);
                 }

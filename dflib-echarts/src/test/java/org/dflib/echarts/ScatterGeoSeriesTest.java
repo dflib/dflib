@@ -3,6 +3,7 @@ package org.dflib.echarts;
 import org.junit.jupiter.api.Test;
 
 import static org.dflib.echarts.EChartTestDatasets.geoDf1;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ScatterGeoSeriesTest {
@@ -33,5 +34,22 @@ public class ScatterGeoSeriesTest {
         assertTrue(s1.contains("lat: 0,"), s1);
         assertTrue(s1.contains("lng: 1"), s1);
         assertTrue(s1.contains("value: 2"), s1);
+    }
+
+    @Test
+    public void geoIndex() {
+        String s1 = ECharts.chart()
+                .geo(Geo.of("world"))
+                .series(SeriesOpts.ofScatterGeo().coordinates("lon", "lat"), "val")
+                .plot(geoDf1, "_tid")
+                .renderChartScript();
+        assertFalse(s1.contains("geoIndex:"), s1);
+
+        String s2 = ECharts.chart()
+                .geo(Geo.of("world"))
+                .series(SeriesOpts.ofScatterGeo().coordinates("lon", "lat").geoIndex(1), "val")
+                .plot(geoDf1, "_tid")
+                .renderChartScript();
+        assertTrue(s2.contains("geoIndex: 1"), s2);
     }
 }
