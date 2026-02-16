@@ -1,5 +1,7 @@
 package org.dflib.echarts.render.option.geo;
 
+import org.dflib.echarts.render.option.LabelModel;
+
 /**
  * @since 2.0.0
  */
@@ -9,7 +11,8 @@ public record GeoModel(
         GeoCoordsModel center,
         Integer zoom,
         Boolean roam,
-        Double aspectScale
+        Double aspectScale,
+        LabelModel label
 ) {
     public boolean isShowPresent() {
         return show != null;

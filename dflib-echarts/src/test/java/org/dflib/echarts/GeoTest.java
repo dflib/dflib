@@ -91,4 +91,25 @@ public class GeoTest {
         String s3 = ECharts.chart().geo(Geo.of("world").aspectScale(1.5)).plot(df1, "_tid").renderChartScript();
         assertTrue(s3.contains("aspectScale: 1.5"), s3);
     }
+
+    @Test
+    public void label() {
+        String s1 = ECharts.chart().geo(Geo.of("world")).plot(df1, "_tid").renderChartScript();
+        assertTrue(s1.contains("geo: {"), s1);
+        assertFalse(s1.contains("label:"), s1);
+
+        String s2 = ECharts.chart().geo(Geo.of("world").label(Label.ofTop())).plot(df1, "_tid").renderChartScript();
+        assertTrue(s2.contains("label: {"), s2);
+        assertTrue(s2.contains("position: 'top'"), s2);
+
+        String s3 = ECharts.chart().geo(Geo.of("world").label(Label.ofInside().show(false))).plot(df1, "_tid").renderChartScript();
+        assertTrue(s3.contains("label: {"), s3);
+        assertTrue(s3.contains("show: false"), s3);
+        assertTrue(s3.contains("position: 'inside'"), s3);
+
+        String s4 = ECharts.chart().geo(Geo.of("world").label(Label.ofRight().formatter("{b}"))).plot(df1, "_tid").renderChartScript();
+        assertTrue(s4.contains("label: {"), s4);
+        assertTrue(s4.contains("formatter: '{b}'"), s4);
+        assertTrue(s4.contains("position: 'right'"), s4);
+    }
 }

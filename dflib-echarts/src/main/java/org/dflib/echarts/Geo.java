@@ -19,6 +19,7 @@ public class Geo {
     private GeoCoord centerLat;
     private GeoCoord centerLon;
     private Double aspectScale;
+    private Label label;
 
     public static Geo of(String map) {
         return new Geo(map);
@@ -68,6 +69,11 @@ public class Geo {
         return this;
     }
 
+    public Geo label(Label label) {
+        this.label = label;
+        return this;
+    }
+
     protected GeoModel resolve() {
 
         return new GeoModel(
@@ -76,7 +82,8 @@ public class Geo {
                 centerLat != null && centerLon != null ? new GeoCoordsModel(centerLat.asString(), centerLon.asString()) : null,
                 zoom,
                 roam,
-                aspectScale
+                aspectScale,
+                label != null ? label.resolve(null) : null
         );
     }
 }

@@ -310,8 +310,21 @@ var chart_{{id}} = echarts.init(
             roam: {{roam}},
         {{/roamPresent}}
         {{#aspectScale}}
-            aspectScale: {{.}}
+            aspectScale: {{.}},
         {{/aspectScale}}
+        {{#label}}
+            label: {
+            {{#showPresent}}
+                show: {{show}},
+            {{/showPresent}}
+            {{#formatter}}
+                formatter: '{{.}}',
+            {{/formatter}}
+            {{#position}}
+                position: '{{.}}'
+            {{/position}}
+            }
+        {{/label}}
         },
     {{/geo}}
     {{#xAxesPresent}}
