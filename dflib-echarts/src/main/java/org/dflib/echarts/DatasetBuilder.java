@@ -32,6 +32,7 @@ class DatasetBuilder {
         return new DatasetBuilder(dataFrame)
                 .appendXAxesLabels(opt.xAxes)
                 .appendSingleAxesLabels(opt.singleAxes)
+                .appendGeoCoordinates(opt.seriesOpts)
                 .appendSymbolSizes(opt.seriesOpts)
                 .appendItemStyleColors(opt.seriesOpts)
                 .appendItemNames(opt.seriesOpts)
@@ -111,6 +112,25 @@ class DatasetBuilder {
                 String columnName = soc.getItemStyleColorSeries();
                 if (columnName != null) {
                     appendUnnamedRow(dataFrame.getColumn(columnName), DatasetRowType.itemStyleColor, i);
+                }
+            }
+        }
+
+        return this;
+    }
+
+    private DatasetBuilder appendGeoCoordinates(List<SeriesOpts<?>> series) {
+
+        int len = series.size();
+        for (int i = 0; i < len; i++) {
+
+            if (series.get(i) instanceof SeriesOptsGeoCoordinates gc) {
+                if (gc.getLatSeries() != null) {
+                    appendUnnamedRow(dataFrame.getColumn(gc.getLatSeries()), DatasetRowType.lat, i);
+                }
+
+                if (gc.getLonSeries() != null) {
+                    appendUnnamedRow(dataFrame.getColumn(gc.getLonSeries()), DatasetRowType.lon, i);
                 }
             }
         }
@@ -212,7 +232,7 @@ class DatasetBuilder {
     }
 
     enum DatasetRowType {
-        xAxisLabels, singleAxisLabel, symbolSize, itemStyleColor, itemName, seriesData
+        xAxisLabels, singleAxisLabel, lat, lon, symbolSize, itemStyleColor, itemName, seriesData
     }
 
     static class DatasetRow {

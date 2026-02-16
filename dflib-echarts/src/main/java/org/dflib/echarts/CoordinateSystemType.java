@@ -5,7 +5,7 @@ package org.dflib.echarts;
  */
 public enum CoordinateSystemType {
 
-    cartesian2d, calendar, singleAxis, none;
+    cartesian2d, calendar, singleAxis, geo, none;
 
     public boolean isCartesian() {
         return this == cartesian2d;

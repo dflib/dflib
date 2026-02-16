@@ -30,6 +30,9 @@ class SeriesModelBuilder {
     Integer itemNameDimension;
     Integer symbolSizeDimension;
     Integer itemStyleColorDimension;
+    // geo dimensions
+    Integer latDimension;
+    Integer lonDimension;
 
     // TODO: tooltip dimension, etc.
 
@@ -64,7 +67,6 @@ class SeriesModelBuilder {
         return this;
     }
 
-    // TODO: start using this; currently resorting to the default value dimension
     public SeriesModelBuilder singleAxisDimension(int dim) {
         this.singleAxisDimension = dim;
         return this;
@@ -82,6 +84,16 @@ class SeriesModelBuilder {
 
     public SeriesModelBuilder itemStyleColorDimension(int dim) {
         this.itemStyleColorDimension = dim;
+        return this;
+    }
+
+    public SeriesModelBuilder latDimension(int dim) {
+        this.latDimension = dim;
+        return this;
+    }
+
+    public SeriesModelBuilder lonDimension(int dim) {
+        this.lonDimension = dim;
         return this;
     }
 
@@ -116,7 +128,7 @@ class SeriesModelBuilder {
                 name,
                 so.getType().name(),
                 null,
-                new EncodeModel(xDimension, new ValueModels(valueDimensions), null, null, null),
+                new EncodeModel(xDimension, new ValueModels(valueDimensions), null, null, null, null, null),
                 labelModel,
                 datasetSeriesLayoutBy,
                 null,
@@ -152,7 +164,7 @@ class SeriesModelBuilder {
                 name,
                 so.getType().name(),
                 null,
-                new EncodeModel(xDimension, new ValueModels(valueDimensions), null, null, null),
+                new EncodeModel(xDimension, new ValueModels(valueDimensions), null, null, null, null, null),
                 labelModel,
                 datasetSeriesLayoutBy,
                 null,
@@ -177,11 +189,16 @@ class SeriesModelBuilder {
         );
     }
 
-    private SeriesModel scatterModel(ScatterSeriesOpts so) {
-
-        return so instanceof ScatterCartesian2DSeriesOpts
-                ? scatterCartesian2dModel((ScatterCartesian2DSeriesOpts) so)
-                : scatterSingleAxisModel((ScatterSingleAxisSeriesOpts) so);
+    private SeriesModel scatterModel(ScatterSeriesOpts<?> so) {
+        if (so instanceof ScatterCartesian2DSeriesOpts s) {
+            return scatterCartesian2dModel(s);
+        } else if (so instanceof ScatterSingleAxisSeriesOpts s) {
+            return scatterSingleAxisModel(s);
+        } else if (so instanceof ScatterGeoSeriesOpts s) {
+            return scatterGeoModel(s);
+        } else {
+            throw new IllegalArgumentException("Unknown scatter series type: " + ((so != null) ? so.getClass().getName() : null));
+        }
     }
 
     private SeriesModel scatterCartesian2dModel(ScatterCartesian2DSeriesOpts so) {
@@ -196,7 +213,7 @@ class SeriesModelBuilder {
                 name,
                 so.getType().name(),
                 null,
-                new EncodeModel(xDimension, new ValueModels(valueDimensions), null, null, null),
+                new EncodeModel(xDimension, new ValueModels(valueDimensions), null, null, null, null, null),
                 labelModel,
                 datasetSeriesLayoutBy,
                 null,
@@ -237,7 +254,7 @@ class SeriesModelBuilder {
                 name,
                 so.getType().name(),
                 null,
-                new EncodeModel(null, null, singleAxisDimension, null, valueDimension),
+                new EncodeModel(null, null, singleAxisDimension, null, valueDimension, null, null),
                 labelModel,
                 datasetSeriesLayoutBy,
                 CoordinateSystemType.singleAxis.name(),
@@ -262,12 +279,50 @@ class SeriesModelBuilder {
         );
     }
 
+    private SeriesModel scatterGeoModel(ScatterGeoSeriesOpts so) {
+
+        Integer valueDimension = this.valueDimensions != null && !this.valueDimensions.isEmpty() ? this.valueDimensions.get(0) : null;
+        LabelModel labelModel = so.label != null && so.label.label != null ? so.label.label.resolve(itemNameDimension) : null;
+
+        String symbolSize = symbolSizeDimension != null
+                ? ValOrSeries.jsFunctionWithArrayParam(symbolSizeDimension)
+                : (so.symbolSize != null ? so.symbolSize.valString() : null);
+
+        return new SeriesModel(
+                name,
+                so.getType().name(),
+                null,
+                new EncodeModel(xDimension, null, null, null, valueDimension, latDimension, lonDimension),
+                labelModel,
+                datasetSeriesLayoutBy,
+                CoordinateSystemType.geo.name(),
+                null,
+                so.symbol != null ? so.symbol.name() : null,
+                null,
+                null,
+                null,
+                null,
+                symbolSize,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                so.itemStyle != null ? so.itemStyle.resolve(itemStyleColorDimension) : null,
+                null
+        );
+    }
+
     private SeriesModel candlestickModel(CandlestickSeriesOpts so) {
         return new SeriesModel(
                 name,
                 so.getType().name(),
                 null,
-                new EncodeModel(xDimension, new ValueModels(valueDimensions), null, null, null),
+                new EncodeModel(xDimension, new ValueModels(valueDimensions), null, null, null, null, null),
                 null,
                 datasetSeriesLayoutBy,
                 null,
@@ -297,7 +352,7 @@ class SeriesModelBuilder {
                 name,
                 so.getType().name(),
                 null,
-                new EncodeModel(xDimension, new ValueModels(valueDimensions), null, null, null),
+                new EncodeModel(xDimension, new ValueModels(valueDimensions), null, null, null, null, null),
                 null,
                 datasetSeriesLayoutBy,
                 null,
@@ -332,7 +387,7 @@ class SeriesModelBuilder {
                 name,
                 so.getType().name(),
                 null,
-                new EncodeModel(null, null, null, itemNameDimension, valueDim),
+                new EncodeModel(null, null, null, itemNameDimension, valueDim, null, null),
                 labelModel,
                 datasetSeriesLayoutBy,
                 null,

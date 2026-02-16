@@ -22,8 +22,10 @@ public class Option {
     List<ColumnLinkedCalendarCoords> calendars;
     List<ColumnLinkedXAxis> xAxes;
     List<YAxis> yAxes;
+    Geo geo;
     List<ColumnLinkedSingleAxis> singleAxes;
 
+    // these two lists are populated together (for each SeriesOpts there is an Index)
     final List<SeriesOpts<?>> seriesOpts;
     final List<Index> seriesDataColumns;
 
@@ -70,6 +72,14 @@ public class Option {
         }
 
         visualMaps.add(visualMap);
+        return this;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Option geo(Geo geo) {
+        this.geo = geo;
         return this;
     }
 
@@ -182,7 +192,7 @@ public class Option {
     /**
      * Specifies a DataFrame column to be plotted as individual series and configuration for series display.
      */
-    public Option series(SeriesOpts opts, Index dataColumns) {
+    public Option series(SeriesOpts<?> opts, Index dataColumns) {
         seriesOpts.add(opts);
         seriesDataColumns.add(dataColumns);
         return this;

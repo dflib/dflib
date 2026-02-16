@@ -23,6 +23,11 @@ abstract class EChartTestDatasets {
             "Y", 11, 25, "B",
             "Z", 14, 28, "C");
 
+    static final DataFrame geoDf1 = DataFrame.foldByRow("lat", "lon", "val").of(
+            -21.9348415, 64.1334671, 10,
+            -19.028531, 63.710241, 20,
+            -17.089925, 65.37887072, 30);
+
     private EChartTestDatasets() {
     }
 }

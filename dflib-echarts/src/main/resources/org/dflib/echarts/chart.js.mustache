@@ -49,6 +49,12 @@ function dflibEchartLoad_{{id}}(src, currentScript) {
     await dflibEchartLoad_{{id}}('{{{.}}}', cs);
     {{/themeUrls}}
 
+    {{#maps}}
+        window.echarts.registerMap('{{key}}', {
+            geoJSON: {{{value}}}
+        });
+    {{/maps}}
+
 {{/loadECharts}}
 {{#chart}}
 var chart_{{id}} = echarts.init(
@@ -286,6 +292,28 @@ var chart_{{id}} = echarts.init(
         {{/calendars}}
         ],
     {{/calendarsPresent}}
+    {{#geo}}
+        geo: {
+        {{#showPresent}}
+            show: {{show}},
+        {{/showPresent}}
+        {{#map}}
+            map: '{{.}}',
+        {{/map}}
+        {{#center}}
+            center: [{{{lon}}},{{{lat}}}],
+        {{/center}}
+        {{#zoom}}
+            zoom: {{.}},
+        {{/zoom}}
+        {{#roamPresent}}
+            roam: {{roam}},
+        {{/roamPresent}}
+        {{#aspectScale}}
+            aspectScale: {{.}}
+        {{/aspectScale}}
+        },
+    {{/geo}}
     {{#xAxesPresent}}
         xAxis: [
         {{#xAxes}}
@@ -479,6 +507,12 @@ var chart_{{id}} = echarts.init(
                 {{#single}}
                     single: {{.}},
                 {{/single}}
+                {{#lat}}
+                    lat: {{.}},
+                {{/lat}}
+                {{#lon}}
+                    lng: {{.}},
+                {{/lon}}
                 {{#value}}
                     value: {{.}},
                 {{/value}}

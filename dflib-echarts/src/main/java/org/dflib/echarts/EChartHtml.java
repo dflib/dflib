@@ -1,5 +1,6 @@
 package org.dflib.echarts;
 
+import org.dflib.ByteSource;
 import org.dflib.echarts.render.ChartModel;
 import org.dflib.echarts.render.ContainerModel;
 import org.dflib.echarts.render.ScriptModel;
@@ -7,7 +8,9 @@ import org.dflib.echarts.render.util.ElementIdGenerator;
 import org.dflib.echarts.render.util.JSMinifier;
 import org.dflib.echarts.render.util.Renderer;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -18,6 +21,7 @@ public class EChartHtml {
     private final String chartDivId;
     private final String echartsUrl;
     private final List<String> themeUrls;
+    private final Map<String, ByteSource> maps;
 
     private final ElementIdGenerator idGenerator;
 
@@ -33,6 +37,7 @@ public class EChartHtml {
             String chartDivId,
             String echartsUrl,
             List<String> themeUrls,
+            Map<String, ByteSource> maps,
             ElementIdGenerator idGenerator,
             ContainerModel chartDivModel,
             ScriptModel chartScriptModel,
@@ -41,6 +46,7 @@ public class EChartHtml {
         this.chartDivId = Objects.requireNonNull(chartDivId);
         this.echartsUrl = echartsUrl;
         this.themeUrls = themeUrls;
+        this.maps = maps;
         this.idGenerator = idGenerator;
         this.chartDivModel = chartDivModel;
         this.chartScriptModel = chartScriptModel;
@@ -60,6 +66,7 @@ public class EChartHtml {
                 chartDivId,
                 echartsUrl,
                 themeUrls,
+                maps,
                 idGenerator,
                 chartDivModel,
                 chartScriptModel,
@@ -89,6 +96,7 @@ public class EChartHtml {
                 newId,
                 echartsUrl,
                 themeUrls,
+                maps,
                 idGenerator,
                 chartDivModel.id(newId),
                 chartScriptModel.id(newId),
@@ -141,7 +149,7 @@ public class EChartHtml {
      * @since 2.0.0
      */
     public String renderChartScript(boolean loadECharts) {
-        ChartModel model = new ChartModel(chartScriptModel, loadECharts, echartsUrl, themeUrls);
+        ChartModel model = new ChartModel(chartScriptModel, loadECharts, echartsUrl, themeUrls, resolveMaps(loadECharts));
         String s = Renderer.renderChart(model);
         return minifyJS ? JSMinifier.minify(s) : s;
     }
@@ -168,9 +176,15 @@ public class EChartHtml {
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public String getScript() {
-        ChartModel model = new ChartModel(chartScriptModel, false, null, null);
+        ChartModel model = new ChartModel(chartScriptModel, false, null, null, null);
         String script1 = Renderer.renderChart(model);
         String script = script1 != null ? script1 : "";
         return "<script type='text/javascript'>" + script + "</script>";
+    }
+
+    private List<Map.Entry<String, String>> resolveMaps(boolean loadECharts) {
+        return !loadECharts || maps == null || maps.isEmpty()
+                ? List.of()
+                : maps.entrySet().stream().map(e -> Map.entry(e.getKey(), new String(e.getValue().asBytes(), StandardCharsets.UTF_8))).toList();
     }
 }

@@ -9,16 +9,20 @@ public class EncodeModel {
     private final Integer single;
     private final Integer value;
     private final Integer itemName;
+    private final Integer lat;
+    private final Integer lon;
 
     /**
      * @since 2.0.0
      */
-    public EncodeModel(Integer x, ValueModels<Integer> ys, Integer single, Integer itemName, Integer value) {
+    public EncodeModel(Integer x, ValueModels<Integer> ys, Integer single, Integer itemName, Integer value, Integer lat, Integer lon) {
         this.itemName = itemName;
         this.x = x;
         this.ys = ys;
         this.single = single;
         this.value = value;
+        this.lon = lon;
+        this.lat = lat;
     }
 
     /**
@@ -26,7 +30,7 @@ public class EncodeModel {
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public EncodeModel(Integer x, ValueModels<Integer> ys, Integer itemName, Integer value) {
-        this(x, ys, null, itemName, value);
+        this(x, ys, null, itemName, value, null, null);
     }
 
     public Integer getX() {
@@ -62,5 +66,19 @@ public class EncodeModel {
 
     public Integer getValue() {
         return value;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Integer getLon() {
+        return lon;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Integer getLat() {
+        return lat;
     }
 }

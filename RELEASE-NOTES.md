@@ -8,6 +8,7 @@
 * #612 "concat" / "vConcat" naming ambiguity
 * #613 Recast hConcat(..) as positional join
 * #614 CsvSaver to save to OutputStream
+* #615 ECharts: basic support for geo charts
 
 ## Release 2.0.0-M6
 

@@ -8,6 +8,7 @@ import org.dflib.echarts.render.option.axis.AxisModel;
 import org.dflib.echarts.render.option.axis.SingleAxisModel;
 import org.dflib.echarts.render.option.calendar.CalendarModel;
 import org.dflib.echarts.render.option.dataset.DatasetModel;
+import org.dflib.echarts.render.option.geo.GeoModel;
 import org.dflib.echarts.render.option.toolbox.ToolboxModel;
 import org.dflib.echarts.render.option.tooltip.TooltipModel;
 import org.dflib.echarts.render.option.visualmap.VisualMapModel;
@@ -27,6 +28,7 @@ public record OptionModel(
         TooltipModel tooltip,
         List<AxisModel> xAxes,
         List<AxisModel> yAxes,
+        GeoModel geo,
         List<SingleAxisModel> singleAxes,
         List<CalendarModel> calendars,
         List<VisualMapModel> visualMaps) {
@@ -52,6 +54,7 @@ public record OptionModel(
                 tooltip,
                 xAxes,
                 yAxes,
+                null,
                 null,
                 null,
                 null);

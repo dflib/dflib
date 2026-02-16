@@ -74,36 +74,32 @@ class SeriesModelBuilders {
     private static void linkSeriesToDatasetRow(List<SeriesModelBuilder> seriesModels, DatasetBuilder.DatasetRow row) {
 
         switch (row.type) {
-            case seriesData:
+            case seriesData -> {
                 // laying out DataFrame series as horizontal rows that are somewhat more readable when laid out in JS
                 seriesModels.get(row.seriesOptsPos).datasetSeriesLayoutBy("row");
 
                 // multiple dimensions can be appended to the same series in a loop
                 seriesModels.get(row.seriesOptsPos).valueDimension(row.datasetPos);
-                break;
-            case xAxisLabels:
+            }
+            case xAxisLabels -> {
                 for (SeriesModelBuilder sb : seriesModels) {
                     if (xAxisIndex(sb.seriesOpts()) == row.seriesOptsPos) {
                         sb.xDimension(row.datasetPos);
                     }
                 }
-                break;
-            case singleAxisLabel:
+            }
+            case lat -> seriesModels.get(row.seriesOptsPos).latDimension(row.datasetPos);
+            case lon -> seriesModels.get(row.seriesOptsPos).lonDimension(row.datasetPos);
+            case singleAxisLabel -> {
                 for (SeriesModelBuilder sb : seriesModels) {
                     if (singleAxisIndex(sb.seriesOpts()) == row.seriesOptsPos) {
                         sb.singleAxisDimension(row.datasetPos);
                     }
                 }
-                break;
-            case symbolSize:
-                seriesModels.get(row.seriesOptsPos).symbolSizeDimension(row.datasetPos);
-                break;
-            case itemStyleColor:
-                seriesModels.get(row.seriesOptsPos).itemStyleColorDimension(row.datasetPos);
-                break;
-            case itemName:
-                seriesModels.get(row.seriesOptsPos).itemNameDimension(row.datasetPos);
-                break;
+            }
+            case symbolSize -> seriesModels.get(row.seriesOptsPos).symbolSizeDimension(row.datasetPos);
+            case itemStyleColor -> seriesModels.get(row.seriesOptsPos).itemStyleColorDimension(row.datasetPos);
+            case itemName -> seriesModels.get(row.seriesOptsPos).itemNameDimension(row.datasetPos);
         }
     }
 
@@ -127,8 +123,8 @@ class SeriesModelBuilders {
         }
 
         Integer i = null;
-        if (series instanceof SeriesOptsCoordsSingleAxis) {
-            i = ((SeriesOptsCoordsSingleAxis) series).getSingleAxisIndex();
+        if (series instanceof SeriesOptsCoordsSingleAxis s) {
+            i = s.getSingleAxisIndex();
         }
 
         // by default should pick the first axis

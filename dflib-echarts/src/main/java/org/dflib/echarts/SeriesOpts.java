@@ -39,6 +39,15 @@ public abstract class SeriesOpts<SO extends SeriesOpts<SO>> {
     }
 
     /**
+     * Starts a builder for a scatter series options object with single axis coordinate system.
+     *
+     * @since 2.0.0
+     */
+    public static ScatterGeoSeriesOpts ofScatterGeo() {
+        return new ScatterGeoSeriesOpts();
+    }
+
+    /**
      * Starts a builder for a pie series options object.
      */
     public static PieSeriesOpts ofPie() {

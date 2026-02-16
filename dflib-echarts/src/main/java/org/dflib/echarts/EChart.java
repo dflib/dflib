@@ -1,5 +1,6 @@
 package org.dflib.echarts;
 
+import org.dflib.ByteSource;
 import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.echarts.render.ChartModel;
@@ -10,7 +11,9 @@ import org.dflib.echarts.render.util.ElementIdGenerator;
 import org.dflib.echarts.render.util.Renderer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -29,6 +32,7 @@ public class EChart {
     private List<String> themeUrls;
     private Integer width;
     private Integer height;
+    private Map<String, ByteSource> maps;
 
     @Deprecated(since = "2.0.0", forRemoval = true)
     protected EChart() {
@@ -42,6 +46,20 @@ public class EChart {
 
     public EChart renderAsSvg() {
         this.renderer = RendererType.svg;
+        return this;
+    }
+
+    /**
+     * Registers a named map that can be referenced by the {@link Geo} object.
+     *
+     * @since 2.0.0
+     */
+    public EChart map(String name, ByteSource source) {
+        if (maps == null) {
+            maps = new HashMap<>();
+        }
+
+        maps.put(name, source);
         return this;
     }
 
@@ -117,6 +135,14 @@ public class EChart {
      */
     public EChart visualMap(VisualMap visualMap) {
         option.visualMap(visualMap);
+        return this;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public EChart geo(Geo geo) {
+        option.geo(geo);
         return this;
     }
 
@@ -386,6 +412,7 @@ public class EChart {
                 divContainerId,
                 echartsUrl(),
                 themeUrls != null ? themeUrls : List.of(),
+                maps,
                 idGenerator,
                 containerModel,
                 scriptModel,
@@ -422,6 +449,7 @@ public class EChart {
                 "-",
                 scriptUrl != null ? scriptUrl : DEFAULT_ECHARTS_SCRIPT_URL,
                 themeUrls != null ? themeUrls : List.of(),
+                null,
                 idGenerator,
                 null,
                 null,
@@ -438,6 +466,7 @@ public class EChart {
                 id,
                 "",
                 themeUrls != null ? themeUrls : List.of(),
+                null,
                 idGenerator,
                 null,
                 null,
@@ -457,7 +486,7 @@ public class EChart {
                 this.renderer != null ? new InitOptsModel(renderer.name()) : null,
                 option.resolve(df)
         );
-        return Renderer.renderChart(new ChartModel(script, false, null, null));
+        return Renderer.renderChart(new ChartModel(script, false, null, null, null));
     }
 
     protected String newId() {
