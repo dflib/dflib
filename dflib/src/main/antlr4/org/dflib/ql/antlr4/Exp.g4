@@ -10,6 +10,7 @@ import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import org.dflib.*;
 
@@ -718,13 +719,11 @@ numFn returns [NumExp<?> exp] locals [Function<NumExp<?>, NumExp<?>> fn]
     | dateFieldFn { $exp = $dateFieldFn.exp; }
     | dateTimeFieldFn { $exp = $dateTimeFieldFn.exp; }
     | offsetDateTimeFieldFn { $exp = $offsetDateTimeFieldFn.exp; }
-    | LEN '(' strExp ')' { $exp = $strExp.exp.len(); }
+    | { isNumFn(_input.LT(1).getText()) }? IDENTIFIER '(' (args+=expression (',' args+=expression)*)? ')' {
+          $exp = envNumFn($IDENTIFIER.text, $args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
+    }
     | COUNT ('(' b=boolExp? ')') { $exp = $ctx.b != null ? Exp.count($b.exp) : Exp.count(); }
     | ROW_NUM ('(' ')') { $exp = Exp.rowNum(); }
-    | (
-        : ABS { $fn = e -> e.abs(); }
-        | ROUND { $fn = e -> e.round(); }
-    ) '(' e=numExp ')' { $exp = $fn.apply($e.exp); }
     | SCALE '(' e=numExp ',' s=integerScalar ')' { $exp = $e.exp.castAsDecimal().scale( $s.value.intValue() ); }
     ;
 
@@ -914,11 +913,9 @@ offsetDateTimeFn returns [OffsetDateTimeExp exp] locals [BiFunction<OffsetDateTi
  */
 strFn returns [StrExp exp]
     : castAsStr { $exp = $castAsStr.exp; }
-    | TRIM '(' expression ')' { $exp = $expression.exp.trim(); }
-    | LOWER '(' expression ')' { $exp = $expression.exp.lower(); }
-    | UPPER '(' expression ')' { $exp = $expression.exp.upper(); }
-    | SUBSTR '(' s=expression ',' a=integerScalar (',' b=integerScalar)? ')' {
-        $exp = $ctx.b != null ? $s.exp.substr($a.value.intValue(), $b.value.intValue()) : $s.exp.substr($a.value.intValue());
+    // lookahead and check that the function name is a string function
+    | { isStrFn(_input.LT(1).getText()) }? IDENTIFIER '(' (args+=expression (',' args+=expression)*)? ')' {
+        $exp = envStrFn($IDENTIFIER.text, $args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
     }
     | CONCAT ('(' (args+=expression (',' args+=expression)*)? ')') {
         $exp = !$args.isEmpty() ? Exp.concat($args.stream().map(a -> a.exp).toArray()) : Exp.concat();
@@ -1370,11 +1367,6 @@ fnName returns [String id]
     | SPLIT
     | SHIFT
     | CONCAT
-    | SUBSTR
-    | TRIM
-    | LEN
-    | LOWER
-    | UPPER
     | MATCHES
     | STARTS_WITH
     | ENDS_WITH
@@ -1399,8 +1391,6 @@ fnName returns [String id]
     | PLUS_SECONDS
     | PLUS_MILLISECONDS
     | PLUS_NANOS
-    | ABS
-    | ROUND
     | ROW_NUM
     | SCALE
     | COUNT
@@ -1569,21 +1559,6 @@ SHIFT: 'shift';
 CONCAT: 'concat';
 
 //@ doc:inline
-SUBSTR: 'substr';
-
-//@ doc:inline
-TRIM: 'trim';
-
-//@ doc:inline
-LEN: 'len';
-
-//@ doc:inline
-LOWER: 'lower';
-
-//@ doc:inline
-UPPER: 'upper';
-
-//@ doc:inline
 MATCHES: 'matches';
 
 //@ doc:inline
@@ -1654,12 +1629,6 @@ PLUS_MILLISECONDS: 'plusMilliseconds';
 
 //@ doc:inline
 PLUS_NANOS: 'plusNanos';
-
-//@ doc:inline
-ABS: 'abs';
-
-//@ doc:inline
-ROUND: 'round';
 
 //@ doc:inline
 ROW_NUM: 'rowNum';
