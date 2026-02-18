@@ -2,27 +2,25 @@ package org.dflib.csv;
 
 import org.dflib.Index;
 
-class CsvSchema {
+/**
+ * Internal API. Part of the {@link org.dflib.csv.CsvLoader} API
+ * @since 2.0.0
+ */
+public class CsvSchema {
 
-    private final Index csvHeader;
     private final Index dfHeader;
     private final int[] csvPositions;
 
-    CsvSchema(Index csvHeader, Index dfHeader, int[] csvPositions) {
-        this.csvHeader = csvHeader;
+    CsvSchema(Index dfHeader, int[] csvPositions) {
         this.dfHeader = dfHeader;
         this.csvPositions = csvPositions;
     }
 
-    Index getDfHeader() {
+    public Index getDfHeader() {
         return dfHeader;
     }
 
-    Index getCsvHeader() {
-        return csvHeader;
-    }
-
-    int[] getCsvPositions() {
+    public int[] getCsvPositions() {
         return csvPositions;
     }
 }

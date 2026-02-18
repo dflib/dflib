@@ -2,8 +2,12 @@ package org.dflib.csv;
 
 import org.dflib.Index;
 
+/**
+ * Internal API. Part of the {@link org.dflib.csv.CsvLoader} API
+ * @since 2.0.0
+ */
 @FunctionalInterface
-interface CsvSchemaFactory {
+public interface CsvSchemaFactory {
 
     CsvSchema schema(Index csvHeader);
 
@@ -34,7 +38,7 @@ interface CsvSchemaFactory {
             positions[i] = i;
         }
 
-        return new CsvSchema(csvHeader, csvHeader, positions);
+        return new CsvSchema(csvHeader, positions);
     }
 
     private static CsvSchema positions(Index csvHeader, int[] columns) {
@@ -47,7 +51,7 @@ interface CsvSchemaFactory {
         }
 
         Index dfHeader = Index.of(labels);
-        return new CsvSchema(csvHeader, dfHeader, columns);
+        return new CsvSchema(dfHeader, columns);
     }
 
     private static CsvSchema labels(Index csvHeader, String[] columns) {
@@ -61,7 +65,7 @@ interface CsvSchemaFactory {
         }
 
         Index dfHeader = Index.of(columns);
-        return new CsvSchema(csvHeader, dfHeader, positions);
+        return new CsvSchema(dfHeader, positions);
     }
 
     private static CsvSchema positionsExcept(Index csvHeader, int[] columns) {

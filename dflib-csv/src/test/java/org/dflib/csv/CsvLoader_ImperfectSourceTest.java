@@ -38,7 +38,7 @@ public class CsvLoader_ImperfectSourceTest {
 
     @Test
     public void incompleteRows() {
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> new CsvLoader().load(INCOMPLETE_ROWS));
+        assertThrows(IllegalStateException.class, () -> new CsvLoader().load(INCOMPLETE_ROWS));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class CsvLoader_ImperfectSourceTest {
                 0,1
                 2,3""".getBytes());
 
-        assertThrows(ArrayIndexOutOfBoundsException.class, () ->
+        assertThrows(IllegalStateException.class, () ->
                 new CsvLoader().header("A", "B", "C").load(csv));
     }
 

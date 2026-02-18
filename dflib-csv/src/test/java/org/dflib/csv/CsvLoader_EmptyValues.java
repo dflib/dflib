@@ -5,6 +5,7 @@ import org.dflib.DataFrame;
 import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
+import java.io.StringReader;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,7 +38,7 @@ public class CsvLoader_EmptyValues {
     }
 
     @Test
-    public void nullString() {
+    public void nullStringSingleChar() {
         String csv = """
                 One,Two
                 ":",three
@@ -51,6 +52,24 @@ public class CsvLoader_EmptyValues {
                 .expectHeight(2)
                 .expectRow(0, null, "three")
                 .expectRow(1, "five", null);
+    }
+
+    @Test
+    void nullStringMultiChar() {
+        String csv = """
+                A,B
+                1,NULL
+                NULL,4
+                """;
+
+        DataFrame df = new CsvLoader()
+                .nullString("NULL")
+                .load(new StringReader(csv));
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(2)
+                .expectRow(0, "1", null)
+                .expectRow(1, null, "4");
     }
 
     @Test
