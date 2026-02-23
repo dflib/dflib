@@ -7,7 +7,7 @@ import org.dflib.IntValueMapper;
 import org.dflib.LongValueMapper;
 import org.dflib.ValueMapper;
 import org.dflib.csv.parser.context.DataSlice;
-import org.dflib.csv.parser.format.CsvColumnFormat;
+import org.dflib.csv.parser.format.CsvColumnMapping;
 
 import java.util.function.Function;
 
@@ -18,7 +18,7 @@ class ValueMappers {
 
     // Primitive mappers (one per primitive type)
     static BoolValueMapper<DataSlice[]> forBool(Function<DataSlice[], DataSlice> sliceMapper,
-                                                       CsvColumnFormat columnFormat) {
+                                                CsvColumnMapping columnFormat) {
         if (!columnFormat.nullable()) {
             return row -> {
                 DataSlice s = sliceMapper.apply(row);
@@ -34,7 +34,7 @@ class ValueMappers {
     }
 
     static IntValueMapper<DataSlice[]> forInt(Function<DataSlice[], DataSlice> sliceMapper,
-                                                     CsvColumnFormat columnFormat) {
+                                              CsvColumnMapping columnFormat) {
         if (!columnFormat.nullable()) {
             return row -> {
                 DataSlice s = sliceMapper.apply(row);
@@ -50,7 +50,7 @@ class ValueMappers {
     }
 
     static LongValueMapper<DataSlice[]> forLong(Function<DataSlice[], DataSlice> sliceMapper,
-                                                       CsvColumnFormat columnFormat) {
+                                                CsvColumnMapping columnFormat) {
         if (!columnFormat.nullable()) {
             return row -> {
                 DataSlice s = sliceMapper.apply(row);
@@ -66,7 +66,7 @@ class ValueMappers {
     }
 
     static FloatValueMapper<DataSlice[]> forFloat(Function<DataSlice[], DataSlice> sliceMapper,
-                                                         CsvColumnFormat columnFormat) {
+                                                  CsvColumnMapping columnFormat) {
         if (!columnFormat.nullable()) {
             return row -> {
                 DataSlice s = sliceMapper.apply(row);
@@ -82,7 +82,7 @@ class ValueMappers {
     }
 
     static DoubleValueMapper<DataSlice[]> forDouble(Function<DataSlice[], DataSlice> sliceMapper,
-                                                           CsvColumnFormat columnFormat) {
+                                                    CsvColumnMapping columnFormat) {
         if (!columnFormat.nullable()) {
             return row -> {
                 DataSlice s = sliceMapper.apply(row);
@@ -101,7 +101,7 @@ class ValueMappers {
     static <T> ValueMapper<DataSlice[], T> forObject(
             Function<DataSlice[], DataSlice> sliceMapper,
             Function<DataSlice, T> valueMapper,
-            CsvColumnFormat columnFormat) {
+            CsvColumnMapping columnFormat) {
         if (!columnFormat.nullable()) {
             return row -> {
                 DataSlice s = sliceMapper.apply(row);
@@ -119,14 +119,14 @@ class ValueMappers {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T defaultValue(CsvColumnFormat columnFormat, boolean mandatory) {
+    private static <T> T defaultValue(CsvColumnMapping columnFormat, boolean mandatory) {
         if (mandatory && columnFormat.defaultValue() == null) {
             throw new IllegalArgumentException("No default value is set for the nullable column `" + columnFormat.name() + "`");
         }
         return (T) columnFormat.defaultValue();
     }
 
-    private static <T> T defaultValue(CsvColumnFormat columnFormat) {
+    private static <T> T defaultValue(CsvColumnMapping columnFormat) {
         return defaultValue(columnFormat, true);
     }
 

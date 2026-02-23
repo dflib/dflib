@@ -16,7 +16,7 @@ class DelimiterSingleCharTest {
     @Test
     void findsDelimiter() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(";");
+        ParserRule rule = newRule();
         char[] buf = {'a', 'b', ';', 'c'};
         ctx.markColumnStart(0); // Simulate that a column has started
         int pos = rule.consume(ctx, DataSlice.of(buf));
@@ -28,7 +28,7 @@ class DelimiterSingleCharTest {
     @Test
     void noDelimiter() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(";");
+        ParserRule rule = newRule();
         char[] buf = {'a', 'b', 'c'};
         int pos = rule.consume(ctx, DataSlice.of(buf));
         assertEquals(-1, pos, "Should return -1 if no delimiter found");
@@ -37,7 +37,7 @@ class DelimiterSingleCharTest {
     @Test
     void delimiterAtStart() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(";");
+        ParserRule rule = newRule();
         char[] buf = {';', 'a', 'b'};
         int pos = rule.consume(ctx, DataSlice.of(buf));
         assertEquals(1, pos, "Should return index after delimiter at start");
@@ -46,7 +46,7 @@ class DelimiterSingleCharTest {
     @Test
     void delimiterAtEnd() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(";");
+        ParserRule rule = newRule();
         char[] buf = {'a', 'b', ';'};
         int pos = rule.consume(ctx, DataSlice.of(buf));
         assertEquals(3, pos, "Should return index after delimiter at end");
@@ -55,7 +55,7 @@ class DelimiterSingleCharTest {
     @Test
     void emptyBuffer() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(";");
+        ParserRule rule = newRule();
         char[] buf = {};
         int pos = rule.consume(ctx, DataSlice.of(buf));
         assertEquals(-1, pos, "Should return -1 for empty buffer");
@@ -64,11 +64,10 @@ class DelimiterSingleCharTest {
     @Test
     void escapedDelimiterNoSplit() {
         ParserContext ctx = newContext();
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .delimiter(";")
                 .quote(Quote.none())
                 .escape(Escape.BACKSLASH)
-                .excludeHeaderValues(false)
                 .build();
         ParserRule rule = new DelimiterFactory().create(format);
 
@@ -80,8 +79,8 @@ class DelimiterSingleCharTest {
         assertTrue(ctx.activeSlice().open(), "Column should remain open");
     }
 
-    private ParserRule newRule(String delimiter) {
-        CsvFormat format = CsvFormat.builder().delimiter(delimiter).excludeHeaderValues(false).build();
+    private ParserRule newRule() {
+        CsvFormat format = CsvFormat.defaultFormat().delimiter(";").build();
         return new DelimiterFactory().create(format);
     }
 }

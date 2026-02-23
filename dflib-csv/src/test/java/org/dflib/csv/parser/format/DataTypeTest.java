@@ -24,17 +24,17 @@ class DataTypeTest {
 
     @Test
     void parseTypesByName() {
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(true)
-                .column(CsvFormat.column("BOOLEAN").type(CsvColumnType.BOOLEAN))
-                .column(CsvFormat.column("INTEGER").type(CsvColumnType.INTEGER))
-                .column(CsvFormat.column("LONG").type(CsvColumnType.LONG))
-                .column(CsvFormat.column("BIGINT").type(CsvColumnType.BIG_INTEGER))
-                .column(CsvFormat.column("BIG_DECIMAL").type(CsvColumnType.BIG_DECIMAL))
-                .column(CsvFormat.column("DOUBLE").type(CsvColumnType.DOUBLE))
-                .column(CsvFormat.column("FLOAT").type(CsvColumnType.FLOAT))
-                .column(CsvFormat.column("STRING").type(CsvColumnType.STRING))
+                .column(CsvColumnMapping.column("BOOLEAN").type(CsvColumnType.BOOLEAN))
+                .column(CsvColumnMapping.column("INTEGER").type(CsvColumnType.INTEGER))
+                .column(CsvColumnMapping.column("LONG").type(CsvColumnType.LONG))
+                .column(CsvColumnMapping.column("BIGINT").type(CsvColumnType.BIG_INTEGER))
+                .column(CsvColumnMapping.column("BIG_DECIMAL").type(CsvColumnType.BIG_DECIMAL))
+                .column(CsvColumnMapping.column("DOUBLE").type(CsvColumnType.DOUBLE))
+                .column(CsvColumnMapping.column("FLOAT").type(CsvColumnType.FLOAT))
+                .column(CsvColumnMapping.column("STRING").type(CsvColumnType.STRING))
                 .build();
 
         new DfParserAsserts(TYPES_CSV, format, "BOOLEAN", "INTEGER", "LONG", "BIGINT", "BIG_DECIMAL", "DOUBLE", "FLOAT", "STRING")
@@ -48,17 +48,17 @@ class DataTypeTest {
 
     @Test
     void parseTypesByIndex() {
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(true)
-                .column(CsvFormat.column(0).type(CsvColumnType.BOOLEAN))
-                .column(CsvFormat.column(1).type(CsvColumnType.INTEGER))
-                .column(CsvFormat.column(2).type(CsvColumnType.LONG))
-                .column(CsvFormat.column(3).type(CsvColumnType.BIG_INTEGER))
-                .column(CsvFormat.column(4).type(CsvColumnType.BIG_DECIMAL))
-                .column(CsvFormat.column(5).type(CsvColumnType.DOUBLE))
-                .column(CsvFormat.column(6).type(CsvColumnType.FLOAT))
-                .column(CsvFormat.column(7).type(CsvColumnType.STRING))
+                .column(CsvColumnMapping.column(0).type(CsvColumnType.BOOLEAN))
+                .column(CsvColumnMapping.column(1).type(CsvColumnType.INTEGER))
+                .column(CsvColumnMapping.column(2).type(CsvColumnType.LONG))
+                .column(CsvColumnMapping.column(3).type(CsvColumnType.BIG_INTEGER))
+                .column(CsvColumnMapping.column(4).type(CsvColumnType.BIG_DECIMAL))
+                .column(CsvColumnMapping.column(5).type(CsvColumnType.DOUBLE))
+                .column(CsvColumnMapping.column(6).type(CsvColumnType.FLOAT))
+                .column(CsvColumnMapping.column(7).type(CsvColumnType.STRING))
                 .build();
 
         new DfParserAsserts(TYPES_CSV, format, "c0", "c1", "c2", "c3", "c4", "c5", "c6", "c7")
@@ -74,11 +74,11 @@ class DataTypeTest {
                 +NaN,inf
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(true)
-                .column(CsvFormat.column("d").type(CsvColumnType.DOUBLE))
-                .column(CsvFormat.column("f").type(CsvColumnType.FLOAT))
+                .column(CsvColumnMapping.column("d").type(CsvColumnType.DOUBLE))
+                .column(CsvColumnMapping.column("f").type(CsvColumnType.FLOAT))
                 .build();
 
         new DfParserAsserts(csv, format, "d", "f")
@@ -99,11 +99,11 @@ class DataTypeTest {
                 -Infinity,-Infinity
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(true)
-                .column(CsvFormat.column("d").type(CsvColumnType.DOUBLE))
-                .column(CsvFormat.column("f").type(CsvColumnType.FLOAT))
+                .column(CsvColumnMapping.column("d").type(CsvColumnType.DOUBLE))
+                .column(CsvColumnMapping.column("f").type(CsvColumnType.FLOAT))
                 .build();
 
         new DfParserAsserts(csv, format, "d", "f")
@@ -123,12 +123,12 @@ class DataTypeTest {
                 2,B,bar
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .excludeHeaderValues(true)
                 .autoColumns(false)
-                .column(CsvFormat.column("id"))
-                .column(CsvFormat.column("name").nullable(true))
-                .column(CsvFormat.column("value"))
+                .column(CsvColumnMapping.column("id"))
+                .column(CsvColumnMapping.column("name").nullable(true))
+                .column(CsvColumnMapping.column("value"))
                 .build();
 
         new DfParserAsserts(csv, format, "id", "name", "value")
@@ -145,12 +145,13 @@ class DataTypeTest {
                 3,null,baz
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .excludeHeaderValues(true)
                 .autoColumns(false)
-                .column(CsvFormat.column("id"))
-                .column(CsvFormat.column("name").nullable(true, "NA"))
-                .column(CsvFormat.column("value"))
+                .csvFormat(CsvFormat.defaultFormat().nullString("NA").build())
+                .column(CsvColumnMapping.column("id"))
+                .column(CsvColumnMapping.column("name").nullable(true))
+                .column(CsvColumnMapping.column("value"))
                 .build();
 
         new DfParserAsserts(csv, format, "id", "name", "value")
@@ -167,11 +168,12 @@ class DataTypeTest {
                 2,
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .excludeHeaderValues(true)
                 .autoColumns(false)
-                .column(CsvFormat.column("id"))
-                .column(CsvFormat.column("name").nullable(false, "NA"))
+                .csvFormat(CsvFormat.defaultFormat().nullString("NA").build())
+                .column(CsvColumnMapping.column("id"))
+                .column(CsvColumnMapping.column("name").nullable(false))
                 .build();
 
         new DfParserAsserts(csv, format, "id", "name")
@@ -187,12 +189,12 @@ class DataTypeTest {
                 2,B
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .excludeHeaderValues(true)
                 .autoColumns(false)
                 .nullable(true)
-                .column(CsvFormat.column("id"))
-                .column(CsvFormat.column("name"))
+                .column(CsvColumnMapping.column("id"))
+                .column(CsvColumnMapping.column("name"))
                 .build();
 
         new DfParserAsserts(csv, format, "id", "name")
@@ -208,13 +210,14 @@ class DataTypeTest {
                 2,B,NA
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .excludeHeaderValues(true)
                 .autoColumns(false)
-                .nullable(true, "NA")
-                .column(CsvFormat.column("id"))
-                .column(CsvFormat.column("name").nullable(false))
-                .column(CsvFormat.column("code"))
+                .nullable(true)
+                .csvFormat(CsvFormat.defaultFormat().nullString("NA").build())
+                .column(CsvColumnMapping.column("id"))
+                .column(CsvColumnMapping.column("name").nullable(false))
+                .column(CsvColumnMapping.column("code"))
                 .build();
 
         new DfParserAsserts(csv, format, "id", "name", "code")
@@ -231,13 +234,14 @@ class DataTypeTest {
                 3,4,5.5,6.5
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .excludeHeaderValues(true)
                 .autoColumns(false)
-                .column(CsvFormat.column("i").type(CsvColumnType.INTEGER).nullableWithDefault(true, "NA", -1))
-                .column(CsvFormat.column("l").type(CsvColumnType.LONG).nullableWithDefault(true, "NA", -2L))
-                .column(CsvFormat.column("d").type(CsvColumnType.DOUBLE).nullableWithDefault(true, "NA", -3.5d))
-                .column(CsvFormat.column("f").type(CsvColumnType.FLOAT).nullableWithDefault(true, "NA", -4.5f))
+                .csvFormat(CsvFormat.defaultFormat().nullString("NA").build())
+                .column(CsvColumnMapping.column("i").type(CsvColumnType.INTEGER).nullableWithDefault(true, -1))
+                .column(CsvColumnMapping.column("l").type(CsvColumnType.LONG).nullableWithDefault(true, -2L))
+                .column(CsvColumnMapping.column("d").type(CsvColumnType.DOUBLE).nullableWithDefault(true, -3.5d))
+                .column(CsvColumnMapping.column("f").type(CsvColumnType.FLOAT).nullableWithDefault(true, -4.5f))
                 .build();
 
         new DfParserAsserts(csv, format, "i", "l", "d", "f")
@@ -255,13 +259,13 @@ class DataTypeTest {
                 3,4,5.5,6.5
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .excludeHeaderValues(true)
                 .autoColumns(false)
-                .column(CsvFormat.column("i").type(CsvColumnType.INTEGER).nullableWithDefault(true, -1))
-                .column(CsvFormat.column("l").type(CsvColumnType.LONG).nullableWithDefault(true, -2L))
-                .column(CsvFormat.column("d").type(CsvColumnType.DOUBLE).nullableWithDefault(true, -3.5d))
-                .column(CsvFormat.column("f").type(CsvColumnType.FLOAT).nullableWithDefault(true, -4.5f))
+                .column(CsvColumnMapping.column("i").type(CsvColumnType.INTEGER).nullableWithDefault(true, -1))
+                .column(CsvColumnMapping.column("l").type(CsvColumnType.LONG).nullableWithDefault(true, -2L))
+                .column(CsvColumnMapping.column("d").type(CsvColumnType.DOUBLE).nullableWithDefault(true, -3.5d))
+                .column(CsvColumnMapping.column("f").type(CsvColumnType.FLOAT).nullableWithDefault(true, -4.5f))
                 .build();
 
         new DfParserAsserts(csv, format, "i", "l", "d", "f")
@@ -278,11 +282,11 @@ class DataTypeTest {
                 2,abc
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .excludeHeaderValues(true)
                 .autoColumns(false)
-                .column(CsvFormat.column("id").type(CsvColumnType.INTEGER))
-                .column(CsvFormat.column("val").type(CsvColumnType.INTEGER))
+                .column(CsvColumnMapping.column("id").type(CsvColumnType.INTEGER))
+                .column(CsvColumnMapping.column("val").type(CsvColumnType.INTEGER))
                 .build();
 
         assertThrows(NumberFormatException.class, () -> new CsvParser(format).parse(new StringReader(csv)));
@@ -298,10 +302,10 @@ class DataTypeTest {
                 yes
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .excludeHeaderValues(true)
                 .autoColumns(false)
-                .column(CsvFormat.column("b").type(CsvColumnType.BOOLEAN))
+                .column(CsvColumnMapping.column("b").type(CsvColumnType.BOOLEAN))
                 .build();
 
         new DfParserAsserts(csv, format, "b")

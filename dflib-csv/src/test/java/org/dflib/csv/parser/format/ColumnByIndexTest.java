@@ -13,12 +13,12 @@ class ColumnByIndexTest {
                 2,B,20
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .excludeHeaderValues(true)
                 .autoColumns(false)
-                .column(CsvFormat.column(0))
-                .column(CsvFormat.column(1).nullable(true, "NA"))
-                .column(CsvFormat.column(2))
+                .column(CsvColumnMapping.column(0))
+                .column(CsvColumnMapping.column(1).format(CsvFormat.columnFormat().nullString("NA").build()).nullable(true))
+                .column(CsvColumnMapping.column(2))
                 .build();
 
         new DfParserAsserts(csv, format, "c0", "c1", "c2")
@@ -33,13 +33,16 @@ class ColumnByIndexTest {
                  1 , "A"
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .excludeHeaderValues(true)
                 .autoColumns(false)
-                .trim(Trim.FULL)
-                .quote(Quote.optionalOf('"'))
-                .column(CsvFormat.column(0).trim(Trim.NONE))
-                .column(CsvFormat.column(1).quote(Quote.none()))
+                .csvFormat(CsvFormat.defaultFormat()
+                        .trim(Trim.FULL)
+                        .quote(Quote.optionalOf('"'))
+                        .build()
+                )
+                .column(CsvColumnMapping.column(0).format(CsvFormat.columnFormat().trim(Trim.NONE).build()))
+                .column(CsvColumnMapping.column(1).format(CsvFormat.columnFormat().quote(Quote.none()).build()))
                 .build();
 
         new DfParserAsserts(csv, format, "c0", "c1")
@@ -55,12 +58,12 @@ class ColumnByIndexTest {
                 2,B
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
-                .column(CsvFormat.column(0))
-                .column(CsvFormat.column(1))
-                .column(CsvFormat.column(2))
-                .allowEmptyColumns()
+                .column(CsvColumnMapping.column(0))
+                .column(CsvColumnMapping.column(1))
+                .column(CsvColumnMapping.column(2))
+                .csvFormat(CsvFormat.defaultFormat().allowEmptyColumns().build())
                 .build();
 
         new DfParserAsserts(csv, format, "c0", "c1", "c2")

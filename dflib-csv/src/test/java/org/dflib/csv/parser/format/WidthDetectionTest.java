@@ -1,6 +1,6 @@
 package org.dflib.csv.parser.format;
 
-import org.dflib.csv.CsvSchemaFactory;
+import org.dflib.csv.parser.CsvSchemaFactory;
 import org.dflib.csv.parser.test.DfParserAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -13,12 +13,12 @@ class WidthDetectionTest {
                 1,2,3
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(true)
-                .column(CsvFormat.column("x"))
-                .column(CsvFormat.column("y"))
-                .column(CsvFormat.column("z"))
+                .column(CsvColumnMapping.column("x"))
+                .column(CsvColumnMapping.column("y"))
+                .column(CsvColumnMapping.column("z"))
                 .build();
 
         new DfParserAsserts(csv, format, "x", "y", "z")
@@ -33,11 +33,11 @@ class WidthDetectionTest {
                 2,B,20,more
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .column(CsvFormat.column("id").index(0))
-                .column(CsvFormat.column("name").index(1))
+                .column(CsvColumnMapping.column("id").index(0))
+                .column(CsvColumnMapping.column("name").index(1))
                 .schemaFactory(CsvSchemaFactory.ofCols("id", "name"))
                 .build();
 
@@ -54,13 +54,13 @@ class WidthDetectionTest {
                 2,B
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .column(CsvFormat.column("id"))
-                .column(CsvFormat.column("name"))
-                .column(CsvFormat.column("extra").nullable(true))
-                .allowEmptyColumns()
+                .column(CsvColumnMapping.column("id"))
+                .column(CsvColumnMapping.column("name"))
+                .column(CsvColumnMapping.column("extra").nullable(true))
+                .csvFormat(CsvFormat.defaultFormat().allowEmptyColumns())
                 .build();
 
         new DfParserAsserts(csv, format, "id", "name", "extra")
@@ -76,13 +76,13 @@ class WidthDetectionTest {
                 2,B
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .column(CsvFormat.column(0).type(CsvColumnType.INTEGER))
-                .column(CsvFormat.column(1).type(CsvColumnType.STRING))
-                .column(CsvFormat.column(2).type(CsvColumnType.DOUBLE).nullableWithDefault(true, 0.0))
-                .allowEmptyColumns()
+                .column(CsvColumnMapping.column(0).type(CsvColumnType.INTEGER))
+                .column(CsvColumnMapping.column(1).type(CsvColumnType.STRING))
+                .column(CsvColumnMapping.column(2).type(CsvColumnType.DOUBLE).nullableWithDefault(true, 0.0))
+                .csvFormat(CsvFormat.defaultFormat().allowEmptyColumns())
                 .build();
 
         new DfParserAsserts(csv, format, "c0", "c1", "c2")
@@ -99,11 +99,11 @@ class WidthDetectionTest {
                 2,B
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(true)
-                .column(CsvFormat.column("c1"))
-                .column(CsvFormat.column("c2"))
+                .column(CsvColumnMapping.column("c1"))
+                .column(CsvColumnMapping.column("c2"))
                 .build();
 
         new DfParserAsserts(csv, format, "c1", "c2")
@@ -119,11 +119,11 @@ class WidthDetectionTest {
                 2,B
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .column(CsvFormat.column(0))
-                .column(CsvFormat.column(1))
+                .column(CsvColumnMapping.column(0))
+                .column(CsvColumnMapping.column(1))
                 .build();
 
         new DfParserAsserts(csv, format, "c0", "c1")
@@ -141,13 +141,13 @@ class WidthDetectionTest {
                 3,C
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(true)
                 .offset(1)
                 .limit(1)
-                .column(CsvFormat.column(0))
-                .column(CsvFormat.column(1))
+                .column(CsvColumnMapping.column(0))
+                .column(CsvColumnMapping.column(1))
                 .build();
 
         new DfParserAsserts(csv, format, "c0", "c1")
@@ -163,13 +163,13 @@ class WidthDetectionTest {
                 3,C,30
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .allowEmptyColumns()
-                .column(CsvFormat.column(0))
-                .column(CsvFormat.column(1))
-                .column(CsvFormat.column(2))
+                .csvFormat(CsvFormat.defaultFormat().allowEmptyColumns())
+                .column(CsvColumnMapping.column(0))
+                .column(CsvColumnMapping.column(1))
+                .column(CsvColumnMapping.column(2))
                 .build();
 
         new DfParserAsserts(csv, format, "c0", "c1", "c2")
@@ -186,12 +186,12 @@ class WidthDetectionTest {
                 " x ",y
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .trim(Trim.FULL)
-                .column(CsvFormat.column(0))
-                .column(CsvFormat.column(1))
+                .csvFormat(CsvFormat.defaultFormat().trim(Trim.FULL))
+                .column(CsvColumnMapping.column(0))
+                .column(CsvColumnMapping.column(1))
                 .build();
 
         new DfParserAsserts(csv, format, "c0", "c1")

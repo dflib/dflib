@@ -26,11 +26,9 @@ class QuoteTest {
                 2, "Quoted" , "Also"
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .trim(Trim.FULL)
-                .build();
+        CsvFormat config = CsvFormat.defaultFormat().trim(Trim.FULL).build();
 
-        new DfParserAsserts(csv, format, "id", "name", "value")
+        new DfParserAsserts(csv, config, "id", "name", "value")
                 .expectRow(0, "1", "Name", "Value")
                 .expectRow(1, "2", "\"Quoted\"", "\"Also\"");
     }
@@ -44,10 +42,10 @@ class QuoteTest {
                 "3","Name 3","Value with ""escaped"" quotes"
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column("id").quote(Quote.of('"')).type(CsvColumnType.INTEGER))
-                .column(CsvFormat.column("name").quote(Quote.of('"')))
-                .column(CsvFormat.column("value").quote(Quote.optionalOf('"')))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column("id").type(CsvColumnType.INTEGER).format(CsvFormat.columnFormat().quote(Quote.of('"'))))
+                .column(CsvColumnMapping.column("name").format(CsvFormat.columnFormat().quote(Quote.of('"'))))
+                .column(CsvColumnMapping.column("value").format(CsvFormat.columnFormat().quote(Quote.optionalOf('"'))))
                 .build();
 
         new DfParserAsserts(csv, format,"id", "name", "value")
@@ -66,10 +64,10 @@ class QuoteTest {
                 3,Name 3,"Value with ""escaped"" quotes"
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column("id").quote(Quote.none()).type(CsvColumnType.INTEGER))
-                .column(CsvFormat.column("name").quote(Quote.none()))
-                .column(CsvFormat.column("value").quote(Quote.optionalOf('"')))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column("id").format(CsvFormat.columnFormat().quote(Quote.none())).type(CsvColumnType.INTEGER))
+                .column(CsvColumnMapping.column("name").format(CsvFormat.columnFormat().quote(Quote.none())))
+                .column(CsvColumnMapping.column("value").format(CsvFormat.columnFormat().quote(Quote.optionalOf('"'))))
                 .build();
 
         new DfParserAsserts(csv, format,"id", "name", "value")
@@ -86,10 +84,10 @@ class QuoteTest {
                 1,"A"
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .quote(Quote.optionalOf('"'))
-                .column(CsvFormat.column("id"))
-                .column(CsvFormat.column("name").quote(Quote.none()))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .csvFormat(CsvFormat.defaultFormat().quote(Quote.optionalOf('"')))
+                .column(CsvColumnMapping.column("id"))
+                .column(CsvColumnMapping.column("name").format(CsvFormat.columnFormat().quote(Quote.none()).build()))
                 .build();
 
         new DfParserAsserts(csv, format, "id", "name")
@@ -104,9 +102,7 @@ class QuoteTest {
                 1,"A \\"B"
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .escape(Escape.BACKSLASH)
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().escape(Escape.BACKSLASH).build();
 
         new DfParserAsserts(csv, format, "id", "name")
                 .expectHeight(1)
@@ -120,9 +116,7 @@ class QuoteTest {
                 1,"A x"B"
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .escape('x')
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().escape('x').build();
 
         new DfParserAsserts(csv, format, "id", "name")
                 .expectHeight(1)
@@ -147,9 +141,7 @@ class QuoteTest {
     void lineBreakInsideQuoted() {
         String csv = "id,text\r\n1,\"line1\r\nline2\"\r\n2,\"x\"\r\n";
 
-        CsvFormat format = CsvFormat.builder()
-                .lineBreak(LineBreak.CRLF)
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().lineBreak(LineBreak.CRLF).build();
 
         new DfParserAsserts(csv, format, "id", "text")
                 .expectHeight(2)
@@ -166,9 +158,7 @@ class QuoteTest {
                 2,"value"
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .enableComments("#")
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().enableComments("#").build();
 
         new DfParserAsserts(csv, format, "id", "text")
                 .expectHeight(2)
@@ -184,9 +174,7 @@ class QuoteTest {
                 2||c
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .delimiter("||")
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().delimiter("||").build();
 
         new DfParserAsserts(csv, format, "id", "text")
                 .expectHeight(2)

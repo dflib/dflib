@@ -12,13 +12,13 @@ class TrailingDelimiterTest {
                 3,4,
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .allowEmptyColumns()
-                .column(CsvFormat.column("c0"))
-                .column(CsvFormat.column("c1"))
-                .column(CsvFormat.column("c2"))
+                .csvFormat(CsvFormat.defaultFormat().allowEmptyColumns())
+                .column(CsvColumnMapping.column("c0"))
+                .column(CsvColumnMapping.column("c1"))
+                .column(CsvColumnMapping.column("c2"))
                 .build();
 
         new DfParserAsserts(csv, format, "c0", "c1", "c2")
@@ -35,9 +35,7 @@ class TrailingDelimiterTest {
                 3,4,
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .trailingDelimiter(true)
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().trailingDelimiter(true).build();
 
         new DfParserAsserts(csv, format, "c0", "c1")
                 .expectHeight(2)
@@ -52,9 +50,7 @@ class TrailingDelimiterTest {
                 1,2,
                 3,4,""";
 
-        CsvFormat format = CsvFormat.builder()
-                .trailingDelimiter(true)
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().trailingDelimiter(true).build();
 
         new DfParserAsserts(csv, format, "c0", "c1")
                 .expectHeight(2)
@@ -66,11 +62,11 @@ class TrailingDelimiterTest {
     void enabledAllowsTrailingDelimiterAfterQuotedLastColumn() {
         String csv = "\"a\",\n\"b\",";
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .trailingDelimiter(true)
-                .column(CsvFormat.column("c0"))
+                .csvFormat(CsvFormat.defaultFormat().trailingDelimiter(true))
+                .column(CsvColumnMapping.column("c0"))
                 .build();
 
         new DfParserAsserts(csv, format, "c0")
@@ -83,13 +79,14 @@ class TrailingDelimiterTest {
     void enabledDoesNotTrimEscapedTrailingDelimiter() {
         String csv = "v\\,\n";
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .trailingDelimiter(true)
-                .quote(Quote.none())
-                .escape(Escape.BACKSLASH)
-                .column(CsvFormat.column("c0"))
+                .csvFormat(CsvFormat.defaultFormat()
+                        .trailingDelimiter(true)
+                        .quote(Quote.none())
+                        .escape(Escape.BACKSLASH))
+                .column(CsvColumnMapping.column("c0"))
                 .build();
 
         new DfParserAsserts(csv, format, "c0")

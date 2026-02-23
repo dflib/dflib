@@ -7,7 +7,7 @@ class UnquotedEscapeTest {
 
     @Test
     void escapedTabNoQuotes() {
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .delimiter("\t")
                 .lineBreak(LineBreak.LF)
                 .quote(Quote.none())
@@ -22,7 +22,7 @@ class UnquotedEscapeTest {
 
     @Test
     void escapedCustomNoQuotes() {
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .delimiter(",")
                 .lineBreak(LineBreak.LF)
                 .quote(Quote.none())
@@ -37,7 +37,7 @@ class UnquotedEscapeTest {
 
     @Test
     void escapedMultiDelimiter() {
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .delimiter("||")
                 .lineBreak(LineBreak.LF)
                 .quote(Quote.none())
@@ -52,7 +52,7 @@ class UnquotedEscapeTest {
 
     @Test
     void nonDelimiterEscapeRemoved() {
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .delimiter(",")
                 .lineBreak(LineBreak.LF)
                 .quote(Quote.none())
@@ -67,7 +67,7 @@ class UnquotedEscapeTest {
 
     @Test
     void trailingEscapeIsPreserved() {
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .delimiter(",")
                 .lineBreak(LineBreak.LF)
                 .quote(Quote.none())
@@ -82,7 +82,7 @@ class UnquotedEscapeTest {
 
     @Test
     void noEscapeKeepsBackslash() {
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .delimiter(",")
                 .lineBreak(LineBreak.LF)
                 .quote(Quote.none())

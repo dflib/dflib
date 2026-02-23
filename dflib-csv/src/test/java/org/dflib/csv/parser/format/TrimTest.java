@@ -7,9 +7,7 @@ class TrimTest {
 
     @Test
     void trimAndQuoteBehavior() {
-        CsvFormat format = CsvFormat.builder()
-                .trim(Trim.FULL)
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().trim(Trim.FULL).build();
 
         String csv = """
                 id,name,value
@@ -27,9 +25,7 @@ class TrimTest {
 
     @Test
     void trimNone() {
-        CsvFormat none = CsvFormat.builder()
-                .trim(Trim.NONE)
-                .build();
+        CsvFormat none = CsvFormat.defaultFormat().trim(Trim.NONE).build();
 
         String csv = """
                 id,name,value
@@ -44,9 +40,7 @@ class TrimTest {
 
     @Test
     void trimFull() {
-        CsvFormat full = CsvFormat.builder()
-                .trim(Trim.FULL)
-                .build();
+        CsvFormat full = CsvFormat.defaultFormat().trim(Trim.FULL).build();
 
         String csv = """
                 id,name,value
@@ -61,9 +55,7 @@ class TrimTest {
 
     @Test
     void trimLeft() {
-        CsvFormat left = CsvFormat.builder()
-                .trim(Trim.LEFT)
-                .build();
+        CsvFormat left = CsvFormat.defaultFormat().trim(Trim.LEFT).build();
 
         String csv = """
                 id,name,value
@@ -78,9 +70,7 @@ class TrimTest {
 
     @Test
     void trimRight() {
-        CsvFormat right = CsvFormat.builder()
-                .trim(Trim.RIGHT)
-                .build();
+        CsvFormat right = CsvFormat.defaultFormat().trim(Trim.RIGHT).build();
 
         String csv = """
                 id,name,value
@@ -100,10 +90,10 @@ class TrimTest {
                  1 ,  A\s
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .trim(Trim.FULL)
-                .column(CsvFormat.column("id").trim(Trim.NONE))
-                .column(CsvFormat.column("name"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .csvFormat(CsvFormat.defaultFormat().trim(Trim.FULL))
+                .column(CsvColumnMapping.column("id").format(CsvFormat.columnFormat().trim(Trim.NONE)))
+                .column(CsvColumnMapping.column("name"))
                 .build();
 
         new DfParserAsserts(csv, format, "id", "name")

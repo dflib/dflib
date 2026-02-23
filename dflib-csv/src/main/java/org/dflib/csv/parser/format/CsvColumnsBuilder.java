@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 public class CsvColumnsBuilder {
 
-    final List<CsvColumnFormat.Builder> columns;
+    final List<CsvColumnMapping.Builder> columns;
 
     /**
      * Creates an empty builder.
@@ -29,7 +29,7 @@ public class CsvColumnsBuilder {
     /**
      * Builds merged column formats using global defaults from {@link CsvFormat}.
      */
-    public List<CsvColumnFormat> build(CsvFormat format) {
+    public List<CsvColumnMapping> build(CsvParserConfig config) {
         AtomicInteger index = new AtomicInteger(0);
         return columns.stream()
                 .peek(cb -> {
@@ -38,34 +38,28 @@ public class CsvColumnsBuilder {
                     if(cb.name == null) {
                         cb.name("c" + idx);
                     }
-                    if (cb.quote == null) {
-                        cb.quote(format.quote);
-                    }
-                    if (cb.trim == null) {
-                        cb.trim(format.trim);
-                    }
-                    if (!cb.nullableDefined) {
-                        cb.nullable = format.nullable;
-                        cb.nullValue = format.nullValue == null ? null : format.nullValue.toCharArray();
+                    cb.format(CsvColumnFormat.mergeWithConfig(cb.format, config.csvFormat()));
+                    if(!cb.nullableDefined) {
+                        cb.nullable(config.nullable());
                     }
                 })
-                .map(CsvColumnFormat.Builder::build)
+                .map(CsvColumnMapping.Builder::build)
                 .collect(Collectors.toList());
     }
 
     /**
      * Merges all provided column builders.
      */
-    public void merge(List<CsvColumnFormat.Builder> columns) {
-        for (CsvColumnFormat.Builder column : columns) {
-            merge(column);
+    public void merge(List<CsvColumnMapping> columns) {
+        for (CsvColumnMapping column : columns) {
+            merge(CsvColumnMapping.column(column.idx).merge(column));
         }
     }
 
     /**
      * Merges a single column builder by index or name.
      */
-    public void merge(CsvColumnFormat.Builder column) {
+    public void merge(CsvColumnMapping.Builder column) {
         Objects.requireNonNull(column, "Column can't be null");
         if (column.idx == -1) {
             mergeByName(column.name, column);
@@ -74,15 +68,15 @@ public class CsvColumnsBuilder {
         }
     }
 
-    private void mergeByIndex(int index, CsvColumnFormat.Builder column) {
-        CsvColumnFormat.Builder columnTo = index >= columns.size() ? null : get(index);
-        CsvColumnFormat.Builder merged = mergeTo(column, columnTo);
+    private void mergeByIndex(int index, CsvColumnMapping.Builder column) {
+        CsvColumnMapping.Builder columnTo = index >= columns.size() ? null : get(index);
+        CsvColumnMapping.Builder merged = mergeTo(column, columnTo);
         setByIndex(index, merged);
     }
 
-    private void mergeByName(String name, CsvColumnFormat.Builder column) {
-        CsvColumnFormat.Builder columnTo = findByName(name);
-        CsvColumnFormat.Builder merged = mergeTo(column, columnTo);
+    private void mergeByName(String name, CsvColumnMapping.Builder column) {
+        CsvColumnMapping.Builder columnTo = findByName(name);
+        CsvColumnMapping.Builder merged = mergeTo(column, columnTo);
         if (merged.idx != -1) {
             setByIndex(merged.idx, column);
         } else {
@@ -90,18 +84,18 @@ public class CsvColumnsBuilder {
         }
     }
 
-    private CsvColumnFormat.Builder mergeTo(CsvColumnFormat.Builder column, CsvColumnFormat.Builder mergeTo) {
+    private CsvColumnMapping.Builder mergeTo(CsvColumnMapping.Builder column, CsvColumnMapping.Builder mergeTo) {
         if (mergeTo == null) {
             return column;
         }
         return mergeTo.merge(column);
     }
 
-    private void append(CsvColumnFormat.Builder merged) {
+    private void append(CsvColumnMapping.Builder merged) {
         columns.add(merged.index(columns.size()));
     }
 
-    private void setByIndex(int index, CsvColumnFormat.Builder merged) {
+    private void setByIndex(int index, CsvColumnMapping.Builder merged) {
         ensureSize(index);
         merged.index(index);
         columns.set(index, merged);
@@ -111,15 +105,15 @@ public class CsvColumnsBuilder {
         for (int i = columns.size(); i <= idxTo; i++) {
             // skip this filler column
             // it could be set later
-            columns.add(CsvFormat.column(i).type(CsvColumnType.STRING).skip());
+            columns.add(CsvColumnMapping.column(i).type(CsvColumnType.STRING).skip());
         }
     }
 
-    private CsvColumnFormat.Builder findByName(String name) {
+    private CsvColumnMapping.Builder findByName(String name) {
         if (name == null) {
             return null;
         }
-        for (CsvColumnFormat.Builder column : columns) {
+        for (CsvColumnMapping.Builder column : columns) {
             if (name.equals(column.name)) {
                 return column;
             }
@@ -144,7 +138,7 @@ public class CsvColumnsBuilder {
     /**
      * Returns a column builder by index.
      */
-    public CsvColumnFormat.Builder get(int i) {
+    public CsvColumnMapping.Builder get(int i) {
         return columns.get(i);
     }
 }

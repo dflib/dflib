@@ -14,7 +14,7 @@ class QuoteProcessorTest {
 
     @Test
     void formatNoEscape() {
-        CsvFormat format = CsvFormat.builder().escape(Escape.NONE).build();
+        CsvFormat format = CsvFormat.defaultFormat().escape(Escape.NONE).build();
         Function<DataSlice, String> processor = QuoteProcessor.forFormat(format, Quote.of('"'), CharBufferProvider.singleton());
 
         String value = processor.apply(DataSlice.of("a\\\"b".toCharArray(), true));
@@ -23,7 +23,7 @@ class QuoteProcessorTest {
 
     @Test
     void formatNoQuote() {
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .quote(Quote.none())
                 .escape(Escape.BACKSLASH)
                 .build();
@@ -35,7 +35,7 @@ class QuoteProcessorTest {
 
     @Test
     void formatQuoted() {
-        CsvFormat format = CsvFormat.builder().escape(Escape.BACKSLASH).build();
+        CsvFormat format = CsvFormat.defaultFormat().escape(Escape.BACKSLASH).build();
         Function<DataSlice, String> processor = QuoteProcessor.forFormat(format, Quote.of('"'), CharBufferProvider.singleton());
 
         String value = processor.apply(DataSlice.of("a\\,\\\"b".toCharArray(), true));

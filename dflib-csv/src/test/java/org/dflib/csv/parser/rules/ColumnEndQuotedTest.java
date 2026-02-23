@@ -77,10 +77,9 @@ class ColumnEndQuotedTest {
     void backslashEscapesSetFlag() {
         Tracking tracking = newTrackingContext();
         ParserContext ctx = tracking.context();
-        ParserRule rule = newRule(CsvFormat.builder()
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
                 .quote(Quote.of('"'))
                 .escape(Escape.BACKSLASH)
-                .excludeHeaderValues(false)
                 .build());
         char[] buf = {'a', '\\', '"', 'b', '"', ','};
         ctx.markColumnStart(1);
@@ -94,10 +93,9 @@ class ColumnEndQuotedTest {
     void trailingBackslashNoFlag() {
         Tracking tracking = newTrackingContext();
         ParserContext ctx = tracking.context();
-        ParserRule rule = newRule(CsvFormat.builder()
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
                 .quote(Quote.of('"'))
                 .escape(Escape.BACKSLASH)
-                .excludeHeaderValues(false)
                 .build());
         char[] buf = {'a', '\\'};
         ctx.markColumnStart(0);
@@ -111,10 +109,9 @@ class ColumnEndQuotedTest {
     void backslashNearEndEscapes() {
         Tracking tracking = newTrackingContext();
         ParserContext ctx = tracking.context();
-        ParserRule rule = newRule(CsvFormat.builder()
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
                 .quote(Quote.of('"'))
                 .escape(Escape.BACKSLASH)
-                .excludeHeaderValues(false)
                 .build());
         char[] buf = {'a', '\\', '"', '"', ','};
         ctx.markColumnStart(1);
@@ -128,10 +125,9 @@ class ColumnEndQuotedTest {
     void customEscapeSetsFlag() {
         Tracking tracking = newTrackingContext();
         ParserContext ctx = tracking.context();
-        ParserRule rule = newRule(CsvFormat.builder()
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
                 .quote(Quote.of('"'))
                 .escape('x')
-                .excludeHeaderValues(false)
                 .build());
         char[] buf = {'a', 'x', '"', 'b', '"', ','};
         ctx.markColumnStart(1);
@@ -145,10 +141,9 @@ class ColumnEndQuotedTest {
     void customNearEndEscapes() {
         Tracking tracking = newTrackingContext();
         ParserContext ctx = tracking.context();
-        ParserRule rule = newRule(CsvFormat.builder()
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
                 .quote(Quote.of('"'))
                 .escape('x')
-                .excludeHeaderValues(false)
                 .build());
         char[] buf = {'a', 'x', '"', '"', ','};
         ctx.markColumnStart(1);
@@ -169,7 +164,9 @@ class ColumnEndQuotedTest {
     }
 
     private ParserRule newRule() {
-        CsvFormat format = CsvFormat.builder().quote(Quote.of('"')).excludeHeaderValues(false).build();
+        CsvFormat format = CsvFormat.defaultFormat()
+                .quote(Quote.of('"'))
+                .build();
         return newRule(format);
     }
 

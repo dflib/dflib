@@ -15,13 +15,13 @@ class CsvColumnsBuilderTest {
     @Test
     void mergeNull() {
         CsvColumnsBuilder columns = new CsvColumnsBuilder();
-        assertThrows(NullPointerException.class, () -> columns.merge((CsvColumnFormat.Builder)null));
+        assertThrows(NullPointerException.class, () -> columns.merge((CsvColumnMapping.Builder)null));
     }
 
     @Test
     void mergeByIndexNew() {
         CsvColumnsBuilder columns = new CsvColumnsBuilder();
-        CsvColumnFormat.Builder next = CsvFormat.column(0)
+        CsvColumnMapping.Builder next = CsvColumnMapping.column(0)
                 .name("A")
                 .type(CsvColumnType.INTEGER);
 
@@ -29,7 +29,7 @@ class CsvColumnsBuilderTest {
 
         assertEquals(1, columns.columns.size());
         assertIndexes(columns);
-        CsvColumnFormat added = columns.columns.get(0).build();
+        CsvColumnMapping added = columns.columns.get(0).build();
         assertEquals("A", added.name());
         assertEquals(0, added.index());
         assertEquals(CsvColumnType.INTEGER, added.type());
@@ -38,11 +38,11 @@ class CsvColumnsBuilderTest {
     @Test
     void mergeByIndexedExisting() {
         CsvColumnsBuilder columns = new CsvColumnsBuilder();
-        CsvColumnFormat.Builder existing = CsvFormat.column(0)
+        CsvColumnMapping.Builder existing = CsvColumnMapping.column(0)
                 .name("A")
                 .type(CsvColumnType.INTEGER)
                 .skip();
-        CsvColumnFormat.Builder incoming = CsvFormat.column(0)
+        CsvColumnMapping.Builder incoming = CsvColumnMapping.column(0)
                 .name("A")
                 .type(CsvColumnType.DOUBLE)
                 .nullable(false);
@@ -52,7 +52,7 @@ class CsvColumnsBuilderTest {
 
         assertEquals(1, columns.columns.size());
         assertIndexes(columns);
-        CsvColumnFormat merged = columns.columns.get(0).build();
+        CsvColumnMapping merged = columns.columns.get(0).build();
         assertEquals("A", merged.name());
         assertEquals(0, merged.index());
         assertEquals(CsvColumnType.DOUBLE, merged.type());
@@ -62,9 +62,9 @@ class CsvColumnsBuilderTest {
     @Test
     void mergeByIndexWithGap() {
         CsvColumnsBuilder columns = new CsvColumnsBuilder();
-        columns.merge(CsvFormat.column(0)
+        columns.merge(CsvColumnMapping.column(0)
                 .name("A"));
-        CsvColumnFormat.Builder next = CsvFormat.column(3)
+        CsvColumnMapping.Builder next = CsvColumnMapping.column(3)
                 .name("D")
                 .type(CsvColumnType.LONG);
 
@@ -72,9 +72,9 @@ class CsvColumnsBuilderTest {
 
         assertEquals(4, columns.columns.size());
         assertIndexes(columns);
-        CsvColumnFormat filler1 = columns.columns.get(1).build();
-        CsvColumnFormat filler2 = columns.columns.get(2).build();
-        CsvColumnFormat target = columns.columns.get(3).build();
+        CsvColumnMapping filler1 = columns.columns.get(1).build();
+        CsvColumnMapping filler2 = columns.columns.get(2).build();
+        CsvColumnMapping target = columns.columns.get(3).build();
 
         assertNull(filler1.name());
         assertEquals(CsvColumnType.STRING, filler1.type());
@@ -89,13 +89,13 @@ class CsvColumnsBuilderTest {
     @Test
     void mergeByNameNoIndex() {
         CsvColumnsBuilder columns = new CsvColumnsBuilder();
-        CsvColumnFormat.Builder next = CsvFormat.column("A")
+        CsvColumnMapping.Builder next = CsvColumnMapping.column("A")
                 .type(CsvColumnType.INTEGER);
 
         columns.merge(next);
         assertEquals(1, columns.columns.size());
         assertIndexes(columns);
-        CsvColumnFormat added = columns.columns.get(0).build();
+        CsvColumnMapping added = columns.columns.get(0).build();
         assertEquals("A", added.name());
         assertEquals(0, added.index());
         assertEquals(CsvColumnType.INTEGER, added.type());
@@ -104,11 +104,11 @@ class CsvColumnsBuilderTest {
     @Test
     void mergeByNameExisting() {
         CsvColumnsBuilder columns = new CsvColumnsBuilder();
-        CsvColumnFormat.Builder existing = CsvFormat.column(0)
+        CsvColumnMapping.Builder existing = CsvColumnMapping.column(0)
                 .name("A")
                 .type(CsvColumnType.INTEGER)
                 .skip();
-        CsvColumnFormat.Builder incoming = CsvFormat.column("A")
+        CsvColumnMapping.Builder incoming = CsvColumnMapping.column("A")
                 .type(CsvColumnType.DOUBLE)
                 .nullable(false);
 
@@ -117,7 +117,7 @@ class CsvColumnsBuilderTest {
 
         assertEquals(1, columns.columns.size());
         assertIndexes(columns);
-        CsvColumnFormat merged = columns.columns.get(0).build();
+        CsvColumnMapping merged = columns.columns.get(0).build();
         assertEquals("A", merged.name());
         assertEquals(0, merged.index());
         assertEquals(CsvColumnType.DOUBLE, merged.type());
@@ -127,9 +127,9 @@ class CsvColumnsBuilderTest {
     @Test
     void mergeByNameNotExisting() {
         CsvColumnsBuilder columns = new CsvColumnsBuilder();
-        CsvColumnFormat.Builder first = CsvFormat.column("A")
+        CsvColumnMapping.Builder first = CsvColumnMapping.column("A")
                 .type(CsvColumnType.INTEGER);
-        CsvColumnFormat.Builder second = CsvFormat.column("B")
+        CsvColumnMapping.Builder second = CsvColumnMapping.column("B")
                 .type(CsvColumnType.DOUBLE);
 
         columns.merge(first);
@@ -147,12 +147,12 @@ class CsvColumnsBuilderTest {
     void mergeMixed() {
         CsvColumnsBuilder columns = new CsvColumnsBuilder();
 
-        CsvColumnFormat.Builder id = CsvFormat.column("id")
+        CsvColumnMapping.Builder id = CsvColumnMapping.column("id")
                 .type(CsvColumnType.INTEGER);
-        CsvColumnFormat.Builder byIndexGap = CsvFormat.column(2)
+        CsvColumnMapping.Builder byIndexGap = CsvColumnMapping.column(2)
                 .name("value")
                 .type(CsvColumnType.DOUBLE);
-        CsvColumnFormat.Builder rename = CsvFormat.column(2)
+        CsvColumnMapping.Builder rename = CsvColumnMapping.column(2)
                 .name("amount")
                 .type(CsvColumnType.STRING);
 
@@ -172,10 +172,10 @@ class CsvColumnsBuilderTest {
     @Test
     void mergeByNameAndIndex() {
         CsvColumnsBuilder columns = new CsvColumnsBuilder();
-        CsvColumnFormat.Builder existing = CsvFormat.column(0)
+        CsvColumnMapping.Builder existing = CsvColumnMapping.column(0)
                 .name("A")
                 .type(CsvColumnType.INTEGER);
-        CsvColumnFormat.Builder incoming = CsvFormat.column(1)
+        CsvColumnMapping.Builder incoming = CsvColumnMapping.column(1)
                 .name("B")
                 .type(CsvColumnType.STRING);
 
@@ -189,21 +189,6 @@ class CsvColumnsBuilderTest {
         assertEquals(CsvColumnType.INTEGER, columns.columns.get(0).build().type());
         assertEquals(CsvColumnType.STRING, columns.columns.get(1).build().type());
     }
-
-
-    @Test
-    void testAutoColumnsWithOverrides() {
-        CsvFormat.builder()
-                .autoColumns(true)
-                .excludeHeaderValues(true);
-
-
-        // HeaderMode.FIRST_ROW
-        //
-        // HeaderMode.EXPLICIT
-        // HeaderMode.GENERATED
-    }
-
 
     static void assertIndexes(CsvColumnsBuilder columns) {
         for(int i = 0; i < columns.columns.size(); i++) {

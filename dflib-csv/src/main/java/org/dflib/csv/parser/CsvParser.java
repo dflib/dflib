@@ -1,16 +1,22 @@
 package org.dflib.csv.parser;
 
+import org.dflib.ByteSource;
 import org.dflib.DataFrame;
 import org.dflib.builder.DataFrameAppender;
+import org.dflib.codec.Codec;
+import org.dflib.csv.parser.format.CsvColumnMapping;
+import org.dflib.csv.parser.format.CsvParserConfig;
 import org.dflib.csv.parser.context.DataSlice;
 import org.dflib.csv.parser.context.ParserContext;
-import org.dflib.csv.parser.format.CsvColumnFormat;
 import org.dflib.csv.parser.format.CsvColumnsBuilder;
-import org.dflib.csv.parser.format.CsvFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -26,7 +32,7 @@ public class CsvParser {
     /**
      * Format of the CSV provided by the user
      */
-    final CsvFormat format;
+    final CsvParserConfig config;
     ParserContext context;
     ParserRuleFlow ruleFlow;
     DataFrameBuilder dfBuilder;
@@ -34,20 +40,54 @@ public class CsvParser {
 
     /**
      * Creates a new parser with the default format.
-     *
-     * @see CsvFormat#defaultFormat()
      */
     public CsvParser() {
-        this(CsvFormat.defaultFormat());
+        this(CsvParserConfig.builder().build());
     }
 
     /**
      * Creates a new parser with the specified format.
      *
-     * @param format CSV format to use
+     * @param config CSV format to use
      */
-    public CsvParser(CsvFormat format) {
-        this.format = format;
+    public CsvParser(CsvParserConfig config) {
+        this.config = config;
+    }
+
+    public DataFrame parse(Path filePath) {
+        return parse(ByteSource.ofPath(filePath));
+    }
+
+    public DataFrame parse(File file) {
+        return parse(ByteSource.ofFile(file));
+    }
+
+    public DataFrame parse(String filePath) {
+        return parse(ByteSource.ofFile(filePath));
+    }
+
+    public DataFrame parse(ByteSource src) {
+        Codec codec = config.compressionCodec() != null
+                ? config.compressionCodec()
+                : Codec.ofUri(src.uri().orElse("")).orElse(null);
+
+        ByteSource plainSrc = codec != null ? src.decompress(codec) : src;
+
+        try (Reader in = createReader(plainSrc)) {
+            return parse(in);
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading source: " + plainSrc.uri().orElse("?"), e);
+        }
+    }
+
+    private Reader createReader(ByteSource src) throws IOException {
+        return config.checkByteOrderMark()
+                ? BOM.reader(src, config.encoding())
+                : createNonBomReader(src);
+    }
+
+    private Reader createNonBomReader(ByteSource src) {
+        return new InputStreamReader(src.stream(), config.encoding());
     }
 
     /**
@@ -59,9 +99,9 @@ public class CsvParser {
         // Effective columns are results of merging all data provided by the user plus detected from the CSV file
         this.columnsBuilder = new CsvColumnsBuilder();
         this.context = new ParserContext();
-        this.ruleFlow = new ParserRuleFlow(format, context);
-        this.dfBuilder = new DataFrameBuilder(format);
-        this.context.setCallback(new ColumnDetectionCallback(buildListener(), format.trailingDelimiter()));
+        this.ruleFlow = new ParserRuleFlow(config, context);
+        this.dfBuilder = new DataFrameBuilder(config);
+        this.context.setCallback(new ColumnDetectionCallback(buildListener(), config.csvFormat().trailingDelimiter()));
         new CsvScanner(context, ruleFlow).scan(reader);
         checkEmptyAppender();
         return dfBuilder.buildDataFrame();
@@ -73,15 +113,15 @@ public class CsvParser {
      */
     ColumnDetectionListener buildListener() {
         // generate or validate header values
-        ColumnDetectionListener listener = format.autoColumns()
-                ? new ColumnGeneratorListener(this.format, this.columnsBuilder)
-                : new ColumnValidatorListener(this.format, this.columnsBuilder);
+        ColumnDetectionListener listener = config.autoColumns()
+                ? new ColumnGeneratorListener(this.config, this.columnsBuilder)
+                : new ColumnValidatorListener(this.config, this.columnsBuilder);
 
         // build columns merging user data with the actual content
         listener = listener.andThen(this::buildColumns);
 
         // append the first row, if needed
-        if(!format.excludeHeaderValues()) {
+        if(!config.excludeHeaderValues()) {
             // use the actual callback to consume the row
             listener = listener.andThen(slices -> context.callback().onNewRow(slices));
         }
@@ -96,9 +136,9 @@ public class CsvParser {
         int csvWidth = detected.length;
         for(int i = csvWidth; i < columnsBuilder.size(); i++) {
             // ignore columns that are not in the actual file
-            CsvColumnFormat.Builder builder = columnsBuilder.get(i);
+            CsvColumnMapping.Builder builder = columnsBuilder.get(i);
             if(!builder.isSkipped()) {
-                if(format.allowEmptyColumns()) {
+                if(config.csvFormat().allowEmptyColumns()) {
                     LOGGER.warn("More columns defined in the provided format, " +
                             "that are detected in the file. Column {} will be empty in the result.", i);
                     builder.skip();
@@ -108,10 +148,10 @@ public class CsvParser {
                 }
             }
         }
-        List<CsvColumnFormat> fullWidthColumns = columnsBuilder.build(format);
-        List<CsvColumnFormat> trimmedToWidthColumns = fullWidthColumns.subList(0, csvWidth);
+        List<CsvColumnMapping> fullWidthColumns = columnsBuilder.build(config);
+        List<CsvColumnMapping> trimmedToWidthColumns = fullWidthColumns.subList(0, csvWidth);
         this.ruleFlow.initColumns(trimmedToWidthColumns);
-        this.context.initRowBuffer(csvWidth, format.allowEmptyColumns());
+        this.context.initRowBuffer(csvWidth, config.csvFormat().allowEmptyColumns());
         initAppender(fullWidthColumns);
     }
 
@@ -119,10 +159,11 @@ public class CsvParser {
      * Build DataFrameAppender based on the columns.
      * @param columns merged columns data.
      */
-    void initAppender(List<CsvColumnFormat> columns) {
+    void initAppender(List<CsvColumnMapping> columns) {
         DataFrameAppender<DataSlice[]> appender = dfBuilder.buildAppender(columns);
-        this.context.setCallback(format.limit() >= 0
-                ? new LimitCallback(this.context, appender, format.limit() + (format.excludeHeaderValues() ? 1 : 0))
+        int limit = config.limit() + (config.excludeHeaderValues() ? 1 : 0);
+        this.context.setCallback(config.limit() >= 0
+                ? new LimitCallback(this.context, appender, limit)
                 : new NoLimitCallback(appender)
         );
     }
@@ -134,11 +175,9 @@ public class CsvParser {
         // appender could be uninitialized if the reader was empty
         if (dfBuilder.appender == null) {
             // try and use columns that were provided by the format
-            for(CsvColumnFormat.Builder builder : format.columnBuilders()) {
-                columnsBuilder.merge(builder);
-            }
-            List<CsvColumnFormat> columns = columnsBuilder.build(format);
-            if(format.autoColumns()) {
+            columnsBuilder.merge(config.columnMappings());
+            List<CsvColumnMapping> columns = columnsBuilder.build(config);
+            if(config.autoColumns()) {
                 LOGGER.warn("CSV data is empty, and auto columns is on. Header would be incorrect.");
             }
             initAppender(columns);

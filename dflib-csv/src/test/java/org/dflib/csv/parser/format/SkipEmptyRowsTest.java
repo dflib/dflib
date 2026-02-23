@@ -16,13 +16,12 @@ class SkipEmptyRowsTest {
                 2,B
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column(0).name("id"))
-                .column(CsvFormat.column(1).name("name"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column(0).name("id"))
+                .column(CsvColumnMapping.column(1).name("name"))
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .enableComments("#")
-                .skipEmptyRows()
+                .csvFormat(CsvFormat.defaultFormat().enableComments("#").skipEmptyRows())
                 .build();
 
         new DfParserAsserts(csv, format, "id", "name")
@@ -39,12 +38,12 @@ class SkipEmptyRowsTest {
                 2,B
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column(0).name("id"))
-                .column(CsvFormat.column(1).name("name"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column(0).name("id"))
+                .column(CsvColumnMapping.column(1).name("name"))
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .skipEmptyRows()
+                .csvFormat(CsvFormat.defaultFormat().skipEmptyRows())
                 .build();
 
         new DfParserAsserts(csv, format, "id", "name")
@@ -63,9 +62,7 @@ class SkipEmptyRowsTest {
                 2,B
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .skipEmptyRows()
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().skipEmptyRows().build();
 
         new DfParserAsserts(csv, format, "id", "name")
                 .expectHeight(2)
@@ -85,10 +82,7 @@ class SkipEmptyRowsTest {
                 2,B
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .enableComments("#")
-                .skipEmptyRows()
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().enableComments("#").skipEmptyRows().build();
 
         new DfParserAsserts(csv, format, "id", "name")
                 .expectHeight(2)
@@ -100,10 +94,7 @@ class SkipEmptyRowsTest {
     void skipEmptyCrBreak() {
         String csv = "id,name\r\r1,A\r\r2,B\r";
 
-        CsvFormat format = CsvFormat.builder()
-                .lineBreak(LineBreak.CR)
-                .skipEmptyRows()
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().lineBreak(LineBreak.CR).skipEmptyRows().build();
 
         new DfParserAsserts(csv, format, "id", "name")
                 .expectHeight(2)
@@ -115,10 +106,7 @@ class SkipEmptyRowsTest {
     void skipEmptyCrlfBreak() {
         String csv = "id,name\r\n\r\n1,A\r\n\r\n2,B\r\n";
 
-        CsvFormat format = CsvFormat.builder()
-                .lineBreak(LineBreak.CRLF)
-                .skipEmptyRows()
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().lineBreak(LineBreak.CRLF).skipEmptyRows().build();
 
         new DfParserAsserts(csv, format, "id", "name")
                 .expectHeight(2)
@@ -137,8 +125,8 @@ class SkipEmptyRowsTest {
                 3,C
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .skipEmptyRows()
+        CsvParserConfig format = CsvParserConfig.builder()
+                .csvFormat(CsvFormat.defaultFormat().skipEmptyRows())
                 .offset(1)
                 .limit(1)
                 .build();

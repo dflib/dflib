@@ -3,19 +3,26 @@ package org.dflib.csv.parser.format;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.DuplicateHeaderMode;
 import org.apache.commons.csv.QuoteMode;
-import org.dflib.RowPredicate;
-import org.dflib.csv.CsvSchemaFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.Random;
-import java.util.stream.Collectors;
 
 /**
- * CSV parsing configuration with global and per-column options.
+ * CSV file format specification.
+ * <p>
+ * Usage: <pre>{@code
+ *
+ * CsvFormat myFormat = CsvFormat.defaultFormat()
+ *      .skipEmptyRows()
+ *      .delimiter(";")
+ *      .enableComments("#")
+ *      .allowEmptyColumns()
+ *      .build();
+ *
+ * DataFrame df = Csv.loader().format(myFormat).load(Path.of("./my.csv"));
+ *
+ * }</pre>
  *
  * @since 2.0.0
  */
@@ -23,31 +30,22 @@ public class CsvFormat {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CsvFormat.class);
 
-    final int sizeHint;
+    // global parser rules
     final Delimiter delimiter;
+    final boolean trailingDelimiter;
     final LineBreak lineBreak;
+    final String comment;
+    final boolean skipEmptyRows;
+    final boolean allowEmptyColumns;
+
+    // could be overridden on a column level
     final Trim trim;
     final Quote quote;
     final Escape escape;
     final char escapeChar;
-    final String comment;
-    final boolean skipEmptyRows;
-    final boolean allowEmptyColumns;
-    final boolean nullable;
-    final String nullValue;
-    final List<CsvColumnFormat.Builder> columnFormats;
-    final boolean autoColumns;
-    final boolean excludeHeaderValues;
-    final boolean trailingDelimiter;
-    final int limit;
-    final int offset;
-    final CsvSchemaFactory schemaFactory;
-    final RowPredicate rowCondition;
-    final int rowSampleSize;
-    final Random rowsSampleRandom;
+    final String nullString;
 
     private CsvFormat(Builder builder) {
-        this.sizeHint = builder.sizeHint;
         this.delimiter = builder.delimiter;
         this.lineBreak = builder.lineBreak;
         this.trim = builder.trim;
@@ -57,50 +55,19 @@ public class CsvFormat {
         this.comment = builder.comment;
         this.skipEmptyRows = builder.skipEmptyRows;
         this.allowEmptyColumns = builder.allowEmptyColumns;
-        this.nullable = builder.nullable;
-        this.nullValue = builder.nullValue;
-        this.columnFormats = builder.columnFormats;
-        this.autoColumns = builder.autoColumns;
-        this.excludeHeaderValues = builder.excludeHeaderValues;
+        this.nullString = builder.nullString;
         this.trailingDelimiter = builder.trailingDelimiter;
-        this.limit = builder.limit;
-        this.offset = builder.offset;
-        this.schemaFactory = builder.schemaFactory;
-        this.rowCondition = builder.rowCondition;
-        this.rowSampleSize = builder.rowSampleSize;
-        this.rowsSampleRandom = builder.rowsSampleRandom;
     }
 
     /**
      * Creates a builder with default CSV settings.
      */
-    public static Builder builder() {
+    public static Builder defaultFormat() {
         return new Builder();
     }
 
-    /**
-     * Returns the default CSV format.
-     */
-    public static CsvFormat defaultFormat() {
-        return builder().build();
-    }
-
-    /**
-     * Creates a column builder bound to a column index.
-     */
-    public static CsvColumnFormat.Builder column(int idx) {
-        return new CsvColumnFormat.Builder()
-                .index(idx)
-                .type(CsvColumnType.STRING);
-    }
-
-    /**
-     * Creates a column builder bound to a column name.
-     */
-    public static CsvColumnFormat.Builder column(String name) {
-        return new CsvColumnFormat.Builder()
-                .name(name)
-                .type(CsvColumnType.STRING);
+    public static CsvColumnFormat.Builder columnFormat() {
+        return new CsvColumnFormat.Builder();
     }
 
     /**
@@ -167,38 +134,10 @@ public class CsvFormat {
     }
 
     /**
-     * Returns whether null values are allowed.
-     */
-    public boolean nullable() {
-        return nullable;
-    }
-
-    /**
      * Returns a token recognized as null, or {@code null} for default behavior.
      */
-    public String nullValue() {
-        return nullValue;
-    }
-
-    /**
-     * Returns configured per-column builders.
-     */
-    public List<CsvColumnFormat.Builder> columnBuilders() {
-        return columnFormats;
-    }
-
-    /**
-     * Returns whether missing columns are inferred automatically.
-     */
-    public boolean autoColumns() {
-        return autoColumns;
-    }
-
-    /**
-     * Returns whether header values are excluded from type inference.
-     */
-    public boolean excludeHeaderValues() {
-        return excludeHeaderValues;
+    public String nullString() {
+        return nullString;
     }
 
     /**
@@ -209,59 +148,9 @@ public class CsvFormat {
     }
 
     /**
-     * Returns max number of rows to read, or negative for no limit.
-     */
-    public int limit() {
-        return limit;
-    }
-
-    /**
-     * Returns number of initial rows to skip.
-     */
-    public int offset() {
-        return offset;
-    }
-
-    /**
-     * Returns an optional size hint for internal allocations.
-     */
-    public int sizeHint() {
-        return sizeHint;
-    }
-
-    /**
-     * Returns a schema factory used to build output schema.
-     */
-    public CsvSchemaFactory schemaFactory() {
-        return schemaFactory;
-    }
-
-    /**
-     * Returns row filter predicate, or {@code null} when no filter is set.
-     */
-    public RowPredicate rowCondition() {
-        return rowCondition;
-    }
-
-    /**
-     * Returns number of rows to sample for inference.
-     */
-    public int rowSampleSize() {
-        return rowSampleSize;
-    }
-
-    /**
-     * Returns random source for row sampling, or {@code null} when default is used.
-     */
-    public Random rowsSampleRandom() {
-        return rowsSampleRandom;
-    }
-
-    /**
      * Fluent builder for {@link CsvFormat}.
      */
     public static class Builder {
-        int sizeHint;
         Delimiter delimiter;
         LineBreak lineBreak;
         Trim trim;
@@ -271,20 +160,8 @@ public class CsvFormat {
         String comment;
         boolean skipEmptyRows;
         boolean allowEmptyColumns;
-        boolean nullable;
-        String nullValue;
-        List<CsvColumnFormat.Builder> columnFormats;
-        boolean autoColumns;
-        boolean excludeHeaderValues;
+        String nullString;
         boolean trailingDelimiter;
-        int limit;
-        int offset;
-        CsvSchemaFactory schemaFactory;
-        boolean explicitAutoColumns;
-        final List<CsvColumnFormat.Builder> columnBuilders;
-        RowPredicate rowCondition;
-        int rowSampleSize;
-        Random rowsSampleRandom;
 
         private Builder() {
             delimiter = new Delimiter(",");
@@ -296,16 +173,8 @@ public class CsvFormat {
             comment = null;
             skipEmptyRows = true;
             allowEmptyColumns = false;
-            nullable = false;
-            nullValue = null;
-            excludeHeaderValues = true;
-            autoColumns = true;
+            nullString = null;
             trailingDelimiter = false;
-            limit = -1;
-            offset = 0;
-            sizeHint = 0;
-            schemaFactory = CsvSchemaFactory.all();
-            columnBuilders = new ArrayList<>();
         }
 
         /**
@@ -411,28 +280,10 @@ public class CsvFormat {
         }
 
         /**
-         * Enables or disables nullable values.
+         * String value that should be converted to {@code null}
          */
-        public Builder nullable(boolean nullable) {
-            this.nullable = nullable;
-            this.nullValue = null;
-            return this;
-        }
-
-        /**
-         * Enables or disables nullable values and sets a null token.
-         */
-        public Builder nullable(boolean nullable, String nullValue) {
-            this.nullable = nullable;
-            this.nullValue = nullValue;
-            return this;
-        }
-
-        /**
-         * Adds a per-column format.
-         */
-        public Builder column(CsvColumnFormat.Builder columnBuilder) {
-            this.columnBuilders.add(columnBuilder);
+        public Builder nullString(String nullString) {
+            this.nullString = nullString;
             return this;
         }
 
@@ -442,79 +293,6 @@ public class CsvFormat {
          */
         public Builder trailingDelimiter(boolean trailingDelimiter) {
             this.trailingDelimiter = trailingDelimiter;
-            return this;
-        }
-
-        /**
-         * Controls whether header row values are excluded from type inference.
-         */
-        public Builder excludeHeaderValues(boolean excludeHeaderValues) {
-            this.excludeHeaderValues = excludeHeaderValues;
-            return this;
-        }
-
-        /**
-         * Enables or disables automatic column inference.
-         */
-        public Builder autoColumns(boolean autoColumns) {
-            this.autoColumns = autoColumns;
-            explicitAutoColumns = true;
-            return this;
-        }
-
-        /**
-         * Sets max number of rows to read.
-         */
-        public Builder limit(int limit) {
-            this.limit = limit;
-            return this;
-        }
-
-        /**
-         * Sets number of initial rows to skip.
-         */
-        public Builder offset(int offset) {
-            this.offset = offset;
-            return this;
-        }
-
-        /**
-         * Sets optional size hint for internal allocations.
-         */
-        public Builder sizeHint(int sizeHint) {
-            this.sizeHint = sizeHint;
-            return this;
-        }
-
-        /**
-         * Sets schema factory for the resulting frame.
-         */
-        public Builder schemaFactory(CsvSchemaFactory schemaFactory) {
-            this.schemaFactory = Objects.requireNonNull(schemaFactory);
-            return this;
-        }
-
-        /**
-         * Sets the number of rows to sample for inference.
-         */
-        public Builder rowSampleSize(int rowSampleSize) {
-            this.rowSampleSize = rowSampleSize;
-            return this;
-        }
-
-        /**
-         * Sets the random source for row sampling.
-         */
-        public Builder rowsSampleRandom(Random rowsSampleRandom) {
-            this.rowsSampleRandom = Objects.requireNonNull(rowsSampleRandom);
-            return this;
-        }
-
-        /**
-         * Sets row filter condition.
-         */
-        public Builder rowCondition(RowPredicate rowCondition) {
-            this.rowCondition = Objects.requireNonNull(rowCondition);
             return this;
         }
 
@@ -550,8 +328,7 @@ public class CsvFormat {
 
             String nullString = format.getNullString();
             if (nullString != null) {
-                this.nullable = true;
-                this.nullValue = nullString;
+                this.nullString = nullString;
             }
 
             Character quoteChar = format.getQuoteCharacter();
@@ -607,10 +384,9 @@ public class CsvFormat {
         /**
          * Copies settings from another {@link CsvFormat}.
          */
-        public void copyFrom(CsvFormat format) {
+        public Builder copyFrom(CsvFormat format) {
             Objects.requireNonNull(format);
 
-            this.sizeHint = format.sizeHint;
             this.delimiter = format.delimiter;
             this.lineBreak = format.lineBreak;
             this.trim = format.trim;
@@ -620,21 +396,10 @@ public class CsvFormat {
             this.comment = format.comment;
             this.skipEmptyRows = format.skipEmptyRows;
             this.allowEmptyColumns = format.allowEmptyColumns;
-            this.nullable = format.nullable;
-            this.nullValue = format.nullValue;
-            this.autoColumns = format.autoColumns;
-            this.explicitAutoColumns = true;
-            this.excludeHeaderValues = format.excludeHeaderValues;
+            this.nullString = format.nullString;
             this.trailingDelimiter = format.trailingDelimiter;
-            this.limit = format.limit;
-            this.offset = format.offset;
-            this.schemaFactory = format.schemaFactory;
-            this.rowCondition = format.rowCondition;
-            this.rowSampleSize = format.rowSampleSize;
-            this.rowsSampleRandom = format.rowsSampleRandom;
 
-            this.columnBuilders.clear();
-            format.columnFormats.forEach(cb -> this.columnBuilders.add(new CsvColumnFormat.Builder().merge(cb)));
+            return this;
         }
 
         /**
@@ -642,28 +407,6 @@ public class CsvFormat {
          */
         public CsvFormat build() {
             validate();
-            this.columnFormats = columnBuilders.stream()
-                    .peek(cb -> {
-                        if (cb.quote == null) {
-                            cb.quote(this.quote);
-                        }
-                        if (cb.trim == null) {
-                            cb.trim(this.trim);
-                        }
-                        if (!cb.nullableDefined) {
-                            cb.nullable = this.nullable;
-                            cb.nullValue = this.nullValue == null
-                                    ? null
-                                    : this.nullValue.toCharArray();
-                        } else {
-                            if (cb.nullable && cb.nullValue == null) {
-                                cb.nullValue = this.nullValue == null
-                                        ? null
-                                        : this.nullValue.toCharArray();
-                            }
-                        }
-                    })
-                    .collect(Collectors.toList());
             return new CsvFormat(this);
         }
 

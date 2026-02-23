@@ -37,7 +37,7 @@ class ColumnStartAnyTest {
     }
 
     private ParserRule newRule() {
-        CsvFormat format = CsvFormat.builder().excludeHeaderValues(false).build();
+        CsvFormat format = CsvFormat.defaultFormat().build();
         return new ColumnStartAnyFactory().create(format);
     }
 }

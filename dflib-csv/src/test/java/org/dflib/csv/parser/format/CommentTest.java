@@ -15,9 +15,7 @@ class CommentTest {
                 2,B
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .enableComments()
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().enableComments().build();
 
         new DfParserAsserts(csv, format, "id", "name")
                 .expectHeight(2)
@@ -36,9 +34,7 @@ class CommentTest {
                 /3,C
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .enableComments("//")
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().enableComments("//").build();
 
         new DfParserAsserts(csv, format, "id", "name")
                 .expectHeight(3)
@@ -54,7 +50,7 @@ class CommentTest {
                 1,A
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .build();
 
         new DfParserAsserts(csv, format, "#id", "name")
@@ -75,7 +71,7 @@ class CommentTest {
                 """;
 
         new DfParserAsserts(csv,
-                CsvFormat.builder().enableComments(),
+                CsvFormat.defaultFormat().enableComments().build(),
                 "id", "name", "value")
                 .expectHeight(3)
                 .expectColumn("id", "1", "2", "3");
@@ -91,10 +87,10 @@ class CommentTest {
                 2,B
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column("id"))
-                .column(CsvFormat.column("name"))
-                .enableComments("#")
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column("id"))
+                .column(CsvColumnMapping.column("name"))
+                .csvFormat(CsvFormat.defaultFormat().enableComments("#").build())
                 .build();
 
         new DfParserAsserts(csv, format, "id", "name")

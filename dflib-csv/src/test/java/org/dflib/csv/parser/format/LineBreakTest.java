@@ -10,10 +10,10 @@ class LineBreakTest {
 
     @Test
     void multilineFields() {
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column("id").type(CsvColumnType.INTEGER))
-                .column(CsvFormat.column("name"))
-                .column(CsvFormat.column("value"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column("id").type(CsvColumnType.INTEGER))
+                .column(CsvColumnMapping.column("name"))
+                .column(CsvColumnMapping.column("value"))
                 .build();
 
         String csv = """
@@ -40,9 +40,7 @@ class LineBreakTest {
                 2,Value 2
                 3,Value 3""";
 
-        CsvFormat format = CsvFormat.builder()
-                .lineBreak(LineBreak.LF)
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().lineBreak(LineBreak.LF).build();
 
         new DfParserAsserts(csv, format, "id", "value")
                 .expectHeight(3)
@@ -55,9 +53,7 @@ class LineBreakTest {
     void linebreakCr() {
         String csv = "id,value\r1,Value 1\r2,Value 2\r3,Value 3";
 
-        CsvFormat format = CsvFormat.builder()
-                .lineBreak(LineBreak.CR)
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().lineBreak(LineBreak.CR).build();
 
         new DfParserAsserts(csv, format, "id", "value")
                 .expectHeight(3)
@@ -74,9 +70,7 @@ class LineBreakTest {
                 2,Value 2\r
                 3,Value 3""";
 
-        CsvFormat format = CsvFormat.builder()
-                .lineBreak(LineBreak.CRLF)
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().lineBreak(LineBreak.CRLF).build();
 
         new DfParserAsserts(csv, format, "id", "value")
                 .expectHeight(3)
@@ -102,9 +96,7 @@ class LineBreakTest {
     void crTrailingEmptyRow() {
         String csv = "id,value\r1,Value 1\r2,Value 2\r3,Value 3\r";
 
-        CsvFormat format = CsvFormat.builder()
-                .lineBreak(LineBreak.CR)
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().lineBreak(LineBreak.CR).build();
 
         new DfParserAsserts(csv, format, "id", "value")
                 .expectHeight(3)
@@ -121,9 +113,7 @@ class LineBreakTest {
                 3,Value 3\r
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .lineBreak(LineBreak.CRLF)
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().lineBreak(LineBreak.CRLF).build();
 
         new DfParserAsserts(csv, format, "id", "value")
                 .expectHeight(3)
@@ -194,9 +184,7 @@ class LineBreakTest {
                 \r
                 3,C""";
 
-        CsvFormat format = CsvFormat.builder()
-                .skipEmptyRows()
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().skipEmptyRows().build();
 
         new DfParserAsserts(csv, format, "id", "name")
                 .expectHeight(3)
@@ -214,9 +202,7 @@ class LineBreakTest {
                 # comment with CRLF\r
                 3,C""";
 
-        CsvFormat format = CsvFormat.builder()
-                .enableComments("#")
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().enableComments("#").build();
 
         new DfParserAsserts(csv, format, "id", "name")
                 .expectHeight(3)
@@ -235,7 +221,8 @@ class LineBreakTest {
                 3,"line5\r\nline6"
                 """;
 
-        new DfParserAsserts(csv, CsvFormat.builder().lineBreak(LineBreak.LF), "id", "value")
+        CsvFormat builder = CsvFormat.defaultFormat().lineBreak(LineBreak.LF).build();
+        new DfParserAsserts(csv, builder, "id", "value")
                 .expectHeight(3)
                 .expectRow(0, "1", "line1\nline2")
                 .expectRow(1, "2", "line3\rline4")
@@ -251,8 +238,7 @@ class LineBreakTest {
                 2,"line3\rline4"
                 3,"line5\r\nline6\"""";
 
-        CsvFormat.Builder format = CsvFormat.builder()
-                .lineBreak(LineBreak.LF);
+        CsvFormat format = CsvFormat.defaultFormat().lineBreak(LineBreak.LF).build();
         new DfParserAsserts(csv, format, "id", "value")
                 .expectHeight(3)
                 .expectRow(0, "1", "line1\nline2")
@@ -269,9 +255,7 @@ class LineBreakTest {
                 2,"line3\rline4"
                 3,"line5\r\nline6\"""";
 
-        CsvFormat.Builder format = CsvFormat.builder()
-                .escape(Escape.BACKSLASH)
-                .lineBreak(LineBreak.LF);
+        CsvFormat format = CsvFormat.defaultFormat().lineBreak(LineBreak.LF).escape(Escape.BACKSLASH).build();
         new DfParserAsserts(csv, format, "id", "value")
                 .expectHeight(3)
                 .expectRow(0, "1", "line1\nline2")
@@ -364,19 +348,19 @@ class LineBreakTest {
 
     @Test
     void delimiterLineBreakConflict() {
-        assertThrows(IllegalArgumentException.class, () -> CsvFormat.builder()
-                .delimiter("\n")
+        assertThrows(IllegalArgumentException.class, () -> CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.LF)
+                .delimiter("\n")
                 .build());
 
-        assertThrows(IllegalArgumentException.class, () -> CsvFormat.builder()
-                .delimiter("\r")
+        assertThrows(IllegalArgumentException.class, () -> CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.CR)
+                .delimiter("\r")
                 .build());
 
-        assertThrows(IllegalArgumentException.class, () -> CsvFormat.builder()
-                .delimiter("\r\n")
+        assertThrows(IllegalArgumentException.class, () -> CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.CRLF)
+                .delimiter("\r\n")
                 .build());
     }
 }

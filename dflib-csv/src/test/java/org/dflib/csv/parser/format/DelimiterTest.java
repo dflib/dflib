@@ -13,9 +13,7 @@ class DelimiterTest {
     @ParameterizedTest
     @MethodSource("delimitersAndPaths")
     void multiCharDelimiter(String delimiter, String csv) {
-        CsvFormat format = CsvFormat.builder()
-                .delimiter(delimiter)
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().delimiter(delimiter).build();
 
         assertContent(csv, format);
     }
@@ -29,17 +27,13 @@ class DelimiterTest {
                 3;C;baz
                 """;
 
-        CsvFormat semicolon = CsvFormat.builder()
-                .delimiter(";")
-                .build();
+        CsvFormat semicolon = CsvFormat.defaultFormat().delimiter(";").build();
 
         new DfParserAsserts(semicolonCsv, semicolon, "id", "name", "value")
                 .expectHeight(3)
                 .expectColumn("id", "1", "2", "3");
 
-        CsvFormat pipe = CsvFormat.builder()
-                .delimiter("||")
-                .build();
+        CsvFormat pipe = CsvFormat.defaultFormat().delimiter("||").build();
 
         String pipeCsv = """
                 id||name||value
@@ -61,9 +55,7 @@ class DelimiterTest {
                 2|||B|||baz
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .delimiter("|||")
-                .build();
+        CsvFormat format = CsvFormat.defaultFormat().delimiter("|||").build();
 
         new DfParserAsserts(csv, format, "id", "name", "value")
                 .expectHeight(2)

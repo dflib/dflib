@@ -15,12 +15,12 @@ class HeaderTest {
 
     @Test
     void excludeHeaderValues() {
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .column(CsvFormat.column("id"))
-                .column(CsvFormat.column("name"))
-                .column(CsvFormat.column("value"))
+                .column(CsvColumnMapping.column("id"))
+                .column(CsvColumnMapping.column("name"))
+                .column(CsvColumnMapping.column("value"))
                 .build();
 
         new DfParserAsserts(csv100Rows(), format, "id", "name", "value")
@@ -30,10 +30,10 @@ class HeaderTest {
 
     @Test
     void includeHeaderValues() {
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column("id"))
-                .column(CsvFormat.column("name"))
-                .column(CsvFormat.column("value"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column("id"))
+                .column(CsvColumnMapping.column("name"))
+                .column(CsvColumnMapping.column("value"))
                 .build();
 
         String csv = """
@@ -70,7 +70,7 @@ class HeaderTest {
 
     @Test
     void headerValuesIncluded() {
-        CsvFormat excluded = CsvFormat.builder()
+        CsvParserConfig excluded = CsvParserConfig.builder()
                 .autoColumns(true)
                 .excludeHeaderValues(true)
                 .build();
@@ -79,7 +79,7 @@ class HeaderTest {
                 .expectHeight(100)
                 .expectRow(0, "1", "Name 1", "Value 1");
 
-        CsvFormat included = CsvFormat.builder()
+        CsvParserConfig included = CsvParserConfig.builder()
                 .autoColumns(true)
                 .excludeHeaderValues(false)
                 .build();
@@ -97,7 +97,7 @@ class HeaderTest {
                 2,B,bar
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .excludeHeaderValues(false)
                 .autoColumns(true)
                 .build();
@@ -115,12 +115,12 @@ class HeaderTest {
                 2,B,bar
                 """;
 
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .excludeHeaderValues(false)
                 .autoColumns(false)
-                .column(CsvFormat.column(0))
-                .column(CsvFormat.column(1))
-                .column(CsvFormat.column(2))
+                .column(CsvColumnMapping.column(0))
+                .column(CsvColumnMapping.column(1))
+                .column(CsvColumnMapping.column(2))
                 .build();
 
         new DfParserAsserts(csv, format, "c0", "c1", "c2")

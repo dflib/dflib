@@ -36,7 +36,7 @@ class ColumnStartUnquotedTest {
     }
 
     private ParserRule newRule() {
-        CsvFormat format = CsvFormat.builder().excludeHeaderValues(false).build();
+        CsvFormat format = CsvFormat.defaultFormat().build();
         return new ColumnStartUnquotedFactory().create(format);
     }
 }

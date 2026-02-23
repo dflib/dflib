@@ -14,7 +14,7 @@ class NoopTest {
     @Test
     void doesNotChangeContext() {
         ParserContext ctx = newContext();
-        CsvFormat format = CsvFormat.builder().build();
+        CsvFormat format = CsvFormat.defaultFormat().build();
         ParserRule rule = new NoopFactory().create(format);
 
         char[] buf = {'a', 'b', 'c'};
@@ -31,7 +31,7 @@ class NoopTest {
     @Test
     void emptyBuffer() {
         ParserContext ctx = newContext();
-        CsvFormat format = CsvFormat.builder().build();
+        CsvFormat format = CsvFormat.defaultFormat().build();
         ParserRule rule = new NoopFactory().create(format);
 
         char[] buf = {};

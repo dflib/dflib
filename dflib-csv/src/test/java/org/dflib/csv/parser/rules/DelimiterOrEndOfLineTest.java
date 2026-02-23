@@ -137,12 +137,11 @@ class DelimiterOrEndOfLineTest {
     @Test
     void escapedDelimiterNoSplit() {
         ParserContext ctx = newContext();
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .delimiter(";")
                 .lineBreak(LineBreak.LF)
                 .quote(Quote.none())
                 .escape(Escape.BACKSLASH)
-                .excludeHeaderValues(false)
                 .build();
         ParserRule rule = new DelimiterOrEndOfLineFactory().create(format);
 
@@ -158,12 +157,11 @@ class DelimiterOrEndOfLineTest {
     @Test
     void escapedDelimiterBeforeEnd() {
         ParserContext ctx = newContext();
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .delimiter(";")
                 .lineBreak(LineBreak.LF)
                 .quote(Quote.none())
                 .escape(Escape.BACKSLASH)
-                .excludeHeaderValues(false)
                 .build();
         ParserRule rule = new DelimiterOrEndOfLineFactory().create(format);
 
@@ -177,10 +175,9 @@ class DelimiterOrEndOfLineTest {
     }
 
     private ParserRule newRule(LineBreak lineBreak, String delimiter) {
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .delimiter(delimiter)
                 .lineBreak(lineBreak)
-                .excludeHeaderValues(false)
                 .build();
         return new DelimiterOrEndOfLineFactory().create(format);
     }

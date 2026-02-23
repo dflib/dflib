@@ -2,7 +2,9 @@ package org.dflib.csv.parser;
 
 import org.dflib.csv.parser.context.ParserContext;
 import org.dflib.csv.parser.format.CsvColumnFormat;
+import org.dflib.csv.parser.format.CsvColumnMapping;
 import org.dflib.csv.parser.format.CsvFormat;
+import org.dflib.csv.parser.format.CsvParserConfig;
 import org.dflib.csv.parser.rules.ParserRule;
 import org.dflib.csv.parser.rules.RuleBuilder;
 
@@ -56,7 +58,7 @@ final class ParserRuleFlow {
     }
 
     // dependencies
-    final CsvFormat format;
+    final CsvParserConfig config;
     final ParserContext context;
 
     // rules
@@ -69,16 +71,16 @@ final class ParserRuleFlow {
     private int offsetRemaining;
     private final ParserRule skipRowRule;
 
-    ParserRuleFlow(CsvFormat format, ParserContext context) {
-        this.format = format;
+    ParserRuleFlow(CsvParserConfig config, ParserContext context) {
+        this.config = config;
         this.context = context;
-        this.parserRules = RuleBuilder.buildRules(format);
-        this.autoFlow = buildAutoFlow(format);
+        this.parserRules = RuleBuilder.buildRules(config.csvFormat());
+        this.autoFlow = buildAutoFlow(config.csvFormat());
         this.skipRowRule = parserRules[ParserState.SKIP_ROW.ordinal()];
 
-        if (format.offset() > 0) {
+        if (config.offset() > 0) {
             this.state = FlowState.OFFSET;
-            this.offsetRemaining = format.offset();
+            this.offsetRemaining = config.offset();
         } else {
             this.state = FlowState.AUTO;
         }
@@ -88,7 +90,7 @@ final class ParserRuleFlow {
      * Initializes fixed-column flow and switches rule progression strategy.
      * @param columns column format definitions
      */
-    void initColumns(List<CsvColumnFormat> columns) {
+    void initColumns(List<CsvColumnMapping> columns) {
         this.columnFlowRules = buildColumnFlowRules(columns);
         this.state = FlowState.COLUMN;
     }
@@ -105,7 +107,7 @@ final class ParserRuleFlow {
                 yield columnFlowRules[0];
             }
             case AUTO -> {
-                ParserState currentState = initialAutoState(format);
+                ParserState currentState = initialAutoState(config.csvFormat());
                 context.setCurrentState(currentState.ordinal());
                 yield parserRules[currentState.ordinal()];
             }
@@ -149,34 +151,34 @@ final class ParserRuleFlow {
      * @param columns column format definitions
      * @return ordered parser states representing one full row in column-flow mode
      */
-    private ParserState[] buildDefaultStateFlow(List<CsvColumnFormat> columns) {
+    private ParserState[] buildDefaultStateFlow(List<CsvColumnMapping> columns) {
         if (columns == null || columns.isEmpty()) {
             throw new IllegalArgumentException("No columns specified. " +
                     "Please specify at least one column or use `.autoColumns(true)` for auto-detection.");
         }
 
         List<ParserState> states = new ArrayList<>();
-        if (format.skipEmptyRows()) {
+        if (config.csvFormat().skipEmptyRows()) {
             states.add(ParserState.EMPTY_ROW);
         }
-        if (format.comment() != null) {
+        if (config.csvFormat().comment() != null) {
             states.add(ParserState.COMMENT);
         }
-        for (CsvColumnFormat columnFormat : columns) {
-            if (columnFormat.quote().optional()) {
+        for (CsvColumnMapping columnFormat : columns) {
+            if (columnFormat.format().quote().optional()) {
                 states.add(ParserState.START_ANY);
-            } else if (columnFormat.quote().noQuote()) {
+            } else if (columnFormat.format().quote().noQuote()) {
                 states.add(ParserState.START_UNQUOTED);
             } else {
                 states.add(ParserState.START_QUOTED);
                 states.add(ParserState.END_QUOTED);
             }
-            states.add(format.allowEmptyColumns()
+            states.add(config.csvFormat().allowEmptyColumns()
                     ? ParserState.DELIMITER_OR_END_OF_LINE
                     : ParserState.DELIMITER);
         }
         // replace the last delimiter with END_OF_LINE or trailing delimiter
-        if (format.trailingDelimiter()) {
+        if (config.csvFormat().trailingDelimiter()) {
             states.set(states.size() - 1, ParserState.DELIMITER_OR_END_OF_LINE);
             states.add(ParserState.END_OF_LINE);
         } else {
@@ -228,7 +230,7 @@ final class ParserRuleFlow {
      * @param columns column format definitions
      * @return prebuilt parser rules for a single row traversal in column-flow mode
      */
-    private ParserRule[] buildColumnFlowRules(List<CsvColumnFormat> columns) {
+    private ParserRule[] buildColumnFlowRules(List<CsvColumnMapping> columns) {
         ParserState[] states = buildDefaultStateFlow(columns);
         ParserRule[] rules = new ParserRule[states.length];
         for (int i = 0; i < states.length; i++) {

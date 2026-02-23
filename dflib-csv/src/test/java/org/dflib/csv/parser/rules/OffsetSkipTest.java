@@ -16,7 +16,7 @@ class OffsetSkipTest {
     @Test
     void lfUnquoted() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder()
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.LF)
                 .quote(Quote.none())
                 .build());
@@ -28,7 +28,7 @@ class OffsetSkipTest {
     @Test
     void lfQuotedLineBreak() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder()
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.LF)
                 .quote(Quote.of('"'))
                 .escape(Escape.DOUBLE)
@@ -41,7 +41,7 @@ class OffsetSkipTest {
     @Test
     void doubleQuoteAcrossSlices() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder()
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.LF)
                 .quote(Quote.of('"'))
                 .escape(Escape.DOUBLE)
@@ -60,7 +60,7 @@ class OffsetSkipTest {
     @Test
     void doubledQuote() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder()
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.LF)
                 .quote(Quote.of('"'))
                 .escape(Escape.DOUBLE)
@@ -73,7 +73,7 @@ class OffsetSkipTest {
     @Test
     void backslashEscapeAcrossSlices() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder()
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.LF)
                 .quote(Quote.of('"'))
                 .escape(Escape.BACKSLASH)
@@ -92,7 +92,7 @@ class OffsetSkipTest {
     @Test
     void customEscapeAcrossSlices() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder()
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.LF)
                 .quote(Quote.of('"'))
                 .escape('$')
@@ -111,7 +111,7 @@ class OffsetSkipTest {
     @Test
     void crlfAcrossSlices() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder()
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.CRLF)
                 .build());
 
@@ -128,7 +128,7 @@ class OffsetSkipTest {
     @Test
     void cr() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder()
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.CR)
                 .build());
 
@@ -139,7 +139,7 @@ class OffsetSkipTest {
     @Test
     void autoLf() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder()
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.AUTO)
                 .build());
 
@@ -150,7 +150,7 @@ class OffsetSkipTest {
     @Test
     void autoCrlf() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder()
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.AUTO)
                 .build());
 
@@ -161,7 +161,7 @@ class OffsetSkipTest {
     @Test
     void crlf() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder()
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.CRLF)
                 .build());
 

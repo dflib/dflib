@@ -15,7 +15,7 @@ class EmptyRowTest {
     @Test
     void skipLf() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder().lineBreak(LineBreak.LF).skipEmptyRows().build());
+        ParserRule rule = newRule(CsvFormat.defaultFormat().lineBreak(LineBreak.LF).skipEmptyRows().build());
 
         char[] buf = {'\n', 'x'};
         int pos = rule.consume(ctx, DataSlice.of(buf));
@@ -30,7 +30,7 @@ class EmptyRowTest {
     @Test
     void skipCr() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder().lineBreak(LineBreak.CR).skipEmptyRows().build());
+        ParserRule rule = newRule(CsvFormat.defaultFormat().lineBreak(LineBreak.CR).skipEmptyRows().build());
 
         char[] buf = {'\r', 'x'};
         int pos = rule.consume(ctx, DataSlice.of(buf));
@@ -45,7 +45,7 @@ class EmptyRowTest {
     @Test
     void skipAutoOnCr() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder().lineBreak(LineBreak.AUTO).skipEmptyRows().build());
+        ParserRule rule = newRule(CsvFormat.defaultFormat().lineBreak(LineBreak.AUTO).skipEmptyRows().build());
 
         char[] buf = {'\r', 'x'};
         int pos = rule.consume(ctx, DataSlice.of(buf));
@@ -60,7 +60,7 @@ class EmptyRowTest {
     @Test
     void skipCrlfPair() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder().lineBreak(LineBreak.CRLF).skipEmptyRows().build());
+        ParserRule rule = newRule(CsvFormat.defaultFormat().lineBreak(LineBreak.CRLF).skipEmptyRows().build());
 
         char[] buf = {'\r', '\n', 'x'};
         int pos = rule.consume(ctx, DataSlice.of(buf));
@@ -75,7 +75,7 @@ class EmptyRowTest {
     @Test
     void noSkipOnPartialCrlf() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder().lineBreak(LineBreak.CRLF).skipEmptyRows().build());
+        ParserRule rule = newRule(CsvFormat.defaultFormat().lineBreak(LineBreak.CRLF).skipEmptyRows().build());
 
         char[] buf = {'\r', 'x'};
         int pos = rule.consume(ctx, DataSlice.of(buf));
@@ -90,7 +90,7 @@ class EmptyRowTest {
     @Test
     void noSkipOnNonLineBreak() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder().lineBreak(LineBreak.LF).skipEmptyRows().build());
+        ParserRule rule = newRule(CsvFormat.defaultFormat().lineBreak(LineBreak.LF).skipEmptyRows().build());
 
         char[] buf = {'a', '\n'};
         int pos = rule.consume(ctx, DataSlice.of(buf));

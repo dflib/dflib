@@ -1,6 +1,6 @@
 package org.dflib.csv.parser.format;
 
-import org.dflib.csv.CsvSchemaFactory;
+import org.dflib.csv.parser.CsvSchemaFactory;
 import org.dflib.csv.parser.test.DfParserAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -18,10 +18,10 @@ class ColumnDefinitionTest {
 
     @Test
     void parseSkipColumn() {
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column("id"))
-                .column(CsvFormat.column("name").skip())
-                .column(CsvFormat.column("value"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column("id"))
+                .column(CsvColumnMapping.column("name").skip())
+                .column(CsvColumnMapping.column("value"))
                 .schemaFactory(CsvSchemaFactory.ofCols("id", "value"))
                 .build();
 
@@ -46,17 +46,17 @@ class ColumnDefinitionTest {
                 10,Name 10,Value 10
                 """;
 
-        new DfParserAsserts(csv, CsvFormat.defaultFormat(), "id", "name", "value")
+        new DfParserAsserts(csv, CsvParserConfig.builder(), "id", "name", "value")
                 .expectHeight(10)
                 .expectRow(0, "1", "Name 1", "Value 1");
     }
 
     @Test
     void autoDisabledWithColumns() {
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column("id"))
-                .column(CsvFormat.column("name"))
-                .column(CsvFormat.column("value"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column("id"))
+                .column(CsvColumnMapping.column("name"))
+                .column(CsvColumnMapping.column("value"))
                 .build();
 
         String csv = """
@@ -81,7 +81,7 @@ class ColumnDefinitionTest {
     @Test
     void autoDisabledNoColumns() {
         //  Here we do not specify the "name" column, with `autoColumns`=false
-        assertThrows(IllegalArgumentException.class, () -> CsvFormat.builder()
+        assertThrows(IllegalArgumentException.class, () -> CsvParserConfig.builder()
                 .autoColumns(false)
                 .build(), "Expected IllegalArgumentException when autoColumns is false and no columns are defined manually");
     }
@@ -94,10 +94,13 @@ class ColumnDefinitionTest {
                 2,B,40
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column("id"))
-                .column(CsvFormat.column("name").skip().nullable(true, "NA"))
-                .column(CsvFormat.column("age").type(CsvColumnType.INTEGER))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column("id"))
+                .column(CsvColumnMapping.column("name")
+                        .skip()
+                        .nullable(true)
+                        .format(CsvFormat.columnFormat().nullString("NA").build()))
+                .column(CsvColumnMapping.column("age").type(CsvColumnType.INTEGER))
                 .schemaFactory(CsvSchemaFactory.ofCols("id", "age"))
                 .build();
 
@@ -115,10 +118,10 @@ class ColumnDefinitionTest {
                 2,B,20
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column(0).name("id"))
-                .column(CsvFormat.column(1).name("name").skip())
-                .column(CsvFormat.column(2).name("age"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column(0).name("id"))
+                .column(CsvColumnMapping.column(1).name("name").skip())
+                .column(CsvColumnMapping.column(2).name("age"))
                 .schemaFactory(CsvSchemaFactory.ofCols("id", "age"))
                 .build();
 

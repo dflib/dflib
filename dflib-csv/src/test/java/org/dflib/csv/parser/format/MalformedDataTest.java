@@ -53,7 +53,7 @@ class MalformedDataTest {
 
     @Test
     void multiCharDelimiterError() {
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .delimiter("||")
                 .build();
         String csv = """
@@ -66,7 +66,7 @@ class MalformedDataTest {
 
     @Test
     void invalidCharsBeforeCr() {
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.CR)
                 .build();
         String csv = "id,name\r1,\"alpha\"x\r";
@@ -76,7 +76,7 @@ class MalformedDataTest {
 
     @Test
     void invalidCharsBeforeCrlf() {
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.CRLF)
                 .build();
         String csv = "id,name\r\n1,\"alpha\"x\r\n";
@@ -86,8 +86,8 @@ class MalformedDataTest {
 
     @Test
     void invalidCharsAcrossBuffer() {
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column(0).name("value"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column(0).name("value"))
                 .excludeHeaderValues(false)
                 .build();
         String payload = "a".repeat(8190);
@@ -98,7 +98,7 @@ class MalformedDataTest {
 
     @Test
     void danglingBackslashEscapeEof() {
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .escape(Escape.BACKSLASH)
                 .build();
         String csv = "id,name\n1,\"alpha\\\"";
@@ -108,7 +108,7 @@ class MalformedDataTest {
 
     @Test
     void danglingCustomEscapeEof() {
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .escape('x')
                 .build();
         String csv = "id,name\n1,\"alphax\"";
@@ -132,7 +132,7 @@ class MalformedDataTest {
 
     @Test
     void singleCharDelimiterError() {
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .delimiter(";")
                 .build();
         String csv = """
@@ -218,6 +218,11 @@ class MalformedDataTest {
     }
 
     private static void assertMalformed(CsvFormat format, String csv) {
+        CsvParserConfig config = CsvParserConfig.builder().csvFormat(format).build();
+        assertMalformed(config, csv);
+    }
+
+    private static void assertMalformed(CsvParserConfig format, String csv) {
         assertThrows(IllegalStateException.class, () -> new CsvParser(format).parse(new StringReader(csv)));
     }
 }

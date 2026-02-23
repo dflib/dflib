@@ -1,7 +1,7 @@
 package org.dflib.csv;
 
-import org.apache.commons.csv.CSVFormat;
 import org.dflib.DataFrame;
+import org.dflib.csv.parser.format.CsvFormat;
 import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -14,11 +14,7 @@ class CsvLoader_TrailingDelimiterTest {
         String csv = "A,B,\n1,2,\n3,4,";
 
         DataFrame df = new CsvLoader()
-                .format(CSVFormat.DEFAULT.builder()
-                        .setAllowMissingColumnNames(true)
-                        .setLenientEof(true)
-                        .setTrailingDelimiter(true)
-                        .build())
+                .format(CsvFormat.defaultFormat().trailingDelimiter(true).build())
                 .load(new StringReader(csv));
 
         new DataFrameAsserts(df, "A", "B")
@@ -32,11 +28,7 @@ class CsvLoader_TrailingDelimiterTest {
         String csv = "A,B,\n1,2,\n3,4,";
 
         DataFrame df = new CsvLoader()
-                .format(CSVFormat.DEFAULT.builder()
-                        .setAllowMissingColumnNames(true)
-                        .setLenientEof(true)
-                        .setTrailingDelimiter(false)
-                        .build())
+                .format(CsvFormat.defaultFormat().trailingDelimiter(false).build())
                 .load(new StringReader(csv));
 
         new DataFrameAsserts(df, "A", "B", "")

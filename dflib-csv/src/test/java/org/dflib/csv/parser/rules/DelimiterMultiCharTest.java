@@ -100,7 +100,7 @@ class DelimiterMultiCharTest {
     }
 
     private ParserRule newRule(String delimiter) {
-        CsvFormat format = CsvFormat.builder().delimiter(delimiter).excludeHeaderValues(false).build();
+        CsvFormat format = CsvFormat.defaultFormat().delimiter(delimiter).build();
         return new DelimiterFactory().create(format);
     }
 }

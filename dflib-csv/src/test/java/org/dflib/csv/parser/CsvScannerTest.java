@@ -3,8 +3,9 @@ package org.dflib.csv.parser;
 import org.dflib.DataFrame;
 import org.dflib.csv.parser.context.DataCallback;
 import org.dflib.csv.parser.context.ParserContext;
-import org.dflib.csv.parser.format.CsvColumnFormat;
+import org.dflib.csv.parser.format.CsvColumnMapping;
 import org.dflib.csv.parser.format.CsvFormat;
+import org.dflib.csv.parser.format.CsvParserConfig;
 import org.dflib.csv.parser.format.Escape;
 import org.dflib.csv.parser.format.LineBreak;
 import org.dflib.csv.parser.format.Quote;
@@ -138,10 +139,10 @@ class CsvScannerTest {
     void multiCharDelimiterAfterQuotedColumn() {
         String first = "a".repeat(CsvScanner.INITIAL_BUFFER_SIZE - 3);
         String csv = "\"" + first + "\"||b\n";
-        CsvFormat format = CsvFormat.builder()
-                .delimiter("||")
-                .column(CsvFormat.column(0).name("c0"))
-                .column(CsvFormat.column(1).name("c1"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .csvFormat(CsvFormat.defaultFormat().delimiter("||"))
+                .column(CsvColumnMapping.column(0).name("c0"))
+                .column(CsvColumnMapping.column(1).name("c1"))
                 .excludeHeaderValues(false)
                 .build();
 
@@ -156,10 +157,11 @@ class CsvScannerTest {
     void crlfAfterQuotedColumn() {
         String first = "a".repeat(CsvScanner.INITIAL_BUFFER_SIZE - 3);
         String csv = "\"" + first + "\"\r\nb\r\n";
-        CsvFormat format = CsvFormat.builder()
-                .lineBreak(LineBreak.CRLF)
-                .column(CsvFormat.column(0).name("c0"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .csvFormat(CsvFormat.defaultFormat().lineBreak(LineBreak.CRLF))
+                .column(CsvColumnMapping.column(0).name("c0"))
                 .excludeHeaderValues(false)
+
                 .build();
 
         DataFrame df = parse(csv, format);
@@ -174,14 +176,15 @@ class CsvScannerTest {
     void escapeCharAtBufferBoundary() {
         String prefix = "x".repeat(CsvScanner.INITIAL_BUFFER_SIZE - 3);
         String csv = "1," + prefix + "\\,tail\n";
-        CsvFormat format = CsvFormat.builder()
-                .lineBreak(LineBreak.LF)
-                .quote(Quote.none())
-                .escape(Escape.BACKSLASH)
-                .column(CsvFormat.column(0).name("c0"))
-                .column(CsvFormat.column(1).name("c1"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column(0).name("c0"))
+                .column(CsvColumnMapping.column(1).name("c1"))
                 .autoColumns(false)
                 .excludeHeaderValues(false)
+                .csvFormat(CsvFormat.defaultFormat()
+                        .lineBreak(LineBreak.LF)
+                        .quote(Quote.none())
+                        .escape(Escape.BACKSLASH))
                 .build();
 
         DataFrame df = parse(csv, format);
@@ -203,40 +206,40 @@ class CsvScannerTest {
                 .expectRow(0, first, "tail");
     }
 
-    private static DataFrame parse(String csv, CsvFormat format) {
+    private static DataFrame parse(String csv, CsvParserConfig format) {
         return new CsvParser(format).parse(new StringReader(csv));
     }
 
-    private static CsvScanner scan(CsvFormat format, String csv) {
+    private static CsvScanner scan(CsvParserConfig format, String csv) {
         CsvScanner scanner = newScanner(format);
         scanner.scan(new StringReader(csv));
         return scanner;
     }
 
-    private static CsvScanner newScanner(CsvFormat format) {
+    private static CsvScanner newScanner(CsvParserConfig format) {
         ParserContext context = new ParserContext();
         context.setCallback(new DataCallback() {
         });
 
         ParserRuleFlow ruleFlow = new ParserRuleFlow(format, context);
         if (!format.autoColumns()) {
-            ruleFlow.initColumns(format.columnBuilders().stream().map(CsvColumnFormat.Builder::build).toList());
+            ruleFlow.initColumns(format.columnMappings());
         }
 
         return new CsvScanner(context, ruleFlow);
     }
 
-    private static CsvFormat oneColumnFormat() {
-        return CsvFormat.builder()
-                .column(CsvFormat.column(0).name("c0"))
+    private static CsvParserConfig oneColumnFormat() {
+        return CsvParserConfig.builder()
+                .column(CsvColumnMapping.column(0).name("c0"))
                 .excludeHeaderValues(false)
                 .build();
     }
 
-    private static CsvFormat twoColumnFormat() {
-        return CsvFormat.builder()
-                .column(CsvFormat.column(0).name("c0"))
-                .column(CsvFormat.column(1).name("c1"))
+    private static CsvParserConfig twoColumnFormat() {
+        return CsvParserConfig.builder()
+                .column(CsvColumnMapping.column(0).name("c0"))
+                .column(CsvColumnMapping.column(1).name("c1"))
                 .excludeHeaderValues(false)
                 .build();
     }

@@ -13,7 +13,7 @@ class DelimiterCommaTest {
     @Test
     void findsComma() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(",");
+        ParserRule rule = newRule();
         char[] buf = {'a', 'b', ',', 'c'};
         ctx.markColumnStart(0); // Simulate that a column has started
         int pos = rule.consume(ctx, DataSlice.of(buf));
@@ -25,7 +25,7 @@ class DelimiterCommaTest {
     @Test
     void noComma() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(",");
+        ParserRule rule = newRule();
         char[] buf = {'a', 'b', 'c'};
         int pos = rule.consume(ctx, DataSlice.of(buf));
         assertEquals(-1, pos, "Should return -1 if no comma found");
@@ -34,7 +34,7 @@ class DelimiterCommaTest {
     @Test
     void commaAtStart() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(",");
+        ParserRule rule = newRule();
         char[] buf = {',', 'a', 'b'};
         int pos = rule.consume(ctx, DataSlice.of(buf));
         assertEquals(1, pos, "Should return index after comma at start");
@@ -43,7 +43,7 @@ class DelimiterCommaTest {
     @Test
     void commaAtEnd() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(",");
+        ParserRule rule = newRule();
         char[] buf = {'a', 'b', ','};
         int pos = rule.consume(ctx, DataSlice.of(buf));
         assertEquals(3, pos, "Should return index after comma at end");
@@ -52,14 +52,14 @@ class DelimiterCommaTest {
     @Test
     void emptyBuffer() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(",");
+        ParserRule rule = newRule();
         char[] buf = {};
         int pos = rule.consume(ctx, DataSlice.of(buf));
         assertEquals(-1, pos, "Should return -1 for empty buffer");
     }
 
-    private ParserRule newRule(String delimiter) {
-        CsvFormat format = CsvFormat.builder().delimiter(delimiter).excludeHeaderValues(false).build();
+    private ParserRule newRule() {
+        CsvFormat format = CsvFormat.defaultFormat().delimiter(",").build();
         return new DelimiterFactory().create(format);
     }
 }

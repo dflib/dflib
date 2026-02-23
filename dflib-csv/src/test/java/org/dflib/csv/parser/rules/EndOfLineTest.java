@@ -14,9 +14,8 @@ class EndOfLineTest {
     @Test
     void lfLineEnd() {
         ParserContext ctx = newContext();
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.LF)
-                .excludeHeaderValues(false)
                 .build();
 
         ParserRule rule = new EndOfLineFactory().create(format);
@@ -35,9 +34,8 @@ class EndOfLineTest {
     @Test
     void crLineEnd() {
         ParserContext ctx = newContext();
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.CR)
-                .excludeHeaderValues(false)
                 .build();
 
         ParserRule rule = new EndOfLineFactory().create(format);
@@ -55,9 +53,8 @@ class EndOfLineTest {
     @Test
     void crlfLineEnd() {
         ParserContext ctx = newContext();
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.CRLF)
-                .excludeHeaderValues(false)
                 .build();
 
         ParserRule rule = new EndOfLineFactory().create(format);
@@ -75,9 +72,8 @@ class EndOfLineTest {
     @Test
     void autoLineEndLf() {
         ParserContext ctx = newContext();
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.AUTO)
-                .excludeHeaderValues(false)
                 .build();
 
         ParserRule rule = new EndOfLineFactory().create(format);
@@ -95,9 +91,8 @@ class EndOfLineTest {
     @Test
     void autoLineEndCr() {
         ParserContext ctx = newContext();
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.AUTO)
-                .excludeHeaderValues(false)
                 .build();
 
         ParserRule rule = new EndOfLineFactory().create(format);
@@ -115,9 +110,8 @@ class EndOfLineTest {
     @Test
     void autoLineEndCrlf() {
         ParserContext ctx = newContext();
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.AUTO)
-                .excludeHeaderValues(false)
                 .build();
 
         ParserRule rule = new EndOfLineFactory().create(format);
@@ -135,9 +129,8 @@ class EndOfLineTest {
     @Test
     void noLineEnd() {
         ParserContext ctx = newContext();
-        CsvFormat format = CsvFormat.builder()
+        CsvFormat format = CsvFormat.defaultFormat()
                 .lineBreak(LineBreak.LF)
-                .excludeHeaderValues(false)
                 .build();
         
         ParserRule rule = new EndOfLineFactory().create(format);

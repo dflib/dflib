@@ -13,11 +13,11 @@ class AllowEmptyColumnsTest {
                 2,B
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column("id"))
-                .column(CsvFormat.column("name"))
-                .column(CsvFormat.column("age"))
-                .allowEmptyColumns()
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column("id"))
+                .column(CsvColumnMapping.column("name"))
+                .column(CsvColumnMapping.column("age"))
+                .csvFormat(CsvFormat.defaultFormat().allowEmptyColumns().build())
                 .build();
 
         new DfParserAsserts(csv, format, "id", "name", "age")
@@ -34,12 +34,12 @@ class AllowEmptyColumnsTest {
                 2,B
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column("id"))
-                .column(CsvFormat.column("name"))
-                .column(CsvFormat.column("age"))
-                .column(CsvFormat.column("city"))
-                .allowEmptyColumns()
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column("id"))
+                .column(CsvColumnMapping.column("name"))
+                .column(CsvColumnMapping.column("age"))
+                .column(CsvColumnMapping.column("city"))
+                .csvFormat(CsvFormat.defaultFormat().allowEmptyColumns().build())
                 .build();
 
         new DfParserAsserts(csv, format, "id", "name", "age", "city")
@@ -50,7 +50,7 @@ class AllowEmptyColumnsTest {
 
     @Test
     void inconsistentColumnCount() {
-        CsvFormat format = CsvFormat.builder().allowEmptyColumns().build();
+        CsvFormat format = CsvFormat.defaultFormat().allowEmptyColumns().build();
         String csv = """
                 id,name,value,extra
                 1,A,foo

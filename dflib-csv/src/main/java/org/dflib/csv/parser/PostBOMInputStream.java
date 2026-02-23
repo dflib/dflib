@@ -1,4 +1,4 @@
-package org.dflib.csv;
+package org.dflib.csv.parser;
 
 import java.io.IOException;
 import java.io.InputStream;

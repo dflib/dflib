@@ -15,7 +15,7 @@ class LimitOffsetTest {
 
     @Test
     void excludeHeaderOffset0Limit2() {
-        CsvFormat.Builder format = CsvFormat.builder()
+        CsvParserConfig.Builder format = CsvParserConfig.builder()
                 .excludeHeaderValues(true)
                 .offset(0)
                 .limit(2);
@@ -28,7 +28,7 @@ class LimitOffsetTest {
 
     @Test
     void excludeHeaderOffset1Limit2() {
-        CsvFormat.Builder format = CsvFormat.builder()
+        CsvParserConfig.Builder format = CsvParserConfig.builder()
                 .excludeHeaderValues(true)
                 .offset(1)
                 .limit(2);
@@ -41,7 +41,7 @@ class LimitOffsetTest {
 
     @Test
     void includeHeaderOffset0Limit2() {
-        CsvFormat.Builder format = CsvFormat.builder()
+        CsvParserConfig.Builder format = CsvParserConfig.builder()
                 .autoColumns(true)
                 .excludeHeaderValues(false)
                 .offset(0)
@@ -55,7 +55,7 @@ class LimitOffsetTest {
 
     @Test
     void limitAndOffset() {
-        CsvFormat format = CsvFormat.builder()
+        CsvParserConfig format = CsvParserConfig.builder()
                 .offset(1)
                 .limit(2)
                 .build();

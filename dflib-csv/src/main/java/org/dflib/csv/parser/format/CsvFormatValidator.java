@@ -1,19 +1,13 @@
 package org.dflib.csv.parser.format;
 
-import java.util.List;
-
 /**
  * Validates CsvFormat configuration for internal consistency.
  */
 class CsvFormatValidator {
     private final CsvFormat.Builder format;
-    private final boolean explicitAutoColumns;
-    private final List<CsvColumnFormat.Builder> columnBuilders;
-    
+
     CsvFormatValidator(CsvFormat.Builder builder) {
         this.format = builder;
-        this.explicitAutoColumns = builder.explicitAutoColumns;
-        this.columnBuilders = builder.columnBuilders;
     }
 
     /**
@@ -25,10 +19,8 @@ class CsvFormatValidator {
         validateLineBreak();
         validateComment();
         validateQuoteAndEscape();
-        validateLimitAndOffset();
-        validateColumns();
     }
-    
+
     private void validateDelimiter() {
         String delimiter = format.delimiter.delimiter;
         if (delimiter == null || delimiter.isEmpty()) {
@@ -104,24 +96,6 @@ class CsvFormatValidator {
             if (escapeChar == '\r' || escapeChar == '\n') {
                 throw new IllegalArgumentException("Escape character must not be a line break");
             }
-        }
-    }
-    
-    private void validateLimitAndOffset() {
-        if (format.limit < -1) {
-            throw new IllegalArgumentException("Limit must be non-negative or -1 (no limit)");
-        }
-        if (format.offset < 0) {
-            throw new IllegalArgumentException("Offset must be non-negative");
-        }
-        if (format.sizeHint < 0) {
-            throw new IllegalArgumentException("Size hint must be non-negative");
-        }
-    }
-    
-    private void validateColumns() {
-        if (explicitAutoColumns && !format.autoColumns && columnBuilders.isEmpty()) {
-            throw new IllegalArgumentException("No columns specified. Please specify at least one column or use autoColumns(true)");
         }
     }
 }

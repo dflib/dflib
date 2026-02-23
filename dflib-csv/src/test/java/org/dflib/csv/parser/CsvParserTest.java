@@ -1,8 +1,10 @@
 package org.dflib.csv.parser;
 
 import org.dflib.DataFrame;
+import org.dflib.csv.parser.format.CsvColumnMapping;
 import org.dflib.csv.parser.format.CsvColumnType;
 import org.dflib.csv.parser.format.CsvFormat;
+import org.dflib.csv.parser.format.CsvParserConfig;
 import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -63,11 +65,11 @@ public class CsvParserTest {
                 "2";"Name2";"Value2"
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .delimiter(";")
+        CsvParserConfig config = CsvParserConfig.builder()
+                .csvFormat(CsvFormat.defaultFormat().delimiter(";"))
                 .build();
 
-        DataFrame df = new CsvParser(format).parse(new StringReader(csv));
+        DataFrame df = new CsvParser(config).parse(new StringReader(csv));
 
         new DataFrameAsserts(df, "id", "name", "value")
                 .expectHeight(2)
@@ -82,10 +84,10 @@ public class CsvParserTest {
                 2,Name2,Value2
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column(0).name("f0"))
-                .column(CsvFormat.column(1).name("f1"))
-                .column(CsvFormat.column(2).name("f2"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column(0).name("f0"))
+                .column(CsvColumnMapping.column(1).name("f1"))
+                .column(CsvColumnMapping.column(2).name("f2"))
                 .autoColumns(false)
                 .excludeHeaderValues(false)
                 .build();
@@ -97,6 +99,7 @@ public class CsvParserTest {
                 .expectRow(0, "1", "Name1", "Value1")
                 .expectRow(1, "2", "Name2", "Value2");
     }
+
     @Test
     void parseTypes() {
         String csv = """
@@ -105,10 +108,10 @@ public class CsvParserTest {
                 2,Name2,false
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column("id").type(CsvColumnType.INTEGER))
-                .column(CsvFormat.column("name").type(CsvColumnType.STRING))
-                .column(CsvFormat.column("active").type(CsvColumnType.BOOLEAN))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column("id").type(CsvColumnType.INTEGER))
+                .column(CsvColumnMapping.column("name").type(CsvColumnType.STRING))
+                .column(CsvColumnMapping.column("active").type(CsvColumnType.BOOLEAN))
                 .build();
 
         DataFrame df = new CsvParser(format).parse(new StringReader(csv));
@@ -123,16 +126,16 @@ public class CsvParserTest {
     void parseSkipEmptyRows() {
         String csv = """
                 1,Name1
-
+                
                 2,Name2
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column(0).name("id"))
-                .column(CsvFormat.column(1).name("name"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column(0).name("id"))
+                .column(CsvColumnMapping.column(1).name("name"))
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .skipEmptyRows()
+                .csvFormat(CsvFormat.defaultFormat().skipEmptyRows())
                 .build();
 
         DataFrame df = new CsvParser(format).parse(new StringReader(csv));
@@ -146,21 +149,20 @@ public class CsvParserTest {
     @Test
     void parseSkipEmptyComments() {
         String csv = """
-
+                
                 # comment before data
                 1,Name1
-
+                
                 # comment between rows
                 2,Name2
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column(0).name("id"))
-                .column(CsvFormat.column(1).name("name"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column(0).name("id"))
+                .column(CsvColumnMapping.column(1).name("name"))
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .enableComments("#")
-                .skipEmptyRows()
+                .csvFormat(CsvFormat.defaultFormat().enableComments("#").skipEmptyRows())
                 .build();
 
         DataFrame df = new CsvParser(format).parse(new StringReader(csv));
@@ -174,17 +176,17 @@ public class CsvParserTest {
     @Test
     void parseSkipEmptyStart() {
         String csv = """
-
+                
                 1,Name1
                 2,Name2
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column(0).name("id"))
-                .column(CsvFormat.column(1).name("name"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column(0).name("id"))
+                .column(CsvColumnMapping.column(1).name("name"))
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .skipEmptyRows()
+                .csvFormat(CsvFormat.defaultFormat().skipEmptyRows())
                 .build();
 
         DataFrame df = new CsvParser(format).parse(new StringReader(csv));
@@ -201,8 +203,8 @@ public class CsvParserTest {
         String prefix = "a".repeat(bufferSize - 2);
         String csv = "\"" + prefix + "\"\"b\"\n";
 
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column("value"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column("value"))
                 .autoColumns(false)
                 .excludeHeaderValues(false)
                 .build();
@@ -222,10 +224,10 @@ public class CsvParserTest {
                 2,Name2,false
                 """;
 
-        CsvFormat format = CsvFormat.builder()
-                .column(CsvFormat.column("id"))
-                .column(CsvFormat.column("name"))
-                .column(CsvFormat.column("active"))
+        CsvParserConfig format = CsvParserConfig.builder()
+                .column(CsvColumnMapping.column("id"))
+                .column(CsvColumnMapping.column("name"))
+                .column(CsvColumnMapping.column("active"))
                 .autoColumns(false)
                 .build();
 

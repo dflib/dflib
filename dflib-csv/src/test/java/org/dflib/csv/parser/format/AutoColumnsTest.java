@@ -8,10 +8,10 @@ class AutoColumnsTest {
     @Test
     void autoAndNamedColumns() {
         String csv = "id,value,comment\n1,2,test\n2,45,\n";
-        CsvFormat format = CsvFormat
+        CsvParserConfig format = CsvParserConfig
                 .builder()
                 .autoColumns(true)
-                .column(CsvFormat.column("value").type(CsvColumnType.INTEGER))
+                .column(CsvColumnMapping.column("value").type(CsvColumnType.INTEGER))
                 .build();
 
         new DfParserAsserts(csv, format, "id", "value", "comment")
@@ -23,10 +23,10 @@ class AutoColumnsTest {
     @Test
     void autoAndIndexedColumns() {
         String csv = "id,value,comment\n1,2,test\n2,45,\n";
-        CsvFormat format = CsvFormat
+        CsvParserConfig format = CsvParserConfig
                 .builder()
                 .autoColumns(true)
-                .column(CsvFormat.column(1).type(CsvColumnType.INTEGER))
+                .column(CsvColumnMapping.column(1).type(CsvColumnType.INTEGER))
                 .build();
 
         new DfParserAsserts(csv, format, "id", "value", "comment")
@@ -38,7 +38,7 @@ class AutoColumnsTest {
     @Test
     void duplicateColumns() {
         String csv = "id,value,value\n1,2,test\n2,45,\n";
-        CsvFormat format = CsvFormat
+        CsvParserConfig format = CsvParserConfig
                 .builder()
                 .autoColumns(true)
                 .build();

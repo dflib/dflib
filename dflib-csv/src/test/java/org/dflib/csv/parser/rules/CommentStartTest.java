@@ -14,7 +14,7 @@ class CommentStartTest {
     @Test
     void defaultPrefixMatchSkipsRow() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder().enableComments().build());
+        ParserRule rule = newRule(CsvFormat.defaultFormat().enableComments().build());
 
         char[] buf = "# this is a comment".toCharArray();
         int pos = rule.consume(ctx, DataSlice.of(buf));
@@ -29,7 +29,7 @@ class CommentStartTest {
     @Test
     void multiCharPrefixMatchAtOffset() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder().enableComments("//").build());
+        ParserRule rule = newRule(CsvFormat.defaultFormat().enableComments("//").build());
 
         char[] buf = {'x', '/', '/', 'c'};
         DataSlice slice = DataSlice.of(buf);
@@ -47,7 +47,7 @@ class CommentStartTest {
     @Test
     void nonMatchDoesNotSkip() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder().enableComments("#").build());
+        ParserRule rule = newRule(CsvFormat.defaultFormat().enableComments("#").build());
 
         char[] buf = "id,name".toCharArray();
         int pos = rule.consume(ctx, DataSlice.of(buf));
@@ -62,7 +62,7 @@ class CommentStartTest {
     @Test
     void partialPrefixDoesNotMatch() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder().enableComments("//").build());
+        ParserRule rule = newRule(CsvFormat.defaultFormat().enableComments("//").build());
 
         char[] buf = {'/'};
         int pos = rule.consume(ctx, DataSlice.of(buf));
@@ -77,7 +77,7 @@ class CommentStartTest {
     @Test
     void disabledCommentsNoOp() {
         ParserContext ctx = newContext();
-        ParserRule rule = newRule(CsvFormat.builder().build());
+        ParserRule rule = newRule(CsvFormat.defaultFormat().build());
 
         char[] buf = "# maybe comment".toCharArray();
         int pos = rule.consume(ctx, DataSlice.of(buf));

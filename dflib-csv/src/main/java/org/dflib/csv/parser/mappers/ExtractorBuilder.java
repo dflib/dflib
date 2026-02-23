@@ -2,9 +2,9 @@ package org.dflib.csv.parser.mappers;
 
 import org.dflib.Extractor;
 import org.dflib.ValueMapper;
-import org.dflib.csv.CsvSchema;
+import org.dflib.csv.parser.CsvSchema;
 import org.dflib.csv.parser.context.DataSlice;
-import org.dflib.csv.parser.format.CsvColumnFormat;
+import org.dflib.csv.parser.format.CsvColumnMapping;
 import org.dflib.csv.parser.format.CsvFormat;
 import org.dflib.csv.parser.format.Trim;
 
@@ -27,7 +27,7 @@ public class ExtractorBuilder {
 
     @SuppressWarnings("unchecked")
     public static Extractor<DataSlice[], ?>[] buildExtractors(CsvFormat format,
-                                                              List<CsvColumnFormat> columns,
+                                                              List<CsvColumnMapping> columns,
                                                               CsvSchema schema) {
         int[] csvPositions = schema.getCsvPositions();
         Extractor<DataSlice[], ?>[] extractors = new Extractor[csvPositions.length];
@@ -40,7 +40,7 @@ public class ExtractorBuilder {
     }
 
     private static Extractor<DataSlice[], ?> buildColumnExtractor(CsvFormat format,
-                                                                  CsvColumnFormat columnFormat,
+                                                                  CsvColumnMapping columnFormat,
                                                                   CharBufferProvider bufferProvider) {
         Function<DataSlice[], DataSlice> sliceMapper;
         if (columnFormat.skip()) {
@@ -60,8 +60,10 @@ public class ExtractorBuilder {
             case DOUBLE -> $double(forDouble(sliceMapper, columnFormat));
             case BIG_INTEGER -> $col(forObject(sliceMapper, BigIntegerParser::parse, columnFormat));
             case BIG_DECIMAL -> $col(forObject(sliceMapper, BigDecimalParser::parse, columnFormat));
-            case OTHER -> $col(forObject(sliceMapper, mapperFunction(format, columnFormat, bufferProvider), columnFormat));
-            default -> $col(forObject(sliceMapper, unescapeFunction(format, columnFormat, bufferProvider), columnFormat));
+            case OTHER ->
+                    $col(forObject(sliceMapper, mapperFunction(format, columnFormat, bufferProvider), columnFormat));
+            default ->
+                    $col(forObject(sliceMapper, unescapeFunction(format, columnFormat, bufferProvider), columnFormat));
         };
         if (columnFormat.compact()) {
             return extractor.compact();
@@ -69,27 +71,27 @@ public class ExtractorBuilder {
         return extractor;
     }
 
-    private static Function<DataSlice[], DataSlice> buildSliceMapper(CsvColumnFormat columnFormat) {
+    private static Function<DataSlice[], DataSlice> buildSliceMapper(CsvColumnMapping columnFormat) {
         int idx = columnFormat.index();
         Function<DataSlice[], DataSlice> sliceMapper = ss -> ss[idx];
-        Trim trim = columnFormat.trim();
+        Trim trim = columnFormat.format().trim();
         if (trim != Trim.NONE) {
             sliceMapper = new TrimmingSliceMapper(sliceMapper, trim);
         }
         if (columnFormat.nullable()) {
-            return new NullableSliceMapper(sliceMapper, columnFormat.nullValue());
+            return new NullableSliceMapper(sliceMapper, columnFormat.format().nullString());
         }
         return sliceMapper;
     }
 
     private static Function<DataSlice, String> unescapeFunction(CsvFormat format,
-                                                                 CsvColumnFormat columnFormat,
-                                                                 CharBufferProvider bufferProvider) {
-        return QuoteProcessor.forFormat(format, columnFormat.quote(), bufferProvider);
+                                                                CsvColumnMapping columnFormat,
+                                                                CharBufferProvider bufferProvider) {
+        return QuoteProcessor.forFormat(format, columnFormat.format().quote(), bufferProvider);
     }
 
     private static Function<DataSlice, Object> mapperFunction(CsvFormat format,
-                                                              CsvColumnFormat columnFormat,
+                                                              CsvColumnMapping columnFormat,
                                                               CharBufferProvider bufferProvider) {
         Function<DataSlice, String> escape = unescapeFunction(format, columnFormat, bufferProvider);
         ValueMapper<String, ?> mapper = Objects.requireNonNull(columnFormat.mapper(),

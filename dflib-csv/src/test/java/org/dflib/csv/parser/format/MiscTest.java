@@ -89,24 +89,6 @@ class MiscTest {
     }
 
     @Test
-    void sizeHintIgnored() {
-        String csv = """
-                id,name
-                1,A
-                2,B
-                """;
-
-        CsvFormat format = CsvFormat.builder()
-                .sizeHint(2)
-                .build();
-
-        new DfParserAsserts(csv, format, "id", "name")
-                .expectHeight(2)
-                .expectRow(0, "1", "A")
-                .expectRow(1, "2", "B");
-    }
-
-    @Test
     void emptyColumns() {
         String csv = """
                 a,b,c,d
