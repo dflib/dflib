@@ -31,17 +31,15 @@ public class ExtractorBuilder {
                                                               CsvSchema schema) {
         int[] csvPositions = schema.getCsvPositions();
         Extractor<DataSlice[], ?>[] extractors = new Extractor[csvPositions.length];
-        CharBufferProvider bufferProvider = CharBufferProvider.singleton();
         for (int i = 0; i < csvPositions.length; i++) {
             int csvPos = csvPositions[i];
-            extractors[i] = buildColumnExtractor(format, columns.get(csvPos), bufferProvider);
+            extractors[i] = buildColumnExtractor(format, columns.get(csvPos));
         }
         return extractors;
     }
 
     private static Extractor<DataSlice[], ?> buildColumnExtractor(CsvFormat format,
-                                                                  CsvColumnMapping columnFormat,
-                                                                  CharBufferProvider bufferProvider) {
+                                                                  CsvColumnMapping columnFormat) {
         Function<DataSlice[], DataSlice> sliceMapper;
         if (columnFormat.skip()) {
             // there are two options for skipped columns:
@@ -61,9 +59,9 @@ public class ExtractorBuilder {
             case BIG_INTEGER -> $col(forObject(sliceMapper, BigIntegerParser::parse, columnFormat));
             case BIG_DECIMAL -> $col(forObject(sliceMapper, BigDecimalParser::parse, columnFormat));
             case OTHER ->
-                    $col(forObject(sliceMapper, mapperFunction(format, columnFormat, bufferProvider), columnFormat));
+                    $col(forObject(sliceMapper, mapperFunction(format, columnFormat), columnFormat));
             default ->
-                    $col(forObject(sliceMapper, unescapeFunction(format, columnFormat, bufferProvider), columnFormat));
+                    $col(forObject(sliceMapper, unescapeFunction(format, columnFormat), columnFormat));
         };
         if (columnFormat.compact()) {
             return extractor.compact();
@@ -85,15 +83,13 @@ public class ExtractorBuilder {
     }
 
     private static Function<DataSlice, String> unescapeFunction(CsvFormat format,
-                                                                CsvColumnMapping columnFormat,
-                                                                CharBufferProvider bufferProvider) {
-        return QuoteProcessor.forFormat(format, columnFormat.format().quote(), bufferProvider);
+                                                                CsvColumnMapping columnFormat) {
+        return QuoteProcessor.forFormat(format, columnFormat.format().quote());
     }
 
     private static Function<DataSlice, Object> mapperFunction(CsvFormat format,
-                                                              CsvColumnMapping columnFormat,
-                                                              CharBufferProvider bufferProvider) {
-        Function<DataSlice, String> escape = unescapeFunction(format, columnFormat, bufferProvider);
+                                                              CsvColumnMapping columnFormat) {
+        Function<DataSlice, String> escape = unescapeFunction(format, columnFormat);
         ValueMapper<String, ?> mapper = Objects.requireNonNull(columnFormat.mapper(),
                 () -> "No mapper is set for the column " + columnFormat.name() + "(" + columnFormat.index() + ")");
         return slice -> mapper.map(escape.apply(slice));

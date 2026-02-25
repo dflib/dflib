@@ -20,7 +20,7 @@ record ColumnGeneratorListener(CsvParserConfig config, CsvColumnsBuilder columns
     public void columnsDetected(DataSlice[] data) {
         if (config.excludeHeaderValues()) {
             // use header values as columns names
-            Function<DataSlice, String> unescape = QuoteProcessor.forFormat(config.csvFormat(), config.csvFormat().quote(), char[]::new);
+            Function<DataSlice, String> unescape = QuoteProcessor.forFormat(config.csvFormat(), config.csvFormat().quote());
             for (int i = 0; i < data.length; i++) {
                 columnsBuilder.merge(CsvColumnMapping.column(i).name(unescape.apply(data[i])));
             }

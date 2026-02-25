@@ -18,9 +18,7 @@ public final class QuoteProcessor {
     private QuoteProcessor() {
     }
 
-    public static Function<DataSlice, String> forFormat(CsvFormat format,
-                                                        Quote quote,
-                                                        IntFunction<char[]> bufferProvider) {
+    public static Function<DataSlice, String> forFormat(CsvFormat format, Quote quote) {
         if(format.escape() == Escape.NONE) {
             return DataSlice::toString;
         }
@@ -34,12 +32,12 @@ public final class QuoteProcessor {
             case CUSTOM -> format.escapeChar();
         };
         if (quote.noQuote()) {
-            return slice -> unescapeAny(slice, escapeChar, bufferProvider);
+            return slice -> unescapeAny(slice, escapeChar);
         }
-        return slice -> unescapeQuote(slice, escapeChar, quoteChar, bufferProvider);
+        return slice -> unescapeQuote(slice, escapeChar, quoteChar);
     }
 
-    static String unescapeAny(DataSlice slice, char escapeChar, IntFunction<char[]> bufferProvider) {
+    static String unescapeAny(DataSlice slice, char escapeChar) {
         char[] data = slice.data();
         int from = slice.from();
         int to = slice.to();
@@ -59,23 +57,21 @@ public final class QuoteProcessor {
             return slice.toString();
         }
 
-        char[] result = bufferProvider.apply(to - from);
         int next = 0;
-
         for (int i = from; i < to; i++) {
             char c = data[i];
             if (c == escapeChar && i < to - 1) {
-                result[next++] = data[i + 1];
+                data[next++] = data[i + 1];
                 i++;
             } else {
-                result[next++] = c;
+                data[next++] = c;
             }
         }
 
-        return new String(result, 0, next);
+        return new String(data, 0, next);
     }
 
-    static String unescapeQuote(DataSlice slice, char escapeChar, char quoteChar, IntFunction<char[]> bufferProvider) {
+    static String unescapeQuote(DataSlice slice, char escapeChar, char quoteChar) {
         if (!slice.escaped()) {
             return slice.toString();
         }
@@ -83,21 +79,20 @@ public final class QuoteProcessor {
         char[] data = slice.data();
         int from = slice.from();
         int to = slice.to();
-        char[] result = bufferProvider.apply(to - from);
         int next = 0;
         boolean changed = false;
 
         for (int i = from; i < to; i++) {
             char c = data[i];
             if (c == escapeChar && i < to - 1 && data[i + 1] == quoteChar) {
-                result[next++] = quoteChar;
+                data[next++] = quoteChar;
                 i++;
                 changed = true;
             } else {
-                result[next++] = c;
+                data[next++] = c;
             }
         }
 
-        return changed ? new String(result, 0, next) : slice.toString();
+        return changed ? new String(data, 0, next) : slice.toString();
     }
 }
