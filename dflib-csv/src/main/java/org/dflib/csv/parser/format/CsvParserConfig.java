@@ -333,7 +333,6 @@ public class CsvParserConfig {
             CsvFormat csvFormat = csvFormatBuilder.build();
 
             List<CsvColumnMapping> columnMappings = columnBuilders.stream()
-                    .peek(cb -> cb.format(CsvColumnFormat.mergeWithConfig(cb.format, csvFormat)))
                     .map(CsvColumnMapping.Builder::build)
                     .toList();
 

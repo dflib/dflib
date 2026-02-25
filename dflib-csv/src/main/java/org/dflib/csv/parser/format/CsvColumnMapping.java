@@ -10,6 +10,7 @@ public class CsvColumnMapping {
     boolean skip;
     boolean compact;
     CsvColumnType type;
+    boolean typeDefined;
     boolean nullable;
     boolean nullableDefined;
     Object defaultValue;
@@ -22,6 +23,7 @@ public class CsvColumnMapping {
         this.skip = builder.skip;
         this.compact = builder.compact;
         this.type = builder.type;
+        this.typeDefined = builder.typeDefined;
         this.mapper = builder.mapper;
         this.nullable = builder.nullable;
         this.nullableDefined = builder.nullableDefined;
@@ -108,6 +110,7 @@ public class CsvColumnMapping {
         boolean skip;
         boolean compact;
         CsvColumnType type;
+        boolean typeDefined;
         ValueMapper<String, ?> mapper;
         boolean nullableDefined;
         boolean nullable;
@@ -148,7 +151,7 @@ public class CsvColumnMapping {
             if (with.compact) {
                 compact();
             }
-            if (with.type != null) {
+            if (with.typeDefined) {
                 type(with.type);
             }
             if (with.mapper != null) {
@@ -175,6 +178,7 @@ public class CsvColumnMapping {
          */
         public Builder type(CsvColumnType type) {
             this.type = type;
+            this.typeDefined = true;
             return this;
         }
 
@@ -199,8 +203,7 @@ public class CsvColumnMapping {
          */
         public Builder mapper(ValueMapper<String, ?> mapper) {
             this.mapper = mapper;
-            this.type = CsvColumnType.OTHER;
-            return this;
+            return type(CsvColumnType.OTHER);
         }
 
         /**

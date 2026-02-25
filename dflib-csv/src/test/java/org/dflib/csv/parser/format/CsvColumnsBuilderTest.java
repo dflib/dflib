@@ -121,7 +121,7 @@ class CsvColumnsBuilderTest {
         assertEquals("A", merged.name());
         assertEquals(0, merged.index());
         assertEquals(CsvColumnType.DOUBLE, merged.type());
-        assertFalse(merged.skip());
+        assertTrue(merged.skip());
     }
 
     @Test

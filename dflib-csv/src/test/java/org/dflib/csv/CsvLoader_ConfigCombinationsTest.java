@@ -2,6 +2,7 @@ package org.dflib.csv;
 
 import org.dflib.DataFrame;
 import org.dflib.RowPredicate;
+import org.dflib.csv.parser.format.CsvFormat;
 import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -28,6 +29,21 @@ class CsvLoader_ConfigCombinationsTest {
                 .expectHeight(2)
                 .expectRow(0, 3, 1)
                 .expectRow(1, 6, 4);
+    }
+
+    @Test
+    void intCol_format() {
+        String csv = "A,B\n1,2\n..,5";
+
+        DataFrame df = new CsvLoader()
+                .colFormat("A", CsvFormat.columnFormat().nullString("..").build())
+                .intCol("A", 0)
+                .load(new StringReader(csv));
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(2)
+                .expectRow(0, 1, "2")
+                .expectRow(1, 0, "5");
     }
 
     @Test

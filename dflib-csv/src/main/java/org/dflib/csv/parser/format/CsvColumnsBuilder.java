@@ -78,7 +78,7 @@ public class CsvColumnsBuilder {
         CsvColumnMapping.Builder columnTo = findByName(name);
         CsvColumnMapping.Builder merged = mergeTo(column, columnTo);
         if (merged.idx != -1) {
-            setByIndex(merged.idx, column);
+            setByIndex(merged.idx, merged);
         } else {
             append(merged);
         }
@@ -105,7 +105,7 @@ public class CsvColumnsBuilder {
         for (int i = columns.size(); i <= idxTo; i++) {
             // skip this filler column
             // it could be set later
-            columns.add(CsvColumnMapping.column(i).type(CsvColumnType.STRING).skip());
+            columns.add(CsvColumnMapping.column(i).skip());
         }
     }
 
