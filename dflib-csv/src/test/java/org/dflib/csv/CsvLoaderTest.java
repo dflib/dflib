@@ -131,7 +131,7 @@ public class CsvLoaderTest extends BaseCsvTest {
                 .expectRow(1, "with, commas", "5.50001", "6");
     }
 
-    @SuppressWarnings("removal")
+    @Deprecated
     @Test
     public void mySQLFormat() {
         DataFrame df = new CsvLoader().format(CSVFormat.MYSQL).load(inPath("from_mysql.csv"));

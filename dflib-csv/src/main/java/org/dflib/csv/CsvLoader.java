@@ -470,11 +470,9 @@ public class CsvLoader {
      *
      * @param format a format object defined in commons-csv library
      * @return this loader instance
-     * @deprecated since 2.0.0, only for the backward compatibility with commons-csv parser,
-     *             use {@link #format(CsvFormat)} instead
+     * @deprecated use {@link #format(CsvFormat)} instead
      */
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true)
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public CsvLoader format(CSVFormat format) {
         if(format == null) {
             return this;
@@ -484,9 +482,8 @@ public class CsvLoader {
     }
 
     /**
-     * Optionally sets the style or format of the imported CSV.
-     * <p>
-     * It allows customizing the format by defining custom delimiters, line separators, etc.
+     * Optionally sets the style or format of the imported CSV. Allows customizing the format by defining custom
+     * delimiters, line separators, etc.
      *
      * @param format CSV format to use
      * @return this
@@ -536,8 +533,6 @@ public class CsvLoader {
         this.configBuilder.csvFormatBuilder().allowEmptyColumns();
         return this;
     }
-
-    // -- load methods --
 
     public DataFrame load(Path filePath) {
         return load(ByteSource.ofPath(filePath));
