@@ -202,6 +202,9 @@ var chart_{{id}} = echarts.init(
             {{#max}}
                 max: {{.}},
             {{/max}}
+            {{#splitNumber}}
+                splitNumber: {{.}},
+            {{/splitNumber}}
             {{#calculable}}
                 calculable: {{.}},
             {{/calculable}}

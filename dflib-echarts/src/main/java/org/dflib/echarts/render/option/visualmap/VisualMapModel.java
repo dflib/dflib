@@ -8,6 +8,7 @@ public class VisualMapModel {
     private final String type;
     private final Integer min;
     private final Integer max;
+    private final Integer splitNumber;
     private final Boolean calculable;
     private final String orient;
     private final String left;
@@ -23,6 +24,7 @@ public class VisualMapModel {
             String type,
             Integer min,
             Integer max,
+            Integer splitNumber,
             Boolean calculable,
             String orient,
             String left,
@@ -38,6 +40,7 @@ public class VisualMapModel {
         this.type = type;
         this.min = min;
         this.max = max;
+        this.splitNumber = splitNumber;
         this.calculable = calculable;
         this.orient = orient;
         this.left = left;
@@ -67,6 +70,10 @@ public class VisualMapModel {
 
     public Integer getMax() {
         return max;
+    }
+
+    public Integer getSplitNumber() {
+        return splitNumber;
     }
 
     public Integer getMin() {

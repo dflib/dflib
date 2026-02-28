@@ -22,6 +22,7 @@ public class VisualMap {
 
     private Integer min;
     private Integer max;
+    private Integer splitNumber;
     private Boolean calculable;
     private Orient orient;
     private LeftDistance left;
@@ -44,6 +45,14 @@ public class VisualMap {
 
     public VisualMap max(int max) {
         this.max = max;
+        return this;
+    }
+
+    /**
+     * Only applies to "piecewise" maps.
+     */
+    public VisualMap splitNumber(int splitNumber) {
+        this.splitNumber = splitNumber;
         return this;
     }
 
@@ -175,6 +184,7 @@ public class VisualMap {
                 type.name(),
                 min,
                 max,
+                splitNumber,
                 calculable,
                 orient != null ? orient.name() : null,
                 left != null ? left.asString() : null,

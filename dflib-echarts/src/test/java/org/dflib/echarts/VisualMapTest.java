@@ -49,6 +49,21 @@ public class VisualMapTest {
     }
 
     @Test
+    public void splitNumber() {
+        String s1 = ECharts.chart()
+                .visualMap(VisualMap.ofContinuous())
+                .plot(df4, "_tid").renderChartScript();
+
+        assertFalse(s1.contains("splitNumber:"), s1);
+
+        String s2 = ECharts.chart()
+                .visualMap(VisualMap.ofContinuous().splitNumber(5))
+                .plot(df4, "_tid").renderChartScript();
+
+        assertTrue(s2.contains("splitNumber: 5"), s2);
+    }
+
+    @Test
     public void orient() {
         String s1 = ECharts.chart()
                 .visualMap(VisualMap.ofContinuous())
