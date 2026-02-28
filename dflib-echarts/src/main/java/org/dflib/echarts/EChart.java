@@ -280,6 +280,14 @@ public class EChart {
     }
 
     /**
+     * Adds one or more "map" series to the plot with data coming from DataFrame columns passed as method arguments.
+     * Series configuration is specified via the {@link MapSeriesOpts} argument.
+     */
+    public EChart series(MapSeriesOpts seriesOpts, String... dataColumns) {
+        return singleColumnSeries(seriesOpts, dataColumns);
+    }
+
+    /**
      * Adds a "heatmap" series to the plot with data coming from the DataFrame column passed as method arguments.
      * The plot will be done on a calendar coordinate system.  Series configuration is specified via the
      * {@link HeatmapCalendarSeriesOpts} argument.

@@ -248,7 +248,8 @@ public class Option {
     }
 
     private boolean useCartesianDefaults() {
-        return seriesOpts.isEmpty()
+        // TODO: geo-related check is a hack. How do we make it more generic?
+        return (seriesOpts.isEmpty() && geo == null)
                 || seriesOpts.stream().anyMatch(s -> s.getCoordinateSystemType().isCartesian());
     }
 

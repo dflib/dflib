@@ -118,6 +118,7 @@ class SeriesModelBuilder {
             case boxplot -> boxplotModel((BoxplotSeriesOpts) seriesOpts);
             case pie -> pieModel((PieSeriesOpts) seriesOpts);
             case heatmap -> heatmapModel(seriesOpts);
+            case map -> mapModel((MapSeriesOpts) seriesOpts);
         };
     }
 
@@ -478,6 +479,41 @@ class SeriesModelBuilder {
                 null,
                 so.calendarIndex,
                 null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    private SeriesModel mapModel(MapSeriesOpts so) {
+        Integer valueDimension = this.valueDimensions != null && !this.valueDimensions.isEmpty()
+                ? this.valueDimensions.get(0)
+                : null;
+
+        return new SeriesModel(
+                name,
+                so.getType().name(),
+                null,
+                new EncodeModel(null, null, null, itemNameDimension, valueDimension, null, null),
+                null,
+                datasetSeriesLayoutBy,
+                CoordinateSystemType.geo.name(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                so.geoIndex,
                 null,
                 null,
                 null,

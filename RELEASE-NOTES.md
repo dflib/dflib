@@ -9,6 +9,7 @@
 * #613 Recast hConcat(..) as positional join
 * #614 CsvSaver to save to OutputStream
 * #615 ECharts: basic support for geo charts
+* #617 ECharts: "map" series
 * #619 CsvLoader: own CSV parser implementation
 
 ## Release 2.0.0-M6

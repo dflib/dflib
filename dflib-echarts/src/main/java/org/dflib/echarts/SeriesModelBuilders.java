@@ -48,7 +48,7 @@ class SeriesModelBuilders {
         }
 
         if (dsb != null) {
-            dsb.rows.forEach(r -> linkSeriesToDatasetRow(seriesModels, r));
+            dsb.rows.forEach(r -> linkSeriesToDatasetRow(seriesModels, r, dsb.layoutType));
         }
 
         return seriesModels.isEmpty()
@@ -71,12 +71,14 @@ class SeriesModelBuilders {
         }
     }
 
-    private static void linkSeriesToDatasetRow(List<SeriesModelBuilder> seriesModels, DatasetBuilder.DatasetRow row) {
+    private static void linkSeriesToDatasetRow(
+            List<SeriesModelBuilder> seriesModels,
+            DatasetBuilder.DatasetRow row,
+            DatasetBuilder.DatasetLayoutType layoutType) {
 
         switch (row.type) {
             case seriesData -> {
-                // laying out DataFrame series as horizontal rows that are somewhat more readable when laid out in JS
-                seriesModels.get(row.seriesOptsPos).datasetSeriesLayoutBy("row");
+                seriesModels.get(row.seriesOptsPos).datasetSeriesLayoutBy(layoutType.name());
 
                 // multiple dimensions can be appended to the same series in a loop
                 seriesModels.get(row.seriesOptsPos).valueDimension(row.datasetPos);

@@ -87,6 +87,17 @@ public abstract class SeriesOpts<SO extends SeriesOpts<SO>> {
         return new HeatmapCalendarSeriesOpts();
     }
 
+
+    /**
+     * Starts a builder for a "map" series options object.
+     *
+     * @since 2.0.0
+     */
+    public static MapSeriesOpts ofMap() {
+        return new MapSeriesOpts();
+    }
+
+
     protected SeriesOpts() {
     }
 

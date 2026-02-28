@@ -9,7 +9,12 @@ public enum ChartType {
     /**
      * @since 2.0.0
      */
-    heatmap;
+    heatmap,
+
+    /**
+     * @since 2.0.0
+     */
+    map;
 
     /**
      * @deprecated in favor of {@link CoordinateSystemType#isCartesian()}, as many chart types can be plotted over

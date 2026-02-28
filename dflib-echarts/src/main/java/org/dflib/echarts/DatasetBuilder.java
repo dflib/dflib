@@ -18,8 +18,12 @@ class DatasetBuilder {
 
     public static DatasetBuilder of(Option opt, DataFrame dataFrame) {
 
-        // The default for no series is to show empty cartesian coordinates, so "dataset" is still needed
-        boolean needsDataset = opt.seriesOpts.isEmpty() || opt.seriesOpts.stream()
+        // The default for no series is to show empty Cartesian coordinates that presumably requires a dataset
+        // (see Option.resolveDefaults())
+        // TODO: geo-related check is a hack. How do we make it more generic?
+
+        boolean needsDataset = (opt.seriesOpts.isEmpty() && opt.geo == null)
+                || opt.seriesOpts.stream()
                 .filter(so -> so.getType().supportsDataset())
                 .map(so -> true)
                 .findFirst()
@@ -29,7 +33,7 @@ class DatasetBuilder {
     }
 
     private static DatasetBuilder create(Option opt, DataFrame dataFrame) {
-        return new DatasetBuilder(dataFrame)
+        return new DatasetBuilder(dataFrame, datasetLayoutType(opt.seriesOpts))
                 .appendXAxesLabels(opt.xAxes)
                 .appendSingleAxesLabels(opt.singleAxes)
                 .appendGeoCoordinates(opt.seriesOpts)
@@ -40,14 +44,28 @@ class DatasetBuilder {
     }
 
     private final DataFrame dataFrame;
+    final DatasetLayoutType layoutType;
     final List<DatasetRow> rows;
     private final Set<String> seenDataColumns;
 
-    DatasetBuilder(DataFrame dataFrame) {
+    private DatasetBuilder(DataFrame dataFrame, DatasetLayoutType layoutType) {
         this.dataFrame = dataFrame;
+        this.layoutType = layoutType;
 
         this.rows = new ArrayList<>();
         this.seenDataColumns = new HashSet<>();
+    }
+
+    private static DatasetLayoutType datasetLayoutType(List<SeriesOpts<?>> seriesOpts) {
+        // "row" is the preferred layout type, as more compact and readable. "column" is used in exceptional cases
+        // specifically, to address this bug until ECharts does: https://github.com/apache/echarts/issues/21520
+
+        return seriesOpts
+                .stream()
+                .filter(s -> s.getType() == ChartType.map)
+                .findFirst()
+                .map(s -> DatasetLayoutType.column)
+                .orElse(DatasetLayoutType.row);
     }
 
     private DatasetBuilder appendXAxesLabels(List<ColumnLinkedXAxis> xs) {
@@ -195,11 +213,66 @@ class DatasetBuilder {
             return null;
         }
 
-        // DF columns become rows and rows become columns in the EChart dataset
+        return switch (layoutType) {
+            case column -> resolveColumn();
+            case row -> resolveRow();
+        };
+    }
+
+    private DatasetModel resolveRow() {
+
         int w = dataFrame.height();
         int h = rows.size();
 
-        Supplier<String> labelMaker = new Supplier<>() {
+        Supplier<String> labelMaker = createLabelMaker();
+
+        List<ValueModels<?>> mRows = new ArrayList<>(h);
+        for (DatasetRow dsRow : this.rows) {
+
+            List<Object> mRow = new ArrayList<>(w + 1);
+
+            String rowLabel = dsRow.dfColumn != null ? dsRow.dfColumn : labelMaker.get();
+            mRow.add(rowLabel);
+            dsRow.data.forEach(mRow::add);
+
+            mRows.add(new ValueModels<>(mRow));
+        }
+
+        return new DatasetModel(new ValueModels<>(mRows));
+    }
+
+    private DatasetModel resolveColumn() {
+
+        int w = dataFrame.height();
+        int h = rows.size();
+
+        Supplier<String> labelMaker = createLabelMaker();
+
+        // Resolve labels for all dataset rows (which correspond to ECharts columns)
+        List<String> labels = new ArrayList<>(h);
+        for (DatasetRow dsRow : this.rows) {
+            labels.add(dsRow.dfColumn != null ? dsRow.dfColumn : labelMaker.get());
+        }
+
+        List<ValueModels<?>> mRows = new ArrayList<>(w + 1);
+
+        // First row: all column labels
+        mRows.add(new ValueModels<>(new ArrayList<>(labels)));
+
+        // Subsequent rows: one per DataFrame row, with one value per dataset column
+        for (int i = 0; i < w; i++) {
+            List<Object> mRow = new ArrayList<>(h);
+            for (DatasetRow dsRow : this.rows) {
+                mRow.add(dsRow.data.get(i));
+            }
+            mRows.add(new ValueModels<>(mRow));
+        }
+
+        return new DatasetModel(new ValueModels<>(mRows));
+    }
+
+    private Supplier<String> createLabelMaker() {
+        return new Supplier<>() {
 
             final String baseLabel = "L";
             final Set<String> seen = new HashSet<>(seenDataColumns);
@@ -215,20 +288,6 @@ class DatasetBuilder {
                 return label;
             }
         };
-
-        List<ValueModels<?>> mRows = new ArrayList<>(h);
-        for (DatasetRow dsRow : this.rows) {
-
-            List<Object> mRow = new ArrayList<>(w + 1);
-
-            String rowLabel = dsRow.dfColumn != null ? dsRow.dfColumn : labelMaker.get();
-            mRow.add(rowLabel);
-            dsRow.data.forEach(mRow::add);
-
-            mRows.add(new ValueModels(mRow));
-        }
-
-        return new DatasetModel(new ValueModels(mRows));
     }
 
     enum DatasetRowType {
@@ -251,5 +310,9 @@ class DatasetBuilder {
             this.seriesOptsPos = seriesOptsPos;
             this.datasetPos = datasetPos;
         }
+    }
+
+    enum DatasetLayoutType {
+        row, column
     }
 }
