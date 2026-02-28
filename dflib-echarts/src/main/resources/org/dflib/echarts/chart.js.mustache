@@ -300,6 +300,9 @@ var chart_{{id}} = echarts.init(
         {{#map}}
             map: '{{.}}',
         {{/map}}
+        {{#nameProperty}}
+            nameProperty: '{{.}}',
+        {{/nameProperty}}
         {{#center}}
             center: [{{{lon}}},{{{lat}}}],
         {{/center}}

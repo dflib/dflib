@@ -8,6 +8,7 @@ import org.dflib.echarts.render.option.LabelModel;
 public record GeoModel(
         Boolean show,
         String map,
+        String nameProperty,
         GeoCoordsModel center,
         Integer zoom,
         Boolean roam,

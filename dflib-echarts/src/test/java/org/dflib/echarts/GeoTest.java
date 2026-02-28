@@ -93,6 +93,15 @@ public class GeoTest {
     }
 
     @Test
+    public void nameProperty() {
+        String s1 = ECharts.chart().geo(Geo.of("world")).plot(df1, "_tid").renderChartScript();
+        assertFalse(s1.contains("nameProperty:"), s1);
+
+        String s2 = ECharts.chart().geo(Geo.of("world").nameProperty("NAME")).plot(df1, "_tid").renderChartScript();
+        assertTrue(s2.contains("nameProperty: 'NAME'"), s2);
+    }
+
+    @Test
     public void label() {
         String s1 = ECharts.chart().geo(Geo.of("world")).plot(df1, "_tid").renderChartScript();
         assertTrue(s1.contains("geo: {"), s1);

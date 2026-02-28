@@ -20,6 +20,7 @@ public class Geo {
     private GeoCoord centerLon;
     private Double aspectScale;
     private Label label;
+    private String nameProperty;
 
     public static Geo of(String map) {
         return new Geo(map);
@@ -36,6 +37,11 @@ public class Geo {
 
     public Geo zoom(int zoom) {
         this.zoom = zoom;
+        return this;
+    }
+
+    public Geo nameProperty(String nameProperty) {
+        this.nameProperty = nameProperty;
         return this;
     }
 
@@ -79,6 +85,7 @@ public class Geo {
         return new GeoModel(
                 show,
                 map,
+                nameProperty,
                 centerLat != null && centerLon != null ? new GeoCoordsModel(centerLat.asString(), centerLon.asString()) : null,
                 zoom,
                 roam,
