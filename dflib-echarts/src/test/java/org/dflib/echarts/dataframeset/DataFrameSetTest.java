@@ -30,6 +30,19 @@ public class DataFrameSetTest {
     }
 
     @Test
+    public void maxHeight_singleDf() {
+        DataFrame df = DataFrame.foldByRow("x").of(1, 2, 3);
+        assertEquals(3, DataFrameSet.of(df).maxHeight());
+    }
+
+    @Test
+    public void maxHeight_multipleDfs() {
+        DataFrame df1 = DataFrame.foldByRow("a").of(1, 2);
+        DataFrame df2 = DataFrame.foldByRow("b").of(3, 4, 5);
+        assertEquals(3, DataFrameSet.of(df1, df2).maxHeight());
+    }
+
+    @Test
     public void singleDf_unqualifiedName() {
         DataFrame df = DataFrame.foldByRow("x", "y").of(1, 2, 3, 4);
         DataFrameSet set = DataFrameSet.of(df);

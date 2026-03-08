@@ -66,6 +66,20 @@ public class DataFrameSet {
         return h;
     }
 
+    /**
+     * Returns the maximum height among all DataFrames in the set.
+     */
+    public int maxHeight() {
+        int max = 0;
+        for (DataFrame df : dataFrames) {
+            int h = df.height();
+            if (h > max) {
+                max = h;
+            }
+        }
+        return max;
+    }
+
     private Map<String, int[]> nameIndex() {
         if (nameIndex == null) {
             Map<String, int[]> idx = new HashMap<>();

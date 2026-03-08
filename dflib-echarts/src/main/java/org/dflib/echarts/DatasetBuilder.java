@@ -1,6 +1,5 @@
 package org.dflib.echarts;
 
-import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.Series;
 import org.dflib.echarts.dataframeset.DataFrameSet;
@@ -76,9 +75,10 @@ class DatasetBuilder {
             for (int i = 0; i < len; i++) {
                 ColumnLinkedXAxis ab = xs.get(i);
                 if (ab.columnName != null) {
-                    appendUnnamedRow(dataFrame.getColumn(ab.columnName), DatasetRowType.xAxisLabels, i);
+                    appendUnnamedRow(dataFrames.getColumn(ab.columnName), DatasetRowType.xAxisLabels, i);
                 } else {
-                    appendUnnamedRow(new IntSequenceSeries(1, dataFrame.height() + 1), DatasetRowType.xAxisLabels, i);
+                    // TODO: is it correct to use "maxHeight" here? What do values in IntSequenceSeries even signify here? Categories?
+                    appendUnnamedRow(new IntSequenceSeries(1, dataFrames.maxHeight() + 1), DatasetRowType.xAxisLabels, i);
                 }
             }
         }
@@ -93,7 +93,7 @@ class DatasetBuilder {
             for (int i = 0; i < len; i++) {
                 ColumnLinkedSingleAxis ab = ss.get(i);
                 if (ab.columnName != null) {
-                    appendUnnamedRow(dataFrame.getColumn(ab.columnName), DatasetRowType.singleAxisLabel, i);
+                    appendUnnamedRow(dataFrames.getColumn(ab.columnName), DatasetRowType.singleAxisLabel, i);
                 }
             }
         }
@@ -112,7 +112,7 @@ class DatasetBuilder {
                 SeriesOptsItemSymbolSize soc = (SeriesOptsItemSymbolSize) so;
                 String columnName = soc.getItemSymbolSizeSeries();
                 if (columnName != null) {
-                    appendUnnamedRow(dataFrame.getColumn(columnName), DatasetRowType.symbolSize, i);
+                    appendUnnamedRow(dataFrames.getColumn(columnName), DatasetRowType.symbolSize, i);
                 }
             }
         }
@@ -130,7 +130,7 @@ class DatasetBuilder {
                 SeriesOptsItemStyleColor soc = (SeriesOptsItemStyleColor) so;
                 String columnName = soc.getItemStyleColorSeries();
                 if (columnName != null) {
-                    appendUnnamedRow(dataFrame.getColumn(columnName), DatasetRowType.itemStyleColor, i);
+                    appendUnnamedRow(dataFrames.getColumn(columnName), DatasetRowType.itemStyleColor, i);
                 }
             }
         }
@@ -145,11 +145,11 @@ class DatasetBuilder {
 
             if (series.get(i) instanceof SeriesOptsLonLat gc) {
                 if (gc.getLatSeries() != null) {
-                    appendUnnamedRow(dataFrame.getColumn(gc.getLatSeries()), DatasetRowType.lat, i);
+                    appendUnnamedRow(dataFrames.getColumn(gc.getLatSeries()), DatasetRowType.lat, i);
                 }
 
                 if (gc.getLonSeries() != null) {
-                    appendUnnamedRow(dataFrame.getColumn(gc.getLonSeries()), DatasetRowType.lon, i);
+                    appendUnnamedRow(dataFrames.getColumn(gc.getLonSeries()), DatasetRowType.lon, i);
                 }
             }
         }
@@ -168,7 +168,7 @@ class DatasetBuilder {
                 SeriesOptsNamedItems soc = (SeriesOptsNamedItems) so;
                 String columnName = soc.getItemNameSeries();
                 if (columnName != null) {
-                    appendUnnamedRow(dataFrame.getColumn(soc.getItemNameSeries()), DatasetRowType.itemName, i);
+                    appendUnnamedRow(dataFrames.getColumn(soc.getItemNameSeries()), DatasetRowType.itemName, i);
                 }
             }
         }
@@ -198,7 +198,7 @@ class DatasetBuilder {
         // We'll register a separate dataset row for each one of the duplicates.
 
         int pos = rows.size();
-        rows.add(new DatasetRow(dataFrame.getColumn(dataColumn), DatasetRowType.seriesData, dataColumn, seriesPos, pos));
+        rows.add(new DatasetRow(dataFrames.getColumn(dataColumn), DatasetRowType.seriesData, dataColumn, seriesPos, pos));
         seenDataColumns.add(dataColumn);
     }
 
@@ -222,7 +222,6 @@ class DatasetBuilder {
 
     private DatasetModel resolveRow() {
 
-        int w = dataFrame.height();
         int h = rows.size();
 
         Supplier<String> labelMaker = createLabelMaker();
@@ -230,7 +229,7 @@ class DatasetBuilder {
         List<ValueModels<?>> mRows = new ArrayList<>(h);
         for (DatasetRow dsRow : this.rows) {
 
-            List<Object> mRow = new ArrayList<>(w + 1);
+            List<Object> mRow = new ArrayList<>(dsRow.data.size() + 1);
 
             String rowLabel = dsRow.dfColumn != null ? dsRow.dfColumn : labelMaker.get();
             mRow.add(rowLabel);
@@ -244,27 +243,28 @@ class DatasetBuilder {
 
     private DatasetModel resolveColumn() {
 
-        int w = dataFrame.height();
-        int h = rows.size();
+        int h = dataFrames.maxHeight();
+        int w = rows.size();
 
         Supplier<String> labelMaker = createLabelMaker();
 
         // Resolve labels for all dataset rows (which correspond to ECharts columns)
-        List<String> labels = new ArrayList<>(h);
+        List<String> labels = new ArrayList<>(w);
         for (DatasetRow dsRow : this.rows) {
             labels.add(dsRow.dfColumn != null ? dsRow.dfColumn : labelMaker.get());
         }
 
-        List<ValueModels<?>> mRows = new ArrayList<>(w + 1);
+        List<ValueModels<?>> mRows = new ArrayList<>(h + 1);
 
         // First row: all column labels
         mRows.add(new ValueModels<>(new ArrayList<>(labels)));
 
         // Subsequent rows: one per DataFrame row, with one value per dataset column
-        for (int i = 0; i < w; i++) {
-            List<Object> mRow = new ArrayList<>(h);
+        for (int i = 0; i < h; i++) {
+            List<Object> mRow = new ArrayList<>(w);
             for (DatasetRow dsRow : this.rows) {
-                mRow.add(dsRow.data.get(i));
+                int rh = dsRow.data.size();
+                mRow.add(i < rh ? dsRow.data.get(i) : null);
             }
             mRows.add(new ValueModels<>(mRow));
         }
