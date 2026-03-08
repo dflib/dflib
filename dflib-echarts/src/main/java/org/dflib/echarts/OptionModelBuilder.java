@@ -1,6 +1,6 @@
 package org.dflib.echarts;
 
-import org.dflib.DataFrame;
+import org.dflib.echarts.dataframeset.DataFrameSet;
 import org.dflib.echarts.render.OptionModel;
 import org.dflib.echarts.render.option.GridModel;
 import org.dflib.echarts.render.option.SeriesModel;
@@ -12,17 +12,17 @@ import java.util.stream.Collectors;
 class OptionModelBuilder {
 
     private final Option opt;
-    private final DataFrame dataFrame;
+    private final DataFrameSet dataFrames;
 
-    OptionModelBuilder(Option opt, DataFrame dataFrame) {
+    OptionModelBuilder(Option opt, DataFrameSet dataFrames) {
         this.opt = Objects.requireNonNull(opt);
-        this.dataFrame = Objects.requireNonNull(dataFrame);
+        this.dataFrames = Objects.requireNonNull(dataFrames);
     }
 
     OptionModel resolve() {
 
-        DatasetBuilder dsb = DatasetBuilder.of(opt, dataFrame);
-        List<SeriesModel> sm = SeriesModelBuilders.of(opt, dataFrame, dsb);
+        DatasetBuilder dsb = DatasetBuilder.of(opt, dataFrames);
+        List<SeriesModel> sm = SeriesModelBuilders.of(opt, dataFrames, dsb);
 
         return new OptionModel(
                 dsb != null ? dsb.resolve() : null,

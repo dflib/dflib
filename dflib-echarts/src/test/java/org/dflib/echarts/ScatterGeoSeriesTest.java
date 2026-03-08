@@ -13,7 +13,7 @@ public class ScatterGeoSeriesTest {
         String s1 = ECharts.chart()
                 .geo(Geo.of("world"))
                 .series(SeriesOpts.ofScatterGeo().coordinates("lon", "lat"), "val")
-                .plot(geoDf1, "_tid")
+                .plot("_tid", geoDf1)
                 .renderChartScript();
 
         assertTrue(s1.contains("coordinateSystem: 'geo'"), s1);
@@ -24,7 +24,7 @@ public class ScatterGeoSeriesTest {
         String s1 = ECharts.chart()
                 .geo(Geo.of("world"))
                 .series(SeriesOpts.ofScatterGeo().coordinates("lon", "lat"), "val")
-                .plot(geoDf1, "_tid")
+                .plot("_tid", geoDf1)
                 .renderChartScript();
 
         assertTrue(s1.contains("['L0',-21.9348415,-19.028531,-17.089925]"), s1);
@@ -41,14 +41,14 @@ public class ScatterGeoSeriesTest {
         String s1 = ECharts.chart()
                 .geo(Geo.of("world"))
                 .series(SeriesOpts.ofScatterGeo().coordinates("lon", "lat"), "val")
-                .plot(geoDf1, "_tid")
+                .plot("_tid", geoDf1)
                 .renderChartScript();
         assertFalse(s1.contains("geoIndex:"), s1);
 
         String s2 = ECharts.chart()
                 .geo(Geo.of("world"))
                 .series(SeriesOpts.ofScatterGeo().coordinates("lon", "lat").geoIndex(1), "val")
-                .plot(geoDf1, "_tid")
+                .plot("_tid", geoDf1)
                 .renderChartScript();
         assertTrue(s2.contains("geoIndex: 1"), s2);
     }

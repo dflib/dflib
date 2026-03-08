@@ -10,7 +10,7 @@ public class EChartHtmlTest {
 
     @Test
     public void plotWithDivId() {
-        EChartHtml p1 = ECharts.chart().plot(df2, "_tid");
+        EChartHtml p1 = ECharts.chart().plot("_tid", df2);
         assertTrue(p1.renderChartScript().contains("_tid"));
         assertTrue(p1.renderChartDiv().contains("_tid"));
 

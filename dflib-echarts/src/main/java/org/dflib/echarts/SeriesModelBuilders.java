@@ -2,6 +2,7 @@ package org.dflib.echarts;
 
 import org.dflib.DataFrame;
 import org.dflib.Index;
+import org.dflib.echarts.dataframeset.DataFrameSet;
 import org.dflib.echarts.render.option.SeriesModel;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ class SeriesModelBuilders {
 
     public static List<SeriesModel> of(
             Option opt,
-            DataFrame dataFrame,
+            DataFrameSet dataFrames,
             DatasetBuilder dsb) {
 
         // a stateful function. Can only be used inside the method scope

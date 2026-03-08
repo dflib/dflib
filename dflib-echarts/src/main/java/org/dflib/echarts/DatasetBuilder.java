@@ -3,6 +3,7 @@ package org.dflib.echarts;
 import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.Series;
+import org.dflib.echarts.dataframeset.DataFrameSet;
 import org.dflib.echarts.render.ValueModels;
 import org.dflib.echarts.render.option.dataset.DatasetModel;
 import org.dflib.series.IntSequenceSeries;
@@ -16,7 +17,7 @@ import java.util.function.Supplier;
 
 class DatasetBuilder {
 
-    public static DatasetBuilder of(Option opt, DataFrame dataFrame) {
+    public static DatasetBuilder of(Option opt, DataFrameSet dataFrames) {
 
         // The default for no series is to show empty Cartesian coordinates that presumably requires a dataset
         // (see Option.resolveDefaults())
@@ -29,11 +30,11 @@ class DatasetBuilder {
                 .findFirst()
                 .orElse(false);
 
-        return needsDataset ? create(opt, dataFrame) : null;
+        return needsDataset ? create(opt, dataFrames) : null;
     }
 
-    private static DatasetBuilder create(Option opt, DataFrame dataFrame) {
-        return new DatasetBuilder(dataFrame, datasetLayoutType(opt.seriesOpts))
+    private static DatasetBuilder create(Option opt, DataFrameSet dataFrames) {
+        return new DatasetBuilder(dataFrames, datasetLayoutType(opt.seriesOpts))
                 .appendXAxesLabels(opt.xAxes)
                 .appendSingleAxesLabels(opt.singleAxes)
                 .appendGeoCoordinates(opt.seriesOpts)
@@ -43,13 +44,13 @@ class DatasetBuilder {
                 .appendDatasetRows(opt.seriesDataColumns);
     }
 
-    private final DataFrame dataFrame;
+    private final DataFrameSet dataFrames;
     final DatasetLayoutType layoutType;
     final List<DatasetRow> rows;
     private final Set<String> seenDataColumns;
 
-    private DatasetBuilder(DataFrame dataFrame, DatasetLayoutType layoutType) {
-        this.dataFrame = dataFrame;
+    private DatasetBuilder(DataFrameSet dataFrames, DatasetLayoutType layoutType) {
+        this.dataFrames = dataFrames;
         this.layoutType = layoutType;
 
         this.rows = new ArrayList<>();

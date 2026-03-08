@@ -27,7 +27,7 @@ public class EChartTest {
 
     @Test
     public void plotWithId() {
-        EChartHtml ch = ECharts.chart().xAxis("x").series("y1", "y2").plot(df2, "dfl_t_123");
+        EChartHtml ch = ECharts.chart().xAxis("x").series("y1", "y2").plot("dfl_t_123", df2);
         assertEquals("""
                 <div id='dfl_t_123' class='dfl_ech' style='width: 600px;height:400px;'></div>""", ch.renderChartDiv());
         assertEquals("""
@@ -41,7 +41,7 @@ public class EChartTest {
 
     @Test
     public void plotDoNotMinifyJS() {
-        EChartHtml ch = ECharts.chart().xAxis("x").series("y1", "y2").plot(df2, "dfl_t_123").minifyJS(false);
+        EChartHtml ch = ECharts.chart().xAxis("x").series("y1", "y2").plot("dfl_t_123", df2).minifyJS(false);
         assertEquals("""
                 <div id='dfl_t_123' class='dfl_ech' style='width: 600px;height:400px;'></div>""", ch.renderChartDiv());
         assertEquals("""
@@ -124,31 +124,31 @@ public class EChartTest {
     @Test
     public void darkTheme() {
 
-        String s1 = ECharts.chart().plot(df1, "_tid").renderChartScript();
+        String s1 = ECharts.chart().plot("_tid", df1).renderChartScript();
         assertFalse(s1.contains("'dark'"), s1);
 
-        String s2 = ECharts.chart().darkTheme().plot(df1, "_tid").renderChartScript();
+        String s2 = ECharts.chart().darkTheme().plot("_tid", df1).renderChartScript();
         assertTrue(s2.contains("'dark',"), s2);
     }
 
     @Test
     public void svgRenderer() {
 
-        String s1 = ECharts.chart().plot(df1, "_tid").renderChartScript();
+        String s1 = ECharts.chart().plot("_tid", df1).renderChartScript();
         assertFalse(s1.contains("renderer: 'svg'"), s1);
 
-        String s2 = ECharts.chart().renderAsSvg().plot(df1, "_tid").renderChartScript();
+        String s2 = ECharts.chart().renderAsSvg().plot("_tid", df1).renderChartScript();
         assertTrue(s2.contains("renderer: 'svg'"), s2);
     }
 
     @Test
     public void svgRenderer_DarkTheme() {
 
-        String s1 = ECharts.chart().plot(df1, "_tid").renderChartScript();
+        String s1 = ECharts.chart().plot("_tid", df1).renderChartScript();
         assertFalse(s1.contains("'dark'"), s1);
         assertFalse(s1.contains("renderer: 'svg'"), s1);
 
-        String s2 = ECharts.chart().renderAsSvg().darkTheme().plot(df1, "_tid").renderChartScript();
+        String s2 = ECharts.chart().renderAsSvg().darkTheme().plot("_tid", df1).renderChartScript();
         assertTrue(s2.contains("'dark',"), s2);
         assertTrue(s2.contains("renderer: 'svg'"), s2);
     }

@@ -17,7 +17,7 @@ public class MapSeriesTest {
         String s1 = ECharts.chart()
                 .geo(Geo.of("usa"))
                 .series(SeriesOpts.ofMap().itemNameData("state"), "population")
-                .plot(df, "_tid")
+                .plot("_tid", df)
                 .renderChartScript();
 
         assertTrue(s1.contains("encode: {"), s1);
@@ -33,7 +33,7 @@ public class MapSeriesTest {
         String s1 = ECharts.chart()
                 .geo(Geo.of("usa"))
                 .series(SeriesOpts.ofMap().itemNameData("x"), "y1")
-                .plot(df2, "_tid")
+                .plot("_tid", df2)
                 .renderChartScript();
 
         assertTrue(s1.contains("dataset"), s1);
@@ -63,7 +63,7 @@ public class MapSeriesTest {
         String s1 = ECharts.chart()
                 .geo(Geo.of("usa"))
                 .series(SeriesOpts.ofMap().itemNameData("state"), "population")
-                .plot(df, "_tid")
+                .plot("_tid", df)
                 .renderChartScript();
 
         // Default geoIndex should not appear
@@ -72,7 +72,7 @@ public class MapSeriesTest {
         String s2 = ECharts.chart()
                 .geo(Geo.of("usa"))
                 .series(SeriesOpts.ofMap().itemNameData("state").geoIndex(1), "population")
-                .plot(df, "_tid")
+                .plot("_tid", df)
                 .renderChartScript();
 
         assertTrue(s2.contains("geoIndex: 1"), s2);

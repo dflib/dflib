@@ -11,33 +11,33 @@ public class BarSeriesTest {
     @Test
     public void type() {
 
-        String s1 = ECharts.chart().plot(df2, "_tid").renderChartScript();
+        String s1 = ECharts.chart().plot("_tid", df2).renderChartScript();
         assertFalse(s1.contains("type: 'bar'"), s1);
 
-        String s2 = ECharts.chart().series(SeriesOpts.ofBar(), "y1").plot(df2, "_tid").renderChartScript();
+        String s2 = ECharts.chart().series(SeriesOpts.ofBar(), "y1").plot("_tid", df2).renderChartScript();
         assertTrue(s2.contains("type: 'bar'"), s2);
     }
 
     @Test
     public void stack() {
 
-        String s2 = ECharts.chart().series(SeriesOpts.ofBar(), "y1").plot(df2, "_tid").renderChartScript();
+        String s2 = ECharts.chart().series(SeriesOpts.ofBar(), "y1").plot("_tid", df2).renderChartScript();
         assertFalse(s2.contains("stack: "), s2);
 
-        String s3 = ECharts.chart().series(SeriesOpts.ofBar().stack(), "y1").plot(df2, "_tid").renderChartScript();
+        String s3 = ECharts.chart().series(SeriesOpts.ofBar().stack(), "y1").plot("_tid", df2).renderChartScript();
         assertTrue(s3.contains("stack: 'total'"), s3);
     }
 
     @Test
     public void barWidth() {
 
-        String s1 = ECharts.chart().series(SeriesOpts.ofBar(), "y1").plot(df2, "_tid").renderChartScript();
+        String s1 = ECharts.chart().series(SeriesOpts.ofBar(), "y1").plot("_tid", df2).renderChartScript();
         assertFalse(s1.contains("barWidth: "), s1);
 
-        String s2 = ECharts.chart().series(SeriesOpts.ofBar().barWidthPx(35), "y1").plot(df2, "_tid").renderChartScript();
+        String s2 = ECharts.chart().series(SeriesOpts.ofBar().barWidthPx(35), "y1").plot("_tid", df2).renderChartScript();
         assertTrue(s2.contains("barWidth: 35,"), s2);
 
-        String s3 = ECharts.chart().series(SeriesOpts.ofBar().barWidthPct(35.5), "y1").plot(df2, "_tid").renderChartScript();
+        String s3 = ECharts.chart().series(SeriesOpts.ofBar().barWidthPct(35.5), "y1").plot("_tid", df2).renderChartScript();
         assertTrue(s3.contains("barWidth: '35.5%',"), s3);
     }
 
@@ -52,10 +52,10 @@ public class BarSeriesTest {
                 .borderType(LineType.dotted)
                 .opacity(0.55);
 
-        String s1 = ECharts.chart().series(SeriesOpts.ofBar(), "y1").plot(df2, "_tid").renderChartScript();
+        String s1 = ECharts.chart().series(SeriesOpts.ofBar(), "y1").plot("_tid", df2).renderChartScript();
         assertFalse(s1.contains("itemStyle"), s1);
 
-        String s2 = ECharts.chart().series(SeriesOpts.ofBar().itemStyle(style), "y1").plot(df2, "_tid").renderChartScript();
+        String s2 = ECharts.chart().series(SeriesOpts.ofBar().itemStyle(style), "y1").plot("_tid", df2).renderChartScript();
 
         assertTrue(s2.contains("type: 'bar'"), s2);
         assertTrue(s2.contains("itemStyle"), s2);
@@ -78,10 +78,10 @@ public class BarSeriesTest {
                 .borderType(LineType.dotted)
                 .opacity(0.55);
 
-        String s1 = ECharts.chart().series(SeriesOpts.ofBar(), "y1").plot(df2, "_tid").renderChartScript();
+        String s1 = ECharts.chart().series(SeriesOpts.ofBar(), "y1").plot("_tid", df2).renderChartScript();
         assertFalse(s1.contains("itemStyle"), s1);
 
-        String s2 = ECharts.chart().series(SeriesOpts.ofBar().itemStyle(style), "y1").plot(df2, "_tid").renderChartScript();
+        String s2 = ECharts.chart().series(SeriesOpts.ofBar().itemStyle(style), "y1").plot("_tid", df2).renderChartScript();
 
         assertTrue(s2.contains("type: 'bar'"), s2);
         assertTrue(s2.contains("itemStyle"), s2);

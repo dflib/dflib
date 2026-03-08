@@ -2,6 +2,7 @@ package org.dflib.echarts;
 
 import org.dflib.DataFrame;
 import org.dflib.Index;
+import org.dflib.echarts.dataframeset.DataFrameSet;
 import org.dflib.echarts.render.OptionModel;
 
 import java.util.ArrayList;
@@ -222,9 +223,9 @@ public class Option {
         return this;
     }
 
-    protected OptionModel resolve(DataFrame df) {
+    protected OptionModel resolve(DataFrame... dfs) {
         resolveDefaults();
-        return new OptionModelBuilder(this, df).resolve();
+        return new OptionModelBuilder(this, DataFrameSet.of(dfs)).resolve();
     }
 
     private void resolveDefaults() {

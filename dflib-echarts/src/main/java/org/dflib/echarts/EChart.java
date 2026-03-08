@@ -393,8 +393,8 @@ public class EChart {
     /**
      * Returns an object with chart HTML / JavaScript components. Assigns a random ID to the HTML div container
      */
-    public EChartHtml plot(DataFrame dataFrame) {
-        return plot(dataFrame, newId());
+    public EChartHtml plot(DataFrame... dataFrames) {
+        return plot(newId(), dataFrames);
     }
 
     /**
@@ -402,7 +402,7 @@ public class EChart {
      *
      * @since 2.0.0
      */
-    public EChartHtml plot(DataFrame dataFrame, String divContainerId) {
+    public EChartHtml plot(String divContainerId, DataFrame... dataFrames) {
         ContainerModel containerModel = new ContainerModel(
                 divContainerId,
                 this.width != null ? this.width : 600,
@@ -413,7 +413,7 @@ public class EChart {
                 divContainerId,
                 this.theme,
                 this.renderer != null ? new InitOptsModel(renderer.name()) : null,
-                option.resolve(dataFrame)
+                option.resolve(dataFrames)
         );
 
         return new EChartHtml(

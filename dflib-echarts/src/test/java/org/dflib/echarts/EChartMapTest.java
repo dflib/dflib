@@ -51,14 +51,14 @@ public class EChartMapTest {
 
     @Test
     public void noMaps() {
-        String s1 = ECharts.chart().plot(df1, "_tid").renderChartScript();
+        String s1 = ECharts.chart().plot("_tid", df1).renderChartScript();
         assertFalse(s1.contains("registerMap"), s1);
         assertFalse(s1.contains("geoJSON"), s1);
     }
 
     @Test
     public void noMapsWithLoadECharts() {
-        String s1 = ECharts.chart().plot(df1, "_tid").renderChartScript(true);
+        String s1 = ECharts.chart().plot("_tid", df1).renderChartScript(true);
         assertFalse(s1.contains("registerMap"), s1);
         assertFalse(s1.contains("geoJSON"), s1);
     }
@@ -69,7 +69,7 @@ public class EChartMapTest {
 
         String s1 = ECharts.chart()
                 .map("testMap", geoJson)
-                .plot(df1, "_tid")
+                .plot("_tid", df1)
                 .renderChartScript(true);
 
         assertTrue(s1.contains("window.echarts.registerMap"), s1);
@@ -86,7 +86,7 @@ public class EChartMapTest {
         // renderChartScript(false) should not include registerMap calls since echarts may not be loaded yet
         String s1 = ECharts.chart()
                 .map("testMap", geoJson)
-                .plot(df1, "_tid")
+                .plot("_tid", df1)
                 .renderChartScript(false);
 
         assertFalse(s1.contains("registerMap"), s1);
@@ -100,7 +100,7 @@ public class EChartMapTest {
         String s1 = ECharts.chart()
                 .map("pointMap", geoJson1)
                 .map("polygonMap", geoJson2)
-                .plot(df1, "_tid")
+                .plot("_tid", df1)
                 .renderChartScript(true);
 
         assertTrue(s1.contains("window.echarts.registerMap"), s1);
@@ -119,7 +119,7 @@ public class EChartMapTest {
         String s1 = ECharts.chart()
                 .map("testMap", geoJson1)
                 .map("testMap", geoJson2)  // Should replace the first one
-                .plot(df1, "_tid")
+                .plot("_tid", df1)
                 .renderChartScript(true);
 
         assertTrue(s1.contains("window.echarts.registerMap('testMap'"), s1);
