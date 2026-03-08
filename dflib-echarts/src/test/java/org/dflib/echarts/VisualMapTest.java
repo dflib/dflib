@@ -3,6 +3,7 @@ package org.dflib.echarts;
 import org.junit.jupiter.api.Test;
 
 import static org.dflib.echarts.EChartTestDatasets.df1;
+import static org.dflib.echarts.EChartTestDatasets.df2;
 import static org.dflib.echarts.EChartTestDatasets.df4;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -135,6 +136,20 @@ public class VisualMapTest {
         assertTrue(s3.contains("outOfRange: "), s3);
         assertTrue(s3.contains("symbol: 'circle',"), s3);
         assertTrue(s3.contains("opacity: 0.6,"), s3);
+    }
+
+    @Test
+    public void dimension() {
+
+        String s1 = ECharts.chart().visualMap(VisualMap.ofContinuous()).series("y1").plot("_tid", df2).renderChartScript();
+        assertFalse(s1.contains("dimension:"), s1);
+
+        // default xAxis occupies dimension 0, so "y1" series data is at dimension 1
+        String s2 = ECharts.chart()
+                .visualMap(VisualMap.ofContinuous().dimension("y1"))
+                .series("y1")
+                .plot("_tid", df2).renderChartScript();
+        assertTrue(s2.contains("dimension: 1,"), s2);
     }
 
     @Test

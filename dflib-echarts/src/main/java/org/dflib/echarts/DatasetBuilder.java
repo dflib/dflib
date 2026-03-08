@@ -302,7 +302,7 @@ class DatasetBuilder {
         final int datasetPos;
 
         private final Series<?> data;
-        private final String dfColumn;
+        final String dfColumn;
 
         DatasetRow(Series<?> data, DatasetRowType type, String dfColumn, int seriesOptsPos, int datasetPos) {
             this.data = Objects.requireNonNull(data);

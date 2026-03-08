@@ -37,7 +37,7 @@ class OptionModelBuilder {
                 opt.geo != null ? opt.geo.resolve() : null,
                 opt.singleAxes != null ? opt.singleAxes.stream().map(ColumnLinkedSingleAxis::getAxis).map(SingleAxis::resolve).collect(Collectors.toList()) : null,
                 opt.calendars != null ? opt.calendars.stream().map(ColumnLinkedCalendarCoords::getCalendar).map(CalendarCoords::resolve).collect(Collectors.toList()) : null,
-                opt.visualMaps != null ? opt.visualMaps.stream().map(VisualMap::resolve).collect(Collectors.toList()) : null
+                opt.visualMaps != null ? opt.visualMaps.stream().map(vm -> vm.resolve(dsb)).collect(Collectors.toList()) : null
         );
     }
 

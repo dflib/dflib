@@ -229,6 +229,9 @@ var chart_{{id}} = echarts.init(
             {{#itemHeight}}
                 itemHeight: {{{.}}},
             {{/itemHeight}}
+            {{#dimension}}
+                dimension: {{.}},
+            {{/dimension}}
             {{#showPresent}}
                 show: {{show}},
             {{/showPresent}}

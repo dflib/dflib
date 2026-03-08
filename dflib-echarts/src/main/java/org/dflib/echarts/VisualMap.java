@@ -33,6 +33,7 @@ public class VisualMap {
     private Distance itemHeight;
     private Boolean show;
     private VisualChannels outOfRange;
+    private String dimension;
 
     private VisualMap(Type type) {
         this.type = Objects.requireNonNull(type);
@@ -171,6 +172,17 @@ public class VisualMap {
         return this;
     }
 
+    /**
+     * Binds this visual map to the specified DataFrame column. The column name is resolved to a numeric dimension
+     * index in the generated ECharts dataset.
+     *
+     * @since 2.0.0
+     */
+    public VisualMap dimension(String columnName) {
+        this.dimension = columnName;
+        return this;
+    }
+
     enum Type {
         continuous, piecewise
     }
@@ -179,7 +191,7 @@ public class VisualMap {
         horizontal, vertical
     }
 
-    protected VisualMapModel resolve() {
+    protected VisualMapModel resolve(DatasetBuilder dsb) {
         return new VisualMapModel(
                 type.name(),
                 min,
@@ -194,7 +206,25 @@ public class VisualMap {
                 itemWidth != null ? itemWidth.asString() : null, // ignoring 'auto' option, which is the default
                 itemHeight != null ? itemHeight.asString() : null, // ignoring 'auto' option, which is the default
                 show,
-                outOfRange != null ? outOfRange.resolve() : null
+                outOfRange != null ? outOfRange.resolve() : null,
+                resolveDimension(dsb)
         );
+    }
+
+    private Integer resolveDimension(DatasetBuilder dsb) {
+        if (dimension == null) {
+            return null;
+        }
+
+        if (dsb == null) {
+            return null;
+        }
+
+        for (DatasetBuilder.DatasetRow row : dsb.rows) {
+            if (dimension.equals(row.dfColumn)) {
+                return row.datasetPos;
+            }
+        }
+        throw new IllegalArgumentException("VisualMap dimension '" + dimension + "' is not found in the chart dataset");
     }
 }
