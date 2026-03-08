@@ -9,6 +9,7 @@
 * #613 Recast hConcat(..) as positional join
 * #614 CsvSaver to save to OutputStream
 * #615 ECharts: basic support for geo charts
+* #616 ECharts: render differently structured DataFrames
 * #617 ECharts: "map" series
 * #619 CsvLoader: own CSV parser implementation
 * #621 ECharts: VisualMap.splitNumber

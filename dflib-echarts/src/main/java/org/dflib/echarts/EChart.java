@@ -391,7 +391,12 @@ public class EChart {
     }
 
     /**
-     * Returns an object with chart HTML / JavaScript components. Assigns a random ID to the HTML div container
+     * Returns an object with chart HTML / JavaScript components for an array of DataFrames. Assigns a random ID to the
+     * HTML div container. Note that in most cases it would only make sense to pass just a single DataFrame to this
+     * method, with all the data already aligned. A few cases where multple DataFrames would make sense are a combination
+     * of "map" and "scatter" series on a geo chart, cartesian charts with multiple X axes and such.
+     *
+     * @since 2.0.0
      */
     public EChartHtml plot(DataFrame... dataFrames) {
         return plot(newId(), dataFrames);
