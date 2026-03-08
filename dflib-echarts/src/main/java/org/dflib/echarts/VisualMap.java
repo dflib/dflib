@@ -173,9 +173,6 @@ public class VisualMap {
         return this;
     }
 
-    /**
-     * @since 2.0.0
-     */
     public VisualMap seriesIndex(int seriesIndex) {
         this.seriesIndex = seriesIndex;
         return this;
@@ -184,8 +181,6 @@ public class VisualMap {
     /**
      * Binds this visual map to the specified DataFrame column. The column name is resolved to a numeric dimension
      * index in the generated ECharts dataset.
-     *
-     * @since 2.0.0
      */
     public VisualMap dimension(String columnName) {
         this.dimension = columnName;
