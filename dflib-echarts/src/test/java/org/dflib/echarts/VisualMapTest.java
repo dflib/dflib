@@ -139,6 +139,19 @@ public class VisualMapTest {
     }
 
     @Test
+    public void seriesIndex() {
+
+        String s1 = ECharts.chart().visualMap(VisualMap.ofContinuous()).series("y1").plot("_tid", df2).renderChartScript();
+        assertFalse(s1.contains("seriesIndex:"), s1);
+
+        String s2 = ECharts.chart()
+                .visualMap(VisualMap.ofContinuous().seriesIndex(1))
+                .series("y1").series("y2")
+                .plot("_tid", df2).renderChartScript();
+        assertTrue(s2.contains("seriesIndex: 1,"), s2);
+    }
+
+    @Test
     public void dimension() {
 
         String s1 = ECharts.chart().visualMap(VisualMap.ofContinuous()).series("y1").plot("_tid", df2).renderChartScript();

@@ -20,6 +20,7 @@ public class VisualMapModel {
     private Boolean show;
     private final VisualChannelsModel outOfRange;
     private final Integer dimension;
+    private final Integer seriesIndex;
 
     public VisualMapModel(
             String type,
@@ -36,7 +37,8 @@ public class VisualMapModel {
             String itemHeight,
             Boolean show,
             VisualChannelsModel outOfRange,
-            Integer dimension) {
+            Integer dimension,
+            Integer seriesIndex) {
 
         this.bottom = bottom;
         this.type = type;
@@ -53,6 +55,7 @@ public class VisualMapModel {
         this.show = show;
         this.outOfRange = outOfRange;
         this.dimension = dimension;
+        this.seriesIndex = seriesIndex;
     }
 
     public String getBottom() {
@@ -117,5 +120,9 @@ public class VisualMapModel {
 
     public Integer getDimension() {
         return dimension;
+    }
+
+    public Integer getSeriesIndex() {
+        return seriesIndex;
     }
 }

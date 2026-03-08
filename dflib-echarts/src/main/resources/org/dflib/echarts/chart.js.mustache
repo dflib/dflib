@@ -232,6 +232,9 @@ var chart_{{id}} = echarts.init(
             {{#dimension}}
                 dimension: {{.}},
             {{/dimension}}
+            {{#seriesIndex}}
+                seriesIndex: {{.}},
+            {{/seriesIndex}}
             {{#showPresent}}
                 show: {{show}},
             {{/showPresent}}

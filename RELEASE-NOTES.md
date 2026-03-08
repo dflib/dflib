@@ -14,6 +14,7 @@
 * #619 CsvLoader: own CSV parser implementation
 * #621 ECharts: VisualMap.splitNumber
 * #622 ECharts: VisualMap dimension mapping
+* #623 ECharts: VisualMap seriesIndex mapping
 
 ## Release 2.0.0-M6
 

@@ -34,6 +34,7 @@ public class VisualMap {
     private Boolean show;
     private VisualChannels outOfRange;
     private String dimension;
+    private Integer seriesIndex;
 
     private VisualMap(Type type) {
         this.type = Objects.requireNonNull(type);
@@ -173,6 +174,14 @@ public class VisualMap {
     }
 
     /**
+     * @since 2.0.0
+     */
+    public VisualMap seriesIndex(int seriesIndex) {
+        this.seriesIndex = seriesIndex;
+        return this;
+    }
+
+    /**
      * Binds this visual map to the specified DataFrame column. The column name is resolved to a numeric dimension
      * index in the generated ECharts dataset.
      *
@@ -207,7 +216,8 @@ public class VisualMap {
                 itemHeight != null ? itemHeight.asString() : null, // ignoring 'auto' option, which is the default
                 show,
                 outOfRange != null ? outOfRange.resolve() : null,
-                resolveDimension(dsb)
+                resolveDimension(dsb),
+                seriesIndex
         );
     }
 
