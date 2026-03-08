@@ -1,6 +1,5 @@
 package org.dflib.echarts;
 
-import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.echarts.dataframeset.DataFrameSet;
 import org.dflib.echarts.render.option.SeriesModel;
@@ -45,7 +44,7 @@ class SeriesModelBuilders {
             Index dataColumns = opt.seriesDataColumns.get(i);
             String name = nameDeduplicator.apply(defaultName(so, dataColumns));
 
-            seriesModels.add(new SeriesModelBuilder(name, opt, dataFrame, i));
+            seriesModels.add(new SeriesModelBuilder(name, opt, dataFrames, i));
         }
 
         if (dsb != null) {

@@ -1,7 +1,7 @@
 package org.dflib.echarts;
 
-import org.dflib.DataFrame;
 import org.dflib.Series;
+import org.dflib.echarts.dataframeset.DataFrameSet;
 import org.dflib.echarts.render.ValueModels;
 import org.dflib.echarts.render.option.data.DataModel;
 
@@ -20,18 +20,18 @@ import java.util.function.Supplier;
  */
 class InlineDataBuilder {
 
-    public static InlineDataBuilder of(DataFrame dataFrame) {
-        return new InlineDataBuilder(dataFrame);
+    public static InlineDataBuilder of(DataFrameSet dataFrames) {
+        return new InlineDataBuilder(dataFrames);
     }
 
-    final DataFrame dataFrame;
+    final DataFrameSet dataFrames;
     final List<Series<?>> cols;
 
     private final Map<String, Integer> colPosByDataColumn;
     private final Map<Integer, String> dataColumnByColPos;
 
-    private InlineDataBuilder(DataFrame dataFrame) {
-        this.dataFrame = dataFrame;
+    private InlineDataBuilder(DataFrameSet dataFrames) {
+        this.dataFrames = dataFrames;
         this.cols = new ArrayList<>();
         this.colPosByDataColumn = new HashMap<>();
         this.dataColumnByColPos = new HashMap<>();
@@ -52,7 +52,7 @@ class InlineDataBuilder {
         }
 
         int pos = cols.size();
-        cols.add(dataFrame.getColumn(dataColumnName));
+        cols.add(dataFrames.getColumn(dataColumnName));
         colPosByDataColumn.put(dataColumnName, pos);
         dataColumnByColPos.put(pos, dataColumnName);
         return pos;
@@ -63,7 +63,9 @@ class InlineDataBuilder {
             return null;
         }
 
-        int h = dataFrame.height();
+        // InlineDataBuilder is attached to a single plot series, so it is reasonable to expect that all the DataFrames
+        // in the DataFrameSet should have the same height. "height()" will throw otherwise
+        int h = dataFrames.height();
         int w = cols.size();
 
         Supplier<String> labelMaker = new Supplier<>() {

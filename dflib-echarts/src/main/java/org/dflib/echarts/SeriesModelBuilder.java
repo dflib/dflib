@@ -1,6 +1,7 @@
 package org.dflib.echarts;
 
 import org.dflib.DataFrame;
+import org.dflib.echarts.dataframeset.DataFrameSet;
 import org.dflib.echarts.render.ValueModels;
 import org.dflib.echarts.render.option.EncodeModel;
 import org.dflib.echarts.render.option.LabelModel;
@@ -16,7 +17,7 @@ import java.util.Objects;
 class SeriesModelBuilder {
 
     final Option opt;
-    final DataFrame dataFrame;
+    final DataFrameSet dataFrames;
     final int seriesOptsPos;
 
     String name;
@@ -38,10 +39,10 @@ class SeriesModelBuilder {
 
     String datasetSeriesLayoutBy;
 
-    public SeriesModelBuilder(String name, Option opt, DataFrame dataFrame, int seriesOptsPos) {
+    public SeriesModelBuilder(String name, Option opt, DataFrameSet dataFrames, int seriesOptsPos) {
         this.name = name;
         this.seriesOptsPos = seriesOptsPos;
-        this.dataFrame = Objects.requireNonNull(dataFrame);
+        this.dataFrames = Objects.requireNonNull(dataFrames);
         this.opt = opt;
     }
 
@@ -525,20 +526,20 @@ class SeriesModelBuilder {
     }
 
     private DataModel heatmapCartesian2dDataModel() {
-        InlineDataBuilder db = InlineDataBuilder.of(dataFrame);
+        InlineDataBuilder db = InlineDataBuilder.of(dataFrames);
         opt.seriesDataColumns.get(seriesOptsPos).forEach(db::appendCol);
         return db.dataModel();
     }
 
     private DataModel heatmapCalendarDataModel() {
-        InlineDataBuilder db = InlineDataBuilder.of(dataFrame);
+        InlineDataBuilder db = InlineDataBuilder.of(dataFrames);
 
         if (opt.calendars != null) {
             int len = opt.calendars.size();
             for (int i = 0; i < len; i++) {
                 ColumnLinkedCalendarCoords ab = opt.calendars.get(i);
                 if (ab.columnName != null) {
-                    db.appendCol(dataFrame.getColumn(ab.columnName));
+                    db.appendCol(dataFrames.getColumn(ab.columnName));
                 }
                 // else: doesn't seem like there's a reasonable default for the calendar column.
             }

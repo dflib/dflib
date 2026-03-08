@@ -51,6 +51,21 @@ public class DataFrameSet {
         return dataFrames[ref[0]].getColumn(ref[1]);
     }
 
+    /**
+     * Returns the height of the DataFrames in the set, assuming all DataFrames have the same height. Throws
+     * IllegalStateException if DataFrames in the set have different heights
+     */
+    public int height() {
+        int h = dataFrames[0].height();
+        for (int i = 1; i < dataFrames.length; i++) {
+            int hi = dataFrames[i].height();
+            if (hi != h) {
+                throw new IllegalStateException("DataFrames in the set have different heights. Expected: " + h + ", got: " + hi);
+            }
+        }
+        return h;
+    }
+
     private Map<String, int[]> nameIndex() {
         if (nameIndex == null) {
             Map<String, int[]> idx = new HashMap<>();

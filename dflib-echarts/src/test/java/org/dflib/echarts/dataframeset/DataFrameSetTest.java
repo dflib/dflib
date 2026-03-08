@@ -3,10 +3,31 @@ package org.dflib.echarts.dataframeset;
 import org.dflib.DataFrame;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DataFrameSetTest {
+
+    @Test
+    public void height_singleDf() {
+        DataFrame df = DataFrame.foldByRow("x", "y").of(1, 2, 3, 4);
+        assertEquals(2, DataFrameSet.of(df).height());
+    }
+
+    @Test
+    public void height_multipleDfs_sameHeight() {
+        DataFrame df1 = DataFrame.foldByRow("a").of(1, 2);
+        DataFrame df2 = DataFrame.foldByRow("b").of(3, 4);
+        assertEquals(2, DataFrameSet.of(df1, df2).height());
+    }
+
+    @Test
+    public void height_multipleDfs_differentHeights() {
+        DataFrame df1 = DataFrame.foldByRow("a").of(1, 2);
+        DataFrame df2 = DataFrame.foldByRow("b").of(3, 4, 5);
+        assertThrows(IllegalStateException.class, () -> DataFrameSet.of(df1, df2).height());
+    }
 
     @Test
     public void singleDf_unqualifiedName() {
