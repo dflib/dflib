@@ -177,6 +177,17 @@ public class DoubleColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void sqrt() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                0.0,
+                4.0,
+                2.0);
+
+        Series<? extends Number> s = $double("a").sqrt().eval(df);
+        new SeriesAsserts(s).expectData(0.0, 2.0, Math.sqrt(2.0));
+    }
+
+    @Test
     public void between_DoublePrimitive() {
         Condition c = $double("a").between($double("b"), $val(5.));
 

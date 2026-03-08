@@ -283,6 +283,20 @@ public class BigintColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void sqrt() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                new BigInteger("4"),
+                new BigInteger("9"),
+                new BigInteger("2"));
+
+        Series<? extends Number> s = $bigint("a").sqrt().eval(df);
+        new SeriesAsserts(s).expectData(
+                new BigDecimal("2"),
+                new BigDecimal("3"),
+                new BigDecimal("1.4142135623731"));
+    }
+
+    @Test
     public void ne() {
         DataFrame df = DataFrame.foldByRow("a").of(
                 new BigInteger("-51"),

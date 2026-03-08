@@ -75,6 +75,11 @@ public class IntExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<?> sqrt(Exp<? extends Number> exp) {
+        return DoubleExp1.mapVal("sqrt", cast(exp), n -> Math.sqrt(n));
+    }
+
+    @Override
     public NumExp<Integer> negate(Exp<? extends Number> exp) {
         return new NegateExp<>(Integer.class, cast(exp), v -> -v);
     }

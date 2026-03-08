@@ -86,6 +86,17 @@ public class LongColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void sqrt() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                0L,
+                4L,
+                2L);
+
+        Series<? extends Number> s = $long("a").sqrt().eval(df);
+        new SeriesAsserts(s).expectData(0.0, 2.0, Math.sqrt(2));
+    }
+
+    @Test
     public void castAsLong() {
         NumExp<Long> e = $long("a");
         assertSame(e, e.castAsLong());

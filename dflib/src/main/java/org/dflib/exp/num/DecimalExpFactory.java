@@ -29,6 +29,10 @@ public class DecimalExpFactory extends NumericExpFactory {
         return new MathContext(Math.max(15, 1 + Math.max(n1.precision(), n2.precision())), RoundingMode.HALF_UP);
     }
 
+    static MathContext sqrtContext(BigDecimal n) {
+        return new MathContext(Math.max(15, 1 + n.scale()), RoundingMode.HALF_UP);
+    }
+
     protected static DecimalExp cast(Exp<?> exp) {
 
         if (exp instanceof DecimalExp) {
@@ -118,6 +122,11 @@ public class DecimalExpFactory extends NumericExpFactory {
     @Override
     public DecimalExp abs(Exp<? extends Number> exp) {
         return DecimalExp1.mapVal("abs", cast(exp), BigDecimal::abs);
+    }
+
+    @Override
+    public DecimalExp sqrt(Exp<? extends Number> exp) {
+        return DecimalExp1.mapVal("sqrt", cast(exp), n -> n.sqrt(sqrtContext(n)));
     }
 
     @Override

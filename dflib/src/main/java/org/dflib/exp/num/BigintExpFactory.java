@@ -98,6 +98,14 @@ public class BigintExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<?> sqrt(Exp<? extends Number> exp) {
+        return DecimalExp1.mapVal("sqrt", cast(exp), n -> {
+            BigDecimal bd = new BigDecimal(n);
+            return bd.sqrt(DecimalExpFactory.sqrtContext(bd));
+        });
+    }
+
+    @Override
     public NumExp<BigInteger> negate(Exp<? extends Number> exp) {
         return new NegateExp<>(BigInteger.class, cast(exp), BigInteger::negate);
     }

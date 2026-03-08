@@ -190,6 +190,17 @@ public class FloatColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void sqrt() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                0.0f,
+                4.0f,
+                2.0f);
+
+        Series<? extends Number> s = $float("a").sqrt().eval(df);
+        new SeriesAsserts(s).expectData(0.0f, 2.0f, (float) Math.sqrt(2.0f));
+    }
+
+    @Test
     public void between_FloatPrimitive() {
         Condition c = $float("a").between($float("b"), $val(5.f));
 

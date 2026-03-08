@@ -146,6 +146,11 @@ public abstract class NumericExpFactory {
 
     public abstract NumExp<?> abs(Exp<? extends Number> exp);
 
+    /**
+     * @since 2.0.0
+     */
+    public abstract NumExp<?> sqrt(Exp<? extends Number> exp);
+
     public abstract NumExp<?> negate(Exp<? extends Number> exp);
 
 

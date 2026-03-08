@@ -160,4 +160,12 @@ public interface DecimalExp extends NumExp<BigDecimal> {
     default DecimalExp round() {
         return NumericExpFactory.decimalFactory().round(this);
     }
+
+    /**
+     * @since 2.0.0
+     */
+    @Override
+    default DecimalExp sqrt() {
+        return NumericExpFactory.decimalFactory().sqrt(this);
+    }
 }

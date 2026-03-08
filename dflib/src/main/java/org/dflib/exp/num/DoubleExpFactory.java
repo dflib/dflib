@@ -98,6 +98,11 @@ public class DoubleExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<?> sqrt(Exp<? extends Number> exp) {
+        return DoubleExp1.mapVal("sqrt", cast(exp), Math::sqrt);
+    }
+
+    @Override
     public DecimalExp castAsDecimal(NumExp<?> exp) {
         return DecimalExp1.mapVal("castAsDecimal", cast(exp), BigDecimal::valueOf);
     }

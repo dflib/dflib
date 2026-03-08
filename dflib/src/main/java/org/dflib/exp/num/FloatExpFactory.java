@@ -101,6 +101,11 @@ public class FloatExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<?> sqrt(Exp<? extends Number> exp) {
+        return FloatExp1.mapVal("sqrt", cast(exp), n -> (float) Math.sqrt(n));
+    }
+
+    @Override
     public DecimalExp castAsDecimal(NumExp<?> exp) {
         return DecimalExp1.mapVal("castAsDecimal", cast(exp), BigDecimal::valueOf);
     }

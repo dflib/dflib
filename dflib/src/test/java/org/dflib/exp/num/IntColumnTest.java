@@ -148,6 +148,17 @@ public class IntColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void sqrt() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                0,
+                4,
+                2);
+
+        Series<? extends Number> s = $int("a").sqrt().eval(df);
+        new SeriesAsserts(s).expectData(0.0, 2.0, Math.sqrt(2));
+    }
+
+    @Test
     public void add_Long() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1L, 2,

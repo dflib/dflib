@@ -93,6 +93,13 @@ public interface NumExp<N extends Number> extends Exp<N> {
         return (NumExp<N>) NumericExpFactory.factory(this).abs(this);
     }
 
+    /**
+     * @since 2.0.0
+     */
+    default NumExp<?> sqrt() {
+        return NumericExpFactory.factory(this).sqrt(this);
+    }
+
     @Override
     default Condition castAsBool() {
         return ConditionFactory.castAsBool(this);

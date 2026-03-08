@@ -339,6 +339,20 @@ public class DecimalColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void sqrt() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                new BigDecimal("4"),
+                new BigDecimal("9"),
+                new BigDecimal("2"));
+
+        Series<? extends Number> s = $decimal("a").sqrt().eval(df);
+        new SeriesAsserts(s).expectData(
+                new BigDecimal("2"),
+                new BigDecimal("3"),
+                new BigDecimal("1.4142135623731"));
+    }
+
+    @Test
     public void ne() {
 
         DataFrame df = DataFrame.foldByRow("a").of(
