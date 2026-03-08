@@ -724,6 +724,7 @@ numFn returns [NumExp<?> exp] locals [Function<NumExp<?>, NumExp<?>> fn]
     | (
         : ABS { $fn = e -> e.abs(); }
         | ROUND { $fn = e -> e.round(); }
+        | SQRT { $fn = e -> e.sqrt(); }
     ) '(' e=numExp ')' { $exp = $fn.apply($e.exp); }
     | SCALE '(' e=numExp ',' s=integerScalar ')' { $exp = $e.exp.castAsDecimal().scale( $s.value.intValue() ); }
     ;
@@ -1401,6 +1402,7 @@ fnName returns [String id]
     | PLUS_NANOS
     | ABS
     | ROUND
+    | SQRT
     | ROW_NUM
     | SCALE
     | COUNT
@@ -1660,6 +1662,9 @@ ABS: 'abs';
 
 //@ doc:inline
 ROUND: 'round';
+
+//@ doc:inline
+SQRT: 'sqrt';
 
 //@ doc:inline
 ROW_NUM: 'rowNum';

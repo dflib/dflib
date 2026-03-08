@@ -15,6 +15,7 @@
 * #621 ECharts: VisualMap.splitNumber
 * #622 ECharts: VisualMap dimension mapping
 * #623 ECharts: VisualMap seriesIndex mapping
+* #624 QL: "sqrt(..)" expression
 
 ## Release 2.0.0-M6
 

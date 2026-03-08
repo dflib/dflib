@@ -112,7 +112,7 @@ public class ColumnTest {
      * If it fails after adding new token you should either allow it in the `fnName` rule in the grammar,
      * or add to the `RULES_TO_IGNORE` set below.
      */
-    @Test()
+    @Test
     public void keywordAsColumnName() {
         int maxTokenType = ExpParser.VOCABULARY.getMaxTokenType();
         for (int rule = 1; rule <= maxTokenType; rule++) {
