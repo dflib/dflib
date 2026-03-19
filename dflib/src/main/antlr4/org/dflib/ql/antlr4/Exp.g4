@@ -723,7 +723,6 @@ numFn returns [NumExp<?> exp] locals [Function<NumExp<?>, NumExp<?>> fn]
           $exp = envNumFn($IDENTIFIER.text, $args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
     }
     | COUNT ('(' b=boolExp? ')') { $exp = $ctx.b != null ? Exp.count($b.exp) : Exp.count(); }
-    | ROW_NUM ('(' ')') { $exp = Exp.rowNum(); }
     | SCALE '(' e=numExp ',' s=integerScalar ')' { $exp = $e.exp.castAsDecimal().scale( $s.value.intValue() ); }
     ;
 
@@ -1391,7 +1390,6 @@ fnName returns [String id]
     | PLUS_SECONDS
     | PLUS_MILLISECONDS
     | PLUS_NANOS
-    | ROW_NUM
     | SCALE
     | COUNT
     | SUM
@@ -1629,9 +1627,6 @@ PLUS_MILLISECONDS: 'plusMilliseconds';
 
 //@ doc:inline
 PLUS_NANOS: 'plusNanos';
-
-//@ doc:inline
-ROW_NUM: 'rowNum';
 
 //@ doc:inline
 SCALE: 'scale';

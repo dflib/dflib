@@ -8,6 +8,7 @@ import org.dflib.NumExp;
 import org.dflib.OffsetDateTimeExp;
 import org.dflib.StrExp;
 import org.dflib.TimeExp;
+import org.dflib.Udf0;
 import org.dflib.Udf1;
 import org.dflib.Udf2;
 import org.dflib.Udf3;
@@ -41,6 +42,10 @@ public class QLFunctionDescriptor {
         this.argTypes = argTypes;
         this.varArgs = varArgs;
         this.fnExpProducer = fnExpProducer;
+    }
+
+    public static Builder ofUdf0(Udf0<?> function) {
+        return new Builder().udf0(function);
     }
 
     public static Builder ofUdf1(Udf1<?, ?> function) {
@@ -106,6 +111,12 @@ public class QLFunctionDescriptor {
         Function<List<Exp<?>>, Exp<?>> fnExpProducer;
 
         private Builder() {
+        }
+
+        public Builder udf0(Udf0<?> function) {
+            fnExpProducer = exps -> function.call();
+            inferTypes(getCallMethodSafe(function, 0), false);
+            return this;
         }
 
         @SuppressWarnings({"rawtypes", "unchecked"})
@@ -215,6 +226,7 @@ public class QLFunctionDescriptor {
         Class<?> aClass = function.getClass();
         try {
             return switch (arity) {
+                case 0 -> aClass.getDeclaredMethod("call");
                 case 1 -> aClass.getDeclaredMethod("call", Exp.class);
                 case 2 -> aClass.getDeclaredMethod("call", Exp.class, Exp.class);
                 case 3 -> aClass.getDeclaredMethod("call", Exp.class, Exp.class, Exp.class);

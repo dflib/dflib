@@ -1,5 +1,6 @@
 package org.dflib.ql;
 
+import org.dflib.Udf0;
 import org.dflib.Udf1;
 import org.dflib.Udf2;
 import org.dflib.Udf3;
@@ -77,6 +78,10 @@ public class QLFunctions {
         private Builder() {
         }
 
+        public Builder function(String name, Udf0<?> function) {
+            return defineFunction(name, QLFunctionDescriptor.ofUdf0(function));
+        }
+
         public Builder function(String name, Udf1<?, ?> function) {
             return defineFunction(name, QLFunctionDescriptor.ofUdf1(function));
         }
@@ -112,7 +117,8 @@ public class QLFunctions {
                     .function("len", new LenFunction())
                     .function("abs", new AbsFunction())
                     .function("sqrt", new SqrtFunction())
-                    .function("round", new RoundFunction());
+                    .function("round", new RoundFunction())
+                    .function("rowNum", new RowNumFunction());
         }
 
         public QLFunctions build() {
