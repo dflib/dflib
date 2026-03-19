@@ -7,6 +7,10 @@ import org.dflib.Udf1;
 public class AbsFunction implements Udf1<Number, Number> {
     @Override
     public NumExp<Number> call(Exp<Number> exp) {
-        return ((NumExp<Number>) exp).abs();
+        if(exp instanceof NumExp<Number> numExp) {
+            return numExp.abs();
+        } else {
+            throw new IllegalArgumentException("Numeric expression expected, got " + exp.getClass());
+        }
     }
 }

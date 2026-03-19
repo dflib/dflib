@@ -1,5 +1,6 @@
 package org.dflib.ql;
 
+import org.dflib.Condition;
 import org.dflib.DateExp;
 import org.dflib.DateTimeExp;
 import org.dflib.Exp;
@@ -27,15 +28,18 @@ public class QLFunctionDescriptor {
     final String name;
     final TypeClassifier returnType;
     final TypeClassifier[] argTypes;
+    final boolean varArgs;
     final Function<List<Exp<?>>, Exp<?>> fnExpProducer;
 
     private QLFunctionDescriptor(String name,
                                  TypeClassifier returnType,
                                  TypeClassifier[] argTypes,
+                                 boolean varArgs,
                                  Function<List<Exp<?>>, Exp<?>> fnExpProducer) {
         this.name = name;
         this.returnType = returnType;
         this.argTypes = argTypes;
+        this.varArgs = varArgs;
         this.fnExpProducer = fnExpProducer;
     }
 
@@ -60,7 +64,9 @@ public class QLFunctionDescriptor {
         if (o == null || getClass() != o.getClass()) return false;
 
         QLFunctionDescriptor that = (QLFunctionDescriptor) o;
-        return name.equals(that.name) && Arrays.equals(argTypes, that.argTypes);
+        return name.equals(that.name)
+                && varArgs == that.varArgs
+                && Arrays.equals(argTypes, that.argTypes);
     }
 
     public String name() {
@@ -75,13 +81,20 @@ public class QLFunctionDescriptor {
         return argTypes;
     }
 
+    public boolean isVarArgs() {
+        return varArgs;
+    }
+
     public Function<List<Exp<?>>, Exp<?>> expProducer() {
         return fnExpProducer;
     }
 
     @Override
     public int hashCode() {
-        return 31 * name.hashCode() + Arrays.hashCode(argTypes);
+        int result = name.hashCode();
+        result = 31 * result + Arrays.hashCode(argTypes);
+        result = 31 * result + Boolean.hashCode(varArgs);
+        return result;
     }
 
     public static class Builder {
@@ -89,6 +102,7 @@ public class QLFunctionDescriptor {
         String name;
         TypeClassifier returnType;
         TypeClassifier[] argTypes;
+        boolean varArgs;
         Function<List<Exp<?>>, Exp<?>> fnExpProducer;
 
         private Builder() {
@@ -97,27 +111,27 @@ public class QLFunctionDescriptor {
         @SuppressWarnings({"rawtypes", "unchecked"})
         public Builder udf1(Udf1<?, ?> function) {
             fnExpProducer = exps -> function.call((Exp)exps.get(0));
-            inferTypes(getCallMethodSafe(function, 1));
+            inferTypes(getCallMethodSafe(function, 1), false);
             return this;
         }
 
         @SuppressWarnings({"rawtypes", "unchecked"})
         public Builder udf2(Udf2<?, ?, ?> function) {
             fnExpProducer = exps -> function.call((Exp)exps.get(0), (Exp)exps.get(1));
-            inferTypes(getCallMethodSafe(function, 2));
+            inferTypes(getCallMethodSafe(function, 2), false);
             return this;
         }
 
         @SuppressWarnings({"rawtypes", "unchecked"})
         public Builder udf3(Udf3<?, ?, ?, ?> function) {
             fnExpProducer = exps -> function.call((Exp)exps.get(0), (Exp)exps.get(1), (Exp)exps.get(2));
-            inferTypes(getCallMethodSafe(function, 3));
+            inferTypes(getCallMethodSafe(function, 3), false);
             return this;
         }
 
         public Builder udfN(UdfN<?> function) {
             fnExpProducer = exps -> function.call(exps.toArray(new Exp[0]));
-            inferTypes(getCallMethodSafe(function, 4));
+            inferTypes(getCallMethodSafe(function, 4), true);
             return this;
         }
 
@@ -127,16 +141,21 @@ public class QLFunctionDescriptor {
         }
 
         QLFunctionDescriptor build() {
-            return new QLFunctionDescriptor(name, returnType, argTypes, fnExpProducer);
+            return new QLFunctionDescriptor(name, returnType, argTypes, varArgs, fnExpProducer);
         }
 
-        private void inferTypes(Method method) {
+        private void inferTypes(Method method, boolean varArgs) {
             Type genericReturnType = method.getGenericReturnType();
-            returnType = TypeClassifier.classify(genericReturnType);
-            Type[] genericParameterTypes = method.getGenericParameterTypes();
-            argTypes = new TypeClassifier[genericParameterTypes.length];
-            for (int i = 0; i < genericParameterTypes.length; i++) {
-                argTypes[i] = TypeClassifier.classify(genericParameterTypes[i]);
+            this.returnType = TypeClassifier.classify(genericReturnType);
+            this.varArgs = varArgs;
+            if(varArgs) {
+                this.argTypes = new TypeClassifier[0];
+            } else {
+                Type[] genericParameterTypes = method.getGenericParameterTypes();
+                this.argTypes = new TypeClassifier[genericParameterTypes.length];
+                for (int i = 0; i < genericParameterTypes.length; i++) {
+                    this.argTypes[i] = TypeClassifier.classify(genericParameterTypes[i]);
+                }
             }
         }
     }
@@ -148,7 +167,7 @@ public class QLFunctionDescriptor {
         DATE,
         TIME,
         DATETIME,
-        UNKNOWN;
+        OBJECT; // TODO: rename
 
         public static TypeClassifier classify(Type type) {
             Class<?> expressionType = unwindGeneric(type);
@@ -156,16 +175,18 @@ public class QLFunctionDescriptor {
                 return NUMERIC;
             } else if (CharSequence.class.isAssignableFrom(expressionType)) {
                 return STRING;
-            } else if (expressionType.equals(Boolean.class) || expressionType.equals(boolean.class)) {
+            } else if (expressionType.equals(Boolean.class)
+                    || expressionType.equals(boolean.class)) {
                 return BOOLEAN;
             } else if (expressionType.equals(java.time.LocalDate.class)) {
                 return DATE;
             } else if (expressionType.equals(java.time.LocalTime.class)) {
                 return TIME;
-            } else if (expressionType.equals(java.time.LocalDateTime.class)) {
+            } else if (expressionType.equals(java.time.LocalDateTime.class)
+                    || expressionType.equals(java.time.OffsetDateTime.class)) {
                 return DATETIME;
             } else {
-                return UNKNOWN;
+                return OBJECT;
             }
         }
 
@@ -174,6 +195,8 @@ public class QLFunctionDescriptor {
                 return QLFunctionDescriptor.TypeClassifier.NUMERIC;
             } else if(exp instanceof StrExp) {
                 return QLFunctionDescriptor.TypeClassifier.STRING;
+            } else if(exp instanceof Condition) {
+                return QLFunctionDescriptor.TypeClassifier.BOOLEAN;
             } else if(exp instanceof DateExp) {
                 return QLFunctionDescriptor.TypeClassifier.DATE;
             } else if(exp instanceof TimeExp) {
@@ -183,7 +206,7 @@ public class QLFunctionDescriptor {
             } else if(exp instanceof OffsetDateTimeExp) {
                 return QLFunctionDescriptor.TypeClassifier.DATETIME;
             } else {
-                return QLFunctionDescriptor.TypeClassifier.UNKNOWN;
+                return QLFunctionDescriptor.TypeClassifier.OBJECT;
             }
         }
     }
@@ -191,32 +214,27 @@ public class QLFunctionDescriptor {
     static private Method getCallMethodSafe(Object function, int arity) {
         Class<?> aClass = function.getClass();
         try {
-            switch (arity) {
-                case 1:
-                    return aClass.getDeclaredMethod("call", Exp.class);
-                case 2:
-                    return aClass.getDeclaredMethod("call", Exp.class, Exp.class);
-                case 3:
-                    return aClass.getDeclaredMethod("call", Exp.class, Exp.class, Exp.class);
-                default:
-                    return aClass.getDeclaredMethod("call", Exp[].class);
-            }
+            return switch (arity) {
+                case 1 -> aClass.getDeclaredMethod("call", Exp.class);
+                case 2 -> aClass.getDeclaredMethod("call", Exp.class, Exp.class);
+                case 3 -> aClass.getDeclaredMethod("call", Exp.class, Exp.class, Exp.class);
+                default -> aClass.getDeclaredMethod("call", Exp[].class);
+            };
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }
 
     private static Class<?> unwindGeneric(Type type) {
-        if (type instanceof Class) {
-            return (Class<?>) type;
-        } else if (type instanceof ParameterizedType) {
-            Type[] actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
+        if (type instanceof Class<?> c) {
+            return c;
+        } else if (type instanceof ParameterizedType pt) {
+            Type[] actualTypeArguments = pt.getActualTypeArguments();
             return unwindGeneric(actualTypeArguments[0]);
-        } else if (type instanceof GenericArrayType) {
-            Type genericComponentType = ((GenericArrayType) type).getGenericComponentType();
+        } else if (type instanceof GenericArrayType gat) {
+            Type genericComponentType = gat.getGenericComponentType();
             return unwindGeneric(genericComponentType);
-        } else if (type instanceof WildcardType) {
-            WildcardType wt = (WildcardType) type;
+        } else if (type instanceof WildcardType wt) {
             Type[] lowerBounds = wt.getLowerBounds();
             if (lowerBounds.length > 0) {
                 return unwindGeneric(lowerBounds[0]);
@@ -226,8 +244,8 @@ public class QLFunctionDescriptor {
                 return unwindGeneric(upperBounds[0]);
             }
             throw new IllegalArgumentException("Wildcard type with no bounds");
-        } else if (type instanceof TypeVariable) {
-            throw new RuntimeException("Variable type " + type + " can't be fully resolved");
+        } else if (type instanceof TypeVariable<?> tv) {
+            throw new RuntimeException("Variable type " + tv + " can't be fully resolved");
         } else {
             throw new IllegalArgumentException("Unexpected type " + type);
         }

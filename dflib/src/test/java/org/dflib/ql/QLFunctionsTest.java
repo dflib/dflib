@@ -1,8 +1,10 @@
 package org.dflib.ql;
 
 import org.dflib.Exp;
+import org.dflib.NumExp;
 import org.dflib.Udf2;
 import org.dflib.Udf3;
+import org.dflib.UdfN;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -98,6 +100,69 @@ class QLFunctionsTest {
                 () -> functions.function("concat", QLFunctionDescriptor.TypeClassifier.NUMERIC, argTypes)
         );
         assertEquals("Function NUMERIC concat([STRING, STRING]) not found", exception.getMessage());
+    }
+
+    @Test
+    void function_VarArgs_MatchesAnyArity() {
+        QLFunctions functions = QLFunctions.builder()
+                .function("sum", new IntNSumFunction())
+                .build();
+
+        // match with 2 args
+        QLFunctionDescriptor result2 = functions.function("sum", QLFunctionDescriptor.TypeClassifier.NUMERIC,
+                List.of(QLFunctionDescriptor.TypeClassifier.NUMERIC, QLFunctionDescriptor.TypeClassifier.NUMERIC));
+        assertNotNull(result2);
+        assertTrue(result2.isVarArgs());
+
+        // match with 3 args
+        QLFunctionDescriptor result3 = functions.function("sum", QLFunctionDescriptor.TypeClassifier.NUMERIC,
+                List.of(QLFunctionDescriptor.TypeClassifier.NUMERIC, QLFunctionDescriptor.TypeClassifier.NUMERIC, QLFunctionDescriptor.TypeClassifier.NUMERIC));
+        assertNotNull(result3);
+        assertTrue(result3.isVarArgs());
+
+        // match with 1 arg
+        QLFunctionDescriptor result1 = functions.function("sum", QLFunctionDescriptor.TypeClassifier.NUMERIC,
+                List.of(QLFunctionDescriptor.TypeClassifier.NUMERIC));
+        assertNotNull(result1);
+        assertTrue(result1.isVarArgs());
+
+        // match with 0 args
+        QLFunctionDescriptor result0 = functions.function("sum", QLFunctionDescriptor.TypeClassifier.NUMERIC, List.of());
+        assertNotNull(result0);
+        assertTrue(result0.isVarArgs());
+    }
+
+    @Test
+    void function_VarArgs_FixedArityPreferred() {
+        QLFunctions functions = QLFunctions.builder()
+                .function("sum", new Int2SumFunction())
+                .function("sum", new IntNSumFunction())
+                .build();
+
+        // 2-arg call should prefer the fixed-arity Udf2
+        QLFunctionDescriptor result2 = functions.function("sum", QLFunctionDescriptor.TypeClassifier.NUMERIC,
+                List.of(QLFunctionDescriptor.TypeClassifier.NUMERIC, QLFunctionDescriptor.TypeClassifier.NUMERIC));
+        assertNotNull(result2);
+        assertFalse(result2.isVarArgs());
+        assertEquals(2, result2.argTypes().length);
+
+        // 3-arg call should fall back to varargs
+        QLFunctionDescriptor result3 = functions.function("sum", QLFunctionDescriptor.TypeClassifier.NUMERIC,
+                List.of(QLFunctionDescriptor.TypeClassifier.NUMERIC, QLFunctionDescriptor.TypeClassifier.NUMERIC, QLFunctionDescriptor.TypeClassifier.NUMERIC));
+        assertNotNull(result3);
+        assertTrue(result3.isVarArgs());
+    }
+
+    private static class IntNSumFunction implements UdfN<Number> {
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        @Override
+        public NumExp<Number> call(Exp<?>... exps) {
+            NumExp<Number> result = (NumExp) exps[0];
+            for (int i = 1; i < exps.length; i++) {
+                result = result.add((NumExp) exps[i]);
+            }
+            return result;
+        }
     }
 
     private static class Int2SumFunction implements Udf2<Integer, Integer, Integer> {

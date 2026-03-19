@@ -8,6 +8,7 @@ import org.dflib.exp.fn.*;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -43,17 +44,21 @@ public class QLFunctions {
         return descriptorsForTypeAndName(name, type)
                 // TODO: polymorphic functions support
                 .filter(d -> d.returnType() == type)
-                .filter(d -> d.argTypes().length == argTypes.size())
+                .filter(d -> d.isVarArgs() || d.argTypes().length == argTypes.size())
                 .filter(d -> {
+                    if (d.isVarArgs()) {
+                        return true;
+                    }
                     for (int i = 0; i < d.argTypes().length; i++) {
-                        if (d.argTypes()[i] != QLFunctionDescriptor.TypeClassifier.UNKNOWN
+                        if (d.argTypes()[i] != QLFunctionDescriptor.TypeClassifier.OBJECT
                                 && d.argTypes()[i] != argTypes.get(i)) {
                             return false;
                         }
                     }
                     return true;
                 })
-                .findFirst()
+                // prefer fixed-arity matches over varargs
+                .min(Comparator.comparing(QLFunctionDescriptor::isVarArgs))
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Function " + type + " " + name + "(" + argTypes + ") not found"
                 ));
@@ -106,6 +111,7 @@ public class QLFunctions {
                     .function("substr", new Substr3Function())
                     .function("len", new LenFunction())
                     .function("abs", new AbsFunction())
+                    .function("sqrt", new SqrtFunction())
                     .function("round", new RoundFunction());
         }
 

@@ -1391,8 +1391,6 @@ fnName returns [String id]
     | PLUS_SECONDS
     | PLUS_MILLISECONDS
     | PLUS_NANOS
-    | ABS
-    | ROUND
     | ROW_NUM
     | SCALE
     | COUNT
@@ -1631,12 +1629,6 @@ PLUS_MILLISECONDS: 'plusMilliseconds';
 
 //@ doc:inline
 PLUS_NANOS: 'plusNanos';
-
-//@ doc:inline
-ABS: 'abs';
-
-//@ doc:inline
-ROUND: 'round';
 
 //@ doc:inline
 ROW_NUM: 'rowNum';
