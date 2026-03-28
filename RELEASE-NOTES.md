@@ -16,6 +16,7 @@
 * #622 ECharts: VisualMap dimension mapping
 * #623 ECharts: VisualMap seriesIndex mapping
 * #624 QL: "sqrt(..)" expression
+* #625 Upgrade jackson to 2.19.4
 
 ## Release 2.0.0-M6
 
