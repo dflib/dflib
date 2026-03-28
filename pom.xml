@@ -66,7 +66,7 @@
         <json.smart.version>2.6.0</json.smart.version>
 
         <jjava.version>1.0-a6</jjava.version>
-        <mysql.version>9.1.0</mysql.version>
+        <mysql.version>9.6.0</mysql.version>
         <antlr4.version>4.13.2</antlr4.version>
 
         <central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
