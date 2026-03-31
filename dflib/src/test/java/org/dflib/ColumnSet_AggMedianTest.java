@@ -88,6 +88,22 @@ public class ColumnSet_AggMedianTest {
     }
 
     @Test
+    public void filtered() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                1, true,
+                100, false,
+                2, true,
+                200, false,
+                3, true);
+
+        DataFrame agg = df.cols().agg($int("a").median($bool("b")));
+
+        new DataFrameAsserts(agg, "median(a)")
+                .expectHeight(1)
+                .expectRow(0, 2.);
+    }
+
+    @Test
     public void date_odd() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 LocalDate.of(2000, 2, 1), LocalDate.of(2001, 5, 10),

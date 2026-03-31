@@ -5,9 +5,29 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
+import static org.dflib.Exp.$bool;
+import static org.dflib.Exp.$int;
 import static org.dflib.Exp.$date;
 
 public class ColumnSet_AggQuantileTest {
+
+    @Test
+    public void filtered() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                1, true,
+                100, false,
+                2, true,
+                200, false,
+                3, true);
+
+        DataFrame agg = df.cols().agg(
+                $int("a").quantile(0.25, $bool("b")),
+                $int("a").quantile(0.75, $bool("b")));
+
+        new DataFrameAsserts(agg, "quantile(a)", "quantile(a)_")
+                .expectHeight(1)
+                .expectRow(0, 1.5, 2.5);
+    }
 
     @Test
     public void date_odd() {

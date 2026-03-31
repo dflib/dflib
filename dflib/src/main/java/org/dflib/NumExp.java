@@ -277,7 +277,7 @@ public interface NumExp<N extends Number> extends Exp<N> {
     }
 
     default NumExp<?> median(Condition filter) {
-        return NumericExpFactory.factory(this).median(this, null);
+        return NumericExpFactory.factory(this).median(this, filter);
     }
 
     /**
@@ -291,7 +291,7 @@ public interface NumExp<N extends Number> extends Exp<N> {
      * @since 2.0.0
      */
     default NumExp<?> quantile(double q, Condition filter) {
-        return NumericExpFactory.factory(this).quantile(this, q, null);
+        return NumericExpFactory.factory(this).quantile(this, q, filter);
     }
 
     /**
