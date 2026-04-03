@@ -30,7 +30,7 @@ public class DynamicNumTypeResolverTest {
         Series<?> resolved = DynamicNumTypeResolver.resolve(delegate, (factory, exp) -> exp.eval(Series.ofVal(null, 2)));
 
         assertEquals(2, resolved.size());
-        assertEquals(4, delegate.getCount);
+        assertEquals(3, delegate.getCount);
     }
 
     @Test
