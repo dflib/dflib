@@ -254,20 +254,18 @@ final class DynamicNumTypeResolver {
             Object value = series.get(i);
             if (value == null) {
                 hasNulls = true;
-                if (rank == RANK_BIG_DECIMAL) {
-                    break;
-                }
             } else if (value instanceof Number n) {
                 int vr = valueRank(n);
                 if (vr < rank) {
                     rank = vr;
+                    if(rank == RANK_BIG_DECIMAL) {
+                        break;
+                    }
                 }
             } else {
                 // Convert non-number to BigDecimal
                 rank = RANK_BIG_DECIMAL;
-                if (hasNulls) {
-                    break;
-                }
+                break;
             }
         }
 
