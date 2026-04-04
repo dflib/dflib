@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         db: [ 'derby', 'mysql', 'postgresql' ]
-        java: [ 17, 21, 25 ]
+        java: [ 21, 25 ]
 
     steps:
       - name: Checkout...
@@ -46,7 +46,7 @@ jobs:
       # skip this for the release versions
       if: contains(env.POM_VERSION, '-SNAPSHOT')
       with:
-        java-version: 17
+        java-version: 21
         distribution: 'temurin'
         cache: 'maven'
 

@@ -18,6 +18,7 @@
 * #624 QL: "sqrt(..)" expression
 * #625 Upgrade jackson to 2.19.4
 * #627 NumExp.median() and quantile() default implementations are not using filter argument 
+* #628 Require Java 21
 
 ## Release 2.0.0-M6
 
