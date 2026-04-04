@@ -3,51 +3,36 @@ package org.dflib.jdbc.connector.metadata.flavors;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
-public class GenericFlavor implements DbFlavor {
+public record GenericFlavor(
+        String identifierQuote,
+        boolean supportsParamsMetadata,
+        boolean supportsBatchUpdates,
+        boolean supportsCatalogs,
+        boolean supportsSchemas) implements DbFlavor {
 
-    protected boolean supportsCatalogs;
-    protected boolean supportsSchemas;
-    protected boolean supportsParamsMetadata;
-    protected boolean supportsBatchUpdates;
-    protected String identifierQuote;
-
-    protected GenericFlavor() {
+    /**
+     * @since 2.0.0
+     */
+    public static GenericFlavor of(DatabaseMetaData metaData) throws SQLException {
+        return new GenericFlavor(
+                metaData.getIdentifierQuoteString(),
+                true,
+                metaData.supportsBatchUpdates(),
+                metaData.supportsCatalogsInTableDefinitions(),
+                metaData.supportsSchemasInTableDefinitions());
     }
 
+    /**
+     * @deprecated in favor of {@link #of(DatabaseMetaData)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static GenericFlavor create(DatabaseMetaData metaData) throws SQLException {
-        GenericFlavor flavor = new GenericFlavor();
-        flavor.supportsCatalogs = metaData.supportsCatalogsInTableDefinitions();
-        flavor.supportsSchemas = metaData.supportsSchemasInTableDefinitions();
-        flavor.supportsParamsMetadata = true;
-        flavor.supportsBatchUpdates = metaData.supportsBatchUpdates();
-        flavor.identifierQuote = metaData.getIdentifierQuoteString();
-
-        return flavor;
+        return of(metaData);
     }
 
     @Override
     public String getIdentifierQuote() {
         return identifierQuote;
-    }
-
-    @Override
-    public boolean supportsParamsMetadata() {
-        return supportsParamsMetadata;
-    }
-
-    @Override
-    public boolean supportsBatchUpdates() {
-        return supportsBatchUpdates;
-    }
-
-    @Override
-    public boolean supportsCatalogs() {
-        return supportsCatalogs;
-    }
-
-    @Override
-    public boolean supportsSchemas() {
-        return supportsSchemas;
     }
 
     @Override

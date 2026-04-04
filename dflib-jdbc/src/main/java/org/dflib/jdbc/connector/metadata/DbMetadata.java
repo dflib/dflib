@@ -1,7 +1,6 @@
 package org.dflib.jdbc.connector.metadata;
 
 import org.dflib.jdbc.connector.metadata.flavors.DbFlavor;
-import org.dflib.jdbc.connector.metadata.flavors.DbFlavorFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -34,8 +33,12 @@ public class DbMetadata {
     }
 
     public static DbMetadata create(DataSource dataSource) {
-        DbFlavor flavor = DbFlavorFactory.create(dataSource);
-        return new DbMetadata(dataSource, flavor);
+        try (Connection c = dataSource.getConnection()) {
+            DbFlavor flavor = DbFlavor.of(c.getMetaData());
+            return new DbMetadata(dataSource, flavor);
+        } catch (SQLException e) {
+            throw new RuntimeException("Error connecting to DB or retrieving DB metadata");
+        }
     }
 
     public DbFlavor getFlavor() {
