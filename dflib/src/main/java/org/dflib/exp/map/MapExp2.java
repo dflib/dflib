@@ -20,6 +20,24 @@ public class MapExp2<L, R, T> extends Exp2<L, R, T> {
         return new MapExp2<>(opName, type, left, right, valToSeries(op));
     }
 
+    /**
+     * @since 2.0.0
+     */
+    public static <L, R, T> MapExp2<L, R, T> mapValWithNulls(String opName, Class<T> type, Exp<L> left, Exp<R> right, BiFunction<L, R, T> op) {
+        return new MapExp2<>(opName, type, left, right, valToSeriesWithNulls(op));
+    }
+
+    protected static <L, R, T> BiFunction<Series<L>, Series<R>, Series<T>> valToSeriesWithNulls(BiFunction<L, R, T> op) {
+        return (ls, rs) -> {
+            int len = ls.size();
+            ObjectAccum<T> accum = new ObjectAccum<>(len);
+            for (int i = 0; i < len; i++) {
+                accum.push(op.apply(ls.get(i), rs.get(i)));
+            }
+            return accum.toSeries();
+        };
+    }
+
     protected static <L, R, T> BiFunction<Series<L>, Series<R>, Series<T>> valToSeries(BiFunction<L, R, T> op) {
         return (ls, rs) -> {
             int len = ls.size();

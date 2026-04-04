@@ -20,6 +20,7 @@
 * #627 NumExp.median() and quantile() default implementations are not using filter argument 
 * #628 Require Java 21
 * #629 Upgrade to Jackson 2.21.1
+* #630 Exp: explicit "hideNulls" flavors of "mapVal" and "mapBoolVal" with BiFunction
 
 ## Release 2.0.0-M6
 

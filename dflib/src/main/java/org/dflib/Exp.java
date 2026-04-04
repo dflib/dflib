@@ -788,7 +788,17 @@ public interface Exp<T> {
      */
     default <S, R> Exp<R> mapVal(Exp<S> other, BiFunction<T, S, R> op) {
         // Exp type vagueness ALERT: this is one of those expressions where we can't infer the correct return type...
-        return MapExp2.mapVal("map", (Class<R>) Object.class, this, other, op);
+        return mapVal(other, op, true);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default <S, R> Exp<R> mapVal(Exp<S> other, BiFunction<T, S, R> op, boolean hideNulls) {
+        // Exp type vagueness ALERT: this is one of those expressions where we can't infer the correct return type...
+        return hideNulls
+                ? MapExp2.mapVal("map", (Class<R>) Object.class, this, other, op)
+                : MapExp2.mapValWithNulls("map", (Class<R>) Object.class, this, other, op);
     }
 
     default Condition eq(Exp<?> exp) {
@@ -969,7 +979,16 @@ public interface Exp<T> {
      * @since 2.0.0
      */
     default <S> Condition mapBoolVal(Exp<S> other, BiPredicate<T, S> op) {
-        return MapCondition2.mapVal("map", this, other, op);
+        return mapBoolVal(other, op, true);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default <S> Condition mapBoolVal(Exp<S> other, BiPredicate<T, S> op, boolean hideNulls) {
+        return hideNulls
+                ? MapCondition2.mapVal("map", this, other, op)
+                : MapCondition2.mapValWithNulls("map", this, other, op);
     }
 
     default Condition mapBoolVal(Predicate<T> op, boolean hideNulls) {

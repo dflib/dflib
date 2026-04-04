@@ -25,6 +25,17 @@ public class MapCondition2<L, R> extends Exp2<L, R, Boolean> implements Conditio
         return new MapCondition2<>(opName, left, right, valToSeries(predicate));
     }
 
+    /**
+     * @since 2.0.0
+     */
+    public static <L, R> MapCondition2<L, R> mapValWithNulls(String opName, Exp<L> left, Exp<R> right, BiPredicate<L, R> predicate) {
+        return new MapCondition2<>(opName, left, right, valToSeriesWithNulls(predicate));
+    }
+
+    protected static <L, R> BiFunction<Series<L>, Series<R>, BooleanSeries> valToSeriesWithNulls(BiPredicate<L, R> predicate) {
+        return (ls, rs) -> BoolBuilder.buildSeries(i -> predicate.test(ls.get(i), rs.get(i)), ls.size());
+    }
+
     protected static <L, R> BiFunction<Series<L>, Series<R>, BooleanSeries> valToSeries(BiPredicate<L, R> predicate) {
         return (ls, rs) -> BoolBuilder.buildSeries(i -> {
             L l = ls.get(i);

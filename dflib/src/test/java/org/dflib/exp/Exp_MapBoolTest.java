@@ -59,4 +59,19 @@ public class Exp_MapBoolTest {
 
         new SeriesAsserts(c.eval(df)).expectData(false, true);
     }
+
+    @Test
+    void mapBoolVal_Binary_Nulls() {
+        Condition c = $col(0).mapBoolVal(
+                $col(1),
+                (s1, s2) -> s1 == null || s2 == null || s1.toString().equals(s2.toString()),
+                false);
+
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                "A", "A",
+                "A", "B",
+                null, "A");
+
+        new SeriesAsserts(c.eval(df)).expectData(true, false, true);
+    }
 }
