@@ -24,6 +24,15 @@
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
         </dependency>
+        <!-- Explicit versions of Jackson instead of the ones coming from Avro -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

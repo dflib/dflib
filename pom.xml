@@ -214,6 +214,12 @@
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro</artifactId>
                 <version>${avro.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
