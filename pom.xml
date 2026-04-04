@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.dflib</groupId>
@@ -49,13 +50,15 @@
 
         <slf4j.version>2.0.16</slf4j.version>
         <log4j.version>2.23.1</log4j.version>
-        <bootique.version>3.0</bootique.version>
+
+        <!-- TODO: Switch to release version of Bootique once 4.0-M4 is out officially -->
+        <bootique.version>4.0-SNAPSHOT</bootique.version>
         <testcontainers.version>1.21.4</testcontainers.version>
         <junit5.version>5.11.3</junit5.version>
         <jsonpath.version>2.9.0</jsonpath.version>
         <avro.version>1.12.1</avro.version>
-        <jackson.version>2.19.4</jackson.version>
-        <jackson.databind.version>2.19.4</jackson.databind.version>
+        <jackson.version>2.21.1</jackson.version>
+        <jackson.databind.version>2.21.1</jackson.databind.version>
         <poi.version>5.4.1</poi.version>
         <commons.csv.version>1.11.0</commons.csv.version>
         <commons.compress.version>1.28.0</commons.compress.version>
@@ -87,6 +90,20 @@
             <name>Sonatype Central Portal Repository</name>
         </repository>
     </distributionManagement>
+
+    <!-- TODO: Remove once we switch to release version of Bootique -->
+    <repositories>
+        <repository>
+            <id>bootique-snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -138,12 +155,12 @@
             -->
             <dependency>
                 <groupId>io.bootique.jdbc</groupId>
-                <artifactId>bootique-jdbc-junit5-derby</artifactId>
+                <artifactId>bootique-jdbc-junit-derby</artifactId>
                 <version>${bootique.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.bootique.jdbc</groupId>
-                <artifactId>bootique-jdbc-junit5-testcontainers</artifactId>
+                <artifactId>bootique-jdbc-junit-testcontainers</artifactId>
                 <version>${bootique.version}</version>
                 <exclusions>
                     <exclusion>
@@ -154,7 +171,7 @@
             </dependency>
             <dependency>
                 <groupId>io.bootique.jetty</groupId>
-                <artifactId>bootique-jetty-jakarta-junit5</artifactId>
+                <artifactId>bootique-jetty-junit</artifactId>
                 <version>${bootique.version}</version>
             </dependency>
 
@@ -283,7 +300,7 @@
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-common</artifactId>
                 <version>${hadoop.version}</version>
-            </dependency>            
+            </dependency>
             <dependency>
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-client</artifactId>

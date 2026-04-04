@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>io.bootique.jetty</groupId>
-            <artifactId>bootique-jetty-jakarta-junit5</artifactId>
+            <artifactId>bootique-jetty-junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

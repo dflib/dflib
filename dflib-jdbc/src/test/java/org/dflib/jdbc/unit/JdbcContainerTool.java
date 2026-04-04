@@ -1,8 +1,8 @@
 package org.dflib.jdbc.unit;
 
-import io.bootique.jdbc.junit5.DbTester;
-import io.bootique.jdbc.junit5.derby.DerbyTester;
-import io.bootique.jdbc.junit5.tc.TcDbTester;
+import io.bootique.jdbc.junit.DbTester;
+import io.bootique.jdbc.junit.derby.DerbyTester;
+import io.bootique.jdbc.junit.tc.TcDbTester;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MySQLContainer;
 

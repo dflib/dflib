@@ -3,10 +3,10 @@ package org.dflib.jdbc.unit;
 import org.dflib.jdbc.unit.dbadapter.GenericTestAdapter;
 import org.dflib.jdbc.unit.dbadapter.MySQLTestAdapter;
 import org.dflib.jdbc.unit.dbadapter.TestDbAdapter;
-import io.bootique.jdbc.junit5.DbTester;
-import io.bootique.junit5.BQTest;
-import io.bootique.junit5.BQTestScope;
-import io.bootique.junit5.BQTestTool;
+import io.bootique.jdbc.junit.DbTester;
+import io.bootique.junit.BQTest;
+import io.bootique.junit.BQTestScope;
+import io.bootique.junit.BQTestTool;
 
 @BQTest
 public abstract class BaseDbTest {

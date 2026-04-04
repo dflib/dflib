@@ -2,9 +2,9 @@ package org.dflib.jdbc.unit.dbadapter;
 
 import org.dflib.jdbc.Jdbc;
 import org.dflib.jdbc.connector.JdbcConnector;
-import io.bootique.jdbc.junit5.DbTester;
-import io.bootique.jdbc.junit5.Table;
-import io.bootique.jdbc.junit5.metadata.DbColumnMetadata;
+import io.bootique.jdbc.junit.DbTester;
+import io.bootique.jdbc.junit.Table;
+import io.bootique.jdbc.junit.metadata.DbColumnMetadata;
 
 import java.util.List;
 import java.util.stream.Stream;

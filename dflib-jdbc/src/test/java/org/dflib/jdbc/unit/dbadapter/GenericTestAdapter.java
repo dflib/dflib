@@ -1,6 +1,6 @@
 package org.dflib.jdbc.unit.dbadapter;
 
-import io.bootique.jdbc.junit5.DbTester;
+import io.bootique.jdbc.junit.DbTester;
 
 public class GenericTestAdapter implements TestDbAdapter {
 
