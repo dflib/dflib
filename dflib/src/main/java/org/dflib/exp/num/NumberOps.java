@@ -1,29 +1,38 @@
 package org.dflib.exp.num;
 
+import org.dflib.Condition;
 import org.dflib.Exp;
 
-final class DynamicNumOps {
+final class NumberOps {
 
-    private DynamicNumOps() {
+    private NumberOps() {
     }
 
-    interface Unary<T> {
-        T apply(
+    interface Unary {
+        Exp<? extends Number> apply(
                 NumericExpFactory factory,
                 Exp<? extends Number> exp
         );
     }
 
-    interface Binary<T> {
-        T apply(
+    interface Binary {
+        Exp<? extends Number> apply(
                 NumericExpFactory factory,
                 Exp<? extends Number> left,
                 Exp<? extends Number> right
         );
     }
 
-    interface Ternary<T> {
-        T apply(
+    interface BinaryCondition {
+        Condition apply(
+                NumericExpFactory factory,
+                Exp<? extends Number> left,
+                Exp<? extends Number> right
+        );
+    }
+
+    interface TernaryCondition {
+        Condition apply(
                 NumericExpFactory factory,
                 Exp<? extends Number> one,
                 Exp<? extends Number> two,

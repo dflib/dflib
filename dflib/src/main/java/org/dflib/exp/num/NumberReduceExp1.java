@@ -7,16 +7,16 @@ import org.dflib.NumExp;
 import org.dflib.Series;
 import org.dflib.exp.Exp1;
 
-class DynamicNumReduceExp1 extends Exp1<Number, Number> implements NumExp<Number> {
+class NumberReduceExp1 extends Exp1<Number, Number> implements NumExp<Number> {
 
-    private final DynamicNumOps.Unary<Exp<? extends Number>> op;
+    private final NumberOps.Unary op;
     private final Condition filter;
 
     @SuppressWarnings("unchecked")
-    DynamicNumReduceExp1(
+    NumberReduceExp1(
             String opName,
             Exp<? extends Number> exp,
-            DynamicNumOps.Unary<Exp<? extends Number>> op,
+            NumberOps.Unary op,
             Condition filter) {
         super(opName, Number.class, (Exp<Number>) exp);
         this.op = op;
@@ -47,11 +47,11 @@ class DynamicNumReduceExp1 extends Exp1<Number, Number> implements NumExp<Number
 
     private Exp<? extends Number> resolve(DataFrame df) {
         DataFrame filtered = filter != null ? df.rows(filter).select() : df;
-        return DynamicNumTypeResolver.resolve(exp.eval(filtered), op);
+        return NumberTypeResolver.resolve(exp.eval(filtered), op);
     }
 
     private Exp<? extends Number> resolve(Series<?> s) {
         Series<?> filtered = filter != null ? s.select(filter) : s;
-        return DynamicNumTypeResolver.resolve(exp.eval(filtered), op);
+        return NumberTypeResolver.resolve(exp.eval(filtered), op);
     }
 }
