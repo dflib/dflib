@@ -16,25 +16,25 @@ import java.util.Map;
  */
 public abstract class NumericExpFactory {
 
-    static final int RANK_BIG_DECIMAL = 0;
-    static final int RANK_DOUBLE = 1;
-    static final int RANK_FLOAT = 2;
-    static final int RANK_BIG_INTEGER = 3;
-    static final int RANK_LONG = 4;
-    static final int RANK_INT = 5;
+    static final int RANK_NUMBER = 0;
+    static final int RANK_BIG_DECIMAL = 1;
+    static final int RANK_DOUBLE = 2;
+    static final int RANK_FLOAT = 3;
+    static final int RANK_BIG_INTEGER = 4;
+    static final int RANK_LONG = 5;
+    static final int RANK_INT = 6;
 
     protected static final Map<Class<? extends Number>, Integer> typeConversionRank;
     protected static final Map<Class<? extends Number>, NumericExpFactory> factories;
     protected static final DecimalExpFactory decimalFactory;
-    protected static final NumericExpFactory dynamicFactory;
 
     static {
 
         decimalFactory = new DecimalExpFactory();
-        dynamicFactory = new DynamicNumExpFactory();
 
         typeConversionRank = new HashMap<>();
 
+        typeConversionRank.put(Number.class, RANK_NUMBER);
         typeConversionRank.put(BigDecimal.class, RANK_BIG_DECIMAL);
 
         typeConversionRank.put(Double.class, RANK_DOUBLE);
@@ -56,6 +56,8 @@ public abstract class NumericExpFactory {
         // typeConversionRank.put(Byte.class, 6);
 
         factories = new HashMap<>();
+
+        factories.put(Number.class, new NumberExpFactory());
 
         factories.put(BigDecimal.class, decimalFactory);
         factories.put(BigInteger.class, new BigintExpFactory());
@@ -85,10 +87,6 @@ public abstract class NumericExpFactory {
     }
 
     public static NumericExpFactory factory(Exp<? extends Number> exp) {
-        if (exp.getType() == Number.class) {
-            return dynamicFactory;
-        }
-
         return factory(exp.getType());
     }
 
@@ -102,22 +100,7 @@ public abstract class NumericExpFactory {
         return factory;
     }
 
-    static NumericExpFactory factory(int rank) {
-        return switch (rank) {
-            case RANK_DOUBLE -> factories.get(Double.class);
-            case RANK_FLOAT -> factories.get(Float.class);
-            case RANK_BIG_INTEGER -> factories.get(BigInteger.class);
-            case RANK_LONG -> factories.get(Long.class);
-            case RANK_INT -> factories.get(Integer.class);
-            default -> decimalFactory;
-        };
-    }
-
     public static NumericExpFactory factory(Exp<? extends Number> left, Exp<? extends Number> right) {
-        if (left.getType() == Number.class || right.getType() == Number.class) {
-            return dynamicFactory;
-        }
-
         return factory(left.getType(), right.getType());
     }
 
@@ -125,10 +108,6 @@ public abstract class NumericExpFactory {
      * @since 2.0.0
      */
     public static NumericExpFactory factory(Exp<? extends Number> one, Exp<? extends Number> two, Exp<? extends Number> three) {
-        if (one.getType() == Number.class || two.getType() == Number.class || three.getType() == Number.class) {
-            return dynamicFactory;
-        }
-
         return factory(one.getType(), two.getType(), three.getType());
     }
 
