@@ -1,5 +1,7 @@
 package org.dflib.exp.num;
 
+import org.dflib.Condition;
+import org.dflib.Exp;
 import org.dflib.Series;
 import org.dflib.DoubleSeries;
 import org.dflib.FloatSeries;
@@ -11,57 +13,86 @@ import java.math.BigInteger;
 
 import static org.dflib.exp.num.NumericExpFactory.*;
 
-final class DynamicNumTypeResolver {
+final class NumberTypeResolver {
 
     private static final int NO_RANK = Integer.MAX_VALUE;
 
-    private DynamicNumTypeResolver() {
+    private NumberTypeResolver() {
     }
 
-    static <T> T resolve(Series<?> series, DynamicNumOps.Unary<T> op) {
+    static Exp<? extends Number> resolve(Series<?> series, NumberOps.Unary op) {
         ScanResult result = scanSeriesIfNeeded(series);
         int rank = result.rank();
         return op.apply(
-                NumericExpFactory.factory(rank),
+                factoryForRank(rank),
                 typeResolvedExp(series, rank, result.hasNulls())
         );
     }
 
-    static <T> T resolve(Series<?> one, Series<?> two, DynamicNumOps.Binary<T> op) {
+    static Exp<? extends Number> resolve(Series<?> one, Series<?> two, NumberOps.Binary op) {
         ScanResult result1 = scanSeriesIfNeeded(one);
         ScanResult result2 = scanSeriesIfNeeded(two);
         int rank = Math.min(result1.rank(), result2.rank());
         return op.apply(
-                NumericExpFactory.factory(rank),
+                factoryForRank(rank),
                 typeResolvedExp(one, rank, result1.hasNulls()),
                 typeResolvedExp(two, rank, result2.hasNulls())
         );
     }
 
-    static <T> T resolve(Series<?> one, Series<?> two, Series<?> three, DynamicNumOps.Ternary<T> op) {
+    static Condition resolve(Series<?> one, Series<?> two, NumberOps.BinaryCondition op) {
+        ScanResult result1 = scanSeriesIfNeeded(one);
+        ScanResult result2 = scanSeriesIfNeeded(two);
+        int rank = Math.min(result1.rank(), result2.rank());
+        return op.apply(
+                factoryForRank(rank),
+                typeResolvedExp(one, rank, result1.hasNulls()),
+                typeResolvedExp(two, rank, result2.hasNulls())
+        );
+    }
+
+    static Condition resolve(Series<?> one, Series<?> two, Series<?> three, NumberOps.TernaryCondition op) {
         ScanResult result1 = scanSeriesIfNeeded(one);
         ScanResult result2 = scanSeriesIfNeeded(two);
         ScanResult result3 = scanSeriesIfNeeded(three);
         int rank = Math.min(result1.rank(), Math.min(result2.rank(), result3.rank()));
         return op.apply(
-                NumericExpFactory.factory(rank),
+                factoryForRank(rank),
                 typeResolvedExp(one, rank, result1.hasNulls()),
                 typeResolvedExp(two, rank, result2.hasNulls()),
                 typeResolvedExp(three, rank, result3.hasNulls())
         );
     }
 
-    static <T> T resolve(Object rawValue, DynamicNumOps.Unary<T> op) {
+    static Exp<? extends Number> resolve(Object rawValue, NumberOps.Unary op) {
         Number value = castToNumber(rawValue);
         if (value == null) {
-            return op.apply(NumericExpFactory.factory(RANK_BIG_DECIMAL),
+            return op.apply(factoryForRank(RANK_BIG_DECIMAL),
                     new ResolvedNumExp<>(BigDecimal.class, Series.ofVal(null, 1)));
         }
         int rank = valueRank(value);
-        return op.apply(NumericExpFactory.factory(rank), scalarExp(value, rank));
+        return op.apply(factoryForRank(rank), scalarExp(value, rank));
     }
 
-    static <T> T resolve(Object rawOne, Object rawTwo, DynamicNumOps.Binary<T> op) {
+    static Exp<? extends Number> resolve(Object rawOne, Object rawTwo, NumberOps.Binary op) {
+        RankedScalars result = resolveScalars(rawOne, rawTwo);
+        return op.apply(
+                factoryForRank(result.rank()),
+                scalarExp(result.one(), result.rank()),
+                scalarExp(result.two(), result.rank())
+        );
+    }
+
+    static Condition resolve(Object rawOne, Object rawTwo, NumberOps.BinaryCondition op) {
+        RankedScalars result = resolveScalars(rawOne, rawTwo);
+        return op.apply(
+                factoryForRank(result.rank()),
+                scalarExp(result.one(), result.rank()),
+                scalarExp(result.two(), result.rank())
+        );
+    }
+
+    private static RankedScalars resolveScalars(Object rawOne, Object rawTwo) {
         Number one = castToNumber(rawOne);
         Number two = castToNumber(rawTwo);
         int r1 = one == null ? NO_RANK : valueRank(one);
@@ -70,14 +101,10 @@ final class DynamicNumTypeResolver {
         if (rank == NO_RANK) {
             rank = RANK_BIG_DECIMAL;
         }
-        return op.apply(
-                NumericExpFactory.factory(rank),
-                scalarExp(one, rank),
-                scalarExp(two, rank)
-        );
+        return new RankedScalars(one, two, rank);
     }
 
-    static <T> T resolve(Object rawOne, Object rawTwo, Object rawThree, DynamicNumOps.Ternary<T> op) {
+    static Condition resolve(Object rawOne, Object rawTwo, Object rawThree, NumberOps.TernaryCondition op) {
         Number one = castToNumber(rawOne);
         Number two = castToNumber(rawTwo);
         Number three = castToNumber(rawThree);
@@ -89,7 +116,7 @@ final class DynamicNumTypeResolver {
             rank = RANK_BIG_DECIMAL;
         }
         return op.apply(
-                NumericExpFactory.factory(rank),
+                factoryForRank(rank),
                 scalarExp(one, rank),
                 scalarExp(two, rank),
                 scalarExp(three, rank)
@@ -121,6 +148,10 @@ final class DynamicNumTypeResolver {
             case RANK_INT -> Integer.class;
             default -> BigDecimal.class;
         };
+    }
+
+    private static NumericExpFactory factoryForRank(int rank) {
+        return NumericExpFactory.factory(typeForRank(rank));
     }
 
     @SuppressWarnings("unchecked")
@@ -278,5 +309,8 @@ final class DynamicNumTypeResolver {
     }
 
     record ScanResult(int rank, boolean hasNulls) {
+    }
+
+    private record RankedScalars(Number one, Number two, int rank) {
     }
 }

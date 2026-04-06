@@ -8,7 +8,7 @@ import org.dflib.NumExp;
  *
  * @since 2.0.0
  */
-public class CastAsNumExp extends DynamicNumExp1 implements NumExp<Number> {
+public class CastAsNumExp extends NumberExp1 implements NumExp<Number> {
 
     @SuppressWarnings("unchecked")
     public CastAsNumExp(Exp<?> exp) {

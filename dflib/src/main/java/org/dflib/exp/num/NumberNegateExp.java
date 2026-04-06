@@ -3,9 +3,9 @@ package org.dflib.exp.num;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 
-class DynamicNegateExp extends DynamicNumExp1 {
+class NumberNegateExp extends NumberExp1 {
 
-    DynamicNegateExp(Exp<? extends Number> exp) {
+    NumberNegateExp(Exp<? extends Number> exp) {
         super("-", exp, NumericExpFactory::negate);
     }
 
