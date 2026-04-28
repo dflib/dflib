@@ -11,14 +11,14 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class NumberTypeResolverTest {
+public class NumberTypeResolutionTest {
 
     @Test
     public void trustedSeries_skipsScan() {
         CountingSeries delegate = new CountingSeries(Series.of(new BigDecimal("1.5"), new BigDecimal("2.5")));
         Series<? extends Number> trusted = new ResolvedNominalSeries<>(BigDecimal.class, delegate, false);
 
-        Series<?> resolved = NumberTypeResolver.eval(exp(trusted), (f, e) -> e, Series.ofVal(null, 2));
+        Series<?> resolved = NumberTypeEvaluator.eval(exp(trusted).eval(Series.ofVal(null, 2)), (f, e) -> e);
 
         assertEquals(2, resolved.size());
         assertEquals(0, delegate.getCount);
@@ -28,7 +28,7 @@ public class NumberTypeResolverTest {
     public void unknownSeries_scans() {
         CountingSeries delegate = new CountingSeries(Series.of(new BigDecimal("1.5"), new BigDecimal("2.5")));
 
-        Series<?> resolved = NumberTypeResolver.eval(exp(delegate), (f, e) -> e, Series.ofVal(null, 2));
+        Series<?> resolved = NumberTypeEvaluator.eval(exp(delegate).eval(Series.ofVal(null, 2)), (f, e) -> e);
 
         assertEquals(2, resolved.size());
         assertEquals(3, delegate.getCount);
@@ -36,10 +36,9 @@ public class NumberTypeResolverTest {
 
     @Test
     public void convertedSeries_returnsTrusted() {
-        Series<?> resolved = NumberTypeResolver.eval(
-                exp(Series.of(1, new BigDecimal("2.5"))),
-                (f, e) -> e,
-                Series.ofVal(null, 2));
+        Series<?> resolved = NumberTypeEvaluator.eval(
+                exp(Series.of(1, new BigDecimal("2.5"))).eval(Series.ofVal(null, 2)),
+                (f, e) -> e);
 
         assertSame(BigDecimal.class, resolved.getNominalType());
     }
@@ -53,8 +52,7 @@ public class NumberTypeResolverTest {
             }
         };
 
-        Number resolved = NumberTypeResolver.resolve(value, (f, e) -> e)
-                .reduce(Series.ofVal(null, 1));
+        Number resolved = NumberTypeReducer.reduce(exp(value).reduce(Series.ofVal(null, 1)), (f, e) -> e);
 
         assertEquals(new BigDecimal("12.5"), resolved);
     }
@@ -68,10 +66,9 @@ public class NumberTypeResolverTest {
             }
         };
 
-        Series<?> resolved = NumberTypeResolver.eval(
-                exp(Series.of(value, 1)),
-                (f, e) -> e,
-                Series.ofVal(null, 2));
+        Series<?> resolved = NumberTypeEvaluator.eval(
+                exp(Series.of(value, 1)).eval(Series.ofVal(null, 2)),
+                (f, e) -> e);
 
         assertSame(BigDecimal.class, resolved.getNominalType());
         assertEquals(new BigDecimal("7.25"), resolved.get(0));
@@ -87,10 +84,9 @@ public class NumberTypeResolverTest {
             }
         };
 
-        assertThrows(NumberFormatException.class, () -> NumberTypeResolver.eval(
-                exp(Series.of(value, 1)),
-                (f, e) -> e,
-                Series.ofVal(null, 2)));
+        assertThrows(NumberFormatException.class, () -> NumberTypeEvaluator.eval(
+                exp(Series.of(value, 1)).eval(Series.ofVal(null, 2)),
+                (f, e) -> e));
     }
 
     private static Exp<Object> exp(Series<?> series) {
@@ -115,6 +111,10 @@ public class NumberTypeResolverTest {
                 return series.first();
             }
         };
+    }
+
+    private static Exp<Object> exp(Object value) {
+        return exp(Series.ofVal(value, 1));
     }
 
     static class CountingSeries extends ObjectSeries<Number> {
