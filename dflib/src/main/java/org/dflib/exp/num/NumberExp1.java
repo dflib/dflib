@@ -16,16 +16,14 @@ class NumberExp1 extends Exp1<Number, Number> implements NumExp<Number> {
         this.op = op;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Series<Number> eval(DataFrame df) {
-        return (Series<Number>) NumberTypeResolver.resolve(exp.eval(df), op).eval(df);
+        return NumberTypeResolver.eval(exp, op, df);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Series<Number> eval(Series<?> s) {
-        return (Series<Number>) NumberTypeResolver.resolve(exp.eval(s), op).eval(s);
+        return NumberTypeResolver.eval(exp, op, s);
     }
 
     @Override
