@@ -23,6 +23,16 @@ final class NumberTypeReducer {
         ).reduce(Series.ofVal(null, 1));
     }
 
+    static Number reduce(Series<?> series, NumberOps.Unary op) {
+        NumberTypeSupport.ScanResult result = NumberTypeSupport.scanSeriesIfNeeded(series);
+        int rank = result.rank();
+
+        return op.apply(
+                NumberTypeSupport.factoryForRank(rank),
+                NumberTypeSupport.typeResolvedExp(series, rank, result.hasNulls())
+        ).reduce(series);
+    }
+
     static Number reduce(Object rawOne, Object rawTwo, NumberOps.Binary op) {
         RankedScalars result = resolveScalars(rawOne, rawTwo);
 
