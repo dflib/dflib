@@ -51,32 +51,32 @@ class NumberExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<Integer> castAsInt(NumExp<?> exp) {
-        return IntExp1.map("castAsInt", cast(exp), s -> NumberTypeResolver.convert(s, RANK_INT));
+        return IntExp1.map("castAsInt", cast(exp), s -> NumberTypeSupport.convert(s, RANK_INT));
     }
 
     @Override
     public NumExp<Long> castAsLong(NumExp<?> exp) {
-        return LongExp1.map("castAsLong", cast(exp), s -> NumberTypeResolver.convert(s, RANK_LONG));
+        return LongExp1.map("castAsLong", cast(exp), s -> NumberTypeSupport.convert(s, RANK_LONG));
     }
 
     @Override
     public NumExp<Double> castAsDouble(NumExp<?> exp) {
-        return DoubleExp1.map("castAsDouble", cast(exp), s -> NumberTypeResolver.convert(s, RANK_DOUBLE));
+        return DoubleExp1.map("castAsDouble", cast(exp), s -> NumberTypeSupport.convert(s, RANK_DOUBLE));
     }
 
     @Override
     public NumExp<Float> castAsFloat(NumExp<?> exp) {
-        return FloatExp1.map("castAsFloat", cast(exp), s -> NumberTypeResolver.convert(s, RANK_FLOAT));
+        return FloatExp1.map("castAsFloat", cast(exp), s -> NumberTypeSupport.convert(s, RANK_FLOAT));
     }
 
     @Override
     public NumExp<BigInteger> castAsBigint(NumExp<?> exp) {
-        return BigintExp1.map("castAsBigint", cast(exp), s -> NumberTypeResolver.convert(s, RANK_BIG_INTEGER));
+        return BigintExp1.map("castAsBigint", cast(exp), s -> NumberTypeSupport.convert(s, RANK_BIG_INTEGER));
     }
 
     @Override
     public DecimalExp castAsDecimal(NumExp<?> exp) {
-        return DecimalExp1.map("castAsDecimal", cast(exp), s -> NumberTypeResolver.convert(s, RANK_BIG_DECIMAL));
+        return DecimalExp1.map("castAsDecimal", cast(exp), s -> NumberTypeSupport.convert(s, RANK_BIG_DECIMAL));
     }
 
     @Override
