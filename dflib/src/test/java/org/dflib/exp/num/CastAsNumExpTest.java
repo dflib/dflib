@@ -131,6 +131,18 @@ public class CastAsNumExpTest {
     }
 
     @Test
+    public void filteredSum_empty() {
+        NumExp<?> exp = $col("a").castAsNumber().sum($bool("b"));
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                1, false,
+                2, false,
+                3, false);
+
+        assertEquals(BigDecimal.ZERO, exp.reduce(df));
+        new SeriesAsserts(exp.eval(df)).expectData(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+    }
+
+    @Test
     public void median() {
         NumExp<?> exp = $col("a").castAsNumber().median();
         DataFrame df = DataFrame.foldByRow("a").of(
