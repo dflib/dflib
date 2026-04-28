@@ -125,7 +125,9 @@ public class CastAsNumExpTest {
                 3, true);
 
         assertEquals(4L, exp.reduce(df));
-        assertInstanceOf(LongSeries.class, exp.eval(df));
+        Series<? extends Number> result = exp.eval(df);
+        assertInstanceOf(LongSeries.class, result);
+        new SeriesAsserts(result).expectData(4L, 4L, 4L);
     }
 
     @Test
@@ -167,6 +169,52 @@ public class CastAsNumExpTest {
         ).eval(df);
         new BoolSeriesAsserts(isBetween)
                 .expectData(true, true, true, false, false);
+    }
+
+    @Test
+    public void abs_DataFrame_evalOnce() {
+        AtomicInteger counter = new AtomicInteger();
+
+        NumExp<?> exp = $col("a")
+                .mapVal(v -> {
+                    counter.incrementAndGet();
+                    return v;
+                })
+                .castAsNumber()
+                .abs();
+        DataFrame df = DataFrame.foldByRow("a").of(-1, -2L, new BigDecimal("-3.5"));
+
+        new SeriesAsserts(exp.eval(df))
+                .expectData(new BigDecimal("1"), new BigDecimal("2"), new BigDecimal("3.5"));
+        assertEquals(3, counter.get());
+    }
+
+    @Test
+    public void add_DataFrame_evalOnce() {
+        AtomicInteger leftCounter = new AtomicInteger();
+        AtomicInteger rightCounter = new AtomicInteger();
+
+        NumExp<?> exp = $col("a")
+                .mapVal(v -> {
+                    leftCounter.incrementAndGet();
+                    return v;
+                })
+                .castAsNumber()
+                .add($col("b")
+                        .mapVal(v -> {
+                            rightCounter.incrementAndGet();
+                            return v;
+                        })
+                        .castAsNumber());
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                1, 1L,
+                2L, new BigDecimal("2.5"),
+                new BigDecimal("3.5"), 3);
+
+        new SeriesAsserts(exp.eval(df))
+                .expectData(new BigDecimal("2"), new BigDecimal("4.5"), new BigDecimal("6.5"));
+        assertEquals(3, leftCounter.get());
+        assertEquals(3, rightCounter.get());
     }
 
     @Test

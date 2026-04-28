@@ -23,12 +23,12 @@ class NumberCondition2 extends Exp2<Number, Number, Boolean> implements Conditio
 
     @Override
     public BooleanSeries eval(DataFrame df) {
-        return NumberTypeResolver.resolve(left.eval(df), right.eval(df), op).eval(df);
+        return NumberTypeResolver.eval(left, right, op, df);
     }
 
     @Override
     public BooleanSeries eval(Series<?> s) {
-        return NumberTypeResolver.resolve(left.eval(s), right.eval(s), op).eval(s);
+        return NumberTypeResolver.eval(left, right, op, s);
     }
 
     @Override
