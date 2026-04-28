@@ -19,21 +19,21 @@ class NumberExp2 extends Exp2<Number, Number, Number> implements NumExp<Number> 
 
     @Override
     public Series<Number> eval(DataFrame df) {
-        return NumberTypeResolver.eval(left, right, op, df);
+        return NumberTypeEvaluator.eval(left.eval(df), right.eval(df), op);
     }
 
     @Override
     public Series<Number> eval(Series<?> s) {
-        return NumberTypeResolver.eval(left, right, op, s);
+        return NumberTypeEvaluator.eval(left.eval(s), right.eval(s), op);
     }
 
     @Override
     public Number reduce(DataFrame df) {
-        return NumberTypeResolver.resolve(left.reduce(df), right.reduce(df), op).reduce(df);
+        return NumberTypeReducer.reduce(left.reduce(df), right.reduce(df), op);
     }
 
     @Override
     public Number reduce(Series<?> s) {
-        return NumberTypeResolver.resolve(left.reduce(s), right.reduce(s), op).reduce(s);
+        return NumberTypeReducer.reduce(left.reduce(s), right.reduce(s), op);
     }
 }
