@@ -54,6 +54,14 @@ public class ColumnTest {
     }
 
     @Test
+    public void castAsNumber() {
+        NumExp<?> exp = $col(0).castAsNumber();
+        Series<Object> s = Series.of(new BigDecimal("5.01"), null, 12L, 1);
+        new SeriesAsserts(exp.eval(s))
+                .expectData(BigDecimal.valueOf(5.01), null, BigDecimal.valueOf(12), BigDecimal.valueOf(1));
+    }
+
+    @Test
     public void getColumnName() {
         assertEquals("a", $col("a").getColumnName());
         assertEquals("col(0)", $col(0).getColumnName());
