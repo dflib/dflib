@@ -1,6 +1,8 @@
 package org.dflib.exp.num;
 
 import org.dflib.Condition;
+import org.dflib.BooleanSeries;
+import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
 import org.dflib.DoubleSeries;
@@ -20,16 +22,59 @@ final class NumberTypeResolver {
     private NumberTypeResolver() {
     }
 
-    static Exp<? extends Number> resolve(Series<?> series, NumberOps.Unary op) {
+    static Series<Number> eval(Exp<?> exp, NumberOps.Unary op, Series<?> s) {
+        return evalResolved(exp.eval(s), op);
+    }
+
+    static Series<Number> eval(Exp<?> exp, NumberOps.Unary op, DataFrame df) {
+        return evalResolved(exp.eval(df), op);
+    }
+
+    static Series<Number> eval(Exp<?> left, Exp<?> right, NumberOps.Binary op, Series<?> s) {
+        return evalResolved(left.eval(s), right.eval(s), op);
+    }
+
+    static Series<Number> eval(Exp<?> left, Exp<?> right, NumberOps.Binary op, DataFrame df) {
+        return evalResolved(left.eval(df), right.eval(df), op);
+    }
+
+    static BooleanSeries eval(Exp<?> left, Exp<?> right, NumberOps.BinaryCondition op, Series<?> s) {
+        return evalResolved(left.eval(s), right.eval(s), op);
+    }
+
+    static BooleanSeries eval(Exp<?> left, Exp<?> right, NumberOps.BinaryCondition op, DataFrame df) {
+        return evalResolved(left.eval(df), right.eval(df), op);
+    }
+
+    static BooleanSeries eval(Exp<?> one, Exp<?> two, Exp<?> three, NumberOps.TernaryCondition op, Series<?> s) {
+        return evalResolved(one.eval(s), two.eval(s), three.eval(s), op);
+    }
+
+    static BooleanSeries eval(Exp<?> one, Exp<?> two, Exp<?> three, NumberOps.TernaryCondition op, DataFrame df) {
+        return evalResolved(one.eval(df), two.eval(df), three.eval(df), op);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Series<Number> evalResolved(Series<?> series, NumberOps.Unary op) {
         ScanResult result = scanSeriesIfNeeded(series);
         int rank = result.rank();
-        return op.apply(
-                factoryForRank(rank),
-                typeResolvedExp(series, rank, result.hasNulls())
-        );
+        ResolvedNumExp<? extends Number> resolvedNumExp = typeResolvedExp(series, rank, result.hasNulls());
+        return (Series<Number>) op.apply(factoryForRank(rank), resolvedNumExp).eval(series);
     }
 
-    static Exp<? extends Number> resolve(Series<?> one, Series<?> two, NumberOps.Binary op) {
+    @SuppressWarnings("unchecked")
+    private static Series<Number> evalResolved(Series<?> one, Series<?> two, NumberOps.Binary op) {
+        ScanResult result1 = scanSeriesIfNeeded(one);
+        ScanResult result2 = scanSeriesIfNeeded(two);
+        int rank = Math.min(result1.rank(), result2.rank());
+        return (Series<Number>) op.apply(
+                factoryForRank(rank),
+                typeResolvedExp(one, rank, result1.hasNulls()),
+                typeResolvedExp(two, rank, result2.hasNulls())
+        ).eval(one);
+    }
+
+    private static BooleanSeries evalResolved(Series<?> one, Series<?> two, NumberOps.BinaryCondition op) {
         ScanResult result1 = scanSeriesIfNeeded(one);
         ScanResult result2 = scanSeriesIfNeeded(two);
         int rank = Math.min(result1.rank(), result2.rank());
@@ -37,21 +82,10 @@ final class NumberTypeResolver {
                 factoryForRank(rank),
                 typeResolvedExp(one, rank, result1.hasNulls()),
                 typeResolvedExp(two, rank, result2.hasNulls())
-        );
+        ).eval(one);
     }
 
-    static Condition resolve(Series<?> one, Series<?> two, NumberOps.BinaryCondition op) {
-        ScanResult result1 = scanSeriesIfNeeded(one);
-        ScanResult result2 = scanSeriesIfNeeded(two);
-        int rank = Math.min(result1.rank(), result2.rank());
-        return op.apply(
-                factoryForRank(rank),
-                typeResolvedExp(one, rank, result1.hasNulls()),
-                typeResolvedExp(two, rank, result2.hasNulls())
-        );
-    }
-
-    static Condition resolve(Series<?> one, Series<?> two, Series<?> three, NumberOps.TernaryCondition op) {
+    private static BooleanSeries evalResolved(Series<?> one, Series<?> two, Series<?> three, NumberOps.TernaryCondition op) {
         ScanResult result1 = scanSeriesIfNeeded(one);
         ScanResult result2 = scanSeriesIfNeeded(two);
         ScanResult result3 = scanSeriesIfNeeded(three);
@@ -61,7 +95,7 @@ final class NumberTypeResolver {
                 typeResolvedExp(one, rank, result1.hasNulls()),
                 typeResolvedExp(two, rank, result2.hasNulls()),
                 typeResolvedExp(three, rank, result3.hasNulls())
-        );
+        ).eval(one);
     }
 
     static Exp<? extends Number> resolve(Object rawValue, NumberOps.Unary op) {

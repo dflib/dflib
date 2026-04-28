@@ -25,12 +25,12 @@ class NumberCondition3 extends Exp3<Number, Number, Number, Boolean> implements 
 
     @Override
     public BooleanSeries eval(DataFrame df) {
-        return NumberTypeResolver.resolve(one.eval(df), two.eval(df), three.eval(df), op).eval(df);
+        return NumberTypeResolver.eval(one, two, three, op, df);
     }
 
     @Override
     public BooleanSeries eval(Series<?> s) {
-        return NumberTypeResolver.resolve(one.eval(s), two.eval(s), three.eval(s), op).eval(s);
+        return NumberTypeResolver.eval(one, two, three, op, s);
     }
 
     @Override
