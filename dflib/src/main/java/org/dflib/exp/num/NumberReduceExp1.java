@@ -35,12 +35,12 @@ class NumberReduceExp1 extends Exp1<Number, Number> implements NumExp<Number> {
 
     @Override
     public Number reduce(DataFrame df) {
-        return NumberTypeResolver.eval(exp, op, filtered(df)).first();
+        return NumberTypeEvaluator.eval(exp.eval(filtered(df)), op).first();
     }
 
     @Override
     public Number reduce(Series<?> s) {
-        return NumberTypeResolver.eval(exp, op, filtered(s)).first();
+        return NumberTypeEvaluator.eval(exp.eval(filtered(s)), op).first();
     }
 
     private DataFrame filtered(DataFrame df) {
