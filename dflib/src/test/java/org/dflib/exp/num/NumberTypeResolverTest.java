@@ -1,6 +1,9 @@
 package org.dflib.exp.num;
 
+import org.dflib.DataFrame;
+import org.dflib.Exp;
 import org.dflib.Series;
+import org.dflib.exp.Exp0;
 import org.dflib.series.ObjectSeries;
 import org.junit.jupiter.api.Test;
 
@@ -15,8 +18,7 @@ public class NumberTypeResolverTest {
         CountingSeries delegate = new CountingSeries(Series.of(new BigDecimal("1.5"), new BigDecimal("2.5")));
         Series<? extends Number> trusted = new ResolvedNominalSeries<>(BigDecimal.class, delegate, false);
 
-        Series<?> resolved = NumberTypeResolver.resolve(trusted, (f, e) -> e)
-                .eval(Series.ofVal(null, 2));
+        Series<?> resolved = NumberTypeResolver.eval(exp(trusted), (f, e) -> e, Series.ofVal(null, 2));
 
         assertEquals(2, resolved.size());
         assertEquals(0, delegate.getCount);
@@ -26,8 +28,7 @@ public class NumberTypeResolverTest {
     public void unknownSeries_scans() {
         CountingSeries delegate = new CountingSeries(Series.of(new BigDecimal("1.5"), new BigDecimal("2.5")));
 
-        Series<?> resolved = NumberTypeResolver.resolve(delegate, (f, e) -> e)
-                .eval(Series.ofVal(null, 2));
+        Series<?> resolved = NumberTypeResolver.eval(exp(delegate), (f, e) -> e, Series.ofVal(null, 2));
 
         assertEquals(2, resolved.size());
         assertEquals(3, delegate.getCount);
@@ -35,9 +36,10 @@ public class NumberTypeResolverTest {
 
     @Test
     public void convertedSeries_returnsTrusted() {
-        Series<?> resolved = NumberTypeResolver.resolve(
-                Series.of(1, new BigDecimal("2.5")),
-                (f, e) -> e).eval(Series.ofVal(null, 2));
+        Series<?> resolved = NumberTypeResolver.eval(
+                exp(Series.of(1, new BigDecimal("2.5"))),
+                (f, e) -> e,
+                Series.ofVal(null, 2));
 
         assertSame(BigDecimal.class, resolved.getNominalType());
     }
@@ -66,9 +68,10 @@ public class NumberTypeResolverTest {
             }
         };
 
-        Series<?> resolved = NumberTypeResolver.resolve(
-                Series.of(value, 1),
-                (f, e) -> e).eval(Series.ofVal(null, 2));
+        Series<?> resolved = NumberTypeResolver.eval(
+                exp(Series.of(value, 1)),
+                (f, e) -> e,
+                Series.ofVal(null, 2));
 
         assertSame(BigDecimal.class, resolved.getNominalType());
         assertEquals(new BigDecimal("7.25"), resolved.get(0));
@@ -84,9 +87,34 @@ public class NumberTypeResolverTest {
             }
         };
 
-        assertThrows(NumberFormatException.class, () -> NumberTypeResolver.resolve(
-                Series.of(value, 1),
-                (f, e) -> e));
+        assertThrows(NumberFormatException.class, () -> NumberTypeResolver.eval(
+                exp(Series.of(value, 1)),
+                (f, e) -> e,
+                Series.ofVal(null, 2)));
+    }
+
+    private static Exp<Object> exp(Series<?> series) {
+        return new Exp0<>("test", Object.class) {
+            @Override
+            public Series<Object> eval(DataFrame df) {
+                return series.unsafeCastAs(Object.class);
+            }
+
+            @Override
+            public Series<Object> eval(Series<?> s) {
+                return series.unsafeCastAs(Object.class);
+            }
+
+            @Override
+            public Object reduce(DataFrame df) {
+                return series.first();
+            }
+
+            @Override
+            public Object reduce(Series<?> s) {
+                return series.first();
+            }
+        };
     }
 
     static class CountingSeries extends ObjectSeries<Number> {

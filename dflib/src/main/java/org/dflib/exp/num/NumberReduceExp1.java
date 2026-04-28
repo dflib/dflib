@@ -23,35 +23,31 @@ class NumberReduceExp1 extends Exp1<Number, Number> implements NumExp<Number> {
         this.filter = filter;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Series<Number> eval(DataFrame df) {
-        return (Series<Number>) resolve(df).eval(df);
+        return Series.ofVal(reduce(df), df.height());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Series<Number> eval(Series<?> s) {
-        return (Series<Number>) resolve(s).eval(s);
+        return Series.ofVal(reduce(s), s.size());
     }
 
     @Override
     public Number reduce(DataFrame df) {
-        return resolve(df).reduce(df);
+        return NumberTypeResolver.eval(exp, op, filtered(df)).first();
     }
 
     @Override
     public Number reduce(Series<?> s) {
-        return resolve(s).reduce(s);
+        return NumberTypeResolver.eval(exp, op, filtered(s)).first();
     }
 
-    private Exp<? extends Number> resolve(DataFrame df) {
-        DataFrame filtered = filter != null ? df.rows(filter).select() : df;
-        return NumberTypeResolver.resolve(exp.eval(filtered), op);
+    private DataFrame filtered(DataFrame df) {
+        return filter != null ? df.rows(filter).select() : df;
     }
 
-    private Exp<? extends Number> resolve(Series<?> s) {
-        Series<?> filtered = filter != null ? s.select(filter) : s;
-        return NumberTypeResolver.resolve(exp.eval(filtered), op);
+    private Series<?> filtered(Series<?> s) {
+        return filter != null ? s.select(filter) : s;
     }
 }
