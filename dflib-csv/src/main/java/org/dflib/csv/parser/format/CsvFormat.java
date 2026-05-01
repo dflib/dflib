@@ -147,6 +147,10 @@ public class CsvFormat {
         return trailingDelimiter;
     }
 
+    public Builder builder() {
+        return new Builder().copyFrom(this);
+    }
+
     /**
      * Fluent builder for {@link CsvFormat}.
      */
