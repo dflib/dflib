@@ -1,32 +1,24 @@
 package org.dflib.csv;
 
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
 import org.dflib.DataFrame;
-import org.dflib.Index;
 import org.dflib.codec.Codec;
-import org.dflib.row.RowProxy;
+import org.dflib.csv.parser.format.CsvFormat;
+import org.dflib.csv.printer.CsvPrinter;
+import org.dflib.csv.printer.CsvPrinterConfig;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.nio.file.Path;
+import java.util.Optional;
 
 public class CsvSaver {
 
-    private CSVFormat format;
+    private final CsvPrinterConfig.Builder configBuilder = CsvPrinterConfig.builder();
     private boolean createMissingDirs;
-    private boolean printHeader;
-    private Codec codec;
-
-    public CsvSaver() {
-        this.format = CSVFormat.DEFAULT;
-        this.printHeader = true;
-    }
 
     /**
      * Sets a compression codec for this saver. If not set, the saver will try to determine compression preferences
@@ -36,7 +28,7 @@ public class CsvSaver {
      * @since 2.0.0
      */
     public CsvSaver compression(Codec codec) {
-        this.codec = codec;
+        configBuilder.compressionCodec(codec);
         return this;
     }
 
@@ -47,9 +39,29 @@ public class CsvSaver {
      *
      * @param format a format object defined in commons-csv library
      * @return this saver instance
+     * @deprecated since 2.0.0, use {@link #format(CsvFormat)} instead
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public CsvSaver format(CSVFormat format) {
-        this.format = format;
+        CsvFormat.Builder b = CsvFormat.defaultFormat();
+        b.copyFrom(format);
+        configBuilder.csvFormat(b.build());
+        return this;
+    }
+
+    /**
+     * Optionally sets the style or format of the exported CSV. Allows customizing the format by defining custom
+     * delimiters, line separators, quoting and escaping rules, etc.
+     *
+     * @param format CSV format to use
+     * @return this saver instance
+     *
+     * @see CsvFormat#defaultFormat()
+     *
+     * @since 2.0.0
+     */
+    public CsvSaver format(CsvFormat format) {
+        configBuilder.csvFormat(format);
         return this;
     }
 
@@ -70,7 +82,7 @@ public class CsvSaver {
      * @return this saver instance
      */
     public CsvSaver noHeader() {
-        this.printHeader = false;
+        configBuilder.printHeader(false);
         return this;
     }
 
@@ -83,13 +95,12 @@ public class CsvSaver {
             }
         }
 
-        try (Writer out = new OutputStreamWriter(compressIfNeeded(new FileOutputStream(file), file.getName()))) {
-            doSave(df, out);
+        try (OutputStream out = new FileOutputStream(file)) {
+            newPrinter(file.getName()).write(df, out);
         } catch (IOException e) {
             throw new RuntimeException("Error writing CSV to " + file + ": " + e.getMessage(), e);
         }
     }
-
 
     public void save(DataFrame df, Path filePath) {
         save(df, filePath.toFile());
@@ -103,12 +114,7 @@ public class CsvSaver {
      * @since 2.0.0
      */
     public void save(DataFrame df, OutputStream out) {
-
-        try (Writer writer = new OutputStreamWriter(compressIfNeeded(out, null))) {
-            doSave(df, writer);
-        } catch (IOException e) {
-            throw new RuntimeException("Error writing CSV: " + e.getMessage(), e);
-        }
+        newPrinter(null).write(df, out);
     }
 
     /**
@@ -116,12 +122,7 @@ public class CsvSaver {
      * use {@link #save(DataFrame, OutputStream)}.
      */
     public void save(DataFrame df, Appendable out) {
-        try {
-            // producing a char stream, so no compression by definition
-            doSave(df, out);
-        } catch (IOException e) {
-            throw new RuntimeException("Error writing CSV: " + e.getMessage(), e);
-        }
+        newPrinter(null).write(df, out);
     }
 
     public String saveToString(DataFrame df) {
@@ -131,34 +132,16 @@ public class CsvSaver {
         return out.toString();
     }
 
-    private void doSave(DataFrame df, Appendable out) throws IOException {
-        CSVPrinter printer = new CSVPrinter(out, format);
-        if (printHeader) {
-            printHeader(printer, df.getColumnsIndex());
-        }
+    private CsvPrinter newPrinter(String fileNameForCodecDetection) {
+        Codec userCodec = configBuilder.compressionCodec();
 
-        int len = df.width();
-        for (RowProxy r : df) {
-            printRow(printer, r, len);
-        }
-    }
+        // apply the (possibly detected) codec only for this build, then restore the user's value
+        // so a subsequent save with a different filename re-detects from scratch
+        Optional<Codec> codecFromFileName = Codec.ofUri(fileNameForCodecDetection);
+        codecFromFileName.ifPresent(configBuilder::compressionCodec);
+        CsvPrinterConfig config = configBuilder.build();
+        configBuilder.compressionCodec(userCodec);
 
-    private OutputStream compressIfNeeded(OutputStream out, String fileName) throws IOException {
-        Codec codec = this.codec != null ? this.codec : Codec.ofUri(fileName).orElse(null);
-        return codec != null ? codec.compress(out) : out;
-    }
-
-    private void printHeader(CSVPrinter printer, Index index) throws IOException {
-        for (String label : index) {
-            printer.print(label);
-        }
-        printer.println();
-    }
-
-    private void printRow(CSVPrinter printer, RowProxy row, int len) throws IOException {
-        for (int i = 0; i < len; i++) {
-            printer.print(row.get(i));
-        }
-        printer.println();
+        return new CsvPrinter(config);
     }
 }
