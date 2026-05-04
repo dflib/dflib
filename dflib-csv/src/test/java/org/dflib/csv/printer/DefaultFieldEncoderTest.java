@@ -91,4 +91,11 @@ public class DefaultFieldEncoderTest {
         assertEquals("\"a;b\"", enc(fmt, "a;b"));
         assertEquals("a,b", enc(fmt, "a,b"));
     }
+
+    @Test
+    public void customDelimiter_multiChar() throws IOException {
+        CsvFormat fmt = CsvFormat.defaultFormat().delimiter("||").build();
+        assertEquals("\"a||b\"", enc(fmt, "a||b"));
+        assertEquals("a|b", enc(fmt, "a|b"));
+    }
 }
