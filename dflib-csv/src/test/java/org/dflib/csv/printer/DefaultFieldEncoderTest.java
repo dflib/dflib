@@ -9,11 +9,11 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FieldEncoderTest {
+public class DefaultFieldEncoderTest {
 
     private static String enc(CsvFormat fmt, Object value) throws IOException {
         StringBuilder sb = new StringBuilder();
-        new FieldEncoder(fmt).encode(value, sb);
+        new DefaultFieldEncoder(fmt).encode(value, sb);
         return sb.toString();
     }
 

@@ -15,11 +15,11 @@ import java.util.Objects;
  *
  * @since 2.0.0
  */
-class FieldEncoder {
+class DefaultFieldEncoder implements CsvFieldEncoder {
 
     private final CsvFormat format;
 
-    FieldEncoder(CsvFormat format) {
+    DefaultFieldEncoder(CsvFormat format) {
         this.format = Objects.requireNonNull(format);
     }
 
@@ -29,7 +29,8 @@ class FieldEncoder {
      * @param value object to encode
      * @param out target to append to
      */
-    void encode(Object value, Appendable out) throws IOException {
+    @Override
+    public void encode(Object value, Appendable out) throws IOException {
         if (value == null) {
             String nullString = format.nullString();
             if (nullString != null) {

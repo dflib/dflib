@@ -5,6 +5,7 @@ import org.dflib.DataFrame;
 import org.dflib.codec.Codec;
 import org.dflib.csv.parser.format.CsvFormat;
 import org.dflib.csv.printer.CsvPrinter;
+import org.dflib.csv.printer.CsvPrinterFactory;
 import org.dflib.csv.printer.CsvPrinterConfig;
 
 import java.io.File;
@@ -14,10 +15,12 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.Objects;
 
 public class CsvSaver {
 
     private final CsvPrinterConfig.Builder configBuilder = CsvPrinterConfig.builder();
+    private CsvPrinterFactory printerFactory = CsvPrinterFactory.defaultFactory();
     private boolean createMissingDirs;
 
     /**
@@ -86,6 +89,19 @@ public class CsvSaver {
         return this;
     }
 
+    /**
+     * Sets a factory used to create the CSV printer for each save operation.
+     * This allows custom printer/encoder implementations.
+     *
+     * @param printerFactory printer factory to use; must not be {@code null}
+     * @return this saver instance
+     * @since 2.0.0
+     */
+    public CsvSaver printerFactory(CsvPrinterFactory printerFactory) {
+        this.printerFactory = Objects.requireNonNull(printerFactory);
+        return this;
+    }
+
     public void save(DataFrame df, File file) {
 
         if (createMissingDirs) {
@@ -134,14 +150,16 @@ public class CsvSaver {
 
     private CsvPrinter newPrinter(String fileNameForCodecDetection) {
         Codec userCodec = configBuilder.compressionCodec();
+        try {
+            // apply the (possibly detected) codec only for this build, then restore the user's value
+            // so a subsequent save with a different filename re-detects from scratch
+            Optional<Codec> codecFromFileName = Codec.ofUri(fileNameForCodecDetection);
+            codecFromFileName.ifPresent(configBuilder::compressionCodec);
+            CsvPrinterConfig config = configBuilder.build();
 
-        // apply the (possibly detected) codec only for this build, then restore the user's value
-        // so a subsequent save with a different filename re-detects from scratch
-        Optional<Codec> codecFromFileName = Codec.ofUri(fileNameForCodecDetection);
-        codecFromFileName.ifPresent(configBuilder::compressionCodec);
-        CsvPrinterConfig config = configBuilder.build();
-        configBuilder.compressionCodec(userCodec);
-
-        return new CsvPrinter(config);
+            return Objects.requireNonNull(printerFactory.create(config));
+        } finally {
+            configBuilder.compressionCodec(userCodec);
+        }
     }
 }
