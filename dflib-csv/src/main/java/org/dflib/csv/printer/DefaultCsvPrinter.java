@@ -6,6 +6,7 @@ import org.dflib.codec.Codec;
 import org.dflib.csv.parser.format.CsvFormat;
 import org.dflib.row.RowProxy;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -65,7 +66,7 @@ public class DefaultCsvPrinter implements CsvPrinter {
         Codec codec = config.compressionCodec();
         try {
             OutputStream compressed = codec != null ? codec.compress(out) : out;
-            try (Writer w = new OutputStreamWriter(compressed, config.encoding())) {
+            try (Writer w = new BufferedWriter(new OutputStreamWriter(compressed, config.encoding()))) {
                 write(df, w);
             }
         } catch (IOException e) {

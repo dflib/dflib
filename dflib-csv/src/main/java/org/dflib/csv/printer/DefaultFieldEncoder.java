@@ -1,6 +1,7 @@
 package org.dflib.csv.printer;
 
 import org.dflib.csv.parser.format.CsvFormat;
+import org.dflib.csv.parser.format.Delimiter;
 import org.dflib.csv.parser.format.Escape;
 import org.dflib.csv.parser.format.Quote;
 
@@ -50,35 +51,41 @@ class DefaultFieldEncoder implements CsvFieldEncoder {
         }
     }
 
-    private boolean needsQuoting(String s) {
+    private boolean needsQuoting(CharSequence s) {
         if (s.isEmpty()) {
             return false;
         }
-        char quoteChar = format.quote().quoteChar();
-        String delimiter = new String(format.delimiter().asArray());
-        char delimiterFirstChar = delimiter.charAt(0);
-        for (int i = 0; i < s.length(); i++) {
+        String nullString = format.nullString();
+        if (nullString != null && nullString.contentEquals(s)) {
+            return true;
+        }
+        Quote quote = format.quote();
+        Delimiter delimiter = format.delimiter();
+        char quoteChar = quote.quoteChar();
+        for (int i = 0, len = s.length(); i < len; i++) {
             char c = s.charAt(i);
-            if (c == quoteChar || c == '\r' || c == '\n') {
-                return true;
-            }
-            if (c == delimiterFirstChar && s.regionMatches(i, delimiter, 0, delimiter.length())) {
+            if (c == quoteChar || c == '\r' || c == '\n' || isDelimiterAt(s, i, delimiter)) {
                 return true;
             }
         }
-        return s.equals(format.nullString());
+        return false;
     }
 
-    private void encodeQuoted(String s, Appendable out) throws IOException {
-        char quoteChar = format.quote().quoteChar();
+    private void encodeQuoted(CharSequence s, Appendable out) throws IOException {
+        Quote quote = format.quote();
         Escape escape = format.escape();
+        char quoteChar = quote.quoteChar();
         char escapeChar = format.escapeChar();
-
         out.append(quoteChar);
-        for (int i = 0; i < s.length(); i++) {
+        for (int i = 0, len = s.length(); i < len; i++) {
             char c = s.charAt(i);
             if (c == quoteChar) {
-                appendQuoteEscape(out, escape, quoteChar, escapeChar);
+                switch (escape) {
+                    case DOUBLE -> out.append(quoteChar);
+                    case BACKSLASH -> out.append('\\');
+                    case CUSTOM -> out.append(escapeChar);
+                    case NONE -> { /* no escape emit quote char as-is */ }
+                }
                 out.append(quoteChar);
             } else if (c == '\\' && escape == Escape.BACKSLASH) {
                 out.append('\\').append('\\');
@@ -91,27 +98,13 @@ class DefaultFieldEncoder implements CsvFieldEncoder {
         out.append(quoteChar);
     }
 
-    private static void appendQuoteEscape(Appendable out, Escape escape, char quoteChar, char escapeChar)
-            throws IOException {
-        switch (escape) {
-            case DOUBLE -> out.append(quoteChar);
-            case BACKSLASH -> out.append('\\');
-            case CUSTOM -> out.append(escapeChar);
-            case NONE -> { /* no escape emit quote char as-is */ }
-        }
-    }
-
-    private void encodeUnquoted(String s, Appendable out) throws IOException {
+    private void encodeUnquoted(CharSequence s, Appendable out) throws IOException {
         Escape escape = format.escape();
         char escapeChar = format.escapeChar();
-        String delimiter = new String(format.delimiter().asArray());
-        char delimiterFirstChar = delimiter.charAt(0);
-
-        for (int i = 0; i < s.length(); i++) {
+        Delimiter delimiter = format.delimiter();
+        for (int i = 0, len = s.length(); i < len; i++) {
             char c = s.charAt(i);
-            boolean structural = c == '\r' || c == '\n'
-                    || (c == delimiterFirstChar && s.regionMatches(i, delimiter, 0, delimiter.length()));
-            if (structural) {
+            if (c == '\r' || c == '\n' || isDelimiterAt(s, i, delimiter)) {
                 switch (escape) {
                     case BACKSLASH -> out.append('\\').append(c);
                     case CUSTOM -> out.append(escapeChar).append(c);
@@ -125,5 +118,30 @@ class DefaultFieldEncoder implements CsvFieldEncoder {
                 out.append(c);
             }
         }
+    }
+
+    private boolean isDelimiterAt(CharSequence s, int index, Delimiter delimiter) {
+        if (delimiter.isSingleChar()) {
+            return s.charAt(index) == delimiter.singleChar();
+        }
+
+        char[] delimiterChars = delimiter.asArray();
+        char delimiterFirstChar = delimiterChars[0];
+        return s.charAt(index) == delimiterFirstChar && matchesDelimiter(s, index, delimiterChars);
+    }
+
+    private boolean matchesDelimiter(CharSequence s, int index, char[] delimiterChars) {
+        int delimiterLength = delimiterChars.length;
+        if (index + delimiterLength > s.length()) {
+            return false;
+        }
+
+        for (int i = 1; i < delimiterLength; i++) {
+            if (s.charAt(index + i) != delimiterChars[i]) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
