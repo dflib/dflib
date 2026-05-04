@@ -18,7 +18,7 @@ public class CsvSaverTest {
 
     @Test
     public void saveToString_Format() {
-        CsvFormat format = FORMAT.builder().delimiter("\t").build();
+        CsvFormat format = CsvFormat.defaultFormat().copyFrom(FORMAT).delimiter("\t").build();
         assertEquals("A\tB\n1\t2\n3\t4\n", Csv.saver().format(format).saveToString(DF));
     }
 

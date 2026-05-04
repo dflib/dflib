@@ -34,7 +34,7 @@ public class CsvSaver_FormatTest {
 
     @Test
     public void quoteAlways() {
-        CsvFormat fmt = DEFAULT_FORMAT.builder().quote(Quote.of('"')).build();
+        CsvFormat fmt = CsvFormat.defaultFormat().copyFrom(DEFAULT_FORMAT).quote(Quote.of('"')).build();
 
         assertEquals("\"A\",\"B\"\n\"1\",\"2\"\n\"3\",\"4\"\n",
                 Csv.saver().format(fmt).saveToString(DF));
@@ -43,7 +43,7 @@ public class CsvSaver_FormatTest {
     @Test
     public void escapeBackslash_inQuotedField() {
         DataFrame df = DataFrame.foldByRow("A").of("z\"w");
-        CsvFormat fmt = DEFAULT_FORMAT.builder().escape(Escape.BACKSLASH).build();
+        CsvFormat fmt = CsvFormat.defaultFormat().copyFrom(DEFAULT_FORMAT).escape(Escape.BACKSLASH).build();
 
         assertEquals("A\n\"z\\\"w\"\n", Csv.saver().format(fmt).saveToString(df));
     }
@@ -51,7 +51,7 @@ public class CsvSaver_FormatTest {
     @Test
     public void escapeCustom_inQuotedField() {
         DataFrame df = DataFrame.foldByRow("A").of("z\"w");
-        CsvFormat fmt = DEFAULT_FORMAT.builder().escape('$').build();
+        CsvFormat fmt = CsvFormat.defaultFormat().copyFrom(DEFAULT_FORMAT).escape('$').build();
 
         assertEquals("A\n\"z$\"w\"\n", Csv.saver().format(fmt).saveToString(df));
     }
@@ -61,28 +61,28 @@ public class CsvSaver_FormatTest {
         DataFrame df = DataFrame.foldByRow("A", "B").of(
                 "x", null,
                 null, "y");
-        CsvFormat fmt = DEFAULT_FORMAT.builder().nullString("NULL").build();
+        CsvFormat fmt = CsvFormat.defaultFormat().copyFrom(DEFAULT_FORMAT).nullString("NULL").build();
 
         assertEquals("A,B\nx,NULL\nNULL,y\n", Csv.saver().format(fmt).saveToString(df));
     }
 
     @Test
     public void trailingDelimiter() {
-        CsvFormat fmt = DEFAULT_FORMAT.builder().trailingDelimiter(true).build();
+        CsvFormat fmt = CsvFormat.defaultFormat().copyFrom(DEFAULT_FORMAT).trailingDelimiter(true).build();
 
         assertEquals("A,B,\n1,2,\n3,4,\n", Csv.saver().format(fmt).saveToString(DF));
     }
 
     @Test
     public void customDelimiter() {
-        CsvFormat fmt = DEFAULT_FORMAT.builder().delimiter(";").build();
+        CsvFormat fmt = CsvFormat.defaultFormat().copyFrom(DEFAULT_FORMAT).delimiter(";").build();
 
         assertEquals("A;B\n1;2\n3;4\n", Csv.saver().format(fmt).saveToString(DF));
     }
 
     @Test
     public void quoteNone_plainData() {
-        CsvFormat fmt = DEFAULT_FORMAT.builder()
+        CsvFormat fmt = CsvFormat.defaultFormat().copyFrom(DEFAULT_FORMAT)
                 .quote(Quote.none())
                 .escape(Escape.NONE)
                 .build();
