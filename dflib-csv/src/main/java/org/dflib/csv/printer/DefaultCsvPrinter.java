@@ -123,8 +123,7 @@ public class DefaultCsvPrinter implements CsvPrinter {
         return switch (fmt.lineBreak()) {
             case CR -> "\r";
             case LF -> "\n";
-            case CRLF -> "\r\n";
-            case AUTO -> System.lineSeparator();
+            case CRLF, AUTO /* RFC4180 */ -> "\r\n";
         };
     }
 }
