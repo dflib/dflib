@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.Objects;
 
 public class CsvSaver {
@@ -112,7 +111,9 @@ public class CsvSaver {
         }
 
         try (OutputStream out = new FileOutputStream(file)) {
-            newPrinter(file.getName()).write(df, out);
+            Codec codec = resolveCodec(file.getName());
+            CsvPrinterConfig config = configBuilder.buildWithCodec(codec);
+            newPrinter(config).write(df, out);
         } catch (IOException e) {
             throw new RuntimeException("Error writing CSV to " + file + ": " + e.getMessage(), e);
         }
@@ -130,7 +131,8 @@ public class CsvSaver {
      * @since 2.0.0
      */
     public void save(DataFrame df, OutputStream out) {
-        newPrinter(null).write(df, out);
+        CsvPrinterConfig config = configBuilder.build();
+        newPrinter(config).write(df, out);
     }
 
     /**
@@ -138,7 +140,8 @@ public class CsvSaver {
      * use {@link #save(DataFrame, OutputStream)}.
      */
     public void save(DataFrame df, Appendable out) {
-        newPrinter(null).write(df, out);
+        CsvPrinterConfig config = configBuilder.build();
+        newPrinter(config).write(df, out);
     }
 
     public String saveToString(DataFrame df) {
@@ -148,18 +151,11 @@ public class CsvSaver {
         return out.toString();
     }
 
-    private CsvPrinter newPrinter(String fileNameForCodecDetection) {
-        Codec userCodec = configBuilder.compressionCodec();
-        try {
-            // apply the (possibly detected) codec only for this build, then restore the user's value
-            // so a subsequent save with a different filename re-detects from scratch
-            Optional<Codec> codecFromFileName = Codec.ofUri(fileNameForCodecDetection);
-            codecFromFileName.ifPresent(configBuilder::compressionCodec);
-            CsvPrinterConfig config = configBuilder.build();
+    private CsvPrinter newPrinter(CsvPrinterConfig config) {
+        return Objects.requireNonNull(printerFactory.create(config));
+    }
 
-            return Objects.requireNonNull(printerFactory.create(config));
-        } finally {
-            configBuilder.compressionCodec(userCodec);
-        }
+    private Codec resolveCodec(String fileNameForCodecDetection) {
+        return Codec.ofUri(fileNameForCodecDetection).orElseGet(configBuilder::compressionCodec);
     }
 }
