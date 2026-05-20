@@ -28,6 +28,16 @@ public class CsvPrinterConfig {
     }
 
     /**
+     * Creates a new config from a builder with an overridden compression codec.
+     */
+    CsvPrinterConfig(Builder builder, Codec compressionCodec) {
+        this.csvFormat = builder.csvFormat;
+        this.encoding = builder.encoding;
+        this.compressionCodec = compressionCodec;
+        this.printHeader = builder.printHeader;
+    }
+
+    /**
      * Returns a new {@link Builder} seeded with default values.
      */
     public static Builder builder() {
@@ -124,6 +134,14 @@ public class CsvPrinterConfig {
          */
         public CsvPrinterConfig build() {
             return new CsvPrinterConfig(this);
+        }
+
+        /**
+         * Builds a config with the specified compression codec, overriding any previously set codec.
+         * Does not mutate the builder state.
+         */
+        public CsvPrinterConfig buildWithCodec(Codec codec) {
+            return new CsvPrinterConfig(this, codec);
         }
     }
 }
