@@ -20,8 +20,87 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CsvSaver_GzipCompressionTest {
 
+    private static final DataFrame DF = DataFrame.foldByRow("A", "B").of(
+            1, 2,
+            3, 4);
+
     @TempDir
     Path outBase;
+
+    @Test
+    public void save_ToFile() throws IOException {
+        Path out = outBase.resolve("save_ToFile");
+        Csv.saver().compression(Codec.GZIP).save(DF, out.toFile());
+        String csv = readAndUncompress(out);
+
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"save_ToFile.csv.gz", "save_ToFile.csv.gzip"})
+    public void save_ToFile_CodecByExtension(String fileName) throws IOException {
+        Path out = outBase.resolve(fileName);
+        Csv.saver().save(DF, out.toFile());
+        String csv = readAndUncompress(out);
+
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
+    }
+
+
+    @Test
+    public void save_ToFilePath() throws IOException {
+        Path out = outBase.resolve("save_ToFilePath.csv");
+        Csv.saver().compression(Codec.GZIP).save(DF, out.toFile().getAbsolutePath());
+        String csv = readAndUncompress(out);
+
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
+    }
+
+    @Test
+    public void save_ToPath() throws IOException {
+        Path out = outBase.resolve("save_ToPath.csv");
+        Csv.saver().compression(Codec.GZIP).save(DF, out);
+        String csv = readAndUncompress(out);
+
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"save_ToPath.csv.gz", "save_ToPath.csv.gzip"})
+    public void save_ToPath_CompressByExtension(String filePath) throws IOException {
+        Path out = outBase.resolve(filePath);
+        Csv.saver().save(DF, out);
+        String csv = readAndUncompress(out);
+
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
+    }
+
+    @Test
+    public void save_ToOutputStream() throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Csv.saver().compression(Codec.GZIP).save(DF, out);
+        String csv = readAndUncompress(out.toByteArray());
+
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
+    }
+
+    @Test
+    public void save_WithCodecFromFileName_ThenWithoutCodec() throws IOException {
+        CsvSaver saver = Csv.saver();
+
+        Path gzipFile = outBase.resolve("file1.csv.gz");
+        saver.save(DF, gzipFile.toFile());
+
+        Path plainFile = outBase.resolve("file2.csv");
+        saver.save(DF, plainFile.toFile());
+
+        byte[] gzipBytes = Files.readAllBytes(gzipFile);
+        assertEquals((byte) 0x1f, gzipBytes[0], "First file should be GZIP compressed");
+        assertEquals((byte) 0x8b, gzipBytes[1], "First file should be GZIP compressed");
+
+        String actual = Files.readString(plainFile);
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", actual, "Second file should not be compressed");
+    }
 
     private static String readAndUncompress(Path path) throws IOException {
         byte[] bytes = Files.readAllBytes(path);
@@ -33,111 +112,12 @@ public class CsvSaver_GzipCompressionTest {
 
         try (Reader r = new InputStreamReader(new GZIPInputStream(new ByteArrayInputStream(bytes)))) {
             char[] chars = new char[2048];
-            int read = -1;
+            int read;
             while ((read = r.read(chars, 0, chars.length)) != -1) {
                 buf.append(chars, 0, read);
             }
         }
 
         return buf.toString();
-    }
-
-    @Test
-    public void save_ToFile() throws IOException {
-
-        DataFrame df = DataFrame.foldByRow("A", "B").of(
-                1, 2,
-                3, 4);
-
-        Path out = outBase.resolve("save_ToFile");
-        Csv.saver().compression(Codec.GZIP).save(df, out.toFile());
-
-        String csv = readAndUncompress(out);
-        assertEquals("A,B\r\n" +
-                "1,2\r\n" +
-                "3,4\r\n", csv);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"save_ToFile.csv.gz", "save_ToFile.csv.gzip"})
-    public void save_ToFile_CompressByExtension(String fileName) throws IOException {
-
-        DataFrame df = DataFrame.foldByRow("A", "B").of(
-                1, 2,
-                3, 4);
-
-        Path out = outBase.resolve(fileName);
-        Csv.saver().save(df, out.toFile());
-
-        String csv = readAndUncompress(out);
-        assertEquals("A,B\r\n" +
-                "1,2\r\n" +
-                "3,4\r\n", csv);
-    }
-
-
-    @Test
-    public void save_ToFilePath() throws IOException {
-
-        DataFrame df = DataFrame.foldByRow("A", "B").of(
-                1, 2,
-                3, 4);
-
-        Path out = outBase.resolve("save_ToFilePath.csv");
-        Csv.saver().compression(Codec.GZIP).save(df, out.toFile().getAbsolutePath());
-        String csv = readAndUncompress(out);
-
-        assertEquals("A,B\r\n" +
-                "1,2\r\n" +
-                "3,4\r\n", csv);
-    }
-
-    @Test
-    public void save_ToPath() throws IOException {
-
-        DataFrame df = DataFrame.foldByRow("A", "B").of(
-                1, 2,
-                3, 4);
-
-        Path out = outBase.resolve("save_ToPath.csv");
-        Csv.saver().compression(Codec.GZIP).save(df, out);
-        String csv = readAndUncompress(out);
-
-        assertEquals("A,B\r\n" +
-                "1,2\r\n" +
-                "3,4\r\n", csv);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"save_ToPath.csv.gz", "save_ToPath.csv.gzip"})
-    public void save_ToPath_CompressByExtension(String filePath) throws IOException {
-
-        DataFrame df = DataFrame.foldByRow("A", "B").of(
-                1, 2,
-                3, 4);
-
-        Path out = outBase.resolve(filePath);
-        Csv.saver().save(df, out);
-        String csv = readAndUncompress(out);
-
-        assertEquals("A,B\r\n" +
-                "1,2\r\n" +
-                "3,4\r\n", csv);
-    }
-
-    @Test
-    public void save_ToOutputStream() throws IOException {
-
-        DataFrame df = DataFrame.foldByRow("A", "B").of(
-                1, 2,
-                3, 4);
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Csv.saver().compression(Codec.GZIP).save(df, out);
-        String csv = readAndUncompress(out.toByteArray());
-
-        assertEquals("A,B\r\n" +
-                "1,2\r\n" +
-                "3,4\r\n", csv);
     }
 }
