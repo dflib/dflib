@@ -2,8 +2,6 @@ package org.dflib.csv;
 
 import org.dflib.DataFrame;
 import org.dflib.codec.Codec;
-import org.dflib.csv.parser.format.CsvFormat;
-import org.dflib.csv.parser.format.LineBreak;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CsvSaver_GzipCompressionTest {
 
-    private static final CsvFormat FORMAT = CsvFormat.defaultFormat().lineBreak(LineBreak.LF).build();
-
     @TempDir
     Path outBase;
 
@@ -34,10 +30,10 @@ public class CsvSaver_GzipCompressionTest {
                 3, 4);
 
         Path out = outBase.resolve("save_ToFile");
-        Csv.saver().format(FORMAT).compression(Codec.GZIP).save(df, out.toFile());
+        Csv.saver().compression(Codec.GZIP).save(df, out.toFile());
         String csv = readAndUncompress(out);
 
-        assertEquals("A,B\n1,2\n3,4\n", csv);
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
     }
 
     @ParameterizedTest
@@ -48,10 +44,10 @@ public class CsvSaver_GzipCompressionTest {
                 3, 4);
 
         Path out = outBase.resolve(fileName);
-        Csv.saver().format(FORMAT).save(df, out.toFile());
+        Csv.saver().save(df, out.toFile());
         String csv = readAndUncompress(out);
 
-        assertEquals("A,B\n1,2\n3,4\n", csv);
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
     }
 
 
@@ -62,10 +58,10 @@ public class CsvSaver_GzipCompressionTest {
                 3, 4);
 
         Path out = outBase.resolve("save_ToFilePath.csv");
-        Csv.saver().format(FORMAT).compression(Codec.GZIP).save(df, out.toFile().getAbsolutePath());
+        Csv.saver().compression(Codec.GZIP).save(df, out.toFile().getAbsolutePath());
         String csv = readAndUncompress(out);
 
-        assertEquals("A,B\n1,2\n3,4\n", csv);
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
     }
 
     @Test
@@ -75,10 +71,10 @@ public class CsvSaver_GzipCompressionTest {
                 3, 4);
 
         Path out = outBase.resolve("save_ToPath.csv");
-        Csv.saver().format(FORMAT).compression(Codec.GZIP).save(df, out);
+        Csv.saver().compression(Codec.GZIP).save(df, out);
         String csv = readAndUncompress(out);
 
-        assertEquals("A,B\n1,2\n3,4\n", csv);
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
     }
 
     @ParameterizedTest
@@ -89,10 +85,10 @@ public class CsvSaver_GzipCompressionTest {
                 3, 4);
 
         Path out = outBase.resolve(filePath);
-        Csv.saver().format(FORMAT).save(df, out);
+        Csv.saver().save(df, out);
         String csv = readAndUncompress(out);
 
-        assertEquals("A,B\n1,2\n3,4\n", csv);
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
     }
 
     @Test
@@ -102,10 +98,10 @@ public class CsvSaver_GzipCompressionTest {
                 3, 4);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Csv.saver().format(FORMAT).compression(Codec.GZIP).save(df, out);
+        Csv.saver().compression(Codec.GZIP).save(df, out);
         String csv = readAndUncompress(out.toByteArray());
 
-        assertEquals("A,B\n1,2\n3,4\n", csv);
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
     }
 
     private static String readAndUncompress(Path path) throws IOException {
