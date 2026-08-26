@@ -66,7 +66,7 @@
         <hadoop.version>3.4.2</hadoop.version>
         <json.smart.version>2.6.0</json.smart.version>
 
-        <jjava.version>1.0-a6</jjava.version>
+        <jjava.version>1.0-a7</jjava.version>
         <mysql.version>9.6.0</mysql.version>
         <antlr4.version>4.13.2</antlr4.version>
 
