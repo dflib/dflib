@@ -15,122 +15,72 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CsvSaver_SaveTargetsTest {
 
+    public static final DataFrame DF = DataFrame.foldByRow("A", "B").of(
+            1, 2,
+            3, 4);
+
     @TempDir
     Path outBase;
 
     @Test
     public void saveToString() {
-
-        DataFrame df = DataFrame.foldByRow("A", "B").of(
-                1, 2,
-                3, 4);
-
-        assertEquals("A,B\r\n" +
-                "1,2\r\n" +
-                "3,4\r\n", Csv.saver().saveToString(df));
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", Csv.saver().saveToString(DF));
     }
 
     @Test
     public void save_ToFile() throws IOException {
-
-        DataFrame df = DataFrame.foldByRow("A", "B").of(
-                1, 2,
-                3, 4);
-
         Path out = outBase.resolve("save_ToFile.csv");
-        Csv.saver().save(df, out.toFile());
+        Csv.saver().save(DF, out.toFile());
         String csv = Files.readString(out);
 
-        assertEquals("A,B\r\n" +
-                "1,2\r\n" +
-                "3,4\r\n", csv);
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
     }
 
 
     @Test
     public void save_ToFilePath() throws IOException {
-
-        DataFrame df = DataFrame.foldByRow("A", "B").of(
-                1, 2,
-                3, 4);
-
         Path out = outBase.resolve("save_ToFilePath.csv");
-        Csv.saver().save(df, out.toFile().getAbsolutePath());
+        Csv.saver().save(DF, out.toFile().getAbsolutePath());
         String csv = Files.readString(out);
 
-        assertEquals("A,B\r\n" +
-                "1,2\r\n" +
-                "3,4\r\n", csv);
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
     }
 
     @Test
     public void save_ToPath() throws IOException {
-
-        DataFrame df = DataFrame.foldByRow("A", "B").of(
-                1, 2,
-                3, 4);
-
         Path out = outBase.resolve("save_ToPath.csv");
-        Csv.saver().save(df, out);
+        Csv.saver().save(DF, out);
         String csv = Files.readString(out);
 
-        assertEquals("A,B\r\n" +
-                "1,2\r\n" +
-                "3,4\r\n", csv);
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
     }
 
     @Test
     public void save_ToWriter() {
-
-        DataFrame df = DataFrame.foldByRow("A", "B").of(
-                1, 2,
-                3, 4);
-
         StringWriter out = new StringWriter();
-        Csv.saver().save(df, out);
-        assertEquals("A,B\r\n" +
-                "1,2\r\n" +
-                "3,4\r\n", out.toString());
+        Csv.saver().save(DF, out);
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", out.toString());
     }
 
     @Test
     public void save_ToOutputStream() {
-
-        DataFrame df = DataFrame.foldByRow("A", "B").of(
-                1, 2,
-                3, 4);
-
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Csv.saver().save(df, out);
-        assertEquals("A,B\r\n" +
-                "1,2\r\n" +
-                "3,4\r\n", out.toString());
+        Csv.saver().save(DF, out);
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", out.toString());
     }
 
     @Test
     public void save_ToPath_NoMkdirs() {
-
-        DataFrame df = DataFrame.foldByRow("A", "B").of(
-                1, 2,
-                3, 4);
-
         Path out = outBase.resolve("no_such_dir").resolve("save_ToPath_NoMkdirs.csv");
-        assertThrows(RuntimeException.class, () -> Csv.saver().save(df, out));
+        assertThrows(RuntimeException.class, () -> Csv.saver().save(DF, out));
     }
 
     @Test
     public void save_ToPath_Mkdirs() throws IOException {
-
-        DataFrame df = DataFrame.foldByRow("A", "B").of(
-                1, 2,
-                3, 4);
-
         Path out = outBase.resolve("no_such_dir").resolve("save_ToPath_Mkdirs.csv");
-        Csv.saver().createMissingDirs().save(df, out);
+        Csv.saver().createMissingDirs().save(DF, out);
         String csv = Files.readString(out);
 
-        assertEquals("A,B\r\n" +
-                "1,2\r\n" +
-                "3,4\r\n", csv);
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
     }
 }
