@@ -16,6 +16,14 @@ import java.util.Map;
  */
 public abstract class NumericExpFactory {
 
+    static final int RANK_NUMBER = 0;
+    static final int RANK_BIG_DECIMAL = 1;
+    static final int RANK_DOUBLE = 2;
+    static final int RANK_FLOAT = 3;
+    static final int RANK_BIG_INTEGER = 4;
+    static final int RANK_LONG = 5;
+    static final int RANK_INT = 6;
+
     protected static final Map<Class<? extends Number>, Integer> typeConversionRank;
     protected static final Map<Class<? extends Number>, NumericExpFactory> factories;
     protected static final DecimalExpFactory decimalFactory;
@@ -26,27 +34,30 @@ public abstract class NumericExpFactory {
 
         typeConversionRank = new HashMap<>();
 
-        typeConversionRank.put(BigDecimal.class, 0);
+        typeConversionRank.put(Number.class, RANK_NUMBER);
+        typeConversionRank.put(BigDecimal.class, RANK_BIG_DECIMAL);
 
-        typeConversionRank.put(Double.class, 1);
-        typeConversionRank.put(Double.TYPE, 1);
+        typeConversionRank.put(Double.class, RANK_DOUBLE);
+        typeConversionRank.put(Double.TYPE, RANK_DOUBLE);
 
-        typeConversionRank.put(Float.class, 2);
-        typeConversionRank.put(Float.TYPE, 2);
+        typeConversionRank.put(Float.class, RANK_FLOAT);
+        typeConversionRank.put(Float.TYPE, RANK_FLOAT);
 
-        typeConversionRank.put(BigInteger.class, 3);
+        typeConversionRank.put(BigInteger.class, RANK_BIG_INTEGER);
 
-        typeConversionRank.put(Long.class, 4);
-        typeConversionRank.put(Long.TYPE, 4);
+        typeConversionRank.put(Long.class, RANK_LONG);
+        typeConversionRank.put(Long.TYPE, RANK_LONG);
 
-        typeConversionRank.put(Integer.class, 5);
-        typeConversionRank.put(Integer.TYPE, 5);
+        typeConversionRank.put(Integer.class, RANK_INT);
+        typeConversionRank.put(Integer.TYPE, RANK_INT);
 
         // we don't have factories for these yet
         // typeConversionRank.put(Short.class, 5);
         // typeConversionRank.put(Byte.class, 6);
 
         factories = new HashMap<>();
+
+        factories.put(Number.class, new NumberExpFactory());
 
         factories.put(BigDecimal.class, decimalFactory);
         factories.put(BigInteger.class, new BigintExpFactory());
@@ -91,6 +102,13 @@ public abstract class NumericExpFactory {
 
     public static NumericExpFactory factory(Exp<? extends Number> left, Exp<? extends Number> right) {
         return factory(left.getType(), right.getType());
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public static NumericExpFactory factory(Exp<? extends Number> one, Exp<? extends Number> two, Exp<? extends Number> three) {
+        return factory(one.getType(), two.getType(), three.getType());
     }
 
     public static NumericExpFactory factory(Class<? extends Number> left, Class<? extends Number> right) {

@@ -20,23 +20,22 @@ public class NegateExp<N extends Number> extends MapExp1<N, N> implements NumExp
 
     @Override
     public String toQL() {
-        String expQL = exp.toQL();
-        boolean parenthesesNeeded = expQL.startsWith(opName)
-                || !(exp instanceof ScalarExp
-                || exp instanceof Column
-                || exp instanceof Exp0
-                || exp instanceof Exp1);
-        return opName + (parenthesesNeeded ? "(" + expQL + ")" : expQL);
+        return negateToQL(opName, exp, exp.toQL(), false);
     }
 
     @Override
     public String toQL(DataFrame df) {
-        String expQL = exp.toQL(df);
+        return negateToQL(opName, exp, exp.toQL(df), true);
+    }
+
+    static String negateToQL(String opName, Exp<?> exp, String expQL, boolean excludeNegateFromExp1) {
         boolean parenthesesNeeded = expQL.startsWith(opName)
                 || !(exp instanceof ScalarExp
                 || exp instanceof Column
                 || exp instanceof Exp0
-                || exp instanceof Exp1 && !(exp instanceof NegateExp));
+                || (excludeNegateFromExp1
+                    ? exp instanceof Exp1 && !(exp instanceof NegateExp)
+                    : exp instanceof Exp1));
         return opName + (parenthesesNeeded ? "(" + expQL + ")" : expQL);
     }
 }

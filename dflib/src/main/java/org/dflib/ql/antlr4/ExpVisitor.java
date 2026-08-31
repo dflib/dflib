@@ -464,6 +464,12 @@ public interface ExpVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCastAsDecimal(ExpParser.CastAsDecimalContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ExpParser#castAsNumber}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCastAsNumber(ExpParser.CastAsNumberContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ExpParser#castAsStr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

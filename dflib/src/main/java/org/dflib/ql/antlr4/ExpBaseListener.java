@@ -908,6 +908,18 @@ public class ExpBaseListener implements ExpListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterCastAsNumber(ExpParser.CastAsNumberContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCastAsNumber(ExpParser.CastAsNumberContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterCastAsStr(ExpParser.CastAsStrContext ctx) { }
 	/**
 	 * {@inheritDoc}

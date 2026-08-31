@@ -132,6 +132,11 @@ public interface NumExp<N extends Number> extends Exp<N> {
     }
 
     @Override
+    default NumExp<N> castAsNumber() {
+        return this;
+    }
+
+    @Override
     default DecimalExp castAsDecimal() {
         return NumericExpFactory.factory(this).castAsDecimal(this);
     }
@@ -210,7 +215,7 @@ public interface NumExp<N extends Number> extends Exp<N> {
 
 
     default Condition between(Exp<? extends Number> from, Exp<? extends Number> to) {
-        return NumericExpFactory.factory(this.getType(), from.getType(), to.getType()).between(this, from, to);
+        return NumericExpFactory.factory(this, from, to).between(this, from, to);
     }
 
 
@@ -222,7 +227,7 @@ public interface NumExp<N extends Number> extends Exp<N> {
      * @since 2.0.0
      */
     default Condition notBetween(Exp<? extends Number> from, Exp<? extends Number> to) {
-        return NumericExpFactory.factory(this.getType(), from.getType(), to.getType()).notBetween(this, from, to);
+        return NumericExpFactory.factory(this, from, to).notBetween(this, from, to);
     }
 
     /**
