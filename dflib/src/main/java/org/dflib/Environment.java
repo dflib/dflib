@@ -3,6 +3,7 @@ package org.dflib;
 import org.dflib.f.CachingSupplier;
 import org.dflib.print.InlineClassExposingPrinter;
 import org.dflib.print.Printer;
+import org.dflib.ql.QLFunctions;
 
 import java.net.http.HttpClient;
 import java.util.Objects;
@@ -26,7 +27,9 @@ public class Environment {
                 ForkJoinPool.commonPool(),
                 5000,
                 new InlineClassExposingPrinter(),
-                createDefaultHttpClientSupplier());
+                createDefaultHttpClientSupplier(),
+                createDefaultQLFunctions()
+        );
 
         commonEnv = new AtomicReference<>(defaultEnv);
     }
@@ -38,6 +41,8 @@ public class Environment {
     // HttpClient creates at least 2 threads active until it is garbage collected. So create it lazily.
     // Note that HttpClient doesn't require an explicit shutdown.
     private final Supplier<HttpClient> lazyHttpClient;
+
+    private final QLFunctions glFunctions;
 
     public static Environment commonEnv() {
         return commonEnv.get();
@@ -51,6 +56,12 @@ public class Environment {
         return new CachingSupplier<>(s);
     }
 
+    private static QLFunctions createDefaultQLFunctions() {
+        return QLFunctions.builder()
+                .defaultFunctions()
+                .build();
+    }
+
     /**
      * Sets the singleton thread pool used by parallelizable operations. Intended for the apps to override the default
      * pool configured by DFLib.
@@ -61,7 +72,8 @@ public class Environment {
                 threadPool,
                 old.parallelExecThreshold,
                 old.printer,
-                old.lazyHttpClient));
+                old.lazyHttpClient,
+                old.glFunctions));
     }
 
     /**
@@ -72,7 +84,8 @@ public class Environment {
                 old.threadPool,
                 parallelExecThreshold,
                 old.printer,
-                old.lazyHttpClient));
+                old.lazyHttpClient,
+                old.glFunctions));
     }
 
     /**
@@ -83,7 +96,8 @@ public class Environment {
                 old.threadPool,
                 old.parallelExecThreshold,
                 printer,
-                old.lazyHttpClient));
+                old.lazyHttpClient,
+                old.glFunctions));
     }
 
     /**
@@ -96,7 +110,8 @@ public class Environment {
                 old.threadPool,
                 old.parallelExecThreshold,
                 old.printer,
-                supplier));
+                supplier,
+                old.glFunctions));
     }
 
     /**
@@ -107,7 +122,21 @@ public class Environment {
                 old.threadPool,
                 old.parallelExecThreshold,
                 old.printer,
-                new CachingSupplier<>(clientSupplier)));
+                new CachingSupplier<>(clientSupplier),
+                old.glFunctions));
+    }
+
+    /**
+     * @param glFunctions new QL functions to set to the current environment
+     * @since 2.0.0
+     */
+    public static void setQLFunctions(QLFunctions glFunctions) {
+        resetEnv(old -> new Environment(
+                old.threadPool,
+                old.parallelExecThreshold,
+                old.printer,
+                old.lazyHttpClient,
+                glFunctions));
     }
 
     static void resetEnv(UnaryOperator<Environment> envFactory) {
@@ -123,11 +152,13 @@ public class Environment {
             ExecutorService threadPool,
             int parallelExecThreshold,
             Printer printer,
-            Supplier<HttpClient> lazyHttpClient) {
+            Supplier<HttpClient> lazyHttpClient,
+            QLFunctions glFunctions) {
         this.threadPool = threadPool;
         this.parallelExecThreshold = parallelExecThreshold;
         this.printer = printer;
         this.lazyHttpClient = lazyHttpClient;
+        this.glFunctions = glFunctions;
     }
 
     public ExecutorService threadPool() {
@@ -152,6 +183,10 @@ public class Environment {
      */
     public HttpClient httpClient() {
         return lazyHttpClient.get();
+    }
+
+    public QLFunctions getQLFunctions() {
+        return glFunctions;
     }
 
     // only used by tests

@@ -5,6 +5,7 @@ import org.dflib.Condition;
 import org.dflib.DateExp;
 import org.dflib.DateTimeExp;
 import org.dflib.DecimalExp;
+import org.dflib.Environment;
 import org.dflib.Exp;
 import org.dflib.NumExp;
 import org.dflib.OffsetDateTimeExp;
@@ -13,6 +14,7 @@ import org.dflib.TimeExp;
 import org.dflib.exp.bool.BoolScalarExp;
 import org.dflib.exp.flow.IfNullExp;
 import org.dflib.exp.str.StrScalarExp;
+import org.dflib.ql.QLFunctionDescriptor;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
@@ -24,13 +26,16 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-class ExpParserUtils {
+// TODO: make back package-private
+public class ExpParserUtils {
 
     private static final BigInteger INT_MIN = BigInteger.valueOf(Integer.MIN_VALUE);
     private static final BigInteger INT_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
@@ -486,5 +491,32 @@ class ExpParserUtils {
 
     public static Object columnIdParam(PositionalParamSource source) {
         return source.next();
+    }
+
+    public static boolean isNumFn(String fnName) {
+        return Environment.commonEnv().getQLFunctions().numFn(fnName);
+    }
+
+    public static NumExp<?> envNumFn(String fnName, List<Exp<?>> args) {
+        return envFunction(fnName, QLFunctionDescriptor.TypeClassifier.NUMERIC, args);
+    }
+
+    public static boolean isStrFn(String fnName) {
+        return Environment.commonEnv().getQLFunctions().strFn(fnName);
+    }
+
+    public static StrExp envStrFn(String fnName, List<Exp<?>> args) {
+        return envFunction(fnName, QLFunctionDescriptor.TypeClassifier.STRING, args);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends Exp<?>> T envFunction(String fnName, QLFunctionDescriptor.TypeClassifier type, List<Exp<?>> args) {
+        List<QLFunctionDescriptor.TypeClassifier> types = args.stream()
+                .map(QLFunctionDescriptor.TypeClassifier::classify)
+                .collect(Collectors.toList());
+        return (T)Environment.commonEnv().getQLFunctions()
+                .function(fnName, type, types)
+                .expProducer()
+                .apply(args);
     }
 }
