@@ -84,9 +84,10 @@
                                     </includes>
                                 </fileset>
                                 <fileset>
-                                    <directory>${project.build.sourceDirectory}/org/dflib/ql/parser/antlr4</directory>
+                                    <directory>${project.build.sourceDirectory}/org/dflib/ql/antlr4</directory>
                                     <includes>
                                         <include>*.interp</include>
+                                        <include>*.tokens</include>
                                     </includes>
                                 </fileset>
                             </filesets>

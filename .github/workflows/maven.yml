@@ -53,7 +53,7 @@ jobs:
     - name: Deploy...
       # skip this for the release versions
       if: contains(env.POM_VERSION, '-SNAPSHOT')
-      run: mvn clean source:jar javadoc:javadoc deploy -ntp -U -DskipTests --settings .github/workflows/maven_settings.xml
+      run: mvn clean source:jar deploy -ntp -U -DskipTests --settings .github/workflows/maven_settings.xml
       env:
         MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
