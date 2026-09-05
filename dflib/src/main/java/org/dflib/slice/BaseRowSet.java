@@ -20,20 +20,34 @@ import java.util.function.UnaryOperator;
 public abstract class BaseRowSet implements RowSet {
 
     protected final DataFrame source;
-    protected final int expansionColumn;
+    protected final Exp<?> expansionExp;
     protected final int[] uniqueKeyColumns;
     protected final Sorter[] sorters;
 
     protected BaseRowSet(
             DataFrame source,
-            int expansionColumn,
+            Exp<?> expansionExp,
             int[] uniqueKeyColumns,
             Sorter[] sorters) {
 
         this.source = source;
-        this.expansionColumn = expansionColumn;
+        this.expansionExp = expansionExp;
         this.uniqueKeyColumns = uniqueKeyColumns;
         this.sorters = sorters;
+    }
+
+    /**
+     * Returns the columns index of the row set after the expansion is applied. It is the same as the source index,
+     * unless the expansion expression produces a column that is not present in the source.
+     */
+    protected Index expandedIndex() {
+        Index index = source.getColumnsIndex();
+        if (expansionExp == null) {
+            return index;
+        }
+
+        String name = expansionExp.getColumnName(source);
+        return index.contains(name) ? index : index.expand(name);
     }
 
     @Override
@@ -72,19 +86,14 @@ public abstract class BaseRowSet implements RowSet {
     }
 
     @Override
-    public RowSet expand(String columnName) {
-        return expand(source.getColumnsIndex().position(columnName));
-    }
-
-
-    @Override
     public RowSet unique() {
-        return unique(source.getColumnsIndex().positions(c -> true));
+        // uniqueness is checked against the row set columns, that may include a column added by the expansion
+        return unique(expandedIndex().positions(c -> true));
     }
 
     @Override
     public RowSet unique(String... uniqueKeyColumns) {
-        return unique(source.getColumnsIndex().positions(uniqueKeyColumns));
+        return unique(expandedIndex().positions(uniqueKeyColumns));
     }
 
     @Override
@@ -94,9 +103,10 @@ public abstract class BaseRowSet implements RowSet {
 
     @Override
     public DataFrame select(Exp<?>... exps) {
+        Index index = expandedIndex();
         int w = exps.length;
-        if (w != source.width()) {
-            throw new IllegalArgumentException("The number of column expressions (" + w + ") is different from the DataFrame width (" + source.width() + ")");
+        if (w != index.size()) {
+            throw new IllegalArgumentException("The number of column expressions (" + w + ") is different from the DataFrame width (" + index.size() + ")");
         }
 
         return runSelect(s -> s.mapColumns(exps));
@@ -104,9 +114,10 @@ public abstract class BaseRowSet implements RowSet {
 
     @Override
     public DataFrame select(RowToValueMapper<?>... mappers) {
+        Index index = expandedIndex();
         int w = mappers.length;
-        if (w != source.width()) {
-            throw new IllegalArgumentException("The number of column mappers (" + w + ") is different from the DataFrame width (" + source.width() + ")");
+        if (w != index.size()) {
+            throw new IllegalArgumentException("The number of column mappers (" + w + ") is different from the DataFrame width (" + index.size() + ")");
         }
 
         return runSelect(s -> s.mapColumns((i, rowSet) -> new RowMappedSeries<>(rowSet, mappers[i])));
@@ -114,13 +125,14 @@ public abstract class BaseRowSet implements RowSet {
 
     @Override
     public DataFrame select(RowMapper mapper) {
-        return runSelect(s -> s.mapDf(rowSet -> rowSet.cols(source.getColumnsIndex()).merge(mapper)));
+        Index index = expandedIndex();
+        return runSelect(s -> s.mapDf(rowSet -> rowSet.cols(index).merge(mapper)));
     }
 
     // executes a standard select sequence with a single customizable step
     private DataFrame runSelect(UnaryOperator<RowSetSelector> columnMapStep) {
         RowSetSelector selector = createSelector()
-                .expand(expansionColumn);
+                .expand(expansionExp);
 
         return columnMapStep
                 .apply(selector)
@@ -152,9 +164,10 @@ public abstract class BaseRowSet implements RowSet {
     @Override
     public DataFrame merge(Exp<?>... exps) {
 
+        Index index = expandedIndex();
         int w = exps.length;
-        if (w != source.width()) {
-            throw new IllegalArgumentException("The number of column expressions (" + w + ") is different from the DataFrame width (" + source.width() + ")");
+        if (w != index.size()) {
+            throw new IllegalArgumentException("The number of column expressions (" + w + ") is different from the DataFrame width (" + index.size() + ")");
         }
 
         return runMerge(m -> m.mapColumns(exps));
@@ -163,9 +176,10 @@ public abstract class BaseRowSet implements RowSet {
     @Override
     public DataFrame merge(RowToValueMapper<?>... mappers) {
 
+        Index index = expandedIndex();
         int w = mappers.length;
-        if (w != source.width()) {
-            throw new IllegalArgumentException("The number of column mappers (" + w + ") is different from the DataFrame width (" + source.width() + ")");
+        if (w != index.size()) {
+            throw new IllegalArgumentException("The number of column mappers (" + w + ") is different from the DataFrame width (" + index.size() + ")");
         }
 
         return runMerge(m -> m.mapColumns((i, rowSet) -> new RowMappedSeries<>(rowSet, mappers[i])));
@@ -173,16 +187,17 @@ public abstract class BaseRowSet implements RowSet {
 
     @Override
     public DataFrame merge(RowMapper mapper) {
-        return runMerge(m -> m.mapDf(df -> df.cols(source.getColumnsIndex()).merge(mapper)));
+        Index index = expandedIndex();
+        return runMerge(m -> m.mapDf(df -> df.cols(index).merge(mapper)));
     }
 
     @Override
     public DataFrame mergeAll(Udf1<?, ?> udf) {
-        Index srcIndex = source.getColumnsIndex();
-        int w = srcIndex.size();
+        Index index = expandedIndex();
+        int w = index.size();
         Exp[] exps = new Exp[w];
         for (int i = 0; i < w; i++) {
-            exps[i] = udf.call(srcIndex.get(i));
+            exps[i] = udf.call(index.get(i));
         }
 
         return merge(exps);
@@ -192,7 +207,7 @@ public abstract class BaseRowSet implements RowSet {
     private DataFrame runMerge(UnaryOperator<RowSetMerger> columnMapStep) {
 
         RowSetMerger merger = createMerger()
-                .expand(expansionColumn);
+                .expand(expansionExp);
 
         return columnMapStep
                 .apply(merger)

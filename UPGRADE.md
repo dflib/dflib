@@ -113,3 +113,14 @@ and change the imports of the assert classes from `org.dflib.junit5.*` to `org.d
 convenience, the two most commonly used classes - `DataFrameAsserts` and `SeriesAsserts` - are still available in the
 old `org.dflib.junit5` package as deprecated subclasses of their new counterparts, so your existing tests will keep
 compiling. They will be removed in a future release.
+
+### [dflib #642](https://github.com/dflib/dflib/issues/642)
+`RowSet.expand(String)` now parses its argument as a DFLib expression instead of treating it as a column name. Simple
+column names (e.g. `df.rows().expand("b")`) work as before, but a name that is not a valid Java identifier must now be
+quoted with backticks, or replaced with a positional or an explicit expression form:
+
+```java
+df.rows().expand("`b-c`");
+df.rows().expand(1);
+df.rows().expand($col("b-c"));
+```

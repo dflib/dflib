@@ -44,6 +44,29 @@ public class RowSet_Expand_Select_ExpTest {
     }
 
     @Test
+    public void all_ExpQL_NewColumn() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(
+                        1, "x1,x2",
+                        2, "y1")
+                .rows()
+                .expand("split(str(b), ',') as d")
+
+                // the expansion added a column, so the number of expressions must match the expanded width
+                .select(
+                        $int("a").add(1),
+                        $str("b"),
+                        $str("d").mapVal(String::toUpperCase)
+                );
+
+        new DataFrameAsserts(df, "a", "b", "d")
+                .expectHeight(3)
+                .expectRow(0, 2, "x1,x2", "X1")
+                .expectRow(1, 2, "x1,x2", "X2")
+                .expectRow(2, 3, "y1", "Y1");
+    }
+
+    @Test
     public void byIndex() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(

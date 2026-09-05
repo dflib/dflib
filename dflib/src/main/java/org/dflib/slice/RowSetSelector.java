@@ -3,6 +3,7 @@ package org.dflib.slice;
 import org.dflib.ColumnDataFrame;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
+import org.dflib.Index;
 import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.Sorter;
@@ -20,20 +21,28 @@ class RowSetSelector {
         this.rowSet = rowSet;
     }
 
-    public RowSetSelector expand(int expansionCol) {
+    public RowSetSelector expand(Exp<?> expansionExp) {
 
-        if (expansionCol < 0) {
+        if (expansionExp == null) {
             return this;
         }
 
-        ColumnExpander expander = ColumnExpander.expand(rowSet.getColumn(expansionCol));
+        Index index = rowSet.getColumnsIndex();
+        String name = expansionExp.getColumnName(rowSet);
+
+        // if the expansion expression maps to an existing column, the expanded values replace that column,
+        // otherwise they are appended as a new column
+        int expansionCol = index.contains(name) ? index.position(name) : -1;
+
+        ColumnExpander expander = ColumnExpander.expand(expansionExp.eval(rowSet));
 
         // TODO: if we end up not needing ColumnExpander.getStretchCounts() in the new approach, we should rewrite
         //  ColumnExpander to skip that step and build "stretchIndex" directly bypassing stretch counts?
         IntSeries srcPositionsExpanded = Series.ofInt(expander.getStretchIndex());
         int w = rowSet.width();
 
-        Series<?>[] cols = new Series[w];
+        Index expandedIndex = expansionCol < 0 ? index.expand(name) : index;
+        Series<?>[] cols = new Series[expandedIndex.size()];
 
         for (int i = 0; i < w; i++) {
             cols[i] = i == expansionCol
@@ -41,7 +50,11 @@ class RowSetSelector {
                     : rowSet.getColumn(i).select(srcPositionsExpanded);
         }
 
-        return new RowSetSelector(new ColumnDataFrame(null, rowSet.getColumnsIndex(), cols));
+        if (expansionCol < 0) {
+            cols[w] = expander.getExpanded();
+        }
+
+        return new RowSetSelector(new ColumnDataFrame(null, expandedIndex, cols));
     }
 
     public RowSetSelector mapColumns(Exp<?>[] exps) {

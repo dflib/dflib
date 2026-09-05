@@ -19,7 +19,7 @@ import java.util.function.UnaryOperator;
 public class EmptyRowSet extends BaseRowSet {
 
     public EmptyRowSet(DataFrame source) {
-        super(source, -1, null, null);
+        super(source, null, null, null);
     }
 
     @Override
@@ -38,10 +38,11 @@ public class EmptyRowSet extends BaseRowSet {
     }
 
     @Override
-    public RowSet expand(int columnPos) {
+    public RowSet expand(Exp<?> splitExp) {
 
-        // validate the argument, even though the operation does nothing
-        source.getColumnsIndex().get(columnPos);
+        // resolve the expression name, even though the operation does nothing. This validates positional column
+        // references
+        splitExp.getColumnName(source);
 
         return this;
     }

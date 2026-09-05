@@ -1,6 +1,7 @@
 ## Release 2.0.0-M8
 
 * #578 Static cast methods in Udf interfaces
+* #642 rows().expand(..) should take an expression
 
 ## Release 2.0.0-M7
 

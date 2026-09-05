@@ -38,6 +38,64 @@ public class RowSet_Expand_MergeTest {
     }
 
     @Test
+    public void all_ExpQL_ExistingColumn() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x1,x2", "a",
+                        2, "y1,y2", "b",
+                        5, null, "x")
+                .rows()
+                .expand("split(str(b), ',') as b")
+                .merge();
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(5)
+                .expectRow(0, 1, "x1", "a")
+                .expectRow(1, 1, "x2", "a")
+                .expectRow(2, 2, "y1", "b")
+                .expectRow(3, 2, "y2", "b")
+                .expectRow(4, 5, null, "x");
+    }
+
+    @Test
+    public void all_ExpQL_NewColumn() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(
+                        1, "x1,x2",
+                        2, "y1")
+                .rows()
+                .expand("split(str(b), ',') as d")
+                .merge();
+
+        new DataFrameAsserts(df, "a", "b", "d")
+                .expectHeight(3)
+                .expectRow(0, 1, "x1,x2", "x1")
+                .expectRow(1, 1, "x1,x2", "x2")
+                .expectRow(2, 2, "y1", "y1");
+    }
+
+    @Test
+    public void byIndex_ExpQL_NewColumn() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(
+                        1, "x1,x2", // <--
+                        2, "y1,y2",
+                        3, "m1,m2") // <--
+                .rows(Series.ofInt(0, 2))
+                .expand("split(str(b), ',') as d")
+                .merge();
+
+        // rows outside the row set have no values for the new column
+        new DataFrameAsserts(df, "a", "b", "d")
+                .expectHeight(5)
+                .expectRow(0, 1, "x1,x2", "x1")
+                .expectRow(1, 1, "x1,x2", "x2")
+                .expectRow(2, 2, "y1,y2", null)
+                .expectRow(3, 3, "m1,m2", "m1")
+                .expectRow(4, 3, "m1,m2", "m2");
+    }
+
+    @Test
     public void byIndex() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(

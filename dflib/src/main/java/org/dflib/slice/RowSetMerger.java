@@ -127,18 +127,26 @@ class RowSetMerger {
         this.mergeIndex = mergeIndex;
     }
 
-    public RowSetMerger expand(int expansionCol) {
+    public RowSetMerger expand(Exp<?> expansionExp) {
 
-        if (expansionCol < 0) {
+        if (expansionExp == null) {
             return this;
         }
 
-        ColumnExpander expander = ColumnExpander.expand(rowSet.getColumn(expansionCol));
+        Index index = rowSet.getColumnsIndex();
+        String name = expansionExp.getColumnName(rowSet);
+
+        // if the expansion expression maps to an existing column, the expanded values replace that column,
+        // otherwise they are appended as a new column
+        int expansionCol = index.contains(name) ? index.position(name) : -1;
+
+        ColumnExpander expander = ColumnExpander.expand(expansionExp.eval(rowSet));
 
         IntSeries srcPositionsExpanded = Series.ofInt(expander.getStretchIndex());
         int w = rowSet.width();
 
-        Series<?>[] cols = new Series[w];
+        Index expandedIndex = expansionCol < 0 ? index.expand(name) : index;
+        Series<?>[] cols = new Series[expandedIndex.size()];
 
         for (int i = 0; i < w; i++) {
             cols[i] = i == expansionCol
@@ -146,10 +154,17 @@ class RowSetMerger {
                     : rowSet.getColumn(i).select(srcPositionsExpanded);
         }
 
-        return new RowSetMerger(
+        if (expansionCol < 0) {
+            cols[w] = expander.getExpanded();
+        }
+
+        RowSetMerger merger = new RowSetMerger(
                 source,
-                new ColumnDataFrame(null, rowSet.getColumnsIndex(), cols),
+                new ColumnDataFrame(null, expandedIndex, cols),
                 expandMergeIndex(expander));
+
+        // the expansion added a column to the row set, so the source must be padded with a matching null column
+        return expansionCol < 0 ? merger.syncSourceColumnsFromRowSet() : merger;
     }
 
     public RowSetMerger mapColumns(Exp<?>[] exps) {

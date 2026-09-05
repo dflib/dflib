@@ -2,6 +2,7 @@ package org.dflib.slice;
 
 import org.dflib.BooleanSeries;
 import org.dflib.DataFrame;
+import org.dflib.Exp;
 import org.dflib.IntSeries;
 import org.dflib.RowSet;
 import org.dflib.Series;
@@ -20,11 +21,11 @@ public class RangeRowSet extends BaseRowSet {
     private final int toExclusive;
 
     public RangeRowSet(DataFrame source, int fromInclusive, int toExclusive) {
-        this(source, -1, null, null, fromInclusive, toExclusive);
+        this(source, null, null, null, fromInclusive, toExclusive);
     }
 
-    protected RangeRowSet(DataFrame source, int expansionColumn, int[] uniqueKeyColumns, Sorter[] sorters, int fromInclusive, int toExclusive) {
-        super(source, expansionColumn, uniqueKeyColumns, sorters);
+    protected RangeRowSet(DataFrame source, Exp<?> expansionExp, int[] uniqueKeyColumns, Sorter[] sorters, int fromInclusive, int toExclusive) {
+        super(source, expansionExp, uniqueKeyColumns, sorters);
 
         Range.checkRange(fromInclusive, toExclusive - fromInclusive, source.height());
 
@@ -33,20 +34,18 @@ public class RangeRowSet extends BaseRowSet {
     }
 
     @Override
-    public RowSet expand(int columnPos) {
-        return this.expansionColumn != columnPos
-                ? new RangeRowSet(source, columnPos, uniqueKeyColumns, sorters, fromInclusive, toExclusive)
-                : this;
+    public RowSet expand(Exp<?> splitExp) {
+        return new RangeRowSet(source, splitExp, uniqueKeyColumns, sorters, fromInclusive, toExclusive);
     }
 
     @Override
     public RowSet unique(int... uniqueKeyColumns) {
-        return new RangeRowSet(source, expansionColumn, uniqueKeyColumns, sorters, fromInclusive, toExclusive);
+        return new RangeRowSet(source, expansionExp, uniqueKeyColumns, sorters, fromInclusive, toExclusive);
     }
 
     @Override
     public RowSet sort(Sorter... sorters) {
-        return new RangeRowSet(source, expansionColumn, uniqueKeyColumns, sorters, fromInclusive, toExclusive);
+        return new RangeRowSet(source, expansionExp, uniqueKeyColumns, sorters, fromInclusive, toExclusive);
     }
 
     @Override

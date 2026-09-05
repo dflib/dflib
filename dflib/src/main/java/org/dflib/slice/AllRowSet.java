@@ -2,6 +2,7 @@ package org.dflib.slice;
 
 import org.dflib.BooleanSeries;
 import org.dflib.DataFrame;
+import org.dflib.Exp;
 import org.dflib.IntSeries;
 import org.dflib.RowSet;
 import org.dflib.Series;
@@ -15,28 +16,26 @@ import org.dflib.series.TrueSeries;
 public class AllRowSet extends BaseRowSet {
 
     public AllRowSet(DataFrame source) {
-        this(source, -1, null, null);
+        this(source, null, null, null);
     }
 
-    protected AllRowSet(DataFrame source, int expansionColumn, int[] uniqueColumns, Sorter[] sorters) {
-        super(source, expansionColumn, uniqueColumns, sorters);
+    protected AllRowSet(DataFrame source, Exp<?> expansionExp, int[] uniqueColumns, Sorter[] sorters) {
+        super(source, expansionExp, uniqueColumns, sorters);
     }
 
     @Override
-    public RowSet expand(int columnPos) {
-        return this.expansionColumn != columnPos
-                ? new AllRowSet(source, columnPos, uniqueKeyColumns, sorters)
-                : this;
+    public RowSet expand(Exp<?> splitExp) {
+        return new AllRowSet(source, splitExp, uniqueKeyColumns, sorters);
     }
 
     @Override
     public RowSet unique(int... uniqueKeyColumns) {
-        return new AllRowSet(source, expansionColumn, uniqueKeyColumns, sorters);
+        return new AllRowSet(source, expansionExp, uniqueKeyColumns, sorters);
     }
 
     @Override
     public RowSet sort(Sorter... sorters) {
-        return new AllRowSet(source, expansionColumn, uniqueKeyColumns, sorters);
+        return new AllRowSet(source, expansionExp, uniqueKeyColumns, sorters);
     }
 
     @Override

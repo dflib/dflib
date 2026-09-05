@@ -51,6 +51,26 @@ public class RowColumnSet_Expand_MergeTest {
     }
 
     @Test
+    public void rowsByIndex_ExpQL_NewColumn_colsByName() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(
+                        1, "x1,x2", // <--
+                        2, "y1,y2",
+                        3, "m1,m2") // <--
+                .rows(Series.ofInt(0, 2)).expand("split(str(b), ',') as d")
+                .cols("d")
+                .merge(Exp.$str("d").mapVal(String::toUpperCase));
+
+        new DataFrameAsserts(df, "a", "b", "d")
+                .expectHeight(5)
+                .expectRow(0, 1, "x1,x2", "X1")
+                .expectRow(1, 1, "x1,x2", "X2")
+                .expectRow(2, 2, "y1,y2", null)
+                .expectRow(3, 3, "m1,m2", "M1")
+                .expectRow(4, 3, "m1,m2", "M2");
+    }
+
+    @Test
     public void rowsAll_colsByName() {
         DataFrame df = TEST_DF
                 .rows().expand("b")

@@ -44,6 +44,26 @@ public class RowSet_Expand_Merge_Unique_ExpTest {
     }
 
     @Test
+    public void all_ExpQL_NewColumn() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(
+                        1, "x1,x1,x2",
+                        2, "y1,y1")
+                .rows()
+                .expand("split(str(b), ',') as d")
+
+                // uniqueness is checked against the column added by the expansion
+                .unique("d")
+                .merge();
+
+        new DataFrameAsserts(df, "a", "b", "d")
+                .expectHeight(3)
+                .expectRow(0, 1, "x1,x1,x2", "x1")
+                .expectRow(1, 1, "x1,x1,x2", "x2")
+                .expectRow(2, 2, "y1,y1", "y1");
+    }
+
+    @Test
     public void byCondition() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(

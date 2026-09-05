@@ -51,7 +51,7 @@ public class DefaultRowColumnSet implements RowColumnSet {
     private DataFrame runMerge(UnaryOperator<RowSetMerger> columnMapStep) {
         RowSetMerger merger = rowSet
                 .createMerger()
-                .expand(rowSet.expansionColumn);
+                .expand(rowSet.expansionExp);
 
         return columnMapStep
                 .apply(merger)

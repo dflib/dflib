@@ -16,13 +16,28 @@ import static org.dflib.Exp.$col;
 public interface RowSet {
 
     /**
-     * For the specified column, expands its Iterable or array objects, creating new rows from the existing one.
-     * Expansion will be applied after applying all row set conditions. So all expanded rows will be included in the
-     * result. If the RowSet terminates in "merge", the new rows are added at the bottom of the returned DataFrame.
+     * Parses the provided String into an expression, and expands the row set based on the expression values.
      *
      * @since 2.0.0
      */
-    RowSet expand(String columnName);
+    default RowSet expand(String exp, Object... params) {
+        return expand(Exp.parseExp(exp, params));
+    }
+
+    /**
+     * Expands the row set based on the values produced by the provided expression. Iterable or array values are
+     * "unpacked", creating new rows from the existing ones. Expansion is applied after applying all row set
+     * conditions. So all expanded rows will be included in the result. If the RowSet terminates in "merge", the new
+     * rows are added at the bottom of the returned DataFrame.
+     * <p>
+     * The split expression values are placed in a column named after the expression and can be controlled with
+     * {@link Exp#as(String)}). If the DataFrame already has a column with this name, it is replaced with the expanded
+     * values. Otherwise, a new column is appended to the right of the existing columns. So it behaves similar to
+     * {@link ColumnSet#merge(Exp[])}.
+     *
+     * @since 2.0.0
+     */
+    RowSet expand(Exp<?> splitExp);
 
     /**
      * For the specified column, expands its Iterable or array objects, creating new rows from the existing one.
@@ -31,7 +46,9 @@ public interface RowSet {
      *
      * @since 2.0.0
      */
-    RowSet expand(int columnPos);
+    default RowSet expand(int columnPos) {
+        return expand($col(columnPos));
+    }
 
     /**
      * Configures the row set to filter out repeating rows from the row set. Uniqueness is checked across all columns.
@@ -223,7 +240,7 @@ public interface RowSet {
      * created for each collection element in the specified "expansion" column. All other columns are populated with
      * values of the "unexpanded" rows.
      *
-     * @deprecated in favor of {@link #expand(String)} followed by {@link #select()}.
+     * @deprecated in favor of {@link #expand(String, Object...)} followed by {@link #select()}.
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     default DataFrame selectExpand(String columnName) {
@@ -235,7 +252,7 @@ public interface RowSet {
      * created for each collection element in the specified "expansion" column. All other columns are populated with
      * values of the "unexpanded" rows.
      *
-     * @deprecated in favor of {@link #expand(String)} followed by {@link #select()}.
+     * @deprecated in favor of {@link #expand(String, Object...)} followed by {@link #select()}.
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     default DataFrame selectExpand(int columnPos) {

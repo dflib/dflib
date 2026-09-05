@@ -2,6 +2,7 @@ package org.dflib.slice;
 
 import org.dflib.BooleanSeries;
 import org.dflib.DataFrame;
+import org.dflib.Exp;
 import org.dflib.IntSeries;
 import org.dflib.RowSet;
 import org.dflib.Series;
@@ -17,29 +18,27 @@ public class IndexedRowSet extends BaseRowSet {
     private final IntSeries intIndex;
 
     public IndexedRowSet(DataFrame source, IntSeries intIndex) {
-        this(source, -1, null, null, intIndex);
+        this(source, null, null, null, intIndex);
     }
 
-    protected IndexedRowSet(DataFrame source, int expansionColumn, int[] uniqueKeyColumns, Sorter[] sorters, IntSeries intIndex) {
-        super(source, expansionColumn, uniqueKeyColumns, sorters);
+    protected IndexedRowSet(DataFrame source, Exp<?> expansionExp, int[] uniqueKeyColumns, Sorter[] sorters, IntSeries intIndex) {
+        super(source, expansionExp, uniqueKeyColumns, sorters);
         this.intIndex = intIndex;
     }
 
     @Override
-    public RowSet expand(int columnPos) {
-        return this.expansionColumn != columnPos
-                ? new IndexedRowSet(source, columnPos, null, sorters, intIndex)
-                : this;
+    public RowSet expand(Exp<?> splitExp) {
+        return new IndexedRowSet(source, splitExp, null, sorters, intIndex);
     }
 
     @Override
     public RowSet unique(int... uniqueKeyColumns) {
-        return new IndexedRowSet(source, expansionColumn, uniqueKeyColumns, sorters, intIndex);
+        return new IndexedRowSet(source, expansionExp, uniqueKeyColumns, sorters, intIndex);
     }
 
     @Override
     public RowSet sort(Sorter... sorters) {
-        return new IndexedRowSet(source, expansionColumn, uniqueKeyColumns, sorters, intIndex);
+        return new IndexedRowSet(source, expansionExp, uniqueKeyColumns, sorters, intIndex);
     }
 
     @Override
