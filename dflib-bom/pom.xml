@@ -83,6 +83,11 @@
             </dependency>
             <dependency>
                 <groupId>org.dflib</groupId>
+                <artifactId>dflib-hardwood</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dflib</groupId>
                 <artifactId>dflib-jdbc</artifactId>
                 <version>${project.version}</version>
             </dependency>

@@ -1,0 +1,21 @@
+package org.dflib.hardwood.write;
+
+/**
+ * @since 2.0.0
+ */
+public record DecimalConfig(int precision, int scale) {
+
+    public DecimalConfig(int precision, int scale) {
+        this.precision = precision;
+        this.scale = scale;
+        if (precision <= 0) {
+            throw new IllegalArgumentException("precision must be greater than 0");
+        }
+        if (scale < 0) {
+            throw new IllegalArgumentException("scale must be zero or a positive value");
+        }
+        if (scale > precision) {
+            throw new IllegalArgumentException("scale must be less than or equal to the precision");
+        }
+    }
+}

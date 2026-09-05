@@ -18,6 +18,7 @@
         <module>dflib-jdbc</module>
         <module>dflib-json</module>
         <module>dflib-parquet</module>
+        <module>dflib-hardwood</module>
         <module>dflib-junit</module>
         <module>dflib-jupyter</module>
         <module>dflib-benchmark</module>
@@ -63,6 +64,10 @@
         <commons.lang3.version>3.19.0</commons.lang3.version>
         <mustache.version>0.9.10</mustache.version>
         <parquet.version>1.18.0</parquet.version>
+        <hardwood.version>1.1.0.Beta1</hardwood.version>
+        <snappy.version>1.1.10.8</snappy.version>
+        <zstd.version>1.5.7-9</zstd.version>
+        <lz4.version>1.11.0</lz4.version>
         <hadoop.version>3.4.2</hadoop.version>
         <json.smart.version>2.6.0</json.smart.version>
 
@@ -309,6 +314,27 @@
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-mapreduce-client-core</artifactId>
                 <version>${hadoop.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dev.hardwood</groupId>
+                <artifactId>hardwood-core</artifactId>
+                <version>${hardwood.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xerial.snappy</groupId>
+                <artifactId>snappy-java</artifactId>
+                <version>${snappy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.luben</groupId>
+                <artifactId>zstd-jni</artifactId>
+                <version>${zstd.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>at.yawk.lz4</groupId>
+                <artifactId>lz4-java</artifactId>
+                <version>${lz4.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
