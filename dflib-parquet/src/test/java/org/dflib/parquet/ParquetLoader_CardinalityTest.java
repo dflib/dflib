@@ -9,6 +9,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.math.BigDecimal;
 import java.nio.file.Path;
+import java.util.UUID;
 
 import static org.dflib.Exp.$col;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -150,5 +151,109 @@ public class ParquetLoader_CardinalityTest {
         DataFrame compacted = Parquet.loader().load(testFile).cols()
                 .select($col("c").mapVal(System::identityHashCode));
         assertEquals(2, compacted.getColumn(0).unique().size());
+    }
+
+    @Test
+    public void batchCardinality() {
+
+        // The batch path shares instances the same way the row path does, but arrives there differently: instead of
+        // decoding every row and then deduplicating the results, it decodes each distinct physical value once and
+        // hands the same instance to every row repeating it.
+
+        DataFrame df = new ParquetLoader(0).load(testFile);
+
+        new DataFrameAsserts(df, "a", "b", "c", "d", "e", "f")
+                .expectHeight(6)
+                .expectRow(0, 1, "ab", new BigDecimal("609.10"), true, null, 0L)
+                .expectRow(1, 40000, "ab", new BigDecimal("12.60"), false, 66L, 66L)
+                .expectRow(2, 40000, "bc", new BigDecimal("609.10"), true, 66L, 66L)
+                .expectRow(3, 30000, "bc", new BigDecimal("12.60"), null, 68_000L, 68_000L)
+                .expectRow(4, 30000, null, new BigDecimal("609.10"), true, -66_000L, -66_000L)
+                .expectRow(5, null, "bc", new BigDecimal("609.10"), true, -66_000L, -66_000L);
+
+        DataFrame ids = df.cols().select(
+                $col("a").mapVal(System::identityHashCode),
+                $col("c").mapVal(System::identityHashCode));
+
+        assertEquals(4, ids.getColumn(0).unique().size());
+        assertEquals(2, ids.getColumn(1).unique().size());
+    }
+
+    @Test
+    public void batchNoDictionaryNoSharing() {
+
+        DataFrame df = new ParquetLoader(0).load(noDictionaryFile);
+
+        new DataFrameAsserts(df, "a", "b", "c", "d", "e", "f")
+                .expectHeight(6)
+                .expectRow(0, 1, "ab", new BigDecimal("609.10"), true, null, 0L)
+                .expectRow(1, 40000, "ab", new BigDecimal("12.60"), false, 66L, 66L)
+                .expectRow(2, 40000, "bc", new BigDecimal("609.10"), true, 66L, 66L)
+                .expectRow(3, 30000, "bc", new BigDecimal("12.60"), null, 68_000L, 68_000L)
+                .expectRow(4, 30000, null, new BigDecimal("609.10"), true, -66_000L, -66_000L)
+                .expectRow(5, null, "bc", new BigDecimal("609.10"), true, -66_000L, -66_000L);
+
+        DataFrame ids = df.cols().select($col("c").mapVal(System::identityHashCode));
+        assertEquals(6, ids.getColumn(0).unique().size());
+    }
+
+    @Test
+    public void cardinality_ByteArrayBackedDecimal() {
+
+        // A decimal wider than 18 digits is FIXED_LEN_BYTE_ARRAY-backed, so it is keyed on the value's bytes rather
+        // than on a primitive - on the batch path straight out of the shared buffer, on the row path out of the
+        // byte[] Hardwood would have allocated on its way to the BigDecimal anyway
+
+        DataFrame df = DataFrame.foldByRow("a").of(
+                new BigDecimal("1.50"), new BigDecimal("-2.25"), new BigDecimal("1.50"),
+                new BigDecimal("-2.25"), null, new BigDecimal("1.50"));
+
+        Path file = outBase.resolve("wideDecimal.parquet");
+        Parquet.saver().decimalSize(20, 2).save(df, file);
+
+        for (DataFrame loaded : new DataFrame[]{new ParquetLoader(0).load(file), Parquet.loader().load(file)}) {
+
+            new DataFrameAsserts(loaded, "a")
+                    .expectHeight(6)
+                    .expectRow(0, new BigDecimal("1.50"))
+                    .expectRow(1, new BigDecimal("-2.25"))
+                    .expectRow(2, new BigDecimal("1.50"))
+                    .expectRow(3, new BigDecimal("-2.25"))
+                    .expectRow(4, (Object) null)
+                    .expectRow(5, new BigDecimal("1.50"));
+
+            // 2 distinct values plus null
+            DataFrame ids = loaded.cols().select($col("a").mapVal(System::identityHashCode));
+            assertEquals(3, ids.getColumn(0).unique().size());
+        }
+    }
+
+    @Test
+    public void cardinality_Uuid() {
+
+        // UUID is FIXED_LEN_BYTE_ARRAY(16)-backed, and keyed on its bytes on both paths
+
+        UUID u1 = UUID.fromString("d3f1b0a4-1111-4a2b-8c3d-000000000001");
+        UUID u2 = UUID.fromString("d3f1b0a4-2222-4a2b-8c3d-000000000002");
+
+        DataFrame df = DataFrame.foldByRow("a").of(u1, u2, u1, u2, null, u1);
+
+        Path file = outBase.resolve("uuid.parquet");
+        Parquet.saver().save(df, file);
+
+        for (DataFrame loaded : new DataFrame[]{new ParquetLoader(0).load(file), Parquet.loader().load(file)}) {
+
+            new DataFrameAsserts(loaded, "a")
+                    .expectHeight(6)
+                    .expectRow(0, u1)
+                    .expectRow(1, u2)
+                    .expectRow(2, u1)
+                    .expectRow(3, u2)
+                    .expectRow(4, (Object) null)
+                    .expectRow(5, u1);
+
+            DataFrame ids = loaded.cols().select($col("a").mapVal(System::identityHashCode));
+            assertEquals(3, ids.getColumn(0).unique().size());
+        }
     }
 }

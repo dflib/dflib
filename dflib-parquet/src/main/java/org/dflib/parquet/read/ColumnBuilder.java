@@ -2,6 +2,7 @@ package org.dflib.parquet.read;
 
 import dev.hardwood.metadata.ConvertedType;
 import dev.hardwood.metadata.LogicalType;
+import dev.hardwood.metadata.PhysicalType;
 import dev.hardwood.metadata.RepetitionType;
 import dev.hardwood.row.PqInterval;
 import dev.hardwood.row.StructAccessor;
@@ -23,8 +24,8 @@ public interface ColumnBuilder {
      * Creates a builder producing the DFLib Series type that corresponds to the given Parquet column schema. Columns
      * that can't hold nulls (i.e. "required" ones) and have a primitive counterpart in DFLib are accumulated without
      * boxing. Everything else is accumulated as objects, and - when the writer dictionary-encoded the column, and the
-     * values are neither mutable nor unsuitable as hash keys - compacted, so that repeated values share a single
-     * instance.
+     * values are neither mutable nor handed to the caller by reference - decoded once per distinct physical value,
+     * and shared by every row repeating it.
      *
      * @param dictionaryEncoded whether the file carries a dictionary page for this column, i.e. whether the writer
      *                          found its values worth deduplicating
@@ -55,11 +56,11 @@ public interface ColumnBuilder {
             if (lt instanceof LogicalType.StringType
                     || lt instanceof LogicalType.EnumType
                     || lt instanceof LogicalType.JsonType) {
-                return ObjectColumnBuilder.of(capacity, false, StructAccessor::getString);
+                return ObjectColumnBuilder.of(capacity, StructAccessor::getString);
             }
 
             if (lt instanceof LogicalType.BsonType) {
-                return ObjectColumnBuilder.of(capacity, false, StructAccessor::getBinary);
+                return ObjectColumnBuilder.of(capacity, StructAccessor::getBinary);
             }
 
             if (lt instanceof LogicalType.IntType it) {
@@ -69,44 +70,58 @@ public interface ColumnBuilder {
             }
 
             if (lt instanceof LogicalType.UuidType) {
-                return ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getUuid);
+                return ObjectColumnBuilder.ofBinaryKeyed(capacity, dictionaryEncoded, StructAccessor::getUuid);
             }
 
             if (lt instanceof LogicalType.DateType) {
-                return ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getDate);
+                return ObjectColumnBuilder.of(
+                        capacity, dictionaryEncoded, StructAccessor::getInt, StructAccessor::getDate);
             }
 
             if (lt instanceof LogicalType.TimeType) {
-                return ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getTime);
+                KeyReader key = colSchema.type() == PhysicalType.INT32
+                        ? StructAccessor::getInt
+                        : StructAccessor::getLong;
+                return ObjectColumnBuilder.of(capacity, dictionaryEncoded, key, StructAccessor::getTime);
             }
 
             if (lt instanceof LogicalType.TimestampType ts) {
                 return ts.isAdjustedToUTC()
-                        ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getTimestamp)
-                        : ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getLocalTimestamp);
+                        ? ObjectColumnBuilder.of(
+                        capacity, dictionaryEncoded, StructAccessor::getLong, StructAccessor::getTimestamp)
+                        : ObjectColumnBuilder.of(
+                        capacity, dictionaryEncoded, StructAccessor::getLong, StructAccessor::getLocalTimestamp);
             }
 
             if (lt instanceof LogicalType.DecimalType) {
-                return ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getDecimal);
+                return switch (colSchema.type()) {
+                    case INT32 -> ObjectColumnBuilder.of(
+                            capacity, dictionaryEncoded, StructAccessor::getInt, StructAccessor::getDecimal);
+                    case INT64 -> ObjectColumnBuilder.of(
+                            capacity, dictionaryEncoded, StructAccessor::getLong, StructAccessor::getDecimal);
+                    default -> ObjectColumnBuilder.ofBinaryKeyed(
+                            capacity, dictionaryEncoded, StructAccessor::getDecimal);
+                };
             }
 
             if (lt instanceof LogicalType.Float16Type) {
                 // Hardwood has no typed FLOAT16 accessor, but its generic "getValue" decodes FLOAT16 to a Float
                 return allowsNulls
-                        ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, (row, i) -> (Float) row.getValue(i))
+                        ? ObjectColumnBuilder.ofBinaryKeyed(
+                        capacity, dictionaryEncoded, (row, i) -> (Float) row.getValue(i))
                         : PrimitiveColumnBuilders.ofFloat(capacity, (row, i) -> (Float) row.getValue(i));
             }
 
             if (lt instanceof LogicalType.IntervalType) {
                 // DFLib represents an interval as a 3-slot int[] of (months, days, millis)
-                return ObjectColumnBuilder.of(capacity, false, (row, i) -> {
+                return ObjectColumnBuilder.of(capacity, (row, i) -> {
                     PqInterval v = row.getInterval(i);
                     return v != null ? new int[]{(int) v.months(), (int) v.days(), (int) v.milliseconds()} : null;
                 });
             }
 
             if (lt instanceof LogicalType.NullType) {
-                return ObjectColumnBuilder.of(capacity, false, (row, i) -> null);
+                return ObjectColumnBuilder.of(capacity, (row, i) -> null);
             }
 
             // GEOMETRY and GEOGRAPHY carry opaque binary payloads, and anything unrecognized falls through to the
@@ -115,21 +130,25 @@ public interface ColumnBuilder {
 
         return switch (colSchema.type()) {
             case BOOLEAN -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, false, nullable(StructAccessor::getBoolean))
+                    ? ObjectColumnBuilder.of(capacity, nullable(StructAccessor::getBoolean))
                     : PrimitiveColumnBuilders.ofBool(capacity);
             case INT32 -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, nullable(StructAccessor::getInt))
+                    ? ObjectColumnBuilder.of(
+                    capacity, dictionaryEncoded, StructAccessor::getInt, nullable(StructAccessor::getInt))
                     : PrimitiveColumnBuilders.ofInt(capacity, StructAccessor::getInt);
             case INT64 -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, nullable(StructAccessor::getLong))
+                    ? ObjectColumnBuilder.of(
+                    capacity, dictionaryEncoded, StructAccessor::getLong, nullable(StructAccessor::getLong))
                     : PrimitiveColumnBuilders.ofLong(capacity, StructAccessor::getLong);
             case FLOAT -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, nullable(StructAccessor::getFloat))
+                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded,
+                    (row, i) -> Float.floatToRawIntBits(row.getFloat(i)), nullable(StructAccessor::getFloat))
                     : PrimitiveColumnBuilders.ofFloat(capacity, StructAccessor::getFloat);
             case DOUBLE -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, nullable(StructAccessor::getDouble))
+                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded,
+                    (row, i) -> Double.doubleToRawLongBits(row.getDouble(i)), nullable(StructAccessor::getDouble))
                     : PrimitiveColumnBuilders.ofDouble(capacity);
-            case BYTE_ARRAY, FIXED_LEN_BYTE_ARRAY -> ObjectColumnBuilder.of(capacity, false, StructAccessor::getBinary);
+            case BYTE_ARRAY, FIXED_LEN_BYTE_ARRAY -> ObjectColumnBuilder.of(capacity, StructAccessor::getBinary);
             case INT96 -> throw new IllegalArgumentException(
                     "INT96 deserialization is deprecated and is not supported: " + colSchema.name());
         };
@@ -145,16 +164,18 @@ public interface ColumnBuilder {
         return switch (bitWidth) {
 
             // DFLib has no primitive byte and short Series, so these are boxed regardless of nullability
-            case 8 -> ObjectColumnBuilder.of(capacity, dictionaryEncoded, (row, i) ->
+            case 8 -> ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getInt, (row, i) ->
                     row.isNull(i) ? null : (byte) row.getInt(i));
-            case 16 -> ObjectColumnBuilder.of(capacity, dictionaryEncoded, (row, i) ->
+            case 16 -> ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getInt, (row, i) ->
                     row.isNull(i) ? null : (short) row.getInt(i));
 
             case 32 -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, nullable(StructAccessor::getInt))
+                    ? ObjectColumnBuilder.of(
+                    capacity, dictionaryEncoded, StructAccessor::getInt, nullable(StructAccessor::getInt))
                     : PrimitiveColumnBuilders.ofInt(capacity, StructAccessor::getInt);
             case 64 -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, nullable(StructAccessor::getLong))
+                    ? ObjectColumnBuilder.of(
+                    capacity, dictionaryEncoded, StructAccessor::getLong, nullable(StructAccessor::getLong))
                     : PrimitiveColumnBuilders.ofLong(capacity, StructAccessor::getLong);
 
             default -> throw new IllegalArgumentException(
@@ -176,20 +197,20 @@ public interface ColumnBuilder {
 
         return switch (bitWidth) {
 
-            case 8 -> ObjectColumnBuilder.of(capacity, dictionaryEncoded, (row, i) ->
+            case 8 -> ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getInt, (row, i) ->
                     row.isNull(i) ? null : (short) (row.getInt(i) & 0xFF));
 
             case 16 -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, (row, i) ->
+                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getInt, (row, i) ->
                     row.isNull(i) ? null : row.getInt(i) & 0xFFFF)
                     : PrimitiveColumnBuilders.ofInt(capacity, (row, i) -> row.getInt(i) & 0xFFFF);
 
             case 32 -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, (row, i) ->
+                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getInt, (row, i) ->
                     row.isNull(i) ? null : Integer.toUnsignedLong(row.getInt(i)))
                     : PrimitiveColumnBuilders.ofLong(capacity, (row, i) -> Integer.toUnsignedLong(row.getInt(i)));
 
-            case 64 -> ObjectColumnBuilder.of(capacity, dictionaryEncoded, (row, i) ->
+            case 64 -> ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getLong, (row, i) ->
                     row.isNull(i) ? null : LogicalTypes.toUnsignedBigInteger(row.getLong(i)));
 
             default -> throw new IllegalArgumentException(
@@ -206,7 +227,7 @@ public interface ColumnBuilder {
             }
 
             ElementReader elementReader = ElementReader.of(element);
-            return ObjectColumnBuilder.of(capacity, false, (row, i) ->
+            return ObjectColumnBuilder.of(capacity, (row, i) ->
                     row.isNull(i) ? null : elementReader.toList(row.getList(i)));
         }
 
@@ -219,7 +240,7 @@ public interface ColumnBuilder {
 
             ElementReader keyReader = ElementReader.of(key);
             ElementReader valueReader = ElementReader.of(value);
-            return ObjectColumnBuilder.of(capacity, false, (row, i) ->
+            return ObjectColumnBuilder.of(capacity, (row, i) ->
                     row.isNull(i) ? null : ElementReader.toMap(row.getMap(i), keyReader, valueReader));
         }
 

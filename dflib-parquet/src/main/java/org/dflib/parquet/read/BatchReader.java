@@ -7,7 +7,6 @@ import dev.hardwood.metadata.RepetitionType;
 import dev.hardwood.reader.ColumnReader;
 import dev.hardwood.schema.SchemaNode;
 import org.dflib.Series;
-import org.dflib.builder.ValueCompactor;
 
 /**
  * Accumulates a Parquet column into a DFLib {@link Series}, a batch at a time.
@@ -54,7 +53,7 @@ public interface BatchReader {
             };
         }
 
-        return new ObjectBatchReader(BatchConverter.of(p, lt), height, dictionaryEncoded && compactable(lt, p.type()));
+        return new ObjectBatchReader(BatchConverter.of(p, lt, dictionaryEncoded && shareable(lt, p.type())), height);
     }
 
     /**
@@ -74,13 +73,16 @@ public interface BatchReader {
     }
 
     /**
-     * Whether a column of this type may be compacted at all. Strings arrive already shared via Hardwood's dictionary,
-     * and byte arrays and intervals are mutable and lack value equality. Whether compaction is worth doing is a
-     * separate question, answered by the file's encoding rather than its schema.
+     * Whether one decoded instance may stand in for every row holding the same physical value. Strings arrive
+     * already shared via Hardwood's dictionary; byte arrays and intervals are handed to the caller by reference and
+     * are mutable; booleans decode to the two JVM-wide instances and have nothing to save. Whether sharing is worth
+     * doing is a separate question, answered by the file's encoding rather than its schema.
      */
-    private static boolean compactable(LogicalType lt, PhysicalType type) {
+    private static boolean shareable(LogicalType lt, PhysicalType type) {
         if (lt == null) {
-            return type != PhysicalType.BYTE_ARRAY && type != PhysicalType.FIXED_LEN_BYTE_ARRAY;
+            return type != PhysicalType.BYTE_ARRAY
+                    && type != PhysicalType.FIXED_LEN_BYTE_ARRAY
+                    && type != PhysicalType.BOOLEAN;
         }
         return !(lt instanceof LogicalType.StringType
                 || lt instanceof LogicalType.EnumType
@@ -199,27 +201,17 @@ public interface BatchReader {
 
         private final BatchConverter converter;
         private final Object[] data;
-        private final ValueCompactor<Object> compactor;
         private int pos;
 
-        ObjectBatchReader(BatchConverter converter, int height, boolean compact) {
+        ObjectBatchReader(BatchConverter converter, int height) {
             this.converter = converter;
             this.data = new Object[height];
-            this.compactor = compact ? new ValueCompactor<>() : null;
         }
 
         @Override
         public void append(ColumnReader reader) {
             int n = reader.getValueCount();
             converter.convert(reader, data, pos, n);
-
-            if (compactor != null) {
-                int end = pos + n;
-                for (int i = pos; i < end; i++) {
-                    data[i] = compactor.get(data[i]);
-                }
-            }
-
             pos += n;
         }
 

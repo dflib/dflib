@@ -134,12 +134,12 @@ public class ParquetLoader {
 
         int height = height(reader, resourceId);
         Map<String, ConvertedType> legacyTypes = legacyTypes(reader);
-        Set<String> compactable = compactableCols(reader);
+        Set<String> dictionaryEncoded = dictionaryEncodedCols(reader);
 
         Index index = Index.of(dfCols.toArray(new String[0]));
         Series<?>[] columns = batchReadable(schema, dfCols, height)
-                ? readByColumn(reader, schema, dfCols, legacyTypes, compactable, height)
-                : readByRow(reader, schema, dfCols, legacyTypes, compactable, height);
+                ? readByColumn(reader, schema, dfCols, legacyTypes, dictionaryEncoded, height)
+                : readByRow(reader, schema, dfCols, legacyTypes, dictionaryEncoded, height);
 
         return new ColumnDataFrame(null, index, columns);
     }
@@ -168,14 +168,14 @@ public class ParquetLoader {
             FileSchema schema,
             List<String> dfCols,
             Map<String, ConvertedType> legacyTypes,
-            Set<String> compactable,
+            Set<String> dictionaryEncoded,
             int height) {
 
         int w = dfCols.size();
         BatchReader[] readers = new BatchReader[w];
         for (int i = 0; i < w; i++) {
             String name = dfCols.get(i);
-            readers[i] = BatchReader.of(schema.getField(name), legacyTypes.get(name), compactable.contains(name), height);
+            readers[i] = BatchReader.of(schema.getField(name), legacyTypes.get(name), dictionaryEncoded.contains(name), height);
         }
 
         try (ColumnReaders columns = reader.columnReaders(projection(schema, dfCols))) {
@@ -205,7 +205,7 @@ public class ParquetLoader {
             FileSchema schema,
             List<String> dfCols,
             Map<String, ConvertedType> legacyTypes,
-            Set<String> compactable,
+            Set<String> dictionaryEncoded,
             int height) {
 
         int w = dfCols.size();
@@ -219,7 +219,7 @@ public class ParquetLoader {
 
             for (int i = 0; i < w; i++) {
                 String name = rows.getFieldName(i);
-                builders[i] = ColumnBuilder.of(schema.getField(name), legacyTypes.get(name), compactable.contains(name), height);
+                builders[i] = ColumnBuilder.of(schema.getField(name), legacyTypes.get(name), dictionaryEncoded.contains(name), height);
                 positions[i] = dfCols.indexOf(name);
             }
 
@@ -268,27 +268,28 @@ public class ParquetLoader {
     }
 
     /**
-     * Collects the names of the columns worth compacting on load, i.e. those the writer dictionary-encoded.
+     * Collects the names of the columns the writer dictionary-encoded, which are the ones the loader decodes through
+     * a dictionary of its own.
      *
      * <p>A dictionary page is the writer's own record that the column's values repeat: it lists the distinct values
      * once, and the data pages that follow reference them by index. A column written without one - a microsecond
-     * timestamp, say - is one the writer found nothing to deduplicate in, and compacting it would build a cache with
-     * an entry per row to discover the same thing. So the file's own encoding decides, and columns it left
-     * undictionaried are read straight through.
+     * timestamp, say - is one the writer found nothing to deduplicate in, and a dictionary over it would grow an
+     * entry per row to discover the same thing. So the file's own encoding decides, and columns it left
+     * undictionaried are decoded straight through.
      */
-    private Set<String> compactableCols(ParquetFileReader reader) {
+    private Set<String> dictionaryEncodedCols(ParquetFileReader reader) {
 
-        Set<String> compactable = new HashSet<>();
+        Set<String> dictionaryEncoded = new HashSet<>();
         for (RowGroup rg : reader.getFileMetaData().rowGroups()) {
             for (ColumnChunk cc : rg.columns()) {
                 if (cc.metaData().dictionaryPageOffset() != null) {
                     // a leaf of a nested column is named by its path; the DataFrame column is the root of that path
-                    compactable.add(cc.metaData().pathInSchema().elements().get(0));
+                    dictionaryEncoded.add(cc.metaData().pathInSchema().elements().get(0));
                 }
             }
         }
 
-        return compactable;
+        return dictionaryEncoded;
     }
 
     private int height(ParquetFileReader reader, String resourceId) {
