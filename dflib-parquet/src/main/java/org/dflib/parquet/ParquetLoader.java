@@ -81,25 +81,7 @@ public class ParquetLoader {
         this.schemaProjector = SchemaProjector.ofColsExcept(columns);
         return this;
     }
-
-    /**
-     * @deprecated the loader compacts columns by default already - those the file dictionary-encoded, which are the
-     * ones with anything to compact - so this method has no effect on anything.
-     */
-    @Deprecated(since = "2.0.0", forRemoval = true)
-    public ParquetLoader compactCol(int column) {
-        return this;
-    }
-
-    /**
-     * @deprecated the loader compacts columns by default already - those the file dictionary-encoded, which are the
-     * ones with anything to compact - so this method has no effect on anything.
-     */
-    @Deprecated(since = "2.0.0", forRemoval = true)
-    public ParquetLoader compactCol(String column) {
-        return this;
-    }
-
+    
     public DataFrame load(File file) {
         return load(file.toPath());
     }
