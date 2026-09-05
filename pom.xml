@@ -18,7 +18,6 @@
         <module>dflib-jdbc</module>
         <module>dflib-json</module>
         <module>dflib-parquet</module>
-        <module>dflib-hardwood</module>
         <module>dflib-junit</module>
         <module>dflib-jupyter</module>
         <module>dflib-benchmark</module>
@@ -285,16 +284,6 @@
                 <version>${mustache.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.apache.parquet</groupId>
-                <artifactId>parquet-common</artifactId>
-                <version>${parquet.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.parquet</groupId>
-                <artifactId>parquet-column</artifactId>
-                <version>${parquet.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.apache.parquet</groupId>
                 <artifactId>parquet-hadoop</artifactId>

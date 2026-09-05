@@ -2,8 +2,6 @@ package org.dflib.parquet.write;
 
 import java.util.List;
 
-
-
 public class DataFrameSchema {
 
     private final List<ColumnMeta> columns;
@@ -15,5 +13,4 @@ public class DataFrameSchema {
     public List<ColumnMeta> getColumns() {
         return columns;
     }
-
 }

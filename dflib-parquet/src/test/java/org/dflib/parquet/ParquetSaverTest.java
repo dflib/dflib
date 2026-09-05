@@ -82,7 +82,7 @@ public class ParquetSaverTest {
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
-        assertTrue(schema.contains("optional double a;"));
+        assertTrue(schema.contains("optional double a columnorder(TYPE_DEFINED_ORDER);"));
 
         try (ParquetReader<GenericRecord> reader = getAvroReader(file)) {
             assertEquals(1.0, reader.read().get("a"));
@@ -99,7 +99,7 @@ public class ParquetSaverTest {
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
-        assertTrue(schema.contains("required double a;"));
+        assertTrue(schema.contains("required double a columnorder(TYPE_DEFINED_ORDER);"));
 
         try (ParquetReader<GenericRecord> reader = getAvroReader(file)) {
             assertEquals(18.0, reader.read().get("a"));
@@ -206,7 +206,7 @@ public class ParquetSaverTest {
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
-        assertTrue(schema.contains("optional float a;"));
+        assertTrue(schema.contains("optional float a columnorder(TYPE_DEFINED_ORDER);"));
 
         try (ParquetReader<GenericRecord> reader = getAvroReader(file)) {
             assertEquals(1.0f, reader.read().get("a"));
@@ -522,8 +522,8 @@ public class ParquetSaverTest {
         String schema = getSchema(file);
         assertTrue(schema.contains("optional int32 a;"));
         assertTrue(schema.contains("optional int64 b;"));
-        assertTrue(schema.contains("optional double c;"));
-        assertTrue(schema.contains("optional float d;"));
+        assertTrue(schema.contains("optional double c columnorder(TYPE_DEFINED_ORDER);"));
+        assertTrue(schema.contains("optional float d columnorder(TYPE_DEFINED_ORDER);"));
         assertTrue(schema.contains("optional boolean e;"));
         assertTrue(schema.contains("optional binary f (STRING);"));
 
@@ -561,8 +561,8 @@ public class ParquetSaverTest {
         String schema = getSchema(file);
         assertTrue(schema.contains("optional int32 a;"));
         assertTrue(schema.contains("optional int64 b;"));
-        assertTrue(schema.contains("optional double c;"));
-        assertTrue(schema.contains("optional float d;"));
+        assertTrue(schema.contains("optional double c columnorder(TYPE_DEFINED_ORDER);"));
+        assertTrue(schema.contains("optional float d columnorder(TYPE_DEFINED_ORDER);"));
         assertTrue(schema.contains("optional boolean e;"));
         assertTrue(schema.contains("optional binary f (STRING);"));
 

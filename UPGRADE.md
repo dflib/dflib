@@ -124,3 +124,9 @@ df.rows().expand("`b-c`");
 df.rows().expand(1);
 df.rows().expand($col("b-c"));
 ```
+
+### [dflib #643](https://github.com/dflib/dflib/issues/643)
+`dflib-parquet` is now built on the [Hardwood](https://hardwood.dev/) Parquet engine instead of "parquet-java", and no
+longer pulls in Hadoop. Loading and saving code keeps working as is. The one  API break is schema loading: there is no 
+Parquet schema type shared by the two engines, so `Parquet.loadSchema(..)` and `ParquetSchemaLoader.load(..)` now 
+return Hardwood's `dev.hardwood.schema.FileSchema` instead of `org.apache.parquet.schema.MessageType`.

@@ -2,6 +2,7 @@
 
 * #578 Static cast methods in Udf interfaces
 * #642 rows().expand(..) should take an expression
+* #643 Replace the "parquet-java" Parquet engine with Hardwood
 
 ## Release 2.0.0-M7
 

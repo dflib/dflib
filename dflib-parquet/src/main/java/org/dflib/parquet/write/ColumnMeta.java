@@ -1,7 +1,8 @@
 package org.dflib.parquet.write;
 
-
-
+/**
+ * The DFLib-side description of a DataFrame column being written to Parquet.
+ */
 public class ColumnMeta {
 
     private final String columnName;
@@ -26,8 +27,14 @@ public class ColumnMeta {
         return inferredType.isEnum();
     }
 
+    /**
+     * Whether the column values are non-null primitives, and hence can be written as a "required" Parquet field.
+     */
+    public boolean isPrimitive() {
+        return inferredType.isPrimitive();
+    }
+
     public int getIndex() {
         return index;
     }
-
 }

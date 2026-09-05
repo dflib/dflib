@@ -87,7 +87,7 @@ public class ParquetLoader_CardinalityTest {
 
     @Test
     public void defaultCardinality() {
-        DataFrame df = new ParquetLoader().load(testFile);
+        DataFrame df = Parquet.loader().load(testFile);
 
         new DataFrameAsserts(df, "a", "b", "c", "d", "e", "f")
                 .expectHeight(6)

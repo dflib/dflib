@@ -1,63 +1,66 @@
 package org.dflib.parquet.read;
 
-import org.apache.parquet.schema.MessageType;
-import org.apache.parquet.schema.Type;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Resolves a DFLib column filter against the top-level field names of a Parquet file, producing the names of the
+ * columns to read, in the order they must appear in the DataFrame.
+ */
 @FunctionalInterface
 public interface SchemaProjector {
 
-    MessageType project(MessageType schema);
+    List<String> project(List<String> schemaColumns);
 
     static SchemaProjector ofCols(int... columns) {
-        return ch -> SchemaProjector.positions(ch, columns);
+        return sc -> SchemaProjector.positions(sc, columns);
     }
 
     static SchemaProjector ofCols(String... columns) {
-        return ch -> SchemaProjector.labels(ch, columns);
+        return sc -> SchemaProjector.labels(sc, columns);
     }
 
     static SchemaProjector ofColsExcept(int... columns) {
-        return ch -> SchemaProjector.positionsExcept(ch, columns);
+        return sc -> SchemaProjector.positionsExcept(sc, columns);
     }
 
     static SchemaProjector ofColsExcept(String... columns) {
-        return ch -> SchemaProjector.labelsExcept(ch, columns);
+        return sc -> SchemaProjector.labelsExcept(sc, columns);
     }
 
-    private static MessageType positions(MessageType schema, int[] columns) {
-        int w = columns.length;
-        List<Type> projection = new ArrayList<>(w);
+    private static List<String> positions(List<String> schemaColumns, int[] columns) {
+        List<String> projection = new ArrayList<>(columns.length);
 
         for (int column : columns) {
-            // TODO: DFLib exceptions for invalid positions
-            projection.add(schema.getType(schema.getFieldName(column)));
+            if (column < 0 || column >= schemaColumns.size()) {
+                throw new IllegalArgumentException("Column position is out of bounds: " + column);
+            }
+            projection.add(schemaColumns.get(column));
         }
 
-        return new MessageType(schema.getName(), projection);
+        return projection;
     }
 
-    private static MessageType labels(MessageType schema, String[] columns) {
-        int w = columns.length;
-        List<Type> projection = new ArrayList<>(w);
+    private static List<String> labels(List<String> schemaColumns, String[] columns) {
+        List<String> projection = new ArrayList<>(columns.length);
 
         for (String column : columns) {
-            // TODO: DFLib exceptions for invalid columns
-            projection.add(schema.getType(column));
+            if (!schemaColumns.contains(column)) {
+                throw new IllegalArgumentException("Column is not present in the Parquet schema: " + column);
+            }
+            projection.add(column);
         }
 
-        return new MessageType(schema.getName(), projection);
+        return projection;
     }
 
-    private static MessageType positionsExcept(MessageType schema, int[] columns) {
+    private static List<String> positionsExcept(List<String> schemaColumns, int[] columns) {
         int w = columns.length;
         if (w == 0) {
-            return schema;
+            return schemaColumns;
         }
 
         Set<Integer> excludes = new HashSet<>((int) Math.ceil(w / 0.75));
@@ -65,34 +68,33 @@ public interface SchemaProjector {
             excludes.add(e);
         }
 
-        int len = schema.getFieldCount();
-        int[] positions = new int[len - excludes.size()];
-
-        for (int ii = 0, i = 0; i < len; i++) {
+        int len = schemaColumns.size();
+        List<String> projection = new ArrayList<>(len - excludes.size());
+        for (int i = 0; i < len; i++) {
             if (!excludes.contains(i)) {
-                positions[ii++] = i;
+                projection.add(schemaColumns.get(i));
             }
         }
 
-        return positions(schema, positions);
+        return projection;
     }
 
-    private static MessageType labelsExcept(MessageType schema, String[] columns) {
+    private static List<String> labelsExcept(List<String> schemaColumns, String[] columns) {
         int w = columns.length;
         if (w == 0) {
-            return schema;
+            return schemaColumns;
         }
 
         Set<String> excludes = new HashSet<>((int) Math.ceil(w / 0.75));
         Collections.addAll(excludes, columns);
 
-        List<Type> projection = new ArrayList<>();
-        for (Type t : schema.getFields()) {
-            if (!excludes.contains(t.getName())) {
-                projection.add(t);
+        List<String> projection = new ArrayList<>(schemaColumns.size() - excludes.size());
+        for (String c : schemaColumns) {
+            if (!excludes.contains(c)) {
+                projection.add(c);
             }
         }
 
-        return new MessageType(schema.getName(), projection);
+        return projection;
     }
 }

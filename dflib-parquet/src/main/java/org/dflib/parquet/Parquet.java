@@ -1,16 +1,24 @@
 package org.dflib.parquet;
 
-import org.apache.parquet.schema.MessageType;
-import org.dflib.DataFrame;
+import dev.hardwood.schema.FileSchema;
 import org.dflib.ByteSource;
 import org.dflib.ByteSources;
+import org.dflib.DataFrame;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Map;
 
-
+/**
+ * Reads and writes .parquet files as DataFrames, using the
+ * <a href="https://hardwood.dev/">Hardwood</a> Parquet engine.
+ */
 public class Parquet {
+
+    // Below this many rows a file is read a row at a time, and at or above it a column at a time. Hardwood's batch
+    // API decodes whole arrays, which is the shape DFLib stores its columns in, but setting up and tearing down its
+    // batch readers has a fixed cost that only pays for itself on large files
+    static final int MIN_BATCH_HEIGHT = 1_000_000;
 
     public static DataFrame load(File file) {
         return loader().load(file);
@@ -38,15 +46,15 @@ public class Parquet {
         return loader().loadAll(src);
     }
 
-    public static MessageType loadSchema(File file) {
+    public static FileSchema loadSchema(File file) {
         return schemaLoader().load(file);
     }
 
-    public static MessageType loadSchema(Path filePath) {
+    public static FileSchema loadSchema(Path filePath) {
         return schemaLoader().load(filePath);
     }
 
-    public static MessageType loadSchema(String filePath) {
+    public static FileSchema loadSchema(String filePath) {
         return schemaLoader().load(filePath);
     }
 
@@ -67,7 +75,7 @@ public class Parquet {
     }
 
     public static ParquetLoader loader() {
-        return new ParquetLoader();
+        return new ParquetLoader(MIN_BATCH_HEIGHT);
     }
 
     public static ParquetSchemaLoader schemaLoader() {
