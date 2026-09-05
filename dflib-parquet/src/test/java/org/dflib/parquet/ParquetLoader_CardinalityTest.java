@@ -19,13 +19,21 @@ public class ParquetLoader_CardinalityTest {
     static Path outBase;
 
     static Path testFile;
+    static Path noDictionaryFile;
+
+    record R(Integer a, String b, BigDecimal c, Boolean d, Long e, long f) {
+    }
 
     @BeforeAll
     static void createParquetFile() {
-        record R(Integer a, String b, BigDecimal c, Boolean d, Long e, long f) {
-        }
+        testFile = write(true);
+        noDictionaryFile = write(false);
+    }
 
-        testFile = TestWriter.of(R.class, outBase)
+    static Path write(boolean dictionaryEncoding) {
+
+        return TestWriter.of(R.class, outBase)
+                .withDictionaryEncoding(dictionaryEncoding)
                 .schema("""
                         message test_schema {
                             optional int32 a;
@@ -115,5 +123,32 @@ public class ParquetLoader_CardinalityTest {
         assertEquals(3, idCardinality.getColumn(3).unique().size());
         assertEquals(4, idCardinality.getColumn(4).unique().size());
         assertEquals(5, idCardinality.getColumn(5).unique().size());
+    }
+
+    @Test
+    public void noDictionaryNoCompaction() {
+
+        // A column the writer left undictionaried is one it found nothing to deduplicate in, so the loader reads it
+        // straight through rather than paying for a compaction cache. Values must of course be identical either way.
+
+        DataFrame df = Parquet.loader().load(noDictionaryFile);
+
+        new DataFrameAsserts(df, "a", "b", "c", "d", "e", "f")
+                .expectHeight(6)
+                .expectRow(0, 1, "ab", new BigDecimal("609.10"), true, null, 0L)
+                .expectRow(1, 40000, "ab", new BigDecimal("12.60"), false, 66L, 66L)
+                .expectRow(2, 40000, "bc", new BigDecimal("609.10"), true, 66L, 66L)
+                .expectRow(3, 30000, "bc", new BigDecimal("12.60"), null, 68_000L, 68_000L)
+                .expectRow(4, 30000, null, new BigDecimal("609.10"), true, -66_000L, -66_000L)
+                .expectRow(5, null, "bc", new BigDecimal("609.10"), true, -66_000L, -66_000L);
+
+        // BigDecimal has no JVM-wide instance cache of its own, so its identity count is a clean signal: 2 distinct
+        // values shared when compacted, one instance per row when not
+        DataFrame ids = df.cols().select($col("c").mapVal(System::identityHashCode));
+        assertEquals(6, ids.getColumn(0).unique().size());
+
+        DataFrame compacted = Parquet.loader().load(testFile).cols()
+                .select($col("c").mapVal(System::identityHashCode));
+        assertEquals(2, compacted.getColumn(0).unique().size());
     }
 }

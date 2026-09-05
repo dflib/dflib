@@ -22,15 +22,19 @@ public interface ColumnBuilder {
     /**
      * Creates a builder producing the DFLib Series type that corresponds to the given Parquet column schema. Columns
      * that can't hold nulls (i.e. "required" ones) and have a primitive counterpart in DFLib are accumulated without
-     * boxing. Everything else is accumulated as objects, and - unless the values are mutable or unsuitable as hash
-     * keys - compacted, so that repeated values share a single instance.
+     * boxing. Everything else is accumulated as objects, and - when the writer dictionary-encoded the column, and the
+     * values are neither mutable nor unsuitable as hash keys - compacted, so that repeated values share a single
+     * instance.
+     *
+     * @param dictionaryEncoded whether the file carries a dictionary page for this column, i.e. whether the writer
+     *                          found its values worth deduplicating
      */
-    static ColumnBuilder of(SchemaNode colSchema, ConvertedType legacyType, int capacity) {
+    static ColumnBuilder of(SchemaNode colSchema, ConvertedType legacyType, boolean dictionaryEncoded, int capacity) {
 
         boolean allowsNulls = colSchema.repetitionType() != RepetitionType.REQUIRED;
 
         return switch (colSchema) {
-            case SchemaNode.PrimitiveNode p -> primitive(p, legacyType, capacity, allowsNulls);
+            case SchemaNode.PrimitiveNode p -> primitive(p, legacyType, dictionaryEncoded, capacity, allowsNulls);
             case SchemaNode.GroupNode g -> group(g, capacity);
         };
     }
@@ -38,6 +42,7 @@ public interface ColumnBuilder {
     private static ColumnBuilder primitive(
             SchemaNode.PrimitiveNode colSchema,
             ConvertedType legacyType,
+            boolean dictionaryEncoded,
             int capacity,
             boolean allowsNulls) {
 
@@ -59,36 +64,36 @@ public interface ColumnBuilder {
 
             if (lt instanceof LogicalType.IntType it) {
                 return it.isSigned()
-                        ? signedInt(colSchema, it.bitWidth(), capacity, allowsNulls)
-                        : unsignedInt(colSchema, it.bitWidth(), capacity, allowsNulls);
+                        ? signedInt(colSchema, it.bitWidth(), dictionaryEncoded, capacity, allowsNulls)
+                        : unsignedInt(colSchema, it.bitWidth(), dictionaryEncoded, capacity, allowsNulls);
             }
 
             if (lt instanceof LogicalType.UuidType) {
-                return ObjectColumnBuilder.of(capacity, true, StructAccessor::getUuid);
+                return ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getUuid);
             }
 
             if (lt instanceof LogicalType.DateType) {
-                return ObjectColumnBuilder.of(capacity, true, StructAccessor::getDate);
+                return ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getDate);
             }
 
             if (lt instanceof LogicalType.TimeType) {
-                return ObjectColumnBuilder.of(capacity, true, StructAccessor::getTime);
+                return ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getTime);
             }
 
             if (lt instanceof LogicalType.TimestampType ts) {
                 return ts.isAdjustedToUTC()
-                        ? ObjectColumnBuilder.of(capacity, true, StructAccessor::getTimestamp)
-                        : ObjectColumnBuilder.of(capacity, true, StructAccessor::getLocalTimestamp);
+                        ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getTimestamp)
+                        : ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getLocalTimestamp);
             }
 
             if (lt instanceof LogicalType.DecimalType) {
-                return ObjectColumnBuilder.of(capacity, true, StructAccessor::getDecimal);
+                return ObjectColumnBuilder.of(capacity, dictionaryEncoded, StructAccessor::getDecimal);
             }
 
             if (lt instanceof LogicalType.Float16Type) {
                 // Hardwood has no typed FLOAT16 accessor, but its generic "getValue" decodes FLOAT16 to a Float
                 return allowsNulls
-                        ? ObjectColumnBuilder.of(capacity, true, (row, i) -> (Float) row.getValue(i))
+                        ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, (row, i) -> (Float) row.getValue(i))
                         : PrimitiveColumnBuilders.ofFloat(capacity, (row, i) -> (Float) row.getValue(i));
             }
 
@@ -113,16 +118,16 @@ public interface ColumnBuilder {
                     ? ObjectColumnBuilder.of(capacity, false, nullable(StructAccessor::getBoolean))
                     : PrimitiveColumnBuilders.ofBool(capacity);
             case INT32 -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, true, nullable(StructAccessor::getInt))
+                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, nullable(StructAccessor::getInt))
                     : PrimitiveColumnBuilders.ofInt(capacity, StructAccessor::getInt);
             case INT64 -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, true, nullable(StructAccessor::getLong))
+                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, nullable(StructAccessor::getLong))
                     : PrimitiveColumnBuilders.ofLong(capacity, StructAccessor::getLong);
             case FLOAT -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, true, nullable(StructAccessor::getFloat))
+                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, nullable(StructAccessor::getFloat))
                     : PrimitiveColumnBuilders.ofFloat(capacity, StructAccessor::getFloat);
             case DOUBLE -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, true, nullable(StructAccessor::getDouble))
+                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, nullable(StructAccessor::getDouble))
                     : PrimitiveColumnBuilders.ofDouble(capacity);
             case BYTE_ARRAY, FIXED_LEN_BYTE_ARRAY -> ObjectColumnBuilder.of(capacity, false, StructAccessor::getBinary);
             case INT96 -> throw new IllegalArgumentException(
@@ -133,22 +138,23 @@ public interface ColumnBuilder {
     private static ColumnBuilder signedInt(
             SchemaNode.PrimitiveNode colSchema,
             int bitWidth,
+            boolean dictionaryEncoded,
             int capacity,
             boolean allowsNulls) {
 
         return switch (bitWidth) {
 
             // DFLib has no primitive byte and short Series, so these are boxed regardless of nullability
-            case 8 -> ObjectColumnBuilder.of(capacity, true, (row, i) ->
+            case 8 -> ObjectColumnBuilder.of(capacity, dictionaryEncoded, (row, i) ->
                     row.isNull(i) ? null : (byte) row.getInt(i));
-            case 16 -> ObjectColumnBuilder.of(capacity, true, (row, i) ->
+            case 16 -> ObjectColumnBuilder.of(capacity, dictionaryEncoded, (row, i) ->
                     row.isNull(i) ? null : (short) row.getInt(i));
 
             case 32 -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, true, nullable(StructAccessor::getInt))
+                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, nullable(StructAccessor::getInt))
                     : PrimitiveColumnBuilders.ofInt(capacity, StructAccessor::getInt);
             case 64 -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, true, nullable(StructAccessor::getLong))
+                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, nullable(StructAccessor::getLong))
                     : PrimitiveColumnBuilders.ofLong(capacity, StructAccessor::getLong);
 
             default -> throw new IllegalArgumentException(
@@ -164,25 +170,26 @@ public interface ColumnBuilder {
     private static ColumnBuilder unsignedInt(
             SchemaNode.PrimitiveNode colSchema,
             int bitWidth,
+            boolean dictionaryEncoded,
             int capacity,
             boolean allowsNulls) {
 
         return switch (bitWidth) {
 
-            case 8 -> ObjectColumnBuilder.of(capacity, true, (row, i) ->
+            case 8 -> ObjectColumnBuilder.of(capacity, dictionaryEncoded, (row, i) ->
                     row.isNull(i) ? null : (short) (row.getInt(i) & 0xFF));
 
             case 16 -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, true, (row, i) ->
+                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, (row, i) ->
                     row.isNull(i) ? null : row.getInt(i) & 0xFFFF)
                     : PrimitiveColumnBuilders.ofInt(capacity, (row, i) -> row.getInt(i) & 0xFFFF);
 
             case 32 -> allowsNulls
-                    ? ObjectColumnBuilder.of(capacity, true, (row, i) ->
+                    ? ObjectColumnBuilder.of(capacity, dictionaryEncoded, (row, i) ->
                     row.isNull(i) ? null : Integer.toUnsignedLong(row.getInt(i)))
                     : PrimitiveColumnBuilders.ofLong(capacity, (row, i) -> Integer.toUnsignedLong(row.getInt(i)));
 
-            case 64 -> ObjectColumnBuilder.of(capacity, true, (row, i) ->
+            case 64 -> ObjectColumnBuilder.of(capacity, dictionaryEncoded, (row, i) ->
                     row.isNull(i) ? null : LogicalTypes.toUnsignedBigInteger(row.getLong(i)));
 
             default -> throw new IllegalArgumentException(

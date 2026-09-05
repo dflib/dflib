@@ -1,7 +1,9 @@
 package org.dflib.parquet;
 
 import dev.hardwood.InputFile;
+import dev.hardwood.metadata.ColumnChunk;
 import dev.hardwood.metadata.ConvertedType;
+import dev.hardwood.metadata.RowGroup;
 import dev.hardwood.metadata.SchemaElement;
 import dev.hardwood.reader.ColumnReader;
 import dev.hardwood.reader.ColumnReaders;
@@ -27,8 +29,10 @@ import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Loads .parquet files as DataFrames, using Hardwood as the Parquet engine.
@@ -79,7 +83,8 @@ public class ParquetLoader {
     }
 
     /**
-     * @deprecated the loader compacts columns by defaults already, so this method has no effect on anything.
+     * @deprecated the loader compacts columns by default already - those the file dictionary-encoded, which are the
+     * ones with anything to compact - so this method has no effect on anything.
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public ParquetLoader compactCol(int column) {
@@ -87,7 +92,8 @@ public class ParquetLoader {
     }
 
     /**
-     * @deprecated the loader compacts columns by defaults already, so this method has no effect on anything.
+     * @deprecated the loader compacts columns by default already - those the file dictionary-encoded, which are the
+     * ones with anything to compact - so this method has no effect on anything.
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public ParquetLoader compactCol(String column) {
@@ -146,11 +152,12 @@ public class ParquetLoader {
 
         int height = height(reader, resourceId);
         Map<String, ConvertedType> legacyTypes = legacyTypes(reader);
+        Set<String> compactable = compactableCols(reader);
 
         Index index = Index.of(dfCols.toArray(new String[0]));
         Series<?>[] columns = batchReadable(schema, dfCols, height)
-                ? readByColumn(reader, schema, dfCols, legacyTypes, height)
-                : readByRow(reader, schema, dfCols, legacyTypes, height);
+                ? readByColumn(reader, schema, dfCols, legacyTypes, compactable, height)
+                : readByRow(reader, schema, dfCols, legacyTypes, compactable, height);
 
         return new ColumnDataFrame(null, index, columns);
     }
@@ -179,13 +186,14 @@ public class ParquetLoader {
             FileSchema schema,
             List<String> dfCols,
             Map<String, ConvertedType> legacyTypes,
+            Set<String> compactable,
             int height) {
 
         int w = dfCols.size();
         BatchReader[] readers = new BatchReader[w];
         for (int i = 0; i < w; i++) {
             String name = dfCols.get(i);
-            readers[i] = BatchReader.of(schema.getField(name), legacyTypes.get(name), height);
+            readers[i] = BatchReader.of(schema.getField(name), legacyTypes.get(name), compactable.contains(name), height);
         }
 
         try (ColumnReaders columns = reader.columnReaders(projection(schema, dfCols))) {
@@ -215,6 +223,7 @@ public class ParquetLoader {
             FileSchema schema,
             List<String> dfCols,
             Map<String, ConvertedType> legacyTypes,
+            Set<String> compactable,
             int height) {
 
         int w = dfCols.size();
@@ -228,7 +237,7 @@ public class ParquetLoader {
 
             for (int i = 0; i < w; i++) {
                 String name = rows.getFieldName(i);
-                builders[i] = ColumnBuilder.of(schema.getField(name), legacyTypes.get(name), height);
+                builders[i] = ColumnBuilder.of(schema.getField(name), legacyTypes.get(name), compactable.contains(name), height);
                 positions[i] = dfCols.indexOf(name);
             }
 
@@ -274,6 +283,30 @@ public class ParquetLoader {
         }
 
         return types;
+    }
+
+    /**
+     * Collects the names of the columns worth compacting on load, i.e. those the writer dictionary-encoded.
+     *
+     * <p>A dictionary page is the writer's own record that the column's values repeat: it lists the distinct values
+     * once, and the data pages that follow reference them by index. A column written without one - a microsecond
+     * timestamp, say - is one the writer found nothing to deduplicate in, and compacting it would build a cache with
+     * an entry per row to discover the same thing. So the file's own encoding decides, and columns it left
+     * undictionaried are read straight through.
+     */
+    private Set<String> compactableCols(ParquetFileReader reader) {
+
+        Set<String> compactable = new HashSet<>();
+        for (RowGroup rg : reader.getFileMetaData().rowGroups()) {
+            for (ColumnChunk cc : rg.columns()) {
+                if (cc.metaData().dictionaryPageOffset() != null) {
+                    // a leaf of a nested column is named by its path; the DataFrame column is the root of that path
+                    compactable.add(cc.metaData().pathInSchema().elements().get(0));
+                }
+            }
+        }
+
+        return compactable;
     }
 
     private int height(ParquetFileReader reader, String resourceId) {

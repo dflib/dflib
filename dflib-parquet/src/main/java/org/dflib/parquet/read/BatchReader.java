@@ -36,7 +36,7 @@ public interface BatchReader {
         return colSchema instanceof SchemaNode.PrimitiveNode p && p.type() != PhysicalType.INT96;
     }
 
-    static BatchReader of(SchemaNode colSchema, ConvertedType legacyType, int height) {
+    static BatchReader of(SchemaNode colSchema, ConvertedType legacyType, boolean dictionaryEncoded, int height) {
 
         SchemaNode.PrimitiveNode p = (SchemaNode.PrimitiveNode) colSchema;
         LogicalType lt = LogicalTypes.effective(p.logicalType(), legacyType);
@@ -54,7 +54,7 @@ public interface BatchReader {
             };
         }
 
-        return new ObjectBatchReader(BatchConverter.of(p, lt), height, compacts(lt, p.type()));
+        return new ObjectBatchReader(BatchConverter.of(p, lt), height, dictionaryEncoded && compactable(lt, p.type()));
     }
 
     /**
@@ -74,10 +74,11 @@ public interface BatchReader {
     }
 
     /**
-     * Whether repeated values are worth replacing with a single shared instance. Strings arrive already shared via
-     * Hardwood's dictionary, and byte arrays and intervals are mutable and lack value equality.
+     * Whether a column of this type may be compacted at all. Strings arrive already shared via Hardwood's dictionary,
+     * and byte arrays and intervals are mutable and lack value equality. Whether compaction is worth doing is a
+     * separate question, answered by the file's encoding rather than its schema.
      */
-    private static boolean compacts(LogicalType lt, PhysicalType type) {
+    private static boolean compactable(LogicalType lt, PhysicalType type) {
         if (lt == null) {
             return type != PhysicalType.BYTE_ARRAY && type != PhysicalType.FIXED_LEN_BYTE_ARRAY;
         }
