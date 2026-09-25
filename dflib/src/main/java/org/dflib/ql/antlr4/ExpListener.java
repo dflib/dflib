@@ -753,6 +753,16 @@ public interface ExpListener extends ParseTreeListener {
 	 */
 	void exitCastAsDecimal(ExpParser.CastAsDecimalContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ExpParser#castAsNumber}.
+	 * @param ctx the parse tree
+	 */
+	void enterCastAsNumber(ExpParser.CastAsNumberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#castAsNumber}.
+	 * @param ctx the parse tree
+	 */
+	void exitCastAsNumber(ExpParser.CastAsNumberContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ExpParser#castAsStr}.
 	 * @param ctx the parse tree
 	 */

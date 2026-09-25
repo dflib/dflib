@@ -368,6 +368,7 @@ public class NumExpTest {
                 arguments("castAsBigint(1" + "0".repeat(20) + ")",
                         $bigintVal(new BigInteger("1" + "0".repeat(20))).castAsBigint()),
                 arguments("castAsDecimal(1e1000)", $decimalVal(new BigDecimal("1e1000")).castAsDecimal()),
+                arguments("castAsNumber('1')", $strVal("1").castAsNumber()),
                 arguments("castAsInt(null)", $val(null).castAsInt()),
                 arguments("castAsInt(true)", $boolVal(true).castAsInt()),
                 arguments("castAsInt('1')", $strVal("1").castAsInt())
