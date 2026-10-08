@@ -1,19 +1,23 @@
 package org.dflib.ql;
 
 import org.dflib.Condition;
+import org.dflib.DataFrame;
 import org.dflib.DateExp;
 import org.dflib.DecimalExp;
 import org.dflib.Environment;
 import org.dflib.Exp;
 import org.dflib.NumExp;
+import org.dflib.Series;
 import org.dflib.StrExp;
 import org.dflib.Udf0;
 import org.dflib.Udf1;
 import org.dflib.Udf2;
 import org.dflib.UdfN;
+import org.dflib.unit.SeriesAsserts;
 import org.dflib.ql.fn.OtherPackageFunction;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -185,19 +189,53 @@ public class QLFunctionReflectionTest extends BaseQLFunctionsTest {
         assertEquals($decimal("a").abs(), call(functions, "dec", $decimal("a")));
         assertEquals($int("a").castAsDecimal().abs(), call(functions, "dec", $int("a")));
         assertEquals($double("a").castAsDecimal().abs(), call(functions, "dec", $double("a")));
-        assertEquals($col("a").castAsDecimal().abs(), call(functions, "dec", $col("a")));
+        assertEquals($col("a").castAsNumber().castAsDecimal().abs(), call(functions, "dec", $col("a")));
     }
 
     @Test
-    public void narrowExpParam_UnknownValueType_throws() {
+    public void narrowExpParam_UnknownValueType_Cast() {
 
-        // the value type of "castAsNumber" is only known at eval time, so the resolver lets it through, and the
-        // producer has to check
+        // the value type of "castAsNumber" is only known at eval time, so the resolver casts it to the parameter
+        // type, the same as it would an untyped argument
         QLFunctions functions = registry("dec", new DecimalFunction());
 
+        assertEquals($col("a").castAsNumber().castAsDecimal().abs(), call(functions, "dec", $col("a").castAsNumber()));
+    }
+
+    @Test
+    public void narrowExpParam_UnknownValueType_ParseAndEval() {
+
+        Environment.setQLFunctions(QLFunctions.builder().function("dec", new DecimalFunction()).build());
+
+        Exp<?> exp = parseExp("dec(castAsNumber(a))");
+        assertEquals($col("a").castAsNumber().castAsDecimal().abs(), exp);
+
+        DataFrame df = DataFrame.foldByColumn("a").of(-1, 2.5, -3L);
+        new SeriesAsserts(exp.eval(df)).expectData(new BigDecimal("1"), new BigDecimal("2.5"), new BigDecimal("3"));
+    }
+
+    @Test
+    public void narrowExpParam_ForeignBigDecimalExp_Cast() {
+
+        // a BigDecimal expression that is not a DecimalExp is treated as a numeric of an unknown value type, and
+        // "castAsDecimal" wraps it in a DecimalExp, so the function gets what its parameter declares
+        QLFunctions functions = registry("dec", new DecimalIdentityFunction());
+        NumExp<BigDecimal> foreign = new ForeignDecimalExp();
+
+        Exp<?> result = call(functions, "dec", foreign);
+        assertTrue(result instanceof DecimalExp, result.getClass().getName());
+        assertEquals(foreign.castAsDecimal(), result);
+    }
+
+    @Test
+    public void unsupportedExpParamType_throws() {
+
+        QLFunctions.Builder builder = QLFunctions.builder().noDefaultFunctions();
+
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-                () -> call(functions, "dec", $col("a").castAsNumber()));
-        assertTrue(e.getMessage().startsWith("dec() expects argument 1 to be a DecimalExp, got: "), e.getMessage());
+                () -> builder.function("bad", new NarrowExpParamFunction()));
+        assertTrue(e.getMessage().startsWith("An Exp parameter of a QLFunction must be declared as one of"), e.getMessage());
+        assertTrue(e.getMessage().contains("NarrowStrExp"), e.getMessage());
     }
 
     @Test
@@ -206,9 +244,12 @@ public class QLFunctionReflectionTest extends BaseQLFunctionsTest {
         QLFunctions functions = registry("f", new IntExpFunction());
 
         assertEquals($int("a"), call(functions, "f", $int("a")));
-        assertEquals($col("a").castAsInt(), call(functions, "f", $col("a")));
+        assertEquals($col("a").castAsNumber().castAsInt(), call(functions, "f", $col("a")));
 
-        // a wider value type is not narrowed implicitly
+        // an unknown value type is cast, like an untyped argument...
+        assertEquals($col("a").castAsNumber().castAsInt(), call(functions, "f", $col("a").castAsNumber()));
+
+        // ... but a known wider value type is not narrowed implicitly
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
                 () -> call(functions, "f", $double("a")));
         assertEquals("No overload of f matches f(NUMERIC<Double>). Available: f(NUMERIC<Integer>)", e.getMessage());
@@ -221,6 +262,9 @@ public class QLFunctionReflectionTest extends BaseQLFunctionsTest {
 
         assertEquals($decimal("a"), call(functions, "f", $decimal("a")));
         assertEquals($int("a").abs(), call(functions, "f", $int("a")));
+
+        // an unknown value type fits "NumExp<?>" without a cast, so it is preferred over casting to "DecimalExp"
+        assertEquals($col("a").castAsNumber().abs(), call(functions, "f", $col("a").castAsNumber()));
     }
 
     @Test
@@ -233,6 +277,11 @@ public class QLFunctionReflectionTest extends BaseQLFunctionsTest {
 
         assertThrows(IllegalArgumentException.class,
                 () -> call(functions, "f", $int("a")));
+
+        // an unknown value type can be cast to either, so it is ambiguous too
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                () -> call(functions, "f", $col("a").castAsNumber()));
+        assertEquals("Ambiguous call to f(NUMERIC): argument 1 is NUMERIC, cast it explicitly.", e.getMessage());
     }
 
     @Test
@@ -315,7 +364,7 @@ public class QLFunctionReflectionTest extends BaseQLFunctionsTest {
         Environment.setQLFunctions(QLFunctions.builder().function("boom", new BoomFunction()).build());
 
         QLParserException e = assertThrows(QLParserException.class, () -> parseExp("1 + boom(int(a))"));
-        assertEquals("1:4 boom() does not like " + $int("a").toQL(), e.getMessage());
+        assertEquals("Function 'boom' at 1:4: boom() does not like " + $int("a").toQL(), e.getMessage());
     }
 
     @Test
@@ -327,16 +376,16 @@ public class QLFunctionReflectionTest extends BaseQLFunctionsTest {
                 .function("regex", new RegexFunction())
                 .build());
 
-        assertEquals("1:4 not ready",
+        assertEquals("Function 'state' at 1:4: not ready",
                 assertThrows(QLParserException.class, () -> parseExp("1 + state(int(a))")).getMessage());
 
         // no message: the exception class stands in for it
-        assertEquals("2:0 NullPointerException",
+        assertEquals("Function 'npe' at 2:0: NullPointerException",
                 assertThrows(QLParserException.class, () -> parseExp("1 +\nnpe(int(a))")).getMessage());
 
         // a library exception from the body
         assertTrue(assertThrows(QLParserException.class, () -> parseExp("regex(str(a), '[')")).getMessage()
-                .startsWith("1:0 Unclosed character class"));
+                .startsWith("Function 'regex' at 1:0: Unclosed character class"));
     }
 
     @Test
@@ -344,7 +393,7 @@ public class QLFunctionReflectionTest extends BaseQLFunctionsTest {
 
         Environment.setQLFunctions(QLFunctions.builder().function("io", new CheckedFunction()).build());
 
-        assertEquals("1:4 Error calling io(): disk is full",
+        assertEquals("Function 'io' at 1:4: Error calling io(): disk is full",
                 assertThrows(QLParserException.class, () -> parseExp("1 + io(int(a))")).getMessage());
     }
 
@@ -380,7 +429,7 @@ public class QLFunctionReflectionTest extends BaseQLFunctionsTest {
         assertEquals(Exp.concat($int("a"), $str("b")), call(functions, "f2", $int("a"), $str("b")));
         assertEquals($int("a").add($int("b")), call(functions, "fN", $int("a"), $int("b")));
 
-        assertEquals($col("a").castAsInt().castAsInt(), call(functions, "f1", $col("a")));
+        assertEquals($col("a").castAsNumber().castAsInt().castAsInt(), call(functions, "f1", $col("a")));
         assertThrows(IllegalArgumentException.class, () -> call(functions, "f1", $str("a")));
     }
 
@@ -552,6 +601,64 @@ public class QLFunctionReflectionTest extends BaseQLFunctionsTest {
 
         public Condition call(Condition c) {
             return c.not();
+        }
+    }
+
+    public static class DecimalIdentityFunction implements QLFunction {
+
+        public DecimalExp call(DecimalExp e) {
+            return e;
+        }
+    }
+
+    public interface NarrowStrExp extends StrExp {
+    }
+
+    public static class NarrowExpParamFunction implements QLFunction {
+
+        public StrExp call(NarrowStrExp e) {
+            return e;
+        }
+    }
+
+    /**
+     * A BigDecimal expression that does not implement DecimalExp.
+     */
+    public static class ForeignDecimalExp implements NumExp<BigDecimal> {
+
+        @Override
+        public Class<BigDecimal> getType() {
+            return BigDecimal.class;
+        }
+
+        @Override
+        public String toQL() {
+            return "foreign";
+        }
+
+        @Override
+        public String toQL(DataFrame df) {
+            return toQL();
+        }
+
+        @Override
+        public Series<BigDecimal> eval(DataFrame df) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Series<BigDecimal> eval(Series<?> s) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public BigDecimal reduce(DataFrame df) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public BigDecimal reduce(Series<?> s) {
+            throw new UnsupportedOperationException();
         }
     }
 

@@ -1,5 +1,6 @@
 package org.dflib.ql;
 
+import org.dflib.DecimalExp;
 import org.dflib.Exp;
 import org.dflib.exp.ScalarExp;
 
@@ -14,14 +15,26 @@ import java.util.function.Function;
  */
 record QLFunctionArg(TypeClassifier type, boolean constant, Class<?> numType) {
 
-    // widening only goes to the types that can represent every value of the narrower one exactly
+    // widening only goes to the types that can represent every value of the narrower one exactly; an argument whose
+    // value type is unknown at resolve time is cast to the parameter type regardless.
     private static final Map<Class<?>, NumCast> NUM_CASTS = Map.of(
-            Integer.class, new NumCast(Exp::castAsInt, Set.of()),
-            Long.class, new NumCast(Exp::castAsLong, Set.of(Integer.class)),
-            Float.class, new NumCast(Exp::castAsFloat, Set.of()),
-            Double.class, new NumCast(Exp::castAsDouble, Set.of(Integer.class, Float.class)),
-            BigInteger.class, new NumCast(Exp::castAsBigint, Set.of(Integer.class, Long.class)),
-            BigDecimal.class, new NumCast(Exp::castAsDecimal,
+            Integer.class, new NumCast(
+                    e -> e.castAsNumber().castAsInt(),
+                    Set.of()),
+            Long.class, new NumCast(
+                    e -> e.castAsNumber().castAsLong(),
+                    Set.of(Integer.class)),
+            Float.class, new NumCast(
+                    e -> e.castAsNumber().castAsFloat(),
+                    Set.of()),
+            Double.class, new NumCast(
+                    e -> e.castAsNumber().castAsDouble(),
+                    Set.of(Integer.class, Float.class)),
+            BigInteger.class, new NumCast(
+                    e -> e.castAsNumber().castAsBigint(),
+                    Set.of(Integer.class, Long.class)),
+            BigDecimal.class, new NumCast(
+                    e -> e.castAsNumber().castAsDecimal(),
                     Set.of(Integer.class, Long.class, Float.class, Double.class, BigInteger.class)));
 
     QLFunctionArg(TypeClassifier type, boolean constant) {
@@ -31,6 +44,14 @@ record QLFunctionArg(TypeClassifier type, boolean constant, Class<?> numType) {
     static QLFunctionArg of(Exp<?> exp) {
         TypeClassifier type = TypeClassifier.classify(exp);
         Class<?> numType = type == TypeClassifier.NUMERIC ? TypeClassifier.numericValueType(exp.getType()) : null;
+
+        // BigDecimal is the only numeric value type with a dedicated interface a parameter can be declared with, so
+        // the value type is only recognized on that interface. Any other BigDecimal expression counts as an unknown
+        // numeric and is cast with "castAsDecimal", that wraps it in a DecimalExp
+        if (numType == BigDecimal.class && !(exp instanceof DecimalExp)) {
+            numType = null;
+        }
+
         return new QLFunctionArg(type, exp instanceof ScalarExp, numType);
     }
 
@@ -41,12 +62,13 @@ record QLFunctionArg(TypeClassifier type, boolean constant, Class<?> numType) {
 
         int cost = TypeClassifier.matchCost(declared.type(), actual.type());
 
+        // the parameter binds a numeric value type the argument doesn't have: widen the argument, or cast it if its
+        // value type is only known at eval time (e.g. "castAsNumber"), the same way an untyped argument is cast
         if (cost == TypeClassifier.EXACT
                 && declared.numType() != null
-                && actual.numType() != null
                 && declared.numType() != actual.numType()) {
 
-            cost = NUM_CASTS.get(declared.numType()).widenedFrom().contains(actual.numType())
+            cost = actual.numType() == null || NUM_CASTS.get(declared.numType()).widenedFrom().contains(actual.numType())
                     ? TypeClassifier.COERCION
                     : TypeClassifier.NO_MATCH;
         }
