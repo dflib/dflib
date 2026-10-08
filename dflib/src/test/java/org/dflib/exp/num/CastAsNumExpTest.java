@@ -37,7 +37,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void add_int() {
+    public void add_Int() {
         NumExp<?> exp = $col(0).castAsNumber().add(5);
         Series<Object> s = Series.of(1, 2, 3);
         Series<? extends Number> result = exp.eval(s);
@@ -47,7 +47,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void add_long() {
+    public void add_Long() {
         NumExp<?> exp = $col(0).castAsNumber().add(5);
         Series<Object> s = Series.of(1L, 2L, 3L);
         Series<? extends Number> result = exp.eval(s);
@@ -57,7 +57,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void add_intLong() {
+    public void add_IntLong() {
         NumExp<?> exp = $col(0).castAsNumber().add(5);
         Series<Object> s = Series.of(1, 2L, 3);
         Series<? extends Number> result = exp.eval(s);
@@ -77,7 +77,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void chain_splitEval() {
+    public void chain_SplitEval() {
         Series<Object> s = Series.of(1, new BigDecimal("2.5"), 3L);
 
         Series<? extends Number> intermediate = $col(0).castAsNumber().add(1).eval(s);
@@ -88,7 +88,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void sum_int() {
+    public void sum_Int() {
         NumExp<?> exp = $col(0).castAsNumber().sum();
         Series<Object> s = Series.of(1, 2, 3);
 
@@ -97,7 +97,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void avg_long() {
+    public void avg_Long() {
         NumExp<?> exp = $col(0).castAsNumber().avg();
         Series<Object> s = Series.of(1L, 2L, 3L);
         Series<? extends Number> result = exp.eval(s);
@@ -108,7 +108,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void add_bigInteger() {
+    public void add_BigInteger() {
         NumExp<?> exp = $col(0).castAsNumber().add(BigInteger.ONE);
         Series<Object> s = Series.of(new BigInteger("9223372036854775808"));
         Series<? extends Number> result = exp.eval(s);
@@ -131,7 +131,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void filteredSum_empty() {
+    public void filteredSum_Empty() {
         NumExp<?> exp = $col("a").castAsNumber().sum($bool("b"));
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, false,
@@ -155,7 +155,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void lt_dynamic() {
+    public void lt_Dynamic() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 1L,
                 "2.5", 2.5d,
@@ -167,7 +167,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void between_dynamic() {
+    public void between_Dynamic() {
         DataFrame df = DataFrame.foldByRow("a", "f", "t").of(
                 "2.5", 2, 3,
                 3L, 3, 4.0,
@@ -184,7 +184,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void abs_DataFrame_evalOnce() {
+    public void abs_DataFrame_EvalOnce() {
         AtomicInteger counter = new AtomicInteger();
 
         NumExp<?> exp = $col("a")
@@ -202,7 +202,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void add_DataFrame_evalOnce() {
+    public void add_DataFrame_EvalOnce() {
         AtomicInteger leftCounter = new AtomicInteger();
         AtomicInteger rightCounter = new AtomicInteger();
 
@@ -230,7 +230,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void shift_thenAdd() {
+    public void shift_Add() {
         NumExp<?> exp = $col(0).castAsNumber().shift(1).add(1);
         Series<Object> s = Series.of(1, 2, 3);
         Series<? extends Number> result = exp.eval(s);
@@ -239,7 +239,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void castAsDecimal_int() {
+    public void castAsDecimal_Int() {
         Series<BigDecimal> result = $col(0)
                 .castAsNumber()
                 .castAsDecimal()
@@ -250,7 +250,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void castAsDecimal_bigDecimal() {
+    public void castAsDecimal_BigDecimal() {
         Series<BigDecimal> result = $col(0)
                 .castAsNumber()
                 .castAsDecimal()
@@ -261,7 +261,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void castAsDecimal_nulls() {
+    public void castAsDecimal_Nulls() {
         Series<BigDecimal> result = $col(0)
                 .castAsNumber()
                 .castAsDecimal()
@@ -314,8 +314,6 @@ public class CastAsNumExpTest {
         assertThrows(NumberFormatException.class, () -> exp.eval(s));
     }
 
-    // --- Homogeneous type inference ---
-
     @Test
     public void homogeneous_Long() {
         NumExp<?> exp = $col(0).castAsNumber();
@@ -355,8 +353,6 @@ public class CastAsNumExpTest {
         Series<? extends Number> result = exp.eval(s);
         new SeriesAsserts(result).expectData(new BigDecimal("1.5"), null);
     }
-
-    // --- Pairwise widening ---
 
     @Test
     public void widen_Int_Long() {
@@ -422,8 +418,6 @@ public class CastAsNumExpTest {
         new SeriesAsserts(result).expectData(new BigDecimal(BigInteger.ONE), new BigDecimal("2.5"));
     }
 
-    // --- Edge cases ---
-
     @Test
     public void emptySeries() {
         NumExp<?> exp = $col(0).castAsNumber();
@@ -442,7 +436,6 @@ public class CastAsNumExpTest {
 
     @Test
     public void unknownNumberSubtype() {
-        // Custom Number subclass not in typeConversionRank → falls back to BigDecimal via doubleValue()
         Number custom = new Number() {
             @Override
             public int intValue() {
@@ -468,12 +461,8 @@ public class CastAsNumExpTest {
         NumExp<?> exp = $col(0).castAsNumber();
         Series<Object> s = Series.of(custom, 10);
         Series<? extends Number> result = exp.eval(s);
-
-        // unknown subtype forces BigDecimal; both values converted via BigDecimal path
         new SeriesAsserts(result).expectData(new BigDecimal("42"), BigDecimal.valueOf(10));
     }
-
-    // --- DataFrame eval path ---
 
     @Test
     public void eval_DataFrame() {
@@ -486,31 +475,29 @@ public class CastAsNumExpTest {
         new SeriesAsserts(result).expectData(new BigDecimal("1"), new BigDecimal("2"), new BigDecimal("3.5"));
     }
 
-    // --- reduce() methods ---
-
     @Test
-    public void reduce_Series_number() {
+    public void reduce_Series_Number() {
         NumExp<?> exp = $col(0).castAsNumber();
         Series<Object> s = Series.of(42, 1, 2);
         assertEquals(42, exp.reduce(s));
     }
 
     @Test
-    public void reduce_Series_null() {
+    public void reduce_Series_Null() {
         NumExp<?> exp = $col(0).castAsNumber();
         Series<Object> s = Series.of(null, 1, 2);
         assertNull(exp.reduce(s));
     }
 
     @Test
-    public void reduce_Series_parseableString() {
+    public void reduce_Series_ParseableString() {
         NumExp<?> exp = $col(0).castAsNumber();
         Series<Object> s = Series.of("42.5", 1, 2);
         assertEquals(new BigDecimal("42.5"), exp.reduce(s));
     }
 
     @Test
-    public void reduce_Series_unparseableString() {
+    public void reduce_Series_UnparseableString() {
         NumExp<?> exp = $col(0).castAsNumber();
         Series<Object> s = Series.of("abc", 1, 2);
         assertThrows(NumberFormatException.class, () -> exp.reduce(s));
@@ -526,7 +513,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void abs_reduce() {
+    public void abs_Reduce() {
         AtomicInteger counter = new AtomicInteger();
 
         NumExp<?> exp = $col(0)
@@ -540,7 +527,7 @@ public class CastAsNumExpTest {
     }
 
     @Test
-    public void add_reduce_widening() {
+    public void add_Reduce_Widening() {
         NumExp<?> exp = $col(0).castAsNumber().add(1);
         Series<Object> s = Series.of(Long.MAX_VALUE, BigInteger.ONE);
 
@@ -553,68 +540,51 @@ public class CastAsNumExpTest {
         assertEquals(Long.MIN_VALUE, exp.reduce(s));
     }
 
-    // --- Converter specifics ---
-
     @Test
-    public void bigDecimal_fromBigInteger() {
+    public void bigDecimal_FromBigInteger() {
         NumExp<?> exp = $col(0).castAsNumber();
         Series<Object> s = Series.of(BigInteger.valueOf(123), new BigDecimal("4.5"));
         Series<? extends Number> result = exp.eval(s);
-        // BigInteger→BigDecimal uses new BigDecimal(BigInteger)
         new SeriesAsserts(result).expectData(new BigDecimal(BigInteger.valueOf(123)), new BigDecimal("4.5"));
     }
 
     @Test
-    public void bigDecimal_fromDouble() {
+    public void bigDecimal_FromDouble() {
         NumExp<?> exp = $col(0).castAsNumber();
-        // Mix Double and BigDecimal to trigger BigDecimal target with Double conversion
         Series<Object> s = Series.of(1.5, new BigDecimal("2.5"));
         Series<? extends Number> result = exp.eval(s);
-        // Double→BigDecimal uses BigDecimal.valueOf(doubleValue()).stripTrailingZeros()
         new SeriesAsserts(result).expectData(new BigDecimal("1.5"), new BigDecimal("2.5"));
     }
 
     @Test
-    public void bigDecimal_fromLong() {
+    public void bigDecimal_FromLong() {
         NumExp<?> exp = $col(0).castAsNumber();
-        // Mix Long and BigDecimal to trigger BigDecimal target with Long→longValue() conversion
         Series<Object> s = Series.of(100L, new BigDecimal("2.5"));
         Series<? extends Number> result = exp.eval(s);
-        // Long→BigDecimal uses BigDecimal.valueOf(longValue()), not stripTrailingZeros()
         new SeriesAsserts(result).expectData(new BigDecimal("100"), new BigDecimal("2.5"));
     }
 
-    // --- Short/Byte fallback to BigDecimal ---
-
     @Test
-    public void widen_Short_toBigDecimal() {
+    public void widen_Short_BigDecimal() {
         NumExp<?> exp = $col(0).castAsNumber();
-        // Short is not in typeConversionRank → triggers BigDecimal fallback
-        // Short is converted via longValue() path, not doubleValue()
         Series<Object> s = Series.of((short) 1, 2);
         Series<? extends Number> result = exp.eval(s);
         new SeriesAsserts(result).expectData(BigDecimal.valueOf(1), BigDecimal.valueOf(2));
     }
 
     @Test
-    public void widen_Byte_toBigDecimal() {
+    public void widen_Byte_BigDecimal() {
         NumExp<?> exp = $col(0).castAsNumber();
-        // Byte is not in typeConversionRank → triggers BigDecimal fallback
-        // Byte is converted via longValue() path, not doubleValue()
         Series<Object> s = Series.of((byte) 1, 2);
         Series<? extends Number> result = exp.eval(s);
         new SeriesAsserts(result).expectData(BigDecimal.valueOf(1), BigDecimal.valueOf(2));
     }
-
-    // --- NumExp identity override ---
 
     @Test
     public void alreadyNumeric() {
         NumExp<?> exp = $int(0);
         assertSame(exp, exp.castAsNumber());
     }
-
-    // --- toQL serialization ---
 
     @Test
     public void toQL() {

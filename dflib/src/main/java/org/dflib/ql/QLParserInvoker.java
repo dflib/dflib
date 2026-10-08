@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
+import org.dflib.Environment;
 import org.dflib.ql.antlr4.ExpLexer;
 import org.dflib.ql.antlr4.ExpStrictLexer;
 import org.dflib.ql.antlr4.ExpParser;
@@ -31,6 +32,7 @@ public class QLParserInvoker {
         parser.removeErrorListeners(); // remove logging to std.err
         parser.addErrorListener(new ErrorListener());
         parser.setParameters(params);
+        parser.setEnv(Environment.commonEnv());
 
         try {
             return parserFunction.apply(parser);
