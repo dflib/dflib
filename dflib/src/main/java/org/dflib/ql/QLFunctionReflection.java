@@ -235,6 +235,15 @@ class QLFunctionReflection {
         Class<?> raw = parameter.getType();
 
         if (Exp.class.isAssignableFrom(raw)) {
+
+            // the resolver matches on the typed interfaces, so a narrower parameter type would pass resolution and
+            // fail on invocation
+            if (!TypeClassifier.EXP_PARAM_TYPES.contains(raw)) {
+                throw new IllegalArgumentException("An Exp parameter of a QLFunction must be declared as one of "
+                        + TypeClassifier.EXP_PARAM_TYPES.stream().map(Class::getSimpleName).toList()
+                        + ", got " + raw.getName() + ": " + method);
+            }
+
             return expArg(parameter.getParameterizedType());
         }
 

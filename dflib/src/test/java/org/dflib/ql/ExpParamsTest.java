@@ -205,6 +205,27 @@ public class ExpParamsTest {
                                 .or($bool("c").ne($boolVal(true)))
                 ),
 
+                arguments(
+                        "date(1) in ?",
+                        new Object[]{List.of(LocalDate.of(2002, 1, 1), LocalDate.of(2020, 1, 1))},
+                        $date(1).in(LocalDate.of(2002, 1, 1), LocalDate.of(2020, 1, 1))
+                ),
+                arguments(
+                        "date(1) in (?, '2020-01-01')",
+                        new Object[]{LocalDate.of(2002, 1, 1)},
+                        $date(1).in(LocalDate.of(2002, 1, 1), LocalDate.of(2020, 1, 1))
+                ),
+                arguments(
+                        "time(1) not in ?",
+                        new Object[]{List.of(LocalTime.of(1, 2), LocalTime.of(3, 4))},
+                        $time(1).notIn(LocalTime.of(1, 2), LocalTime.of(3, 4))
+                ),
+                arguments(
+                        "dateTime(1) in ?",
+                        new Object[]{List.of(LocalDateTime.of(2002, 1, 1, 1, 2))},
+                        $dateTime(1).in(LocalDateTime.of(2002, 1, 1, 1, 2))
+                ),
+
                 // parameter as column id
                 arguments(
                         "float(?) > 10",
@@ -245,6 +266,8 @@ public class ExpParamsTest {
                 arguments("int(a) in ?", new Object[]{5},
                         "Parameter '?' at 1:10 is used as a list, so its value must be an array or a collection,"
                                 + " got: java.lang.Integer"),
+                arguments("date(1) in ?", new Object[]{List.of(1)},
+                        "Operator 'in' at 1:8 expects a list of date values or ISO-8601 strings for a date expression, got: 1"),
                 arguments("int(?) > 1", new Object[]{1.1f},
                         "Column 'int(..)' at 1:0 expects an integer index or a string name, got: 1.1 (Float)"),
                 arguments("str(?) = 'a'", new Object[]{null},

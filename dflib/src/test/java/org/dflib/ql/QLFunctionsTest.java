@@ -182,6 +182,17 @@ public class QLFunctionsTest {
         assertEquals(List.of(intArg), functions.function("f", List.of(intArg)).args());
         assertEquals(List.of(arg(NUMERIC)),
                 functions.function("f", List.of(new QLFunctionArg(NUMERIC, false, Double.class))).args());
+
+        // a numeric argument of an unknown value type fits NumExp<?> without a cast
+        QLFunctionArg unknownNumArg = new QLFunctionArg(NUMERIC, false, null);
+        assertEquals(List.of(arg(NUMERIC)), functions.function("f", List.of(unknownNumArg)).args());
+
+        // ... and is cast to the value type if NumExp<?> is not an option
+        QLFunctions intOnly = registry()
+                .function(descriptor("f").arg(intArg).as(args -> args.get(0)))
+                .build();
+        assertEquals(List.of(intArg), intOnly.function("f", List.of(unknownNumArg)).args());
+        assertTrue(QLFunctionArg.isCoerced(intArg, unknownNumArg));
     }
 
     @Test

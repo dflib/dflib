@@ -30,8 +30,10 @@ public class OperatorPrecedenceTest {
     @Test
     public void negate_Literal() {
         assertEquals($intVal(-1), parseExp("- 1"));
+        assertEquals($intVal(-1), parseExp("-1"));
         assertEquals($intVal(1), parseExp("-(-1)"));
         assertEquals($doubleVal(-1.5), parseExp("- 1.5d"));
+        assertEquals($doubleVal(-1.5), parseExp("-1.5d"));
 
         // the negation of the min value does not fit the type, so it is widened
         assertEquals($longVal(2147483648L), parseExp("-(-2147483648)"));
@@ -39,6 +41,7 @@ public class OperatorPrecedenceTest {
 
         // a column is still negated as an expression
         assertEquals($int("a").negate(), parseExp("- int(a)"));
+        assertEquals($int("a").negate(), parseExp("-int(a)"));
     }
 
     @ParameterizedTest

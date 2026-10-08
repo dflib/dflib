@@ -3,6 +3,7 @@ package org.dflib.ql;
 import org.dflib.Condition;
 import org.dflib.DateExp;
 import org.dflib.DateTimeExp;
+import org.dflib.DecimalExp;
 import org.dflib.Exp;
 import org.dflib.NumExp;
 import org.dflib.OffsetDateTimeExp;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -28,8 +30,7 @@ import java.util.function.Function;
 /**
  * The type of a QL expression as seen by the function resolver: one of the typed expression kinds, or
  * {@link #OBJECT} for an expression whose type is not known statically (an untyped column reference, a "first"
- * or an "if" result, a constant of an unlisted Java type). A typed classifier knows the QL cast producing an
- * expression of its type, which the resolver applies to an untyped argument of a typed parameter.
+ * or an "if" result, a constant of an unlisted Java type).
  *
  * @since 2.0.0
  */
@@ -75,11 +76,27 @@ public enum TypeClassifier {
     }
 
     /**
+     * Expression types a function parameter may be declared as.
+     */
+    static final Set<Class<?>> EXP_PARAM_TYPES;
+    static {
+        EXP_PARAM_TYPES = new HashSet<>(EXP_INTERFACES.keySet());
+        EXP_PARAM_TYPES.add(Exp.class);
+        EXP_PARAM_TYPES.add(DecimalExp.class);
+    }
+
+    /**
      * Numeric value types that have a dedicated cast, so that a parameter declared with one of them (e.g.
      * {@code Exp<Integer>}) can be told apart from an argument of another one (e.g. {@code double(a)}).
      */
     private static final Set<Class<?>> NUMERIC_VALUE_TYPES = Set.of(
-            Integer.class, Long.class, Float.class, Double.class, BigInteger.class, BigDecimal.class);
+            Integer.class,
+            Long.class,
+            Float.class,
+            Double.class,
+            BigInteger.class,
+            BigDecimal.class
+    );
 
     private final Function<Exp<?>, Exp<?>> cast;
 
