@@ -23,7 +23,6 @@ import org.dflib.sort.IntComparator;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -405,47 +404,15 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     @Override
     public BooleanSeries in(Object... values) {
         int len = size();
-
-        if (values == null || values.length == 0) {
-            return new FalseSeries(len);
-        }
-
-        Set<Object> set = new HashSet<>();
-        for (Object o : values) {
-            // TODO: convert from other numeric types
-            if (o instanceof Double) {
-                set.add(o);
-            }
-        }
-
-        if (set.isEmpty()) {
-            return new FalseSeries(len);
-        }
-
-        return BoolBuilder.buildSeries(i -> set.contains(get(i)), len);
+        Set<Double> set = NumberSet.doubles(values);
+        return set.isEmpty() ? new FalseSeries(len) : BoolBuilder.buildSeries(i -> set.contains(get(i)), len);
     }
 
     @Override
     public BooleanSeries notIn(Object... values) {
         int len = size();
-
-        if (values == null || values.length == 0) {
-            return new TrueSeries(len);
-        }
-
-        Set<Object> set = new HashSet<>();
-        for (Object o : values) {
-            // TODO: convert from other numeric types
-            if (o instanceof Double) {
-                set.add(o);
-            }
-        }
-
-        if (set.isEmpty()) {
-            return new TrueSeries(len);
-        }
-
-        return BoolBuilder.buildSeries(i -> !set.contains(get(i)), len);
+        Set<Double> set = NumberSet.doubles(values);
+        return set.isEmpty() ? new TrueSeries(len) : BoolBuilder.buildSeries(i -> !set.contains(get(i)), len);
     }
 
     @Override
