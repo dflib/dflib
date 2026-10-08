@@ -13,6 +13,7 @@ import org.dflib.StrExp;
 import org.dflib.TimeExp;
 import org.dflib.exp.ScalarExp;
 import org.dflib.exp.str.StrScalarExp;
+import org.dflib.ql.QLFunctions;
 import org.dflib.ql.QLParserException;
 
 import java.lang.reflect.Array;
@@ -25,6 +26,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Actions of the QL grammar that build expressions. The grammar is untyped, so the operators check the types of
@@ -134,8 +136,21 @@ class ExpParserUtils {
      * anything thrown by the function body, are reported as a {@link QLParserException} positioned at the call.
      */
     static Exp<?> fn(Environment env, Token name, List<Exp<?>> args) {
+        return call(name, () -> env.qlFunctions().call(name.getText(), args));
+    }
+
+    /**
+     * Builds a call of a function passed as a {@code ?f} parameter, with the same error reporting as
+     * {@link #fn(Environment, Token, List)}. The parameter source has already checked that the value is a function
+     * object.
+     */
+    static Exp<?> udf(Token placeholder, Object function, List<Exp<?>> args) {
+        return call(placeholder, () -> QLFunctions.callUdf(function, args));
+    }
+
+    private static Exp<?> call(Token name, Supplier<Exp<?>> call) {
         try {
-            return env.qlFunctions().call(name.getText(), args);
+            return call.get();
         } catch (QLParserException e) {
             // a nested call already reported its own position
             throw e;

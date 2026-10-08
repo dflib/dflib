@@ -154,6 +154,7 @@ public class ColumnTest {
             ExpParser.FALSE,
             ExpParser.AS,
             ExpParser.PARAMETER,
+            ExpParser.UDF_PARAMETER,
             ExpParser.INTEGER_LITERAL,
             ExpParser.FLOAT_LITERAL,
             ExpParser.STRING_LITERAL,

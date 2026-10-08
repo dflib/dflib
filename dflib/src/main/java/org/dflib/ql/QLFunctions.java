@@ -33,6 +33,9 @@ import static org.dflib.ql.TypeClassifier.WILDCARD;
  */
 public class QLFunctions {
 
+    // the name a function passed as a parameter is reported under; must match the "UDF_PARAMETER" lexer rule
+    private static final String UDF_NAME = "?f";
+
     private final Map<String, SequencedSet<QLFunctionDescriptor>> functions;
 
     private QLFunctions(Map<String, SequencedSet<QLFunctionDescriptor>> functions) {
@@ -58,7 +61,40 @@ public class QLFunctions {
         List<QLFunctionArg> argTypes = args.stream().map(QLFunctionArg::of).toList();
         QLFunctionDescriptor descriptor = function(name, argTypes);
 
+        return call(descriptor, args, argTypes);
+    }
+
+    /**
+     * Builds a call of a function that is not in a registry, but is passed to the parser as a {@code ?f} parameter.
+     */
+    public static Exp<?> callUdf(Object function, List<Exp<?>> args) {
+
+        List<QLFunctionArg> argTypes = args.stream().map(QLFunctionArg::of).toList();
+        QLFunctionDescriptor descriptor = resolve(UDF_NAME, udfDescriptors(function), argTypes);
+
+        return call(descriptor, args, argTypes);
+    }
+
+    private static Exp<?> call(QLFunctionDescriptor descriptor, List<Exp<?>> args, List<QLFunctionArg> argTypes) {
         return descriptor.expProducer().apply(coerce(descriptor, args, argTypes));
+    }
+
+    /**
+     * Describes the overloads of a function object. A {@link QLFunction} contributes an overload per public
+     * {@code call} method, a {@code Udf} contributes a single overload.
+     */
+    private static List<QLFunctionDescriptor> udfDescriptors(Object function) {
+        return switch (function) {
+            case QLFunction f -> QLFunctionReflection.qlFunction(UDF_NAME, f);
+            case Udf0<?> f -> List.of(QLFunctionReflection.udf0(UDF_NAME, f));
+            case Udf1<?, ?> f -> List.of(QLFunctionReflection.udf1(UDF_NAME, f));
+            case Udf2<?, ?, ?> f -> List.of(QLFunctionReflection.udf2(UDF_NAME, f));
+            case Udf3<?, ?, ?, ?> f -> List.of(QLFunctionReflection.udf3(UDF_NAME, f));
+            case UdfN<?> f -> List.of(QLFunctionReflection.udfN(UDF_NAME, f));
+            case null, default -> throw new IllegalArgumentException(
+                    "Not a function: expected a Udf0..UdfN or a QLFunction object, got: "
+                            + (function != null ? function.getClass().getName() : "null"));
+        };
     }
 
     /**
@@ -90,6 +126,17 @@ public class QLFunctions {
         if (descriptors == null) {
             throw new IllegalArgumentException("Unknown function: " + name);
         }
+
+        return resolve(name, descriptors, args);
+    }
+
+    /**
+     * Picks the overload of a function best matching the argument types.
+     */
+    private static QLFunctionDescriptor resolve(
+            String name,
+            Collection<QLFunctionDescriptor> descriptors,
+            List<QLFunctionArg> args) {
 
         List<QLFunctionDescriptor> best = new ArrayList<>(2);
         MatchCost bestCost = null;
