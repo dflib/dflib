@@ -16,6 +16,9 @@ import java.util.stream.Stream;
  */
 class QLFunctions {
 
+    // the name a function passed as a parameter is reported under; must match the "UDF_PARAMETER" lexer rule
+    private static final String UDF_NAME = "?f";
+
     private final Map<String, List<QLFunctionDescriptor>> functions;
 
     QLFunctions(List<QLFunctionDescriptor> descriptors) {
@@ -62,6 +65,13 @@ class QLFunctions {
         }
 
         return descriptor.expProducer().apply(cast);
+    }
+
+    /**
+     * Builds a call of a function that is not in a registry, but is passed to the parser as a {@code ?f} parameter.
+     */
+    static Exp<?> callUdf(Object function, List<Exp<?>> args) {
+        return new QLFunctions(List.of(QLFunctionDescriptor.of(UDF_NAME, function))).call(UDF_NAME, args);
     }
 
     private static QLFunctionDescriptor byArity(List<QLFunctionDescriptor> overloads, int arity) {
