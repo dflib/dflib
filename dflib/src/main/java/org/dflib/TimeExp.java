@@ -167,7 +167,7 @@ public interface TimeExp extends Exp<LocalTime> {
     }
 
     default Condition between(LocalTime from, LocalTime to) {
-        return between(Exp.$val(from), Exp.$val(to));
+        return between(Exp.$timeVal(from), Exp.$timeVal(to));
     }
 
     /**
@@ -203,7 +203,7 @@ public interface TimeExp extends Exp<LocalTime> {
      * @since 2.0.0
      */
     default Condition notBetween(LocalTime from, LocalTime to) {
-        return notBetween(Exp.$val(from), Exp.$val(to));
+        return notBetween(Exp.$timeVal(from), Exp.$timeVal(to));
     }
 
     /**

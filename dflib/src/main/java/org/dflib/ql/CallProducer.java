@@ -61,8 +61,13 @@ class CallProducer implements Function<List<Exp<?>>, Exp<?>> {
         int declared = paramTypes.length;
         Object[] values = new Object[declared + (varArgs ? 1 : 0)];
 
+        // the resolver guarantees that an Exp argument is an instance of the declared parameter type (see
+        // TypeClassifier.EXP_PARAM_TYPES), and that a constant argument is a ScalarExp of the declared kind; only
+        // the constant value needs converting
         for (int i = 0; i < declared; i++) {
-            values[i] = Exp.class.isAssignableFrom(paramTypes[i]) ? expArg(i, args.get(i)) : constantArg(i, args.get(i));
+            values[i] = Exp.class.isAssignableFrom(paramTypes[i])
+                    ? args.get(i)
+                    : constantArg(i, args.get(i));
         }
 
         if (varArgs) {
@@ -84,16 +89,6 @@ class CallProducer implements Function<List<Exp<?>>, Exp<?>> {
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Function " + name + "() is not accessible: " + method, e);
         }
-    }
-
-    private Exp<?> expArg(int i, Exp<?> arg) {
-
-        if (paramTypes[i].isInstance(arg)) {
-            return arg;
-        }
-
-        throw new IllegalArgumentException(name + "() expects argument " + (i + 1) + " to be a "
-                + paramTypes[i].getSimpleName() + ", got: " + arg.toQL());
     }
 
     private Object constantArg(int i, Exp<?> arg) {
