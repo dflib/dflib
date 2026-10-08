@@ -11,10 +11,10 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class NumberTypeResolutionTest {
+public class NumberTypeEvaluatorTest {
 
     @Test
-    public void trustedSeries_skipsScan() {
+    public void trustedSeries_SkipsScan() {
         CountingSeries delegate = new CountingSeries(Series.of(new BigDecimal("1.5"), new BigDecimal("2.5")));
         Series<? extends Number> trusted = new ResolvedNominalSeries<>(BigDecimal.class, delegate, false);
 
@@ -25,7 +25,7 @@ public class NumberTypeResolutionTest {
     }
 
     @Test
-    public void unknownSeries_scans() {
+    public void unknownSeries_Scans() {
         CountingSeries delegate = new CountingSeries(Series.of(new BigDecimal("1.5"), new BigDecimal("2.5")));
 
         Series<?> resolved = NumberTypeEvaluator.eval(exp(delegate).eval(Series.ofVal(null, 2)), (f, e) -> e);
@@ -35,7 +35,7 @@ public class NumberTypeResolutionTest {
     }
 
     @Test
-    public void convertedSeries_returnsTrusted() {
+    public void convertedSeries_Trusted() {
         Series<?> resolved = NumberTypeEvaluator.eval(
                 exp(Series.of(1, new BigDecimal("2.5"))).eval(Series.ofVal(null, 2)),
                 (f, e) -> e);
@@ -44,7 +44,7 @@ public class NumberTypeResolutionTest {
     }
 
     @Test
-    public void scalar_parseableViaToString() {
+    public void scalar_ToString() {
         Object value = new Object() {
             @Override
             public String toString() {
@@ -58,7 +58,7 @@ public class NumberTypeResolutionTest {
     }
 
     @Test
-    public void series_parseableViaToString() {
+    public void series_ToString() {
         Object value = new Object() {
             @Override
             public String toString() {
@@ -76,7 +76,7 @@ public class NumberTypeResolutionTest {
     }
 
     @Test
-    public void series_unparseableViaToString() {
+    public void series_ToString_Unparseable() {
         Object value = new Object() {
             @Override
             public String toString() {

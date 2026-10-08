@@ -14,6 +14,7 @@ import org.dflib.exp.str.StrShiftExp;
 import org.dflib.exp.str.StrSplitExp;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Objects;
 
 /**
@@ -63,6 +64,15 @@ public interface StrExp extends Exp<String> {
         // Need to do an extra decimal conversion, so that we can properly cast any number format.
         // Long expressions must override this method to return "this"
         return castAsDecimal().castAsLong();
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    @Override
+    default NumExp<BigInteger> castAsBigint() {
+        // the Exp default would recurse forever, as it goes through "castAsStr()", which is "this" here
+        return castAsDecimal().castAsBigint();
     }
 
     @Override

@@ -1,19 +1,12 @@
 // Generated from org/dflib/ql/antlr4/Exp.g4 by ANTLR 4.13.2
 package org.dflib.ql.antlr4;
 
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.temporal.Temporal;
-import java.util.Arrays;
-import java.util.function.Function;
-import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import org.dflib.*;
 
 import static org.dflib.ql.antlr4.ExpParserUtils.*;
+import static org.dflib.ql.antlr4.Literals.*;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -93,105 +86,115 @@ public interface ExpListener extends ParseTreeListener {
 	 */
 	void exitExpression(ExpParser.ExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExpParser#numExp}.
+	 * Enter a parse tree produced by {@link ExpParser#orExp}.
 	 * @param ctx the parse tree
 	 */
-	void enterNumExp(ExpParser.NumExpContext ctx);
+	void enterOrExp(ExpParser.OrExpContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ExpParser#numExp}.
+	 * Exit a parse tree produced by {@link ExpParser#orExp}.
 	 * @param ctx the parse tree
 	 */
-	void exitNumExp(ExpParser.NumExpContext ctx);
+	void exitOrExp(ExpParser.OrExpContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExpParser#boolExp}.
+	 * Enter a parse tree produced by {@link ExpParser#andExp}.
 	 * @param ctx the parse tree
 	 */
-	void enterBoolExp(ExpParser.BoolExpContext ctx);
+	void enterAndExp(ExpParser.AndExpContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ExpParser#boolExp}.
+	 * Exit a parse tree produced by {@link ExpParser#andExp}.
 	 * @param ctx the parse tree
 	 */
-	void exitBoolExp(ExpParser.BoolExpContext ctx);
+	void exitAndExp(ExpParser.AndExpContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExpParser#strExp}.
+	 * Enter a parse tree produced by {@link ExpParser#notExp}.
 	 * @param ctx the parse tree
 	 */
-	void enterStrExp(ExpParser.StrExpContext ctx);
+	void enterNotExp(ExpParser.NotExpContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ExpParser#strExp}.
+	 * Exit a parse tree produced by {@link ExpParser#notExp}.
 	 * @param ctx the parse tree
 	 */
-	void exitStrExp(ExpParser.StrExpContext ctx);
+	void exitNotExp(ExpParser.NotExpContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExpParser#temporalExp}.
+	 * Enter a parse tree produced by {@link ExpParser#eqExp}.
 	 * @param ctx the parse tree
 	 */
-	void enterTemporalExp(ExpParser.TemporalExpContext ctx);
+	void enterEqExp(ExpParser.EqExpContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ExpParser#temporalExp}.
+	 * Exit a parse tree produced by {@link ExpParser#eqExp}.
 	 * @param ctx the parse tree
 	 */
-	void exitTemporalExp(ExpParser.TemporalExpContext ctx);
+	void exitEqExp(ExpParser.EqExpContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExpParser#timeExp}.
+	 * Enter a parse tree produced by {@link ExpParser#cmpExp}.
 	 * @param ctx the parse tree
 	 */
-	void enterTimeExp(ExpParser.TimeExpContext ctx);
+	void enterCmpExp(ExpParser.CmpExpContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ExpParser#timeExp}.
+	 * Exit a parse tree produced by {@link ExpParser#cmpExp}.
 	 * @param ctx the parse tree
 	 */
-	void exitTimeExp(ExpParser.TimeExpContext ctx);
+	void exitCmpExp(ExpParser.CmpExpContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExpParser#dateExp}.
+	 * Enter a parse tree produced by {@link ExpParser#addExp}.
 	 * @param ctx the parse tree
 	 */
-	void enterDateExp(ExpParser.DateExpContext ctx);
+	void enterAddExp(ExpParser.AddExpContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ExpParser#dateExp}.
+	 * Exit a parse tree produced by {@link ExpParser#addExp}.
 	 * @param ctx the parse tree
 	 */
-	void exitDateExp(ExpParser.DateExpContext ctx);
+	void exitAddExp(ExpParser.AddExpContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExpParser#dateTimeExp}.
+	 * Enter a parse tree produced by {@link ExpParser#mulExp}.
 	 * @param ctx the parse tree
 	 */
-	void enterDateTimeExp(ExpParser.DateTimeExpContext ctx);
+	void enterMulExp(ExpParser.MulExpContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ExpParser#dateTimeExp}.
+	 * Exit a parse tree produced by {@link ExpParser#mulExp}.
 	 * @param ctx the parse tree
 	 */
-	void exitDateTimeExp(ExpParser.DateTimeExpContext ctx);
+	void exitMulExp(ExpParser.MulExpContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExpParser#offsetDateTimeExp}.
+	 * Enter a parse tree produced by {@link ExpParser#unaryExp}.
 	 * @param ctx the parse tree
 	 */
-	void enterOffsetDateTimeExp(ExpParser.OffsetDateTimeExpContext ctx);
+	void enterUnaryExp(ExpParser.UnaryExpContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ExpParser#offsetDateTimeExp}.
+	 * Exit a parse tree produced by {@link ExpParser#unaryExp}.
 	 * @param ctx the parse tree
 	 */
-	void exitOffsetDateTimeExp(ExpParser.OffsetDateTimeExpContext ctx);
+	void exitUnaryExp(ExpParser.UnaryExpContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExpParser#genericExp}.
+	 * Enter a parse tree produced by {@link ExpParser#primary}.
 	 * @param ctx the parse tree
 	 */
-	void enterGenericExp(ExpParser.GenericExpContext ctx);
+	void enterPrimary(ExpParser.PrimaryContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ExpParser#genericExp}.
+	 * Exit a parse tree produced by {@link ExpParser#primary}.
 	 * @param ctx the parse tree
 	 */
-	void exitGenericExp(ExpParser.GenericExpContext ctx);
+	void exitPrimary(ExpParser.PrimaryContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExpParser#anyScalar}.
+	 * Enter a parse tree produced by {@link ExpParser#fnCall}.
 	 * @param ctx the parse tree
 	 */
-	void enterAnyScalar(ExpParser.AnyScalarContext ctx);
+	void enterFnCall(ExpParser.FnCallContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ExpParser#anyScalar}.
+	 * Exit a parse tree produced by {@link ExpParser#fnCall}.
 	 * @param ctx the parse tree
 	 */
-	void exitAnyScalar(ExpParser.AnyScalarContext ctx);
+	void exitFnCall(ExpParser.FnCallContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ExpParser#scalar}.
+	 * @param ctx the parse tree
+	 */
+	void enterScalar(ExpParser.ScalarContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpParser#scalar}.
+	 * @param ctx the parse tree
+	 */
+	void exitScalar(ExpParser.ScalarContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ExpParser#anyScalarList}.
 	 * @param ctx the parse tree
@@ -223,26 +226,6 @@ public interface ExpListener extends ParseTreeListener {
 	 */
 	void exitNumScalar(ExpParser.NumScalarContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExpParser#numScalarList}.
-	 * @param ctx the parse tree
-	 */
-	void enterNumScalarList(ExpParser.NumScalarListContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#numScalarList}.
-	 * @param ctx the parse tree
-	 */
-	void exitNumScalarList(ExpParser.NumScalarListContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#numScalarOrParamter}.
-	 * @param ctx the parse tree
-	 */
-	void enterNumScalarOrParamter(ExpParser.NumScalarOrParamterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#numScalarOrParamter}.
-	 * @param ctx the parse tree
-	 */
-	void exitNumScalarOrParamter(ExpParser.NumScalarOrParamterContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link ExpParser#integerScalar}.
 	 * @param ctx the parse tree
 	 */
@@ -263,46 +246,6 @@ public interface ExpListener extends ParseTreeListener {
 	 */
 	void exitFloatingPointScalar(ExpParser.FloatingPointScalarContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExpParser#timeStrScalar}.
-	 * @param ctx the parse tree
-	 */
-	void enterTimeStrScalar(ExpParser.TimeStrScalarContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#timeStrScalar}.
-	 * @param ctx the parse tree
-	 */
-	void exitTimeStrScalar(ExpParser.TimeStrScalarContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#dateStrScalar}.
-	 * @param ctx the parse tree
-	 */
-	void enterDateStrScalar(ExpParser.DateStrScalarContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#dateStrScalar}.
-	 * @param ctx the parse tree
-	 */
-	void exitDateStrScalar(ExpParser.DateStrScalarContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#dateTimeStrScalar}.
-	 * @param ctx the parse tree
-	 */
-	void enterDateTimeStrScalar(ExpParser.DateTimeStrScalarContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#dateTimeStrScalar}.
-	 * @param ctx the parse tree
-	 */
-	void exitDateTimeStrScalar(ExpParser.DateTimeStrScalarContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#offsetDateTimeStrScalar}.
-	 * @param ctx the parse tree
-	 */
-	void enterOffsetDateTimeStrScalar(ExpParser.OffsetDateTimeStrScalarContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#offsetDateTimeStrScalar}.
-	 * @param ctx the parse tree
-	 */
-	void exitOffsetDateTimeStrScalar(ExpParser.OffsetDateTimeStrScalarContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link ExpParser#strScalar}.
 	 * @param ctx the parse tree
 	 */
@@ -313,165 +256,15 @@ public interface ExpListener extends ParseTreeListener {
 	 */
 	void exitStrScalar(ExpParser.StrScalarContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExpParser#strScalarList}.
+	 * Enter a parse tree produced by {@link ExpParser#column}.
 	 * @param ctx the parse tree
 	 */
-	void enterStrScalarList(ExpParser.StrScalarListContext ctx);
+	void enterColumn(ExpParser.ColumnContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ExpParser#strScalarList}.
+	 * Exit a parse tree produced by {@link ExpParser#column}.
 	 * @param ctx the parse tree
 	 */
-	void exitStrScalarList(ExpParser.StrScalarListContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#strScalarOrParameter}.
-	 * @param ctx the parse tree
-	 */
-	void enterStrScalarOrParameter(ExpParser.StrScalarOrParameterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#strScalarOrParameter}.
-	 * @param ctx the parse tree
-	 */
-	void exitStrScalarOrParameter(ExpParser.StrScalarOrParameterContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#numColumn}.
-	 * @param ctx the parse tree
-	 */
-	void enterNumColumn(ExpParser.NumColumnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#numColumn}.
-	 * @param ctx the parse tree
-	 */
-	void exitNumColumn(ExpParser.NumColumnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#intColumn}.
-	 * @param ctx the parse tree
-	 */
-	void enterIntColumn(ExpParser.IntColumnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#intColumn}.
-	 * @param ctx the parse tree
-	 */
-	void exitIntColumn(ExpParser.IntColumnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#longColumn}.
-	 * @param ctx the parse tree
-	 */
-	void enterLongColumn(ExpParser.LongColumnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#longColumn}.
-	 * @param ctx the parse tree
-	 */
-	void exitLongColumn(ExpParser.LongColumnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#bigintColumn}.
-	 * @param ctx the parse tree
-	 */
-	void enterBigintColumn(ExpParser.BigintColumnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#bigintColumn}.
-	 * @param ctx the parse tree
-	 */
-	void exitBigintColumn(ExpParser.BigintColumnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#floatColumn}.
-	 * @param ctx the parse tree
-	 */
-	void enterFloatColumn(ExpParser.FloatColumnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#floatColumn}.
-	 * @param ctx the parse tree
-	 */
-	void exitFloatColumn(ExpParser.FloatColumnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#doubleColumn}.
-	 * @param ctx the parse tree
-	 */
-	void enterDoubleColumn(ExpParser.DoubleColumnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#doubleColumn}.
-	 * @param ctx the parse tree
-	 */
-	void exitDoubleColumn(ExpParser.DoubleColumnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#decimalColumn}.
-	 * @param ctx the parse tree
-	 */
-	void enterDecimalColumn(ExpParser.DecimalColumnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#decimalColumn}.
-	 * @param ctx the parse tree
-	 */
-	void exitDecimalColumn(ExpParser.DecimalColumnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#boolColumn}.
-	 * @param ctx the parse tree
-	 */
-	void enterBoolColumn(ExpParser.BoolColumnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#boolColumn}.
-	 * @param ctx the parse tree
-	 */
-	void exitBoolColumn(ExpParser.BoolColumnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#strColumn}.
-	 * @param ctx the parse tree
-	 */
-	void enterStrColumn(ExpParser.StrColumnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#strColumn}.
-	 * @param ctx the parse tree
-	 */
-	void exitStrColumn(ExpParser.StrColumnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#dateColumn}.
-	 * @param ctx the parse tree
-	 */
-	void enterDateColumn(ExpParser.DateColumnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#dateColumn}.
-	 * @param ctx the parse tree
-	 */
-	void exitDateColumn(ExpParser.DateColumnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#timeColumn}.
-	 * @param ctx the parse tree
-	 */
-	void enterTimeColumn(ExpParser.TimeColumnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#timeColumn}.
-	 * @param ctx the parse tree
-	 */
-	void exitTimeColumn(ExpParser.TimeColumnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#dateTimeColumn}.
-	 * @param ctx the parse tree
-	 */
-	void enterDateTimeColumn(ExpParser.DateTimeColumnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#dateTimeColumn}.
-	 * @param ctx the parse tree
-	 */
-	void exitDateTimeColumn(ExpParser.DateTimeColumnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#offsetDateTimeColumn}.
-	 * @param ctx the parse tree
-	 */
-	void enterOffsetDateTimeColumn(ExpParser.OffsetDateTimeColumnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#offsetDateTimeColumn}.
-	 * @param ctx the parse tree
-	 */
-	void exitOffsetDateTimeColumn(ExpParser.OffsetDateTimeColumnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#genericColumn}.
-	 * @param ctx the parse tree
-	 */
-	void enterGenericColumn(ExpParser.GenericColumnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#genericColumn}.
-	 * @param ctx the parse tree
-	 */
-	void exitGenericColumn(ExpParser.GenericColumnContext ctx);
+	void exitColumn(ExpParser.ColumnContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ExpParser#columnId}.
 	 * @param ctx the parse tree
@@ -493,456 +286,6 @@ public interface ExpListener extends ParseTreeListener {
 	 */
 	void exitIdentifier(ExpParser.IdentifierContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExpParser#relation}.
-	 * @param ctx the parse tree
-	 */
-	void enterRelation(ExpParser.RelationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#relation}.
-	 * @param ctx the parse tree
-	 */
-	void exitRelation(ExpParser.RelationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#numRelation}.
-	 * @param ctx the parse tree
-	 */
-	void enterNumRelation(ExpParser.NumRelationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#numRelation}.
-	 * @param ctx the parse tree
-	 */
-	void exitNumRelation(ExpParser.NumRelationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#strRelation}.
-	 * @param ctx the parse tree
-	 */
-	void enterStrRelation(ExpParser.StrRelationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#strRelation}.
-	 * @param ctx the parse tree
-	 */
-	void exitStrRelation(ExpParser.StrRelationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#timeRelation}.
-	 * @param ctx the parse tree
-	 */
-	void enterTimeRelation(ExpParser.TimeRelationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#timeRelation}.
-	 * @param ctx the parse tree
-	 */
-	void exitTimeRelation(ExpParser.TimeRelationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#dateRelation}.
-	 * @param ctx the parse tree
-	 */
-	void enterDateRelation(ExpParser.DateRelationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#dateRelation}.
-	 * @param ctx the parse tree
-	 */
-	void exitDateRelation(ExpParser.DateRelationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#dateTimeRelation}.
-	 * @param ctx the parse tree
-	 */
-	void enterDateTimeRelation(ExpParser.DateTimeRelationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#dateTimeRelation}.
-	 * @param ctx the parse tree
-	 */
-	void exitDateTimeRelation(ExpParser.DateTimeRelationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#offsetDateTimeRelation}.
-	 * @param ctx the parse tree
-	 */
-	void enterOffsetDateTimeRelation(ExpParser.OffsetDateTimeRelationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#offsetDateTimeRelation}.
-	 * @param ctx the parse tree
-	 */
-	void exitOffsetDateTimeRelation(ExpParser.OffsetDateTimeRelationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#genericRelation}.
-	 * @param ctx the parse tree
-	 */
-	void enterGenericRelation(ExpParser.GenericRelationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#genericRelation}.
-	 * @param ctx the parse tree
-	 */
-	void exitGenericRelation(ExpParser.GenericRelationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#numFn}.
-	 * @param ctx the parse tree
-	 */
-	void enterNumFn(ExpParser.NumFnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#numFn}.
-	 * @param ctx the parse tree
-	 */
-	void exitNumFn(ExpParser.NumFnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#timeFieldFn}.
-	 * @param ctx the parse tree
-	 */
-	void enterTimeFieldFn(ExpParser.TimeFieldFnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#timeFieldFn}.
-	 * @param ctx the parse tree
-	 */
-	void exitTimeFieldFn(ExpParser.TimeFieldFnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#dateFieldFn}.
-	 * @param ctx the parse tree
-	 */
-	void enterDateFieldFn(ExpParser.DateFieldFnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#dateFieldFn}.
-	 * @param ctx the parse tree
-	 */
-	void exitDateFieldFn(ExpParser.DateFieldFnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#dateTimeFieldFn}.
-	 * @param ctx the parse tree
-	 */
-	void enterDateTimeFieldFn(ExpParser.DateTimeFieldFnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#dateTimeFieldFn}.
-	 * @param ctx the parse tree
-	 */
-	void exitDateTimeFieldFn(ExpParser.DateTimeFieldFnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#offsetDateTimeFieldFn}.
-	 * @param ctx the parse tree
-	 */
-	void enterOffsetDateTimeFieldFn(ExpParser.OffsetDateTimeFieldFnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#offsetDateTimeFieldFn}.
-	 * @param ctx the parse tree
-	 */
-	void exitOffsetDateTimeFieldFn(ExpParser.OffsetDateTimeFieldFnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#boolFn}.
-	 * @param ctx the parse tree
-	 */
-	void enterBoolFn(ExpParser.BoolFnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#boolFn}.
-	 * @param ctx the parse tree
-	 */
-	void exitBoolFn(ExpParser.BoolFnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#timeFn}.
-	 * @param ctx the parse tree
-	 */
-	void enterTimeFn(ExpParser.TimeFnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#timeFn}.
-	 * @param ctx the parse tree
-	 */
-	void exitTimeFn(ExpParser.TimeFnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#dateFn}.
-	 * @param ctx the parse tree
-	 */
-	void enterDateFn(ExpParser.DateFnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#dateFn}.
-	 * @param ctx the parse tree
-	 */
-	void exitDateFn(ExpParser.DateFnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#dateTimeFn}.
-	 * @param ctx the parse tree
-	 */
-	void enterDateTimeFn(ExpParser.DateTimeFnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#dateTimeFn}.
-	 * @param ctx the parse tree
-	 */
-	void exitDateTimeFn(ExpParser.DateTimeFnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#offsetDateTimeFn}.
-	 * @param ctx the parse tree
-	 */
-	void enterOffsetDateTimeFn(ExpParser.OffsetDateTimeFnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#offsetDateTimeFn}.
-	 * @param ctx the parse tree
-	 */
-	void exitOffsetDateTimeFn(ExpParser.OffsetDateTimeFnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#strFn}.
-	 * @param ctx the parse tree
-	 */
-	void enterStrFn(ExpParser.StrFnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#strFn}.
-	 * @param ctx the parse tree
-	 */
-	void exitStrFn(ExpParser.StrFnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#castAsBool}.
-	 * @param ctx the parse tree
-	 */
-	void enterCastAsBool(ExpParser.CastAsBoolContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#castAsBool}.
-	 * @param ctx the parse tree
-	 */
-	void exitCastAsBool(ExpParser.CastAsBoolContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#castAsInt}.
-	 * @param ctx the parse tree
-	 */
-	void enterCastAsInt(ExpParser.CastAsIntContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#castAsInt}.
-	 * @param ctx the parse tree
-	 */
-	void exitCastAsInt(ExpParser.CastAsIntContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#castAsLong}.
-	 * @param ctx the parse tree
-	 */
-	void enterCastAsLong(ExpParser.CastAsLongContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#castAsLong}.
-	 * @param ctx the parse tree
-	 */
-	void exitCastAsLong(ExpParser.CastAsLongContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#castAsBigint}.
-	 * @param ctx the parse tree
-	 */
-	void enterCastAsBigint(ExpParser.CastAsBigintContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#castAsBigint}.
-	 * @param ctx the parse tree
-	 */
-	void exitCastAsBigint(ExpParser.CastAsBigintContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#castAsFloat}.
-	 * @param ctx the parse tree
-	 */
-	void enterCastAsFloat(ExpParser.CastAsFloatContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#castAsFloat}.
-	 * @param ctx the parse tree
-	 */
-	void exitCastAsFloat(ExpParser.CastAsFloatContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#castAsDouble}.
-	 * @param ctx the parse tree
-	 */
-	void enterCastAsDouble(ExpParser.CastAsDoubleContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#castAsDouble}.
-	 * @param ctx the parse tree
-	 */
-	void exitCastAsDouble(ExpParser.CastAsDoubleContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#castAsDecimal}.
-	 * @param ctx the parse tree
-	 */
-	void enterCastAsDecimal(ExpParser.CastAsDecimalContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#castAsDecimal}.
-	 * @param ctx the parse tree
-	 */
-	void exitCastAsDecimal(ExpParser.CastAsDecimalContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#castAsNumber}.
-	 * @param ctx the parse tree
-	 */
-	void enterCastAsNumber(ExpParser.CastAsNumberContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#castAsNumber}.
-	 * @param ctx the parse tree
-	 */
-	void exitCastAsNumber(ExpParser.CastAsNumberContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#castAsStr}.
-	 * @param ctx the parse tree
-	 */
-	void enterCastAsStr(ExpParser.CastAsStrContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#castAsStr}.
-	 * @param ctx the parse tree
-	 */
-	void exitCastAsStr(ExpParser.CastAsStrContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#castAsTime}.
-	 * @param ctx the parse tree
-	 */
-	void enterCastAsTime(ExpParser.CastAsTimeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#castAsTime}.
-	 * @param ctx the parse tree
-	 */
-	void exitCastAsTime(ExpParser.CastAsTimeContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#castAsDate}.
-	 * @param ctx the parse tree
-	 */
-	void enterCastAsDate(ExpParser.CastAsDateContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#castAsDate}.
-	 * @param ctx the parse tree
-	 */
-	void exitCastAsDate(ExpParser.CastAsDateContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#castAsDateTime}.
-	 * @param ctx the parse tree
-	 */
-	void enterCastAsDateTime(ExpParser.CastAsDateTimeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#castAsDateTime}.
-	 * @param ctx the parse tree
-	 */
-	void exitCastAsDateTime(ExpParser.CastAsDateTimeContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#castAsOffsetDateTime}.
-	 * @param ctx the parse tree
-	 */
-	void enterCastAsOffsetDateTime(ExpParser.CastAsOffsetDateTimeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#castAsOffsetDateTime}.
-	 * @param ctx the parse tree
-	 */
-	void exitCastAsOffsetDateTime(ExpParser.CastAsOffsetDateTimeContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#genericFn}.
-	 * @param ctx the parse tree
-	 */
-	void enterGenericFn(ExpParser.GenericFnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#genericFn}.
-	 * @param ctx the parse tree
-	 */
-	void exitGenericFn(ExpParser.GenericFnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#ifExp}.
-	 * @param ctx the parse tree
-	 */
-	void enterIfExp(ExpParser.IfExpContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#ifExp}.
-	 * @param ctx the parse tree
-	 */
-	void exitIfExp(ExpParser.IfExpContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#ifNull}.
-	 * @param ctx the parse tree
-	 */
-	void enterIfNull(ExpParser.IfNullContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#ifNull}.
-	 * @param ctx the parse tree
-	 */
-	void exitIfNull(ExpParser.IfNullContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#nullableExp}.
-	 * @param ctx the parse tree
-	 */
-	void enterNullableExp(ExpParser.NullableExpContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#nullableExp}.
-	 * @param ctx the parse tree
-	 */
-	void exitNullableExp(ExpParser.NullableExpContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#split}.
-	 * @param ctx the parse tree
-	 */
-	void enterSplit(ExpParser.SplitContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#split}.
-	 * @param ctx the parse tree
-	 */
-	void exitSplit(ExpParser.SplitContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#shift}.
-	 * @param ctx the parse tree
-	 */
-	void enterShift(ExpParser.ShiftContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#shift}.
-	 * @param ctx the parse tree
-	 */
-	void exitShift(ExpParser.ShiftContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#genericShiftExp}.
-	 * @param ctx the parse tree
-	 */
-	void enterGenericShiftExp(ExpParser.GenericShiftExpContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#genericShiftExp}.
-	 * @param ctx the parse tree
-	 */
-	void exitGenericShiftExp(ExpParser.GenericShiftExpContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#aggregateFn}.
-	 * @param ctx the parse tree
-	 */
-	void enterAggregateFn(ExpParser.AggregateFnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#aggregateFn}.
-	 * @param ctx the parse tree
-	 */
-	void exitAggregateFn(ExpParser.AggregateFnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#genericAgg}.
-	 * @param ctx the parse tree
-	 */
-	void enterGenericAgg(ExpParser.GenericAggContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#genericAgg}.
-	 * @param ctx the parse tree
-	 */
-	void exitGenericAgg(ExpParser.GenericAggContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#positionalAgg}.
-	 * @param ctx the parse tree
-	 */
-	void enterPositionalAgg(ExpParser.PositionalAggContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#positionalAgg}.
-	 * @param ctx the parse tree
-	 */
-	void exitPositionalAgg(ExpParser.PositionalAggContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#vConcat}.
-	 * @param ctx the parse tree
-	 */
-	void enterVConcat(ExpParser.VConcatContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#vConcat}.
-	 * @param ctx the parse tree
-	 */
-	void exitVConcat(ExpParser.VConcatContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#list}.
-	 * @param ctx the parse tree
-	 */
-	void enterList(ExpParser.ListContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#list}.
-	 * @param ctx the parse tree
-	 */
-	void exitList(ExpParser.ListContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#set}.
-	 * @param ctx the parse tree
-	 */
-	void enterSet(ExpParser.SetContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#set}.
-	 * @param ctx the parse tree
-	 */
-	void exitSet(ExpParser.SetContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link ExpParser#array}.
 	 * @param ctx the parse tree
 	 */
@@ -953,63 +296,13 @@ public interface ExpListener extends ParseTreeListener {
 	 */
 	void exitArray(ExpParser.ArrayContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExpParser#numAgg}.
+	 * Enter a parse tree produced by {@link ExpParser#keywordAsIdentifier}.
 	 * @param ctx the parse tree
 	 */
-	void enterNumAgg(ExpParser.NumAggContext ctx);
+	void enterKeywordAsIdentifier(ExpParser.KeywordAsIdentifierContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ExpParser#numAgg}.
+	 * Exit a parse tree produced by {@link ExpParser#keywordAsIdentifier}.
 	 * @param ctx the parse tree
 	 */
-	void exitNumAgg(ExpParser.NumAggContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#timeAgg}.
-	 * @param ctx the parse tree
-	 */
-	void enterTimeAgg(ExpParser.TimeAggContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#timeAgg}.
-	 * @param ctx the parse tree
-	 */
-	void exitTimeAgg(ExpParser.TimeAggContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#dateAgg}.
-	 * @param ctx the parse tree
-	 */
-	void enterDateAgg(ExpParser.DateAggContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#dateAgg}.
-	 * @param ctx the parse tree
-	 */
-	void exitDateAgg(ExpParser.DateAggContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#dateTimeAgg}.
-	 * @param ctx the parse tree
-	 */
-	void enterDateTimeAgg(ExpParser.DateTimeAggContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#dateTimeAgg}.
-	 * @param ctx the parse tree
-	 */
-	void exitDateTimeAgg(ExpParser.DateTimeAggContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#strAgg}.
-	 * @param ctx the parse tree
-	 */
-	void enterStrAgg(ExpParser.StrAggContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#strAgg}.
-	 * @param ctx the parse tree
-	 */
-	void exitStrAgg(ExpParser.StrAggContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpParser#fnName}.
-	 * @param ctx the parse tree
-	 */
-	void enterFnName(ExpParser.FnNameContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpParser#fnName}.
-	 * @param ctx the parse tree
-	 */
-	void exitFnName(ExpParser.FnNameContext ctx);
+	void exitKeywordAsIdentifier(ExpParser.KeywordAsIdentifierContext ctx);
 }

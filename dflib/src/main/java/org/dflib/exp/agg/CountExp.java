@@ -6,6 +6,7 @@ import org.dflib.NumExp;
 import org.dflib.Series;
 import org.dflib.exp.Exp0;
 
+import java.util.Objects;
 
 public class CountExp extends Exp0<Integer> implements NumExp<Integer> {
 
@@ -40,5 +41,15 @@ public class CountExp extends Exp0<Integer> implements NumExp<Integer> {
     @Override
     public Integer reduce(Series<?> s) {
         return filter != null ? filter.eval(s).countTrue() : s.size();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o) && Objects.equals(filter, ((CountExp) o).filter);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), filter);
     }
 }
