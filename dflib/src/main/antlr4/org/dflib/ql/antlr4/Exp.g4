@@ -136,11 +136,16 @@ primary returns [Exp<?> exp]
     ;
 
 /**
- * A call of a function from the QL function registry, resolved by name and argument types.
+ * A call of a function.
  */
-fnCall returns [Exp<?> exp]
+fnCall returns [Exp<?> exp] locals [Object udf]
     : IDENTIFIER '(' (args+=expression (',' args+=expression)*)? ')' {
         $exp = fn(env, $IDENTIFIER, $args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
+    }
+    // the function parameter is consumed before the arguments are parsed, as they may contain parameters themselves
+    | UDF_PARAMETER { $udf = paramSource.nextFunction($UDF_PARAMETER); }
+      '(' (args+=expression (',' args+=expression)*)? ')' {
+        $exp = udf($UDF_PARAMETER, $udf, $args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
     }
     ;
 
@@ -403,6 +408,9 @@ AS: 'as';
 
 //@ doc:inline
 PARAMETER: '?';
+
+//@ doc:inline
+UDF_PARAMETER: '?f';
 
 /**
  * Matches an integer literal in decimal, hexadecimal, octal, or binary format.
