@@ -50,10 +50,10 @@ public class ShiftTest {
 
     @Test
     public void shift_IncompatibleFiller_throws() {
-        assertEquals("1:0 shift() filler of type STRING is not compatible with a NUMERIC expression: `int(1)`",
+        assertEquals("Function 'shift' at 1:0: shift() filler of type STRING is not compatible with a NUMERIC expression: `int(1)`",
                 assertThrows(QLParserException.class, () -> parseExp("shift(int(1), 2, 'replace')")).getMessage());
 
-        assertEquals("1:0 shift() filler of type NUMERIC is not compatible with a STRING expression: a",
+        assertEquals("Function 'shift' at 1:0: shift() filler of type NUMERIC is not compatible with a STRING expression: a",
                 assertThrows(QLParserException.class, () -> parseExp("shift(str(a), 1, 1)")).getMessage());
     }
 
@@ -75,10 +75,10 @@ public class ShiftTest {
 
     @Test
     public void shift_NumFiller_throws() {
-        assertEquals("1:0 shift() filler 1.5 can not be converted to the Integer type of the expression: a",
+        assertEquals("Function 'shift' at 1:0: shift() filler 1.5 can not be converted to the Integer type of the expression: a",
                 assertThrows(QLParserException.class, () -> parseExp("shift(int(a), 1, 1.5)")).getMessage());
 
-        assertEquals("1:0 shift() filler 3000000000 can not be converted to the Integer type of the expression: a",
+        assertEquals("Function 'shift' at 1:0: shift() filler 3000000000 can not be converted to the Integer type of the expression: a",
                 assertThrows(QLParserException.class, () -> parseExp("shift(int(a), 1, 3000000000)")).getMessage());
     }
 

@@ -62,17 +62,17 @@ public class ParseErrorReportingTest {
                 arguments("int(1) not in ('a')",
                         "Operator 'in' at 1:11 expects a list of numeric values for a numeric expression, got: a"),
                 arguments("date(1) in (1)",
-                        "Operator 'in' at 1:8 expects a list of string values for a date expression, got: 1")
+                        "Operator 'in' at 1:8 expects a list of date values or ISO-8601 strings for a date expression, got: 1")
         );
     }
 
     @Test
     public void semanticError_UnknownFunction() {
         QLParserException e = assertThrows(QLParserException.class, () -> Exp.parseExp("foo(1, 2)"));
-        assertEquals("1:0 Unknown function: foo", e.getMessage());
+        assertEquals("Function 'foo' at 1:0: Unknown function: foo", e.getMessage());
 
         QLParserException nested = assertThrows(QLParserException.class, () -> Exp.parseExp("1 + foo(1, 2)"));
-        assertEquals("1:4 Unknown function: foo", nested.getMessage());
+        assertEquals("Function 'foo' at 1:4: Unknown function: foo", nested.getMessage());
     }
 
     @Test
@@ -80,24 +80,24 @@ public class ParseErrorReportingTest {
         String substrOverloads = "Available: substr(OBJECT, const NUMERIC), substr(OBJECT, const NUMERIC, const NUMERIC)";
 
         QLParserException e = assertThrows(QLParserException.class, () -> Exp.parseExp("substr('example')"));
-        assertEquals("1:0 No overload of substr matches substr(const STRING). " + substrOverloads, e.getMessage());
+        assertEquals("Function 'substr' at 1:0: No overload of substr matches substr(const STRING). " + substrOverloads, e.getMessage());
 
         QLParserException nested = assertThrows(QLParserException.class, () -> Exp.parseExp("len(substr('a'))"));
-        assertEquals("1:4 No overload of substr matches substr(const STRING). " + substrOverloads, nested.getMessage());
+        assertEquals("Function 'substr' at 1:4: No overload of substr matches substr(const STRING). " + substrOverloads, nested.getMessage());
 
         QLParserException nonConst = assertThrows(QLParserException.class, () -> Exp.parseExp("substr(a, int(b))"));
-        assertEquals("1:0 No overload of substr matches substr(OBJECT, NUMERIC<Integer>). " + substrOverloads,
+        assertEquals("Function 'substr' at 1:0: No overload of substr matches substr(OBJECT, NUMERIC<Integer>). " + substrOverloads,
                 nonConst.getMessage());
     }
 
     @Test
     public void semanticError_Producer() {
         QLParserException e = assertThrows(QLParserException.class, () -> Exp.parseExp("year(str(a))"));
-        assertEquals("1:0 No overload of year matches year(STRING)."
+        assertEquals("Function 'year' at 1:0: No overload of year matches year(STRING)."
                 + " Available: year(DATE), year(DATETIME), year(OFFSETDATETIME)", e.getMessage());
 
         QLParserException scale = assertThrows(QLParserException.class, () -> Exp.parseExp("scale(int(a), 1.5)"));
-        assertEquals("1:0 Not an integer constant: 1.5", scale.getMessage());
+        assertEquals("Function 'scale' at 1:0: Not an integer constant: 1.5", scale.getMessage());
     }
 
     @Test
