@@ -1,7 +1,5 @@
 package org.dflib;
 
-import org.dflib.ql.QLParserInvoker;
-import org.dflib.ql.antlr4.ExpParser;
 import org.dflib.sort.IntComparator;
 
 /**
@@ -17,7 +15,7 @@ public interface Sorter {
      * @since 2.0.0
      */
     static Sorter parseSorter(String ql, Object... params) {
-        return QLParserInvoker.parse(ql, ExpParser::sorterRoot, params).sorter;
+        return Environment.commonEnv().qlContext().parseSorter(ql, params);
     }
 
     /**
@@ -28,7 +26,7 @@ public interface Sorter {
      * @since 2.0.0
      */
     static Sorter[] parseSorters(String ql, Object... params) {
-        return QLParserInvoker.parse(ql, ExpParser::sorterArray, params).sorters;
+        return Environment.commonEnv().qlContext().parseSorters(ql, params);
     }
 
     IntComparator eval(DataFrame df);
