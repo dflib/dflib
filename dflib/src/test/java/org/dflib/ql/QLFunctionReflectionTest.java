@@ -205,7 +205,7 @@ public class QLFunctionReflectionTest extends BaseQLFunctionsTest {
     @Test
     public void narrowExpParam_UnknownValueType_ParseAndEval() {
 
-        Environment.setQLFunctions(QLFunctions.builder().function("dec", new DecimalFunction()).build());
+        Environment.setQLContext(QLContext.builder().function("dec", new DecimalFunction()).build());
 
         Exp<?> exp = parseExp("dec(castAsNumber(a))");
         assertEquals($col("a").castAsNumber().castAsDecimal().abs(), exp);
@@ -361,7 +361,7 @@ public class QLFunctionReflectionTest extends BaseQLFunctionsTest {
     @Test
     public void bodyException_Unwrapped() {
 
-        Environment.setQLFunctions(QLFunctions.builder().function("boom", new BoomFunction()).build());
+        Environment.setQLContext(QLContext.builder().function("boom", new BoomFunction()).build());
 
         QLParserException e = assertThrows(QLParserException.class, () -> parseExp("1 + boom(int(a))"));
         assertEquals("Function 'boom' at 1:4: boom() does not like " + $int("a").toQL(), e.getMessage());
@@ -370,7 +370,7 @@ public class QLFunctionReflectionTest extends BaseQLFunctionsTest {
     @Test
     public void bodyException_RuntimeException() {
 
-        Environment.setQLFunctions(QLFunctions.builder()
+        Environment.setQLContext(QLContext.builder()
                 .function("state", new StateFunction())
                 .function("npe", new NpeFunction())
                 .function("regex", new RegexFunction())
@@ -391,7 +391,7 @@ public class QLFunctionReflectionTest extends BaseQLFunctionsTest {
     @Test
     public void bodyException_Checked() {
 
-        Environment.setQLFunctions(QLFunctions.builder().function("io", new CheckedFunction()).build());
+        Environment.setQLContext(QLContext.builder().function("io", new CheckedFunction()).build());
 
         assertEquals("Function 'io' at 1:4: Error calling io(): disk is full",
                 assertThrows(QLParserException.class, () -> parseExp("1 + io(int(a))")).getMessage());

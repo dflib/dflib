@@ -4,6 +4,7 @@ package org.dflib.ql.antlr4;
 import java.util.stream.Collectors;
 
 import org.dflib.*;
+import org.dflib.ql.QLContext;
 
 import static org.dflib.ql.antlr4.ExpParserUtils.*;
 import static org.dflib.ql.antlr4.Literals.*;
@@ -123,14 +124,14 @@ public class ExpParser extends Parser {
 
 	// global state of the parser
 	PositionalParamSource paramSource;
-	Environment env = Environment.commonEnv();
+	QLContext context;
 
 	public void setParameters(Object... params) {
 	    this.paramSource = new PositionalParamSource(params);
 	}
 
-	public void setEnv(Environment env) {
-	    this.env = env;
+	public void setContext(QLContext context) {
+	    this.context = context;
 	}
 
 	public ExpParser(TokenStream input) {
@@ -1544,7 +1545,7 @@ public class ExpParser extends Parser {
 				setState(242);
 				match(RP);
 
-				        ((FnCallContext)_localctx).exp =  fn(env, ((FnCallContext)_localctx).IDENTIFIER, ((FnCallContext)_localctx).args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
+				        ((FnCallContext)_localctx).exp =  fn(context, ((FnCallContext)_localctx).IDENTIFIER, ((FnCallContext)_localctx).args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
 				    
 				}
 				break;

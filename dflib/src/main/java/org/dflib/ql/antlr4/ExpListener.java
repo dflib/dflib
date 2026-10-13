@@ -4,6 +4,7 @@ package org.dflib.ql.antlr4;
 import java.util.stream.Collectors;
 
 import org.dflib.*;
+import org.dflib.ql.QLContext;
 
 import static org.dflib.ql.antlr4.ExpParserUtils.*;
 import static org.dflib.ql.antlr4.Literals.*;

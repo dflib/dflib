@@ -22,7 +22,7 @@ public class CustomFunctionTest extends BaseQLFunctionsTest {
     @Test
     public void customFunction() {
 
-        Environment.setQLFunctions(QLFunctions.builder()
+        Environment.setQLContext(QLContext.builder()
                 .function("twice", new TwiceFunction())
                 .build());
 
@@ -35,7 +35,7 @@ public class CustomFunctionTest extends BaseQLFunctionsTest {
     @Test
     public void customFunction_Lambda() {
 
-        Environment.setQLFunctions(QLFunctions.builder()
+        Environment.setQLContext(QLContext.builder()
                 .function("clean", Udf1.of(e -> e.castAsStr().trim().lower()))
                 .function("pair", Udf2.of((a, b) -> Exp.concat(a, "-", b)))
                 .build());
@@ -59,26 +59,28 @@ public class CustomFunctionTest extends BaseQLFunctionsTest {
     }
 
     @Test
-    public void customFunction_BuiltInCollision() {
+    public void customFunction_BuiltInOverride() {
 
-        // reported at build time, as that is when the built-ins are added
+        // the same shape as the built-in "trim(OBJECT)" replaces it
+        QLFunctions functions = QLFunctions.builder().function("trim", new TrimFunction()).build();
+        assertEquals(new TrimFunction().call($col("a")), functions.call("trim", List.of($col("a"))));
+    }
+
+    @Test
+    public void customFunction_DuplicateInBuilder() {
+
         QLFunctions.Builder builder = QLFunctions.builder().function("trim", new TrimFunction());
 
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, builder::build);
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                () -> builder.function("trim", new TrimFunction()));
         assertEquals("Function trim(OBJECT) already defined", e.getMessage());
-
-        assertEquals(new TrimFunction().call($col("a")), QLFunctions.builder()
-                .noDefaultFunctions()
-                .function("trim", new TrimFunction())
-                .build()
-                .call("trim", List.of($col("a"))));
     }
 
     @Test
     public void customOverload_MoreSpecific() {
 
         // the built-in "trim" is declared over "Exp<?>", so a "StrExp" overload is a better match for a string
-        Environment.setQLFunctions(QLFunctions.builder()
+        Environment.setQLContext(QLContext.builder()
                 .function("trim", new StrTrimFunction())
                 .build());
 
@@ -91,7 +93,7 @@ public class CustomFunctionTest extends BaseQLFunctionsTest {
 
         // "vConcat(str(a), ',')" matches the built-in "vConcat(Exp<?>, const String)" and the custom
         // "vConcat(StrExp, const Object)" with one wildcard each, and the built-in is registered first
-        Environment.setQLFunctions(QLFunctions.builder()
+        Environment.setQLContext(QLContext.builder()
                 .function("vConcat", new StrVConcatFunction())
                 .build());
 

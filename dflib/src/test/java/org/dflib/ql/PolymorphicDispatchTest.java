@@ -32,10 +32,10 @@ public class PolymorphicDispatchTest extends BaseQLFunctionsTest {
         identity(builder, "pmin");
         identity(builder, "plusLike", new QLFunctionArg(NUMERIC, true));
 
-        Environment.setQLFunctions(builder
+        Environment.setQLContext(new QLContext(builder
                 .function(descriptor("foo").arg(OBJECT).as(args -> args.get(0).castAsInt()))
                 .function(descriptor("anyLike").arg(OBJECT).as(args -> args.get(0).first()))
-                .build());
+                .build()));
     }
 
     @Test
