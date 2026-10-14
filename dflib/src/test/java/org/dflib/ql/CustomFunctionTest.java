@@ -59,11 +59,23 @@ public class CustomFunctionTest extends BaseQLFunctionsTest {
     }
 
     @Test
-    public void customFunction_BuiltInOverride() {
+    public void customFunction_BuiltInCollision() {
 
-        // the same shape as the built-in "trim(OBJECT)" replaces it
-        QLFunctions functions = QLFunctions.builder().function("trim", new TrimFunction()).build();
-        assertEquals(new TrimFunction().call($col("a")), functions.call("trim", List.of($col("a"))));
+        // reported at build time, as that is when the built-ins are added
+        QLFunctions.Builder builder = QLFunctions.builder().function("trim", new TrimFunction());
+
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, builder::build);
+        assertEquals("Function trim(OBJECT) already defined, use override(..) to replace it", e.getMessage());
+    }
+
+    @Test
+    public void customFunction_Override() {
+
+        Environment.setQLContext(QLContext.builder()
+                .override("trim", new StrTrimFunction())
+                .build());
+
+        assertEquals(new StrTrimFunction().call($str("a")), parseExp("trim(str(a))"));
     }
 
     @Test

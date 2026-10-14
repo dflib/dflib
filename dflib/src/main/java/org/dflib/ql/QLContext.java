@@ -45,9 +45,9 @@ public final class QLContext {
 
     /**
      * Starts a builder of a context layered on top of this context. The new context will have all the functions of
-     * this context, plus the functions added to the builder. A function added with the same name and argument types
-     * as a function of this context replaces it. The new context is a snapshot, and is not affected by the
-     * changes to this context made later (e.g. if this is the {@link org.dflib.Environment} common context).
+     * this context, plus the functions added to the builder, minus the functions replaced via
+     * {@link Builder#override(String, Udf1)} and similar methods. The new context is a snapshot, and is not affected
+     * by the changes to this context made later (e.g. if this is the {@link org.dflib.Environment} common context).
      */
     public Builder extend() {
         return new Builder(functions.extend());
@@ -115,6 +115,12 @@ public final class QLContext {
      * A builder of a {@link QLContext}. A function is registered as a {@link QLFunction} class, or as a
      * {@code Udf0..UdfN} object; a lambda needs a type to be reflected on, so it is registered via
      * {@code Udf1.of(e -> ..)}, {@code Udf2.of(..)}, etc.
+     *
+     * <p>An inherited function, i.e. a built-in one or a function of the context being extended, can be given more
+     * overloads via {@code function(..)}, while registering an overload with the same argument types as an
+     * inherited one is an error. To change what an inherited function does, it is replaced as a whole via
+     * {@code override(..)}. Note that an expression parsed in a context with overrides may not be equal to the
+     * expression parsed from the same String elsewhere, e.g. from its {@link Exp#toQL()}.
      */
     public static final class Builder {
 
@@ -154,6 +160,64 @@ public final class QLContext {
          */
         public Builder function(String name, QLFunction function) {
             functions.function(name, function);
+            return this;
+        }
+
+        /**
+         * Registers a function replacing all the inherited overloads of the function with the same name. More
+         * overloads can be added to the replacement via other {@code override(..)} or {@code function(..)} calls.
+         *
+         * <p>Note that the functions overridden in the common context (see
+         * {@link org.dflib.Environment#setQLContext(QLContext)}) change the meaning of every QL String parsed without
+         * an explicit context, including in third-party code.
+         *
+         * @throws IllegalArgumentException on build, if there's no inherited function with this name
+         */
+        public Builder override(String name, Udf0<?> function) {
+            functions.override(name, function);
+            return this;
+        }
+
+        /**
+         * @see #override(String, Udf0)
+         */
+        public Builder override(String name, Udf1<?, ?> function) {
+            functions.override(name, function);
+            return this;
+        }
+
+        /**
+         * @see #override(String, Udf0)
+         */
+        public Builder override(String name, Udf2<?, ?, ?> function) {
+            functions.override(name, function);
+            return this;
+        }
+
+        /**
+         * @see #override(String, Udf0)
+         */
+        public Builder override(String name, Udf3<?, ?, ?, ?> function) {
+            functions.override(name, function);
+            return this;
+        }
+
+        /**
+         * @see #override(String, Udf0)
+         */
+        public Builder override(String name, UdfN<?> function) {
+            functions.override(name, function);
+            return this;
+        }
+
+        /**
+         * Replaces all the inherited overloads of the function with the same name with every public {@code call}
+         * overload of a {@link QLFunction} class.
+         *
+         * @see #override(String, Udf0)
+         */
+        public Builder override(String name, QLFunction function) {
+            functions.override(name, function);
             return this;
         }
 
