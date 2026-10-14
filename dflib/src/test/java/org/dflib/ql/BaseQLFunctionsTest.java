@@ -6,15 +6,15 @@ import org.junit.jupiter.api.BeforeEach;
 
 public abstract class BaseQLFunctionsTest {
 
-    private QLFunctions originalFunctions;
+    private QLContext originalContext;
 
     @BeforeEach
-    public void saveFunctions() {
-        this.originalFunctions = Environment.commonEnv().qlFunctions();
+    public void saveContext() {
+        this.originalContext = Environment.commonEnv().qlContext();
     }
 
     @AfterEach
-    public void restoreFunctions() {
-        Environment.setQLFunctions(originalFunctions);
+    public void restoreContext() {
+        Environment.setQLContext(originalContext);
     }
 }

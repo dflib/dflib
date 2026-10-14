@@ -4,6 +4,7 @@ grammar Exp;
 import java.util.stream.Collectors;
 
 import org.dflib.*;
+import org.dflib.ql.QLContext;
 
 import static org.dflib.ql.antlr4.ExpParserUtils.*;
 import static org.dflib.ql.antlr4.Literals.*;
@@ -12,14 +13,14 @@ import static org.dflib.ql.antlr4.Literals.*;
 @members {
 // global state of the parser
 PositionalParamSource paramSource;
-Environment env = Environment.commonEnv();
+QLContext context;
 
 public void setParameters(Object... params) {
     this.paramSource = new PositionalParamSource(params);
 }
 
-public void setEnv(Environment env) {
-    this.env = env;
+public void setContext(QLContext context) {
+    this.context = context;
 }
 }
 
@@ -140,7 +141,7 @@ primary returns [Exp<?> exp]
  */
 fnCall returns [Exp<?> exp] locals [Object udf]
     : IDENTIFIER '(' (args+=expression (',' args+=expression)*)? ')' {
-        $exp = fn(env, $IDENTIFIER, $args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
+        $exp = fn(context, $IDENTIFIER, $args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
     }
     // the function parameter is consumed before the arguments are parsed, as they may contain parameters themselves
     | UDF_PARAMETER { $udf = paramSource.nextFunction($UDF_PARAMETER); }

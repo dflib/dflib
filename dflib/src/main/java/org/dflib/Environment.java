@@ -3,7 +3,7 @@ package org.dflib;
 import org.dflib.f.CachingSupplier;
 import org.dflib.print.InlineClassExposingPrinter;
 import org.dflib.print.Printer;
-import org.dflib.ql.QLFunctions;
+import org.dflib.ql.QLContext;
 
 import java.net.http.HttpClient;
 import java.util.Objects;
@@ -28,7 +28,7 @@ public class Environment {
                 5000,
                 new InlineClassExposingPrinter(),
                 createDefaultHttpClientSupplier(),
-                createDefaultQLFunctionsSupplier()
+                createDefaultQLContextSupplier()
         );
 
         commonEnv = new AtomicReference<>(defaultEnv);
@@ -42,8 +42,8 @@ public class Environment {
     // Note that HttpClient doesn't require an explicit shutdown.
     private final Supplier<HttpClient> lazyHttpClient;
 
-    // Building the default QL function registry is expensive and is not needed unless QL is used. So create it lazily.
-    private final Supplier<QLFunctions> lazyQLFunctions;
+    // Building the default QL context is expensive and is not needed unless QL is used. So create it lazily.
+    private final Supplier<QLContext> lazyQLContext;
 
     public static Environment commonEnv() {
         return commonEnv.get();
@@ -57,8 +57,8 @@ public class Environment {
         return new CachingSupplier<>(s);
     }
 
-    private static Supplier<QLFunctions> createDefaultQLFunctionsSupplier() {
-        return new CachingSupplier<>(() -> QLFunctions.builder().build());
+    private static Supplier<QLContext> createDefaultQLContextSupplier() {
+        return new CachingSupplier<>(() -> QLContext.builder().build());
     }
 
     /**
@@ -72,7 +72,7 @@ public class Environment {
                 old.parallelExecThreshold,
                 old.printer,
                 old.lazyHttpClient,
-                old.lazyQLFunctions));
+                old.lazyQLContext));
     }
 
     /**
@@ -84,7 +84,7 @@ public class Environment {
                 parallelExecThreshold,
                 old.printer,
                 old.lazyHttpClient,
-                old.lazyQLFunctions));
+                old.lazyQLContext));
     }
 
     /**
@@ -96,7 +96,7 @@ public class Environment {
                 old.parallelExecThreshold,
                 printer,
                 old.lazyHttpClient,
-                old.lazyQLFunctions));
+                old.lazyQLContext));
     }
 
     /**
@@ -110,7 +110,7 @@ public class Environment {
                 old.parallelExecThreshold,
                 old.printer,
                 supplier,
-                old.lazyQLFunctions));
+                old.lazyQLContext));
     }
 
     /**
@@ -122,19 +122,21 @@ public class Environment {
                 old.parallelExecThreshold,
                 old.printer,
                 new CachingSupplier<>(clientSupplier),
-                old.lazyQLFunctions));
+                old.lazyQLContext));
     }
 
     /**
-     * Sets the registry of functions recognized by the QL parser, e.g.
-     * {@code setQLFunctions(QLFunctions.builder().function("myFn", Udf1.of(e -> e.castAsStr().trim())).build())}.
+     * Sets the common context of the QL parser used by the QL String methods of DataFrame, Series, etc., e.g.
+     * {@code setQLContext(QLContext.builder().function("myFn", Udf1.of(e -> e.castAsStr().trim())).build())}.
+     * Passing null resets the context to the default one. To use a context for specific calls only, see
+     * {@link QLContext#parseExps(String, Object...)} and other parsing methods of the context.
      *
      * @since 2.0.0
      */
-    public static void setQLFunctions(QLFunctions qlFunctions) {
-        Supplier<QLFunctions> supplier = qlFunctions != null
-                ? () -> qlFunctions
-                : createDefaultQLFunctionsSupplier();
+    public static void setQLContext(QLContext qlContext) {
+        Supplier<QLContext> supplier = qlContext != null
+                ? () -> qlContext
+                : createDefaultQLContextSupplier();
 
         resetEnv(old -> new Environment(
                 old.threadPool,
@@ -158,12 +160,12 @@ public class Environment {
             int parallelExecThreshold,
             Printer printer,
             Supplier<HttpClient> lazyHttpClient,
-            Supplier<QLFunctions> lazyQLFunctions) {
+            Supplier<QLContext> lazyQLContext) {
         this.threadPool = threadPool;
         this.parallelExecThreshold = parallelExecThreshold;
         this.printer = printer;
         this.lazyHttpClient = lazyHttpClient;
-        this.lazyQLFunctions = lazyQLFunctions;
+        this.lazyQLContext = lazyQLContext;
     }
 
     public ExecutorService threadPool() {
@@ -191,12 +193,12 @@ public class Environment {
     }
 
     /**
-     * Returns a lazily-created registry of functions recognized by the QL parser
+     * Returns a lazily-created common context of the QL parser
      *
      * @since 2.0.0
      */
-    public QLFunctions qlFunctions() {
-        return lazyQLFunctions.get();
+    public QLContext qlContext() {
+        return lazyQLContext.get();
     }
 
     // only used by tests

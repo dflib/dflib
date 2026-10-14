@@ -102,9 +102,9 @@ public class ParseErrorReportingTest {
 
     @Test
     public void semanticError_WrongReturnType() {
-        QLFunctions original = Environment.commonEnv().qlFunctions();
+        QLContext original = Environment.commonEnv().qlContext();
         try {
-            Environment.setQLFunctions(identity(QLFunctions.builder(), "f").build());
+            Environment.setQLContext(new QLContext(identity(QLFunctions.builder(), "f").build()));
 
             QLParserException num = assertThrows(QLParserException.class, () -> Exp.parseExp("f(str(a)) + 1"));
             assertEquals("Operator '+' at 1:10 expects a numeric operand, got a string one: a", num.getMessage());
@@ -112,7 +112,7 @@ public class ParseErrorReportingTest {
             QLParserException date = assertThrows(QLParserException.class, () -> Exp.parseExp("date(a) > f(str(b))"));
             assertEquals("Operator '>' at 1:8 expects a date operand, got a string one: b", date.getMessage());
         } finally {
-            Environment.setQLFunctions(original);
+            Environment.setQLContext(original);
         }
     }
 

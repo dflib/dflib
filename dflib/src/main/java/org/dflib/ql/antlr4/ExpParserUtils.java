@@ -4,7 +4,6 @@ import org.antlr.v4.runtime.Token;
 import org.dflib.Condition;
 import org.dflib.DateExp;
 import org.dflib.DateTimeExp;
-import org.dflib.Environment;
 import org.dflib.Exp;
 import org.dflib.NumExp;
 import org.dflib.OffsetDateTimeExp;
@@ -13,6 +12,7 @@ import org.dflib.StrExp;
 import org.dflib.TimeExp;
 import org.dflib.exp.ScalarExp;
 import org.dflib.exp.str.StrScalarExp;
+import org.dflib.ql.QLContext;
 import org.dflib.ql.QLFunctions;
 import org.dflib.ql.QLParserException;
 
@@ -135,13 +135,13 @@ class ExpParserUtils {
      * Resolves a function call against the registry and builds its expression. Resolution and argument errors, and
      * anything thrown by the function body, are reported as a {@link QLParserException} positioned at the call.
      */
-    static Exp<?> fn(Environment env, Token name, List<Exp<?>> args) {
-        return call(name, () -> env.qlFunctions().call(name.getText(), args));
+    static Exp<?> fn(QLContext context, Token name, List<Exp<?>> args) {
+        return call(name, () -> context.functions().call(name.getText(), args));
     }
 
     /**
      * Builds a call of a function passed as a {@code ?f} parameter, with the same error reporting as
-     * {@link #fn(Environment, Token, List)}. The parameter source has already checked that the value is a function
+     * {@link #fn(QLContext, Token, List)}. The parameter source has already checked that the value is a function
      * object.
      */
     static Exp<?> udf(Token placeholder, Object function, List<Exp<?>> args) {
