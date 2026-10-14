@@ -286,8 +286,8 @@ public class QLFunctions {
     /**
      * A builder of a function registry. A function is registered as a {@link QLFunction} class, or as a
      * {@code Udf0..UdfN} object; a lambda needs a type to be reflected on, so it is registered via
-     * {@code Udf1.of(e -> ..)}, {@code Udf2.of(..)}, etc. A function with the same name and argument types as a
-     * function of the parent registry (or a built-in one) replaces it.
+     * {@code Udf1.of(e -> ..)}, {@code Udf2.of(..)}, etc. A function of the parent registry (or a built-in one) can
+     * get more overloads via {@code function(..)}, or be replaced as a whole via {@code override(..)}.
      */
     static class Builder {
 
@@ -298,6 +298,7 @@ public class QLFunctions {
 
         private final QLFunctions parent;
         private final Map<String, SequencedSet<QLFunctionDescriptor>> functions = new LinkedHashMap<>();
+        private final Set<String> overridden = new LinkedHashSet<>();
 
         private boolean defaultFunctions = true;
 
@@ -333,6 +334,46 @@ public class QLFunctions {
                 function(d);
             }
 
+            return this;
+        }
+
+        /**
+         * Registers a function that replaces all the inherited overloads of the function with the same name. More
+         * overloads can be added to the replacement via other {@code override(..)} or {@code function(..)} calls.
+         */
+        Builder override(String name, Udf0<?> function) {
+            function(name, function);
+            overridden.add(name);
+            return this;
+        }
+
+        Builder override(String name, Udf1<?, ?> function) {
+            function(name, function);
+            overridden.add(name);
+            return this;
+        }
+
+        Builder override(String name, Udf2<?, ?, ?> function) {
+            function(name, function);
+            overridden.add(name);
+            return this;
+        }
+
+        Builder override(String name, Udf3<?, ?, ?, ?> function) {
+            function(name, function);
+            overridden.add(name);
+            return this;
+        }
+
+        Builder override(String name, UdfN<?> function) {
+            function(name, function);
+            overridden.add(name);
+            return this;
+        }
+
+        Builder override(String name, QLFunction function) {
+            function(name, function);
+            overridden.add(name);
             return this;
         }
 
@@ -383,12 +424,20 @@ public class QLFunctions {
                 base.functions.forEach((name, descriptors) -> merged.put(name, new LinkedHashSet<>(descriptors)));
             }
 
+            for (String name : overridden) {
+                if (merged.remove(name) == null) {
+                    throw new IllegalArgumentException("No function '" + name + "' to override");
+                }
+            }
+
             functions.forEach((name, descriptors) -> {
                 SequencedSet<QLFunctionDescriptor> mergedDescriptors = merged.computeIfAbsent(name, n -> new LinkedHashSet<>());
                 for (QLFunctionDescriptor d : descriptors) {
-                    // an overload of the same shape replaces the parent one
-                    mergedDescriptors.remove(d);
-                    mergedDescriptors.add(d);
+                    // the same shape within this builder is already rejected, so a collision is with an inherited one
+                    if (!mergedDescriptors.add(d)) {
+                        throw new IllegalArgumentException("Function " + d.shape()
+                                + " already defined, use override(..) to replace it");
+                    }
                 }
             });
 
