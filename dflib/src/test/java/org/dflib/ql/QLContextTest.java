@@ -3,6 +3,7 @@ package org.dflib.ql;
 import org.dflib.DataFrame;
 import org.dflib.Environment;
 import org.dflib.Exp;
+import org.dflib.StrExp;
 import org.dflib.Udf1;
 import org.dflib.Udf2;
 import org.dflib.unit.DataFrameAsserts;
@@ -43,9 +44,74 @@ public class QLContextTest extends BaseQLFunctionsTest {
     }
 
     @Test
-    public void builder_SameShapeAsBuiltin_Overrides() {
-        QLContext context = QLContext.builder().function("trim", SHOUT).build();
-        assertEquals($col("a").castAsStr().upper(), context.parseExp("trim(a)"));
+    public void builder_SameShapeAsBuiltin_Throws() {
+        QLContext.Builder builder = QLContext.builder().function("trim", SHOUT);
+
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, builder::build);
+        assertEquals("Function trim(OBJECT) already defined, use override(..) to replace it", e.getMessage());
+    }
+
+    @Test
+    public void builder_DifferentShapeFromBuiltin_AddsOverload() {
+        QLContext context = QLContext.builder().function("trim", new StrTrimFunction()).build();
+
+        assertEquals($str("a").trim().upper(), context.parseExp("trim(str(a))"));
+        assertEquals($int("a").trim(), context.parseExp("trim(int(a))"));
+    }
+
+    @Test
+    public void override_Builtin() {
+        QLContext context = QLContext.builder().override("trim", new StrTrimFunction()).build();
+
+        assertEquals($str("a").trim().upper(), context.parseExp("trim(str(a))"));
+
+        // the untyped argument is cast to the only remaining overload
+        assertEquals($col("a").castAsStr().trim().upper(), context.parseExp("trim(a)"));
+
+        // the built-in "trim(OBJECT)" is gone
+        QLParserException e = assertThrows(QLParserException.class, () -> context.parseExp("trim(int(a))"));
+        assertTrue(e.getMessage().startsWith("Function 'trim' at 1:0: No overload of trim matches"), e.getMessage());
+
+        // the common context is not affected
+        assertEquals($int("a").trim(), Exp.parseExp("trim(int(a))"));
+    }
+
+    @Test
+    public void override_MultipleOverloads() {
+        QLContext context = QLContext.builder()
+                .override("trim", new StrTrimFunction())
+                .override("trim", Udf1.of(e -> e.castAsStr().lower()))
+                .build();
+
+        assertEquals($str("a").trim().upper(), context.parseExp("trim(str(a))"));
+        assertEquals($int("a").castAsStr().lower(), context.parseExp("trim(int(a))"));
+    }
+
+    @Test
+    public void override_ThenFunction_SameName() {
+        QLContext context = QLContext.builder()
+                .override("trim", new StrTrimFunction())
+                .function("trim", Udf1.of(e -> e.castAsStr().lower()))
+                .build();
+
+        assertEquals($str("a").trim().upper(), context.parseExp("trim(str(a))"));
+        assertEquals($int("a").castAsStr().lower(), context.parseExp("trim(int(a))"));
+    }
+
+    @Test
+    public void override_Unknown_Throws() {
+        QLContext.Builder builder = QLContext.builder().override("noSuchFn", SHOUT);
+
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, builder::build);
+        assertEquals("No function 'noSuchFn' to override", e.getMessage());
+    }
+
+    @Test
+    public void override_NoDefaultFunctions_Throws() {
+        QLContext.Builder builder = QLContext.builder().override("trim", SHOUT).noDefaultFunctions();
+
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, builder::build);
+        assertEquals("No function 'trim' to override", e.getMessage());
     }
 
     @Test
@@ -79,9 +145,18 @@ public class QLContextTest extends BaseQLFunctionsTest {
     }
 
     @Test
-    public void extend_SameShape_Overrides() {
+    public void extend_SameShapeAsParent_Throws() {
         QLContext parent = QLContext.builder().function("f", SHOUT).build();
-        QLContext context = parent.extend().function("f", Udf1.of(e -> e.castAsStr().lower())).build();
+        QLContext.Builder builder = parent.extend().function("f", Udf1.of(e -> e.castAsStr().lower()));
+
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, builder::build);
+        assertEquals("Function f(OBJECT) already defined, use override(..) to replace it", e.getMessage());
+    }
+
+    @Test
+    public void extend_OverrideParentFunction() {
+        QLContext parent = QLContext.builder().function("f", SHOUT).build();
+        QLContext context = parent.extend().override("f", Udf1.of(e -> e.castAsStr().lower())).build();
 
         assertEquals($col("a").castAsStr().upper(), parent.parseExp("f(a)"));
         assertEquals($col("a").castAsStr().lower(), context.parseExp("f(a)"));
@@ -197,5 +272,11 @@ public class QLContextTest extends BaseQLFunctionsTest {
                 .expectRow(0, "x", 2)
                 .expectRow(1, "y", 1)
                 .expectRow(2, "z", 3);
+    }
+
+    public static class StrTrimFunction implements QLFunction {
+        public StrExp call(StrExp e) {
+            return e.trim().upper();
+        }
     }
 }
