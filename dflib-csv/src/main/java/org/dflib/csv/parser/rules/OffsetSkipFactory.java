@@ -82,7 +82,7 @@ class OffsetSkipFactory implements RuleFactory {
                         if (escape == Escape.BACKSLASH || escape == Escape.CUSTOM) {
                             if (escapeNextQuote) {
                                 escapeNextQuote = false;
-                                if (c == quote) {
+                                if (c == quote || c == escapeChar) {
                                     continue;
                                 }
                             }

@@ -130,3 +130,8 @@ df.rows().expand($col("b-c"));
 longer pulls in Hadoop. Loading and saving code keeps working as is. The one  API break is schema loading: there is no 
 Parquet schema type shared by the two engines, so `Parquet.loadSchema(..)` and `ParquetSchemaLoader.load(..)` now 
 return Hardwood's `dev.hardwood.schema.FileSchema` instead of `org.apache.parquet.schema.MessageType`.
+
+### [dflib #632](https://github.com/dflib/dflib/issues/632)
+`CsvLoader.nullString(..)` and `CsvLoader.emptyStringIsNull()` no longer convert quoted values to nulls. E.g., with 
+`nullString("NULL")`, an unquoted `NULL` is still read as null, while `"NULL"` is read as the `NULL` string (and `""` 
+is read as an empty string with `emptyStringIsNull()`). 

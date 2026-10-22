@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CsvLoader_EmptyValues {
+public class CsvLoader_EmptyValuesTest {
 
     static final ByteSource EMPTY_WHOLES = ByteSource.of("""
             One,Two
@@ -48,9 +48,10 @@ public class CsvLoader_EmptyValues {
                 .nullString(":")
                 .load(ByteSource.of(csv.getBytes()));
 
+        // quoted values are never null
         new DataFrameAsserts(df, "One", "Two")
                 .expectHeight(2)
-                .expectRow(0, null, "three")
+                .expectRow(0, ":", "three")
                 .expectRow(1, "five", null);
     }
 
@@ -78,9 +79,10 @@ public class CsvLoader_EmptyValues {
                 .emptyStringIsNull()
                 .load(EMPTY_STRINGS);
 
+        // quoted values are never null
         new DataFrameAsserts(df, "One", "Two")
                 .expectHeight(2)
-                .expectRow(0, null, "three")
+                .expectRow(0, "", "three")
                 .expectRow(1, "five", null);
     }
 
