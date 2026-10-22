@@ -1,9 +1,11 @@
 package org.dflib.csv;
 
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.QuoteMode;
 import org.dflib.DataFrame;
 import org.dflib.codec.Codec;
 import org.dflib.csv.parser.format.CsvFormat;
+import org.dflib.csv.parser.format.Quote;
 import org.dflib.csv.printer.CsvPrinter;
 import org.dflib.csv.printer.CsvPrinterFactory;
 import org.dflib.csv.printer.CsvPrinterConfig;
@@ -12,7 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.StringWriter;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -20,6 +22,7 @@ public class CsvSaver {
 
     private final CsvPrinterConfig.Builder configBuilder = CsvPrinterConfig.builder();
     private CsvPrinterFactory printerFactory = CsvPrinterFactory.defaultFactory();
+    private Codec codec;
     private boolean createMissingDirs;
 
     /**
@@ -30,7 +33,25 @@ public class CsvSaver {
      * @since 2.0.0
      */
     public CsvSaver compression(Codec codec) {
-        configBuilder.compressionCodec(codec);
+        this.codec = codec;
+        return this;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public CsvSaver encoding(String encoding) {
+        return encoding(encoding != null ? Charset.forName(encoding) : null);
+    }
+
+    /**
+     * Allows changing the encoding from the platform default. Passing {@code null} resets it to the platform default.
+     * Ignored when saving to character-based sinks. E.g., {@link #save(DataFrame, Appendable)}.
+     *
+     * @since 2.0.0
+     */
+    public CsvSaver encoding(Charset encoding) {
+        configBuilder.encoding(encoding != null ? encoding : Charset.defaultCharset());
         return this;
     }
 
@@ -38,6 +59,9 @@ public class CsvSaver {
      * Optionally sets the style or format of the imported CSV. CSVFormat comes from "commons-csv" library and
      * contains a number of predefined formats, such as CSVFormat.MYSQL, etc. It also allows to customize the format
      * further, by defining custom delimiters, line separators, etc.
+     *
+     * <p>{@link QuoteMode#ALL} and {@link QuoteMode#ALL_NON_NULL} are mapped to mandatory quoting,
+     * other quote modes, including {@link QuoteMode#NON_NUMERIC}, to minimal quoting.
      *
      * @param format a format object defined in commons-csv library
      * @return this saver instance
@@ -47,6 +71,13 @@ public class CsvSaver {
     public CsvSaver format(CSVFormat format) {
         CsvFormat.Builder b = CsvFormat.defaultFormat();
         b.copyFrom(format);
+
+        Character quoteChar = format.getQuoteCharacter();
+        QuoteMode quoteMode = format.getQuoteMode();
+        if (quoteChar != null && (quoteMode == QuoteMode.ALL || quoteMode == QuoteMode.ALL_NON_NULL)) {
+            b.quote(Quote.of(quoteChar));
+        }
+
         configBuilder.csvFormat(b.build());
         return this;
     }
@@ -111,9 +142,8 @@ public class CsvSaver {
         }
 
         try (OutputStream out = new FileOutputStream(file)) {
-            Codec codec = resolveCodec(file.getName());
-            CsvPrinterConfig config = configBuilder.buildWithCodec(codec);
-            newPrinter(config).write(df, out);
+            Codec codec = this.codec != null ? this.codec : Codec.ofUri(file.getName()).orElse(null);
+            newPrinter(configBuilder.buildWithCodec(codec)).write(df, out);
         } catch (IOException e) {
             throw new RuntimeException("Error writing CSV to " + file + ": " + e.getMessage(), e);
         }
@@ -131,8 +161,7 @@ public class CsvSaver {
      * @since 2.0.0
      */
     public void save(DataFrame df, OutputStream out) {
-        CsvPrinterConfig config = configBuilder.build();
-        newPrinter(config).write(df, out);
+        newPrinter(configBuilder.buildWithCodec(codec)).write(df, out);
     }
 
     /**
@@ -140,22 +169,17 @@ public class CsvSaver {
      * use {@link #save(DataFrame, OutputStream)}.
      */
     public void save(DataFrame df, Appendable out) {
-        CsvPrinterConfig config = configBuilder.build();
-        newPrinter(config).write(df, out);
+        newPrinter(configBuilder.build()).write(df, out);
     }
 
     public String saveToString(DataFrame df) {
         // producing a String, so no compression by definition
-        StringWriter out = new StringWriter();
+        StringBuilder out = new StringBuilder();
         save(df, out);
         return out.toString();
     }
 
     private CsvPrinter newPrinter(CsvPrinterConfig config) {
         return Objects.requireNonNull(printerFactory.create(config));
-    }
-
-    private Codec resolveCodec(String fileNameForCodecDetection) {
-        return Codec.ofUri(fileNameForCodecDetection).orElseGet(configBuilder::compressionCodec);
     }
 }

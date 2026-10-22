@@ -4,6 +4,7 @@ import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.codec.Codec;
 import org.dflib.csv.parser.format.CsvFormat;
+import org.dflib.csv.parser.format.Quote;
 import org.dflib.row.RowProxy;
 
 import java.io.BufferedWriter;
@@ -15,22 +16,11 @@ import java.util.Objects;
 
 /**
  * CSV writer main entry point, orchestrates the whole writing process.
- * <br>
- * Internal API. Part of the {@link org.dflib.csv.CsvSaver} API.
- *
- * @since 2.0.0
  */
-public class DefaultCsvPrinter implements CsvPrinter {
+class DefaultCsvPrinter implements CsvPrinter {
 
-    final CsvPrinterConfig config;
-    private final CsvFieldEncoder encoder;
-
-    /**
-     * Creates a printer with default configuration.
-     */
-    public DefaultCsvPrinter() {
-        this(CsvPrinterConfig.builder().build());
-    }
+    private final CsvPrinterConfig config;
+    private final DefaultFieldEncoder encoder;
 
     /**
      * Creates a printer using the given configuration.
@@ -38,18 +28,8 @@ public class DefaultCsvPrinter implements CsvPrinter {
      * @param config writer configuration
      */
     public DefaultCsvPrinter(CsvPrinterConfig config) {
-        this(config, new DefaultFieldEncoder(config.csvFormat()));
-    }
-
-    /**
-     * Creates a printer using the given configuration and field encoder.
-     *
-     * @param config writer configuration
-     * @param encoder field encoder strategy
-     */
-    public DefaultCsvPrinter(CsvPrinterConfig config, CsvFieldEncoder encoder) {
         this.config = Objects.requireNonNull(config);
-        this.encoder = Objects.requireNonNull(encoder);
+        this.encoder = new DefaultFieldEncoder(config.csvFormat());
     }
 
     @Override
@@ -80,14 +60,51 @@ public class DefaultCsvPrinter implements CsvPrinter {
         String lineBreak = lineBreakString(fmt);
         boolean trailingDelimiter = fmt.trailingDelimiter();
 
+        int width = df.width();
+        if (width == 1 && !trailingDelimiter) {
+            writeSingleColumn(df, out, lineBreak, fmt.quote());
+            return;
+        }
+
         if (config.printHeader()) {
             writeHeader(df.getColumnsIndex(), out, delimiter, lineBreak, trailingDelimiter);
         }
 
-        int width = df.width();
         for (RowProxy row : df) {
             writeRow(row, width, out, delimiter, lineBreak, trailingDelimiter);
         }
+    }
+
+    // single column records must never be empty lines, so each value is encoded to a buffer first to check for that
+    private void writeSingleColumn(DataFrame df, Appendable out, String lineBreak, Quote quote) throws IOException {
+        StringBuilder buffer = new StringBuilder();
+
+        if (config.printHeader()) {
+            writeSingleValue(df.getColumnsIndex().get(0), out, buffer, lineBreak, quote);
+        }
+
+        for (Object value : df.getColumn(0)) {
+            writeSingleValue(value, out, buffer, lineBreak, quote);
+        }
+    }
+
+    private void writeSingleValue(Object value, Appendable out, StringBuilder buffer, String lineBreak, Quote quote)
+            throws IOException {
+
+        buffer.setLength(0);
+        encoder.encodeAtLineStart(value, buffer);
+        if (buffer.isEmpty()) {
+            if (quote.noQuote()) {
+                throw new IllegalArgumentException(
+                        "Can't encode an empty value in a single-column CSV without quoting or a trailing delimiter");
+            }
+
+            char quoteChar = quote.quoteChar();
+            out.append(quoteChar).append(quoteChar);
+        } else {
+            out.append(buffer);
+        }
+        out.append(lineBreak);
     }
 
     private void writeHeader(Index header, Appendable out,
@@ -96,8 +113,10 @@ public class DefaultCsvPrinter implements CsvPrinter {
         for (int i = 0; i < labels.length; i++) {
             if (i > 0) {
                 out.append(delimiter);
+                encoder.encode(labels[i], out);
+            } else {
+                encoder.encodeAtLineStart(labels[i], out);
             }
-            encoder.encode(labels[i], out);
         }
         if (trailingDelimiter) {
             out.append(delimiter);
@@ -110,8 +129,10 @@ public class DefaultCsvPrinter implements CsvPrinter {
         for (int i = 0; i < width; i++) {
             if (i > 0) {
                 out.append(delimiter);
+                encoder.encode(row.get(i), out);
+            } else {
+                encoder.encodeAtLineStart(row.get(i), out);
             }
-            encoder.encode(row.get(i), out);
         }
         if (trailingDelimiter) {
             out.append(delimiter);

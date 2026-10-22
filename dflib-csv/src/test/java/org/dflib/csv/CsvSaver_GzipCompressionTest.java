@@ -1,5 +1,6 @@
 package org.dflib.csv;
 
+import org.dflib.ByteSource;
 import org.dflib.DataFrame;
 import org.dflib.codec.Codec;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -82,6 +84,29 @@ public class CsvSaver_GzipCompressionTest {
         String csv = readAndUncompress(out.toByteArray());
 
         assertEquals("A,B\r\n1,2\r\n3,4\r\n", csv);
+    }
+
+    @Test
+    public void save_ExplicitCodecOverridesFileExtension() throws IOException {
+        int[] compressCalls = {0};
+        Codec passThrough = new Codec() {
+            @Override
+            public ByteSource decompress(ByteSource compressed) {
+                return compressed;
+            }
+
+            @Override
+            public OutputStream compress(OutputStream uncompressed) {
+                compressCalls[0]++;
+                return uncompressed;
+            }
+        };
+
+        Path out = outBase.resolve("save_ExplicitCodec.csv.gz");
+        Csv.saver().compression(passThrough).save(DF, out);
+
+        assertEquals(1, compressCalls[0]);
+        assertEquals("A,B\r\n1,2\r\n3,4\r\n", Files.readString(out));
     }
 
     @Test

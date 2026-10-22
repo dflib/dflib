@@ -59,6 +59,14 @@ public class CsvSaver_FormatTest {
                         CsvFormat.defaultFormat().copyFrom(DEFAULT_FORMAT).delimiter(";").build(),
                         DF,
                         "A;B\r\n1;2\r\n3;4\r\n"),
+                Arguments.of("single column empty values",
+                        DEFAULT_FORMAT,
+                        DataFrame.foldByRow("A").of("", null, "x"),
+                        "A\r\n\"\"\r\n\"\"\r\nx\r\n"),
+                Arguments.of("single column empty values, trailing delimiter",
+                        CsvFormat.defaultFormat().copyFrom(DEFAULT_FORMAT).trailingDelimiter(true).build(),
+                        DataFrame.foldByRow("A").of("", "x"),
+                        "A,\r\n,\r\nx,\r\n"),
                 Arguments.of("quote none for plain data",
                         CsvFormat.defaultFormat().copyFrom(DEFAULT_FORMAT)
                                 .quote(Quote.none())

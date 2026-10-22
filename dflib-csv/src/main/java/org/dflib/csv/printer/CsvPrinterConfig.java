@@ -91,13 +91,6 @@ public class CsvPrinterConfig {
         }
 
         /**
-         * Returns the currently configured compression codec, or {@code null} if none has been set.
-         */
-        public Codec compressionCodec() {
-            return compressionCodec;
-        }
-
-        /**
          * Sets the CSV format used for writing. Must not be {@code null}.
          */
         public Builder csvFormat(CsvFormat csvFormat) {

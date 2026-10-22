@@ -300,7 +300,7 @@ public class CsvFormat {
          * Copies compatible settings from Apache Commons CSV format.
          */
         public void copyFrom(CSVFormat format) {
-            validateCommonsFormat(format);
+            Objects.requireNonNull(format);
 
             String delimiter = format.getDelimiterString();
             if (delimiter != null && !delimiter.isEmpty()) {
@@ -357,7 +357,10 @@ public class CsvFormat {
             }
         }
 
-        private void validateCommonsFormat(CSVFormat format) {
+        /**
+         * Logs warnings for the commons-csv parsing settings not supported by the CSV parser.
+         */
+        void validateCommonsFormat(CSVFormat format) {
             Objects.requireNonNull(format);
             DuplicateHeaderMode duplicateHeaderMode = format.getDuplicateHeaderMode();
             if (duplicateHeaderMode != null && duplicateHeaderMode != DuplicateHeaderMode.ALLOW_ALL) {
