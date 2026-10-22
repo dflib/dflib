@@ -163,6 +163,59 @@ class ColumnEndQuotedTest {
         assertEquals(-1, pos, "Should return -1 if no quotes present");
     }
 
+    @Test
+    void backslashEscapedBackslashBeforeClosingQuote() {
+        Tracking tracking = newTrackingContext();
+        ParserContext ctx = tracking.context();
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
+                .quote(Quote.of('"'))
+                .escape(Escape.BACKSLASH)
+                .build());
+        char[] buf = {'a', '\\', '\\', '"', ','};
+        ctx.markColumnStart(0);
+        int pos = rule.consume(ctx, DataSlice.of(buf));
+        assertEquals(4, pos);
+        assertTrue(tracking.callback().escaped());
+    }
+
+    @Test
+    void backslashEscapedBackslashThenEscapedQuote() {
+        ParserContext ctx = newContext();
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
+                .quote(Quote.of('"'))
+                .escape(Escape.BACKSLASH)
+                .build());
+        char[] buf = {'a', '\\', '\\', '\\', '"', 'b', '"', ','};
+        ctx.markColumnStart(0);
+        assertEquals(7, rule.consume(ctx, DataSlice.of(buf)));
+    }
+
+    @Test
+    void backslashEscapedBackslashAtBufferEnd() {
+        ParserContext ctx = newContext();
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
+                .quote(Quote.of('"'))
+                .escape(Escape.BACKSLASH)
+                .build());
+        char[] buf = {'a', '\\', '\\'};
+        ctx.markColumnStart(0);
+        assertEquals(-1, rule.consume(ctx, DataSlice.of(buf)));
+    }
+
+    @Test
+    void customEscapedEscapeBeforeClosingQuote() {
+        Tracking tracking = newTrackingContext();
+        ParserContext ctx = tracking.context();
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
+                .quote(Quote.of('"'))
+                .escape('$')
+                .build());
+        char[] buf = {'a', '$', '$', '"', ','};
+        ctx.markColumnStart(0);
+        assertEquals(4, rule.consume(ctx, DataSlice.of(buf)));
+        assertTrue(tracking.callback().escaped());
+    }
+
     private ParserRule newRule() {
         CsvFormat format = CsvFormat.defaultFormat()
                 .quote(Quote.of('"'))

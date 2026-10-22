@@ -195,6 +195,32 @@ class CsvScannerTest {
     }
 
     @Test
+    void quotedEscapedEscapeAtBufferBoundary() {
+        // the first escape char of the "\\" pair is the last char of the first buffer read
+        String prefix = "a".repeat(CsvScanner.INITIAL_BUFFER_SIZE - 2);
+        String csv = "\"" + prefix + "\\\\\",b\n";
+
+        DataFrame df = parse(csv, twoColumnBackslashFormat());
+
+        new DataFrameAsserts(df, "c0", "c1")
+                .expectHeight(1)
+                .expectRow(0, prefix + "\\", "b");
+    }
+
+    @Test
+    void quotedEscapedQuoteAtBufferBoundary() {
+        // the escape char of the "\"" pair is the last char of the first buffer read
+        String prefix = "a".repeat(CsvScanner.INITIAL_BUFFER_SIZE - 2);
+        String csv = "\"" + prefix + "\\\"\",b\n";
+
+        DataFrame df = parse(csv, twoColumnBackslashFormat());
+
+        new DataFrameAsserts(df, "c0", "c1")
+                .expectHeight(1)
+                .expectRow(0, prefix + "\"", "b");
+    }
+
+    @Test
     void openingQuoteAtBufferBoundary() {
         String first = "a".repeat(CsvScanner.INITIAL_BUFFER_SIZE - 2);
         String csv = first + ",\"tail\"\n";
@@ -241,6 +267,18 @@ class CsvScannerTest {
                 .column(CsvColumnMapping.column(0).name("c0"))
                 .column(CsvColumnMapping.column(1).name("c1"))
                 .excludeHeaderValues(false)
+                .build();
+    }
+
+    private static CsvParserConfig twoColumnBackslashFormat() {
+        return CsvParserConfig.builder()
+                .column(CsvColumnMapping.column(0).name("c0"))
+                .column(CsvColumnMapping.column(1).name("c1"))
+                .autoColumns(false)
+                .excludeHeaderValues(false)
+                .csvFormat(CsvFormat.defaultFormat()
+                        .lineBreak(LineBreak.LF)
+                        .escape(Escape.BACKSLASH))
                 .build();
     }
 

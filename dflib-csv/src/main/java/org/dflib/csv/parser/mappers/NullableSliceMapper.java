@@ -26,6 +26,11 @@ class NullableSliceMapper implements Function<DataSlice[], DataSlice> {
     }
 
     protected boolean checkNull(DataSlice slice) {
+        // a quoted value is never null, this way values equal to the null string can still be written and read back
+        if (slice.quoted()) {
+            return false;
+        }
+
         int from = slice.from();
         int length = slice.to() - from;
         if (nullValue == null) {
