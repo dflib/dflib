@@ -18,6 +18,7 @@
         <module>dflib-jdbc</module>
         <module>dflib-json</module>
         <module>dflib-parquet</module>
+        <module>dflib-s3</module>
         <module>dflib-junit</module>
         <module>dflib-jupyter</module>
         <module>dflib-benchmark</module>
@@ -69,6 +70,7 @@
         <lz4.version>1.11.0</lz4.version>
         <hadoop.version>3.4.2</hadoop.version>
         <json.smart.version>2.6.0</json.smart.version>
+        <aws.sdk.version>2.57.2</aws.sdk.version>
 
         <jjava.version>1.0-a7</jjava.version>
         <mysql.version>9.6.0</mysql.version>
@@ -178,9 +180,14 @@
             </dependency>
 
             <!--
-           Importing individual Testcontainers modules for tests instead of a BOM, as BOM would be treated as a
-           dependency by the downstream projects.
-           -->
+            Importing individual Testcontainers modules for tests instead of a BOM, as BOM would be treated as a
+            dependency by the downstream projects.
+            -->
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers</artifactId>
+                <version>${testcontainers.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers-mysql</artifactId>
@@ -249,6 +256,35 @@
                         <artifactId>commons-compress</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+
+            <!--
+            AWS dependencies, no BOM as it would be passed downstream.
+            We only need a sync client and the dependency-free "url-connection-client".
+            -->
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>s3</artifactId>
+                <version>${aws.sdk.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>software.amazon.awssdk</groupId>
+                        <artifactId>netty-nio-client</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>software.amazon.awssdk</groupId>
+                        <artifactId>apache5-client</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>software.amazon.awssdk</groupId>
+                        <artifactId>apache-client</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>url-connection-client</artifactId>
+                <version>${aws.sdk.version}</version>
             </dependency>
 
             <dependency>
