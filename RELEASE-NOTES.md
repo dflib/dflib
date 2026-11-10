@@ -3,6 +3,7 @@
 * #578 Static cast methods in Udf interfaces
 * #642 rows().expand(..) should take an expression
 * #643 Replace the "parquet-java" Parquet engine with Hardwood
+* #654 CsvSaver: replace commons-csv with own implementation 
 
 ## Release 2.0.0-M7
 
