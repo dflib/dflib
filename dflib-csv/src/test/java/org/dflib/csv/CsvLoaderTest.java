@@ -133,6 +133,15 @@ public class CsvLoaderTest extends BaseCsvTest {
 
     @Deprecated
     @Test
+    public void commonsFormat_NoRecordSeparator() {
+        DataFrame df = new CsvLoader()
+                .format(CSVFormat.newFormat(';'))
+                .load(new StringReader("A;B\n1;2\n"));
+        new DataFrameAsserts(df, "A", "B").expectHeight(1).expectRow(0, "1", "2");
+    }
+
+    @Deprecated
+    @Test
     public void mySQLFormat() {
         DataFrame df = new CsvLoader().format(CSVFormat.MYSQL).load(inPath("from_mysql.csv"));
         new DataFrameAsserts(df, "1", "3365430", " xxxx")

@@ -7,30 +7,30 @@ import org.dflib.csv.parser.format.LineBreak;
 import org.dflib.csv.parser.format.Quote;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
+import java.io.UncheckedIOException;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DefaultCsvPrinterTest {
+public class CsvPrinterTest {
 
     private static final DataFrame DF = DataFrame.foldByRow("A", "B").of(
             1, 2,
             3, 4);
 
     private static String print(CsvFormat fmt, DataFrame df) {
-        return print(CsvPrinterConfig.builder().csvFormat(fmt), df);
+        return print(fmt, true, df);
     }
 
-    private static String print(CsvPrinterConfig.Builder config, DataFrame df) {
+    private static String print(CsvFormat fmt, boolean printHeader, DataFrame df) {
         StringBuilder out = new StringBuilder();
-        new DefaultCsvPrinter(config.build()).write(df, out);
+        try {
+            new CsvPrinter(fmt, printHeader).print(df, out);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
         return out.toString();
     }
 
@@ -57,7 +57,7 @@ public class DefaultCsvPrinterTest {
     @Test
     public void trailingDelimiter_noHeader() {
         CsvFormat fmt = CsvFormat.defaultFormat().trailingDelimiter(true).build();
-        assertEquals("1,2,\r\n3,4,\r\n", print(CsvPrinterConfig.builder().csvFormat(fmt).printHeader(false), DF));
+        assertEquals("1,2,\r\n3,4,\r\n", print(fmt, false, DF));
     }
 
     @Test
@@ -75,13 +75,13 @@ public class DefaultCsvPrinterTest {
     @Test
     public void noRows() {
         assertEquals("A,B\r\n", print(CsvFormat.defaultFormat().build(), DataFrame.empty("A", "B")));
-        assertEquals("", print(CsvPrinterConfig.builder().printHeader(false), DataFrame.empty("A", "B")));
+        assertEquals("", print(CsvFormat.defaultFormat().build(), false, DataFrame.empty("A", "B")));
     }
 
     @Test
     public void singleColumn_noHeader() {
         DataFrame df = DataFrame.foldByRow("A").of("", "x", null);
-        assertEquals("\"\"\r\nx\r\n\"\"\r\n", print(CsvPrinterConfig.builder().printHeader(false), df));
+        assertEquals("\"\"\r\nx\r\n\"\"\r\n", print(CsvFormat.defaultFormat().build(), false, df));
     }
 
     @Test
@@ -119,6 +119,17 @@ public class DefaultCsvPrinterTest {
     }
 
     @Test
+    public void singleColumn_emptyNullString_nullThrows() {
+        // an empty line is skipped by the parser, and a quoted empty string is never read as null
+        CsvFormat fmt = CsvFormat.defaultFormat().nullString("").build();
+        assertEquals("A\r\n\"\"\r\nx\r\n", print(fmt, DataFrame.foldByRow("A").of("", "x")));
+        assertThrows(IllegalArgumentException.class, () -> print(fmt, DataFrame.foldByRow("A").of("x", null)));
+
+        CsvFormat fmtTrailing = CsvFormat.defaultFormat().nullString("").trailingDelimiter(true).build();
+        assertEquals("A,\r\nx,\r\n,\r\n", print(fmtTrailing, DataFrame.foldByRow("A").of("x", null)));
+    }
+
+    @Test
     public void singleColumn_quoteNone_nullString() {
         CsvFormat fmt = CsvFormat.defaultFormat().quote(Quote.none()).nullString("NULL").build();
         assertEquals("A\r\nNULL\r\n", print(fmt, DataFrame.foldByRow("A").of((Object) null)));
@@ -140,65 +151,5 @@ public class DefaultCsvPrinterTest {
         assertThrows(IllegalArgumentException.class, () -> print(fmt, DataFrame.foldByRow("A", "B").of("#x", "y")));
         assertThrows(IllegalArgumentException.class, () -> print(fmt, DataFrame.foldByRow("#A", "B").of("x", "y")));
         assertThrows(IllegalArgumentException.class, () -> print(fmt, DataFrame.foldByRow("A").of("#x")));
-    }
-
-    @Test
-    public void appendable_ioError() {
-        Appendable failing = new Appendable() {
-            @Override
-            public Appendable append(CharSequence csq) throws IOException {
-                throw new IOException("test");
-            }
-
-            @Override
-            public Appendable append(CharSequence csq, int start, int end) throws IOException {
-                throw new IOException("test");
-            }
-
-            @Override
-            public Appendable append(char c) throws IOException {
-                throw new IOException("test");
-            }
-        };
-
-        CsvPrinter printer = new DefaultCsvPrinter(CsvPrinterConfig.builder().build());
-        RuntimeException e = assertThrows(RuntimeException.class, () -> printer.write(DF, failing));
-        assertInstanceOf(IOException.class, e.getCause());
-    }
-
-    @Test
-    public void outputStream_ioError() {
-        OutputStream failing = new OutputStream() {
-            @Override
-            public void write(int b) throws IOException {
-                throw new IOException("test");
-            }
-        };
-
-        CsvPrinter printer = new DefaultCsvPrinter(CsvPrinterConfig.builder().build());
-        RuntimeException e = assertThrows(RuntimeException.class, () -> printer.write(DF, failing));
-        assertInstanceOf(IOException.class, e.getCause());
-    }
-
-    @Test
-    public void outputStream_encoding() {
-        CsvPrinterConfig config = CsvPrinterConfig.builder().encoding(StandardCharsets.UTF_16BE).build();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new DefaultCsvPrinter(config).write(DataFrame.foldByRow("A").of("ж"), out);
-        assertEquals("A\r\nж\r\n", out.toString(StandardCharsets.UTF_16BE));
-    }
-
-    @Test
-    public void outputStream_isClosed() {
-        boolean[] closed = {false};
-        OutputStream out = new ByteArrayOutputStream() {
-            @Override
-            public void close() {
-                closed[0] = true;
-            }
-        };
-
-        new DefaultCsvPrinter(CsvPrinterConfig.builder().build()).write(DF, out);
-        assertTrue(closed[0]);
     }
 }

@@ -5,11 +5,14 @@ import org.dflib.csv.parser.format.CsvFormat;
 import org.dflib.csv.parser.format.Escape;
 import org.dflib.csv.parser.format.LineBreak;
 import org.dflib.csv.parser.format.Quote;
+import org.dflib.csv.parser.format.Trim;
 import org.dflib.junit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.util.Objects;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CsvSaver_RoundTripTest {
 
@@ -78,7 +81,7 @@ public class CsvSaver_RoundTripTest {
 
     @Test
     public void quoteNoneEscapeBackslash() {
-        // no line breaks, as escaped line breaks without quoting are not supported by the parser yet
+        // no line breaks, as those can't be saved without quoting
         DataFrame df = DataFrame.foldByRow("A", "B").of(
                 "plain", "x,y",
                 "z\"w", "a\\b",
@@ -88,8 +91,30 @@ public class CsvSaver_RoundTripTest {
 
     @Test
     public void quoteNoneEscapeBackslashLineBreak() {
-        DataFrame df = DataFrame.foldByRow("A", "B").of("a\nb", "c");
-        assertRoundTrip(CsvFormat.defaultFormat().quote(Quote.none()).escape(Escape.BACKSLASH).build(), df);
+        // the parser can't read escaped line breaks outside of quotes, so the saver rejects them
+        CsvFormat fmt = CsvFormat.defaultFormat().quote(Quote.none()).escape(Escape.BACKSLASH).build();
+        assertThrows(IllegalArgumentException.class,
+                () -> Csv.saver().format(fmt).saveToString(DataFrame.foldByRow("A", "B").of("a\nb", "c")));
+        assertThrows(IllegalArgumentException.class,
+                () -> Csv.saver().format(fmt).saveToString(DataFrame.foldByRow("A", "B").of("c", "a\nb")));
+    }
+
+    @Test
+    public void multiCharDelimiterPartialValues() {
+        DataFrame df = DataFrame.foldByRow("A", "B").of(
+                "a|", "b",
+                "|", "|c",
+                "a||", "d|e");
+        assertRoundTrip(CsvFormat.defaultFormat().delimiter("||").build(), df);
+        assertRoundTrip(CsvFormat.defaultFormat().delimiter("||").quote(Quote.none()).escape(Escape.BACKSLASH).build(), df);
+    }
+
+    @Test
+    public void trim() {
+        DataFrame df = DataFrame.foldByRow("A", "B").of(
+                " a ", "b",
+                "\tc", "d e");
+        assertRoundTrip(CsvFormat.defaultFormat().trim(Trim.FULL).build(), df);
     }
 
     @Test
@@ -100,6 +125,20 @@ public class CsvSaver_RoundTripTest {
                 null, "y");
         CsvFormat fmt = CsvFormat.defaultFormat().nullString("NULL").build();
         assertRoundTrip(fmt, df, Csv.loader().format(fmt).nullString("NULL"));
+    }
+
+    @Test
+    public void nullStringWithCommentPrefix() {
+        CsvFormat fmt = CsvFormat.defaultFormat().nullString("#N/A").enableComments("#").build();
+
+        // only the first field of a record can be read as a comment
+        DataFrame df = DataFrame.foldByRow("A", "B").of(
+                "x", null,
+                "#N/A", "#N/A");
+        assertRoundTrip(fmt, df, Csv.loader().format(fmt).nullString("#N/A"));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> Csv.saver().format(fmt).saveToString(DataFrame.foldByRow("A", "B").of(null, "x")));
     }
 
     @Test

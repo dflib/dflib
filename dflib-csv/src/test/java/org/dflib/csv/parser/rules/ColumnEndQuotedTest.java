@@ -19,7 +19,7 @@ class ColumnEndQuotedTest {
         ParserContext ctx = newContext();
         ParserRule rule = newRule();
         char[] buf = {'a', 'b', 'c', '"', ','};
-        ctx.markColumnStart(1);
+        ctx.markColumnStartQuoted(1);
         int pos = rule.consume(ctx, DataSlice.of(buf));
         assertEquals(4, pos);
     }
@@ -30,7 +30,7 @@ class ColumnEndQuotedTest {
         ParserContext ctx = tracking.context();
         ParserRule rule = newRule();
         char[] buf = {'a', '"', '"', 'b', '"', ','};
-        ctx.markColumnStart(1);
+        ctx.markColumnStartQuoted(1);
         DataSlice slice = DataSlice.of(buf);
         int pos = rule.consume(ctx, slice);
         assertEquals(5, pos);
@@ -42,7 +42,7 @@ class ColumnEndQuotedTest {
         ParserContext ctx = newContext();
         ParserRule rule = newRule();
         char[] buf = {'a', 'b', 'c', '"'};
-        ctx.markColumnStart(1);
+        ctx.markColumnStartQuoted(1);
         int pos = rule.consume(ctx, DataSlice.of(buf));
         assertEquals(-1, pos, "Should return -1 if quote is at buffer end");
     }
@@ -53,7 +53,7 @@ class ColumnEndQuotedTest {
         ParserRule rule = newRule();
         char[] buf = {'"', '"', ','};
         ctx.overrideState(ParserState.START_QUOTED);
-        ctx.markColumnStart(0);
+        ctx.markColumnStartQuoted(0);
         DataSlice data = DataSlice.of(buf);
         data.setFrom(1);
         int pos = rule.consume(ctx, data);
@@ -66,7 +66,7 @@ class ColumnEndQuotedTest {
         ParserContext ctx = tracking.context();
         ParserRule rule = newRule();
         char[] buf = {'a', 'b', '"', ','};
-        ctx.markColumnStart(1);
+        ctx.markColumnStartQuoted(1);
         DataSlice slice = DataSlice.of(buf);
         int pos = rule.consume(ctx, slice);
         assertEquals(3, pos);
@@ -82,7 +82,7 @@ class ColumnEndQuotedTest {
                 .escape(Escape.BACKSLASH)
                 .build());
         char[] buf = {'a', '\\', '"', 'b', '"', ','};
-        ctx.markColumnStart(1);
+        ctx.markColumnStartQuoted(1);
         DataSlice slice = DataSlice.of(buf);
         int pos = rule.consume(ctx, slice);
         assertEquals(5, pos);
@@ -98,7 +98,7 @@ class ColumnEndQuotedTest {
                 .escape(Escape.BACKSLASH)
                 .build());
         char[] buf = {'a', '\\'};
-        ctx.markColumnStart(0);
+        ctx.markColumnStartQuoted(0);
         DataSlice slice = DataSlice.of(buf);
         int pos = rule.consume(ctx, slice);
         assertEquals(-1, pos);
@@ -114,7 +114,7 @@ class ColumnEndQuotedTest {
                 .escape(Escape.BACKSLASH)
                 .build());
         char[] buf = {'a', '\\', '"', '"', ','};
-        ctx.markColumnStart(1);
+        ctx.markColumnStartQuoted(1);
         DataSlice slice = DataSlice.of(buf);
         int pos = rule.consume(ctx, slice);
         assertEquals(4, pos);
@@ -130,7 +130,7 @@ class ColumnEndQuotedTest {
                 .escape('x')
                 .build());
         char[] buf = {'a', 'x', '"', 'b', '"', ','};
-        ctx.markColumnStart(1);
+        ctx.markColumnStartQuoted(1);
         DataSlice slice = DataSlice.of(buf);
         int pos = rule.consume(ctx, slice);
         assertEquals(5, pos);
@@ -146,7 +146,7 @@ class ColumnEndQuotedTest {
                 .escape('x')
                 .build());
         char[] buf = {'a', 'x', '"', '"', ','};
-        ctx.markColumnStart(1);
+        ctx.markColumnStartQuoted(1);
         DataSlice slice = DataSlice.of(buf);
         int pos = rule.consume(ctx, slice);
         assertEquals(4, pos);
@@ -158,7 +158,7 @@ class ColumnEndQuotedTest {
         ParserContext ctx = newContext();
         ParserRule rule = newRule();
         char[] buf = {'a', 'b', 'c', ','};
-        ctx.markColumnStart(1);
+        ctx.markColumnStartQuoted(1);
         int pos = rule.consume(ctx, DataSlice.of(buf));
         assertEquals(-1, pos, "Should return -1 if no quotes present");
     }
@@ -172,7 +172,7 @@ class ColumnEndQuotedTest {
                 .escape(Escape.BACKSLASH)
                 .build());
         char[] buf = {'a', '\\', '\\', '"', ','};
-        ctx.markColumnStart(0);
+        ctx.markColumnStartQuoted(0);
         int pos = rule.consume(ctx, DataSlice.of(buf));
         assertEquals(4, pos);
         assertTrue(tracking.callback().escaped());
@@ -186,7 +186,7 @@ class ColumnEndQuotedTest {
                 .escape(Escape.BACKSLASH)
                 .build());
         char[] buf = {'a', '\\', '\\', '\\', '"', 'b', '"', ','};
-        ctx.markColumnStart(0);
+        ctx.markColumnStartQuoted(0);
         assertEquals(7, rule.consume(ctx, DataSlice.of(buf)));
     }
 
@@ -198,7 +198,7 @@ class ColumnEndQuotedTest {
                 .escape(Escape.BACKSLASH)
                 .build());
         char[] buf = {'a', '\\', '\\'};
-        ctx.markColumnStart(0);
+        ctx.markColumnStartQuoted(0);
         assertEquals(-1, rule.consume(ctx, DataSlice.of(buf)));
     }
 
@@ -211,9 +211,21 @@ class ColumnEndQuotedTest {
                 .escape('$')
                 .build());
         char[] buf = {'a', '$', '$', '"', ','};
-        ctx.markColumnStart(0);
+        ctx.markColumnStartQuoted(0);
         assertEquals(4, rule.consume(ctx, DataSlice.of(buf)));
         assertTrue(tracking.callback().escaped());
+    }
+
+    @Test
+    void unquotedColumnIsNoop() {
+        for (Escape escape : new Escape[]{Escape.DOUBLE, Escape.BACKSLASH, Escape.NONE}) {
+            ParserContext ctx = newContext();
+            ParserRule rule = newRule(CsvFormat.defaultFormat().quote(Quote.of('"')).escape(escape).build());
+            char[] buf = {'a', 'b', ',', '"', 'c', '"'};
+            ctx.markColumnStart(0);
+            assertEquals(0, rule.consume(ctx, DataSlice.of(buf)), "Should not consume an unquoted column: " + escape);
+            assertTrue(ctx.activeSlice().open(), "Column should stay open: " + escape);
+        }
     }
 
     private ParserRule newRule() {

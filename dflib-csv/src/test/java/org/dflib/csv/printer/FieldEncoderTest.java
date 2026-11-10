@@ -3,6 +3,7 @@ package org.dflib.csv.printer;
 import org.dflib.csv.parser.format.CsvFormat;
 import org.dflib.csv.parser.format.Escape;
 import org.dflib.csv.parser.format.Quote;
+import org.dflib.csv.parser.format.Trim;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -11,17 +12,17 @@ import java.io.StringWriter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DefaultFieldEncoderTest {
+public class FieldEncoderTest {
 
     private static String enc(CsvFormat fmt, Object value) throws IOException {
         StringBuilder sb = new StringBuilder();
-        new DefaultFieldEncoder(fmt).encode(value, sb);
+        new FieldEncoder(fmt).encode(value, sb);
         return sb.toString();
     }
 
     private static String encToWriter(CsvFormat fmt, Object value) throws IOException {
         StringWriter out = new StringWriter();
-        new DefaultFieldEncoder(fmt).encode(value, out);
+        new FieldEncoder(fmt).encode(value, out);
         return out.toString();
     }
 
@@ -89,8 +90,17 @@ public class DefaultFieldEncoderTest {
                 .escape(Escape.BACKSLASH)
                 .build();
         assertEquals("a\\,b", enc(fmt, "a,b"));
-        assertEquals("a\\\nb", enc(fmt, "a\nb"));
         assertEquals("a\\\\b", enc(fmt, "a\\b"));
+    }
+
+    @Test
+    public void quoteNone_lineBreakThrows() {
+        CsvFormat fmt = CsvFormat.defaultFormat()
+                .quote(Quote.none())
+                .escape(Escape.BACKSLASH)
+                .build();
+        assertThrows(IllegalArgumentException.class, () -> enc(fmt, "a\nb"));
+        assertThrows(IllegalArgumentException.class, () -> enc(fmt, "a\rb"));
     }
 
     @Test
@@ -104,7 +114,7 @@ public class DefaultFieldEncoderTest {
     public void customDelimiter_multiChar() throws IOException {
         CsvFormat fmt = CsvFormat.defaultFormat().delimiter("||").build();
         assertEquals("\"a||b\"", enc(fmt, "a||b"));
-        assertEquals("a|b", enc(fmt, "a|b"));
+        assertEquals("a,b", enc(fmt, "a,b"));
     }
 
     @Test
@@ -177,8 +187,8 @@ public class DefaultFieldEncoderTest {
                 .escape(Escape.BACKSLASH)
                 .delimiter("||")
                 .build();
-        assertEquals("\\||a\\\nb\\\\\\||", enc(fmt, "||a\nb\\||"));
-        assertEquals("\\||a\\\nb\\\\\\||", encToWriter(fmt, "||a\nb\\||"));
+        assertEquals("\\|\\|a\\\\\\|\\|", enc(fmt, "||a\\||"));
+        assertEquals("\\|\\|a\\\\\\|\\|", encToWriter(fmt, "||a\\||"));
     }
 
     @Test
@@ -197,12 +207,42 @@ public class DefaultFieldEncoderTest {
     }
 
     @Test
-    public void multiCharDelimiter_partialAtEnd() throws IOException {
+    public void multiCharDelimiter_partial() throws IOException {
+        // a part of the delimiter at the end of a value would form a delimiter together with the one that follows,
+        // so the values with the first delimiter char are quoted or escaped
         CsvFormat fmt = CsvFormat.defaultFormat().delimiter("||").build();
-        assertEquals("a|", enc(fmt, "a|"));
+        assertEquals("\"a|\"", enc(fmt, "a|"));
+        assertEquals("\"a|b\"", enc(fmt, "a|b"));
 
-        CsvFormat fmtNone = CsvFormat.defaultFormat().quote(Quote.none()).delimiter("||").build();
-        assertEquals("a|", enc(fmtNone, "a|"));
+        CsvFormat fmtEscape = CsvFormat.defaultFormat()
+                .quote(Quote.none())
+                .escape(Escape.BACKSLASH)
+                .delimiter("||")
+                .build();
+        assertEquals("a\\|", enc(fmtEscape, "a|"));
+        assertEquals("a\\|b", enc(fmtEscape, "a|b"));
+
+        CsvFormat fmtNone = CsvFormat.defaultFormat().quote(Quote.none()).escape(Escape.NONE).delimiter("||").build();
+        assertEquals("a|b", enc(fmtNone, "a|b"));
+        assertThrows(IllegalArgumentException.class, () -> enc(fmtNone, "a|"));
+        assertThrows(IllegalArgumentException.class, () -> enc(fmtNone, "a||b"));
+    }
+
+    @Test
+    public void trim_edgeWhitespace() throws IOException {
+        // unquoted values are trimmed by the parser
+        CsvFormat fmt = CsvFormat.defaultFormat().trim(Trim.FULL).build();
+        assertEquals("\" a\"", enc(fmt, " a"));
+        assertEquals("\"a\t\"", enc(fmt, "a\t"));
+        assertEquals("a b", enc(fmt, "a b"));
+
+        CsvFormat fmtLeft = CsvFormat.defaultFormat().trim(Trim.LEFT).build();
+        assertEquals("\" a\"", enc(fmtLeft, " a"));
+        assertEquals("a ", enc(fmtLeft, "a "));
+
+        CsvFormat fmtNone = CsvFormat.defaultFormat().trim(Trim.FULL).quote(Quote.none()).build();
+        assertEquals("a b", enc(fmtNone, "a b"));
+        assertThrows(IllegalArgumentException.class, () -> enc(fmtNone, "a "));
     }
 
     @Test
@@ -223,7 +263,6 @@ public class DefaultFieldEncoderTest {
     public void quoteNone_escapeCustom() throws IOException {
         CsvFormat fmt = CsvFormat.defaultFormat().quote(Quote.none()).escape('$').build();
         assertEquals("a$,b", enc(fmt, "a,b"));
-        assertEquals("a$\rb", enc(fmt, "a\rb"));
         assertEquals("a$$b", enc(fmt, "a$b"));
         assertEquals("a\\b", enc(fmt, "a\\b"));
     }
@@ -262,9 +301,37 @@ public class DefaultFieldEncoderTest {
         assertThrows(IllegalArgumentException.class, () -> enc(fmtNone, ""));
     }
 
+    @Test
+    public void nullString_unrepresentableThrows() throws IOException {
+        // a null is saved unquoted, so the null string must be readable as is
+        assertThrows(IllegalArgumentException.class,
+                () -> enc(CsvFormat.defaultFormat().nullString("N,A").build(), null));
+        assertThrows(IllegalArgumentException.class,
+                () -> enc(CsvFormat.defaultFormat().nullString("N\nA").build(), null));
+        assertThrows(IllegalArgumentException.class,
+                () -> enc(CsvFormat.defaultFormat().nullString("\"N\"").build(), null));
+        assertThrows(IllegalArgumentException.class,
+                () -> enc(CsvFormat.defaultFormat().escape(Escape.BACKSLASH).nullString("\\N").build(), null));
+        assertThrows(IllegalArgumentException.class,
+                () -> enc(CsvFormat.defaultFormat().trim(Trim.FULL).nullString(" N ").build(), null));
+
+        // no restrictions when there are no nulls to encode
+        assertEquals("a", enc(CsvFormat.defaultFormat().nullString("N,A").build(), "a"));
+
+        assertEquals("\\N", enc(CsvFormat.defaultFormat().nullString("\\N").build(), null));
+        assertEquals(" N ", enc(CsvFormat.defaultFormat().nullString(" N ").build(), null));
+    }
+
+    @Test
+    public void nullString_commentPrefixAtLineStartThrows() throws IOException {
+        CsvFormat fmt = CsvFormat.defaultFormat().nullString("#N/A").enableComments("#").build();
+        assertEquals("#N/A", enc(fmt, null));
+        assertThrows(IllegalArgumentException.class, () -> encAtLineStart(fmt, null));
+    }
+
     private static String encAtLineStart(CsvFormat fmt, Object value) throws IOException {
         StringBuilder sb = new StringBuilder();
-        new DefaultFieldEncoder(fmt).encodeAtLineStart(value, sb);
+        new FieldEncoder(fmt).encodeAtLineStart(value, sb);
         return sb.toString();
     }
 }

@@ -307,7 +307,9 @@ public class CsvFormat {
                 this.delimiter = new Delimiter(delimiter);
             }
 
-            this.lineBreak = switch (format.getRecordSeparator()) {
+            // the record separator is null for the formats created with CSVFormat.newFormat(..)
+            String recordSeparator = format.getRecordSeparator();
+            this.lineBreak = recordSeparator == null ? LineBreak.AUTO : switch (recordSeparator) {
                 case "\r" -> LineBreak.CR;
                 case "\n" -> LineBreak.LF;
                 default -> LineBreak.AUTO;

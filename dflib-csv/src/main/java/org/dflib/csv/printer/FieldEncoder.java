@@ -3,6 +3,7 @@ package org.dflib.csv.printer;
 import org.dflib.csv.parser.format.CsvFormat;
 import org.dflib.csv.parser.format.Escape;
 import org.dflib.csv.parser.format.Quote;
+import org.dflib.csv.parser.format.Trim;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -12,7 +13,7 @@ import java.util.Objects;
  * Encodes a single CSV field value to its textual representation
  * according to the rules defined in {@link CsvFormat}.
  */
-class DefaultFieldEncoder {
+class FieldEncoder {
 
     private final Quote quote;
     private final char quoteChar;
@@ -23,8 +24,12 @@ class DefaultFieldEncoder {
     private final char delimiterFirstChar;
     private final String nullString;
     private final String comment;
+    private final boolean trimLeft;
+    private final boolean trimRight;
+    private final String nullStringError;
+    private final boolean nullStringIsComment;
 
-    DefaultFieldEncoder(CsvFormat format) {
+    FieldEncoder(CsvFormat format) {
         Objects.requireNonNull(format);
 
         this.quote = format.quote();
@@ -36,6 +41,13 @@ class DefaultFieldEncoder {
         this.delimiterFirstChar = delimiter[0];
         this.nullString = format.nullString();
         this.comment = format.comment();
+
+        Trim trim = format.trim();
+        this.trimLeft = trim == Trim.LEFT || trim == Trim.FULL;
+        this.trimRight = trim == Trim.RIGHT || trim == Trim.FULL;
+
+        this.nullStringError = nullStringError();
+        this.nullStringIsComment = nullString != null && comment != null && nullString.startsWith(comment);
     }
 
     /**
@@ -62,6 +74,7 @@ class DefaultFieldEncoder {
     private void encode(Object value, boolean lineStart, Appendable out) throws IOException {
         if (value == null) {
             if (nullString != null) {
+                checkNullRepresentable(lineStart);
                 out.append(nullString);
             }
             return;
@@ -88,8 +101,13 @@ class DefaultFieldEncoder {
             return false;
         }
 
-        // a value at the start of the line would be read as a comment
+        // a value at the start of a line would be read as a comment. Quoting it in any position for consistency
         if (comment != null && s.startsWith(comment)) {
+            return true;
+        }
+
+        // unquoted values are trimmed by the parser
+        if (isTrimmable(s)) {
             return true;
         }
 
@@ -97,16 +115,19 @@ class DefaultFieldEncoder {
         char quoteChar = this.quoteChar;
         char delimiterFirstChar = this.delimiterFirstChar;
 
-        // an unquoted escape char would be interpreted by the parser, so such values must be quoted (and escaped)
-        char escapeChar = hasEscapeChar ? this.escapeChar : quoteChar;
+        // an unquoted escape char would be interpreted by the parser, so such values must be quoted (and escaped).
+        // Without an escape char, falling back to the quote char to keep the loop condition simple
+        char escapeOrQuoteChar = hasEscapeChar ? this.escapeChar : quoteChar;
 
         for (int i = 0, len = s.length(); i < len; i++) {
             char c = s.charAt(i);
             if (c == quoteChar
                     || c == '\r'
                     || c == '\n'
-                    || c == escapeChar
-                    || (c == delimiterFirstChar && isDelimiterAt(s, i))) {
+                    || c == escapeOrQuoteChar
+                    // not checking for the full delimiter match, as a value that ends with a part of a multi-char
+                    // delimiter would form a delimiter together with the one that follows it
+                    || c == delimiterFirstChar) {
                 return true;
             }
         }
@@ -153,22 +174,81 @@ class DefaultFieldEncoder {
                     "Can't encode a value starting with the comment prefix at the start of a line without quoting: "
                             + s);
         }
+
+        if (isTrimmable(s)) {
+            throw new IllegalArgumentException(
+                    "Can't encode a value with leading or trailing whitespace without quoting, as it will be trimmed "
+                            + "when read: " + s);
+        }
+    }
+
+    // a null is always saved unquoted, as a quoted value is never read as null. So the null string must be readable
+    // as is
+    private void checkNullRepresentable(boolean lineStart) {
+        if (nullStringError != null) {
+            throw new IllegalArgumentException(
+                    "Can't encode a null, as the null string " + nullStringError + ": " + nullString);
+        }
+
+        if (lineStart && nullStringIsComment) {
+            throw new IllegalArgumentException(
+                    "Can't encode a null at the start of a line, as the null string starts with the comment prefix: "
+                            + nullString);
+        }
+    }
+
+    private String nullStringError() {
+        String s = nullString;
+        if (s == null) {
+            return null;
+        }
+
+        if (isTrimmable(s)) {
+            return "has leading or trailing whitespace that will be trimmed when read";
+        }
+
+        for (int i = 0, len = s.length(); i < len; i++) {
+            char c = s.charAt(i);
+            if (c == '\r' || c == '\n') {
+                return "contains a line break";
+            } else if (c == delimiterFirstChar) {
+                return "contains a delimiter char";
+            } else if (!quote.noQuote() && c == quoteChar) {
+                return "contains the quote char";
+            } else if (hasEscapeChar && c == escapeChar) {
+                return "contains the escape char";
+            }
+        }
+
+        return null;
+    }
+
+    private boolean isTrimmable(String s) {
+        return !s.isEmpty()
+                && ((trimLeft && Character.isWhitespace(s.charAt(0)))
+                || (trimRight && Character.isWhitespace(s.charAt(s.length() - 1))));
     }
 
     private void encodeUnquoted(String s, Appendable out) throws IOException {
         int runStart = 0;
         for (int i = 0, len = s.length(); i < len; i++) {
             char c = s.charAt(i);
-            if (c == '\r' || c == '\n' || isDelimiterAt(s, i)) {
-                if (!hasEscapeChar) {
+            if (c == '\r' || c == '\n') {
+                // the parser can't read escaped line breaks outside of quotes
+                throw new IllegalArgumentException("Can't encode a value containing a line break without quoting: " + s);
+            } else if (c == delimiterFirstChar) {
+                if (hasEscapeChar) {
+                    // escaping every occurrence of the first delimiter char (and not just the full delimiters), as a
+                    // value that ends with a part of a multi-char delimiter would form a delimiter together with the
+                    // one that follows it
+                    appendRun(s, runStart, i, out);
+                    out.append(escapeChar);
+                    runStart = i;
+                } else if (isDelimiterOrItsPrefixAt(s, i)) {
                     throw new IllegalArgumentException(
-                            "Can't encode a value containing a delimiter or a line break without quoting and with no "
-                                    + "escape char. Use Escape.BACKSLASH or a custom escape char: " + s);
+                            "Can't encode a value containing a delimiter, or ending with a part of it, without quoting "
+                                    + "and with no escape char. Use Escape.BACKSLASH or a custom escape char: " + s);
                 }
-
-                appendRun(s, runStart, i, out);
-                out.append(escapeChar);
-                runStart = i;
             } else if (hasEscapeChar && c == escapeChar) {
                 appendRun(s, runStart, i, out);
                 out.append(escapeChar);
@@ -192,21 +272,10 @@ class DefaultFieldEncoder {
         }
     }
 
-    private boolean isDelimiterAt(String s, int index) {
-        if (s.charAt(index) != delimiterFirstChar) {
-            return false;
-        }
-
-        int delimiterLength = delimiter.length;
-        if (delimiterLength == 1) {
-            return true;
-        }
-
-        if (index + delimiterLength > s.length()) {
-            return false;
-        }
-
-        for (int i = 1; i < delimiterLength; i++) {
+    // checks whether there's a delimiter at the index, or a beginning of a multi-char delimiter at the end of the value
+    private boolean isDelimiterOrItsPrefixAt(String s, int index) {
+        int len = Math.min(delimiter.length, s.length() - index);
+        for (int i = 0; i < len; i++) {
             if (s.charAt(index + i) != delimiter[i]) {
                 return false;
             }

@@ -28,6 +28,11 @@ class ColumnEndQuotedFactory implements RuleFactory {
 
         @Override
         public int consume(RuleContext context, DataSlice slice) {
+            if (!context.activeSlice().quoted()) {
+                // an unquoted column in place of a mandatory quoted one, there's no closing quote to look for
+                return slice.from();
+            }
+
             boolean pendingQuote = false;
             trailingQuoteOffsetAtEof = -1;
             char[] data = slice.data();
@@ -84,6 +89,11 @@ class ColumnEndQuotedFactory implements RuleFactory {
 
         @Override
         public int consume(RuleContext context, DataSlice slice) {
+            if (!context.activeSlice().quoted()) {
+                // an unquoted column in place of a mandatory quoted one, there's no closing quote to look for
+                return slice.from();
+            }
+
             char[] data = slice.data();
             int from = slice.from();
             int to = slice.to();
@@ -123,6 +133,11 @@ class ColumnEndQuotedFactory implements RuleFactory {
 
         @Override
         public int consume(RuleContext context, DataSlice slice) {
+            if (!context.activeSlice().quoted()) {
+                // an unquoted column in place of a mandatory quoted one, there's no closing quote to look for
+                return slice.from();
+            }
+
             char[] data = slice.data();
             int from = slice.from();
             int to = slice.to();

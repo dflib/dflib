@@ -135,3 +135,7 @@ return Hardwood's `dev.hardwood.schema.FileSchema` instead of `org.apache.parque
 `CsvLoader.nullString(..)` and `CsvLoader.emptyStringIsNull()` no longer convert quoted values to nulls. E.g., with 
 `nullString("NULL")`, an unquoted `NULL` is still read as null, while `"NULL"` is read as the `NULL` string (and `""` 
 is read as an empty string with `emptyStringIsNull()`). 
+
+### [dflib #654](https://github.com/dflib/dflib/issues/654)
+`CsvSaver` no longer uses "commons-csv" for writing, and `CsvSaver.format(CSVFormat)` is deprecated in favor of 
+`CsvSaver.format(CsvFormat)`. The CSV output may differ from the previous versions.
