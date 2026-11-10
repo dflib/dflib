@@ -1102,9 +1102,11 @@ public interface Exp<T> {
     }
 
     /**
-     * Casts this expression to a numeric type determined at eval time by scanning actual data.
-     * Picks the widest numeric type present in the data (e.g., all ints → Integer, mixed → BigDecimal).
-     * Non-numeric values are converted via {@code toString()} and parsed as {@link BigDecimal}.
+     * Casts this expression to a numeric type determined at eval time from the inferred type of the evaluated data
+     * (see {@link Series#getInferredType()}). E.g., a Series of Integers is processed as Integer, a Series of
+     * BigDecimals - as BigDecimal. Non-numeric values (e.g., Strings) are converted via {@code toString()} and parsed
+     * as {@link BigDecimal}. A Series that contains a mix of different numeric types is not supported and will result
+     * in an exception.
      *
      * @since 2.0.0
      */

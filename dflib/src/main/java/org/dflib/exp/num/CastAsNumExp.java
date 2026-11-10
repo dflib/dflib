@@ -4,7 +4,7 @@ import org.dflib.Exp;
 import org.dflib.NumExp;
 
 /**
- * Casts this expression to a numeric type determined at eval time by scanning actual data.
+ * Casts this expression to a numeric type determined at eval time from the inferred type of the data.
  *
  * @since 2.0.0
  */

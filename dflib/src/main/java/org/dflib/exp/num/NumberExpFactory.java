@@ -4,8 +4,10 @@ import org.dflib.Condition;
 import org.dflib.DecimalExp;
 import org.dflib.Exp;
 import org.dflib.NumExp;
+import org.dflib.Series;
 
 import java.math.BigInteger;
+import java.util.function.BiFunction;
 
 class NumberExpFactory extends NumericExpFactory {
 
@@ -51,32 +53,32 @@ class NumberExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<Integer> castAsInt(NumExp<?> exp) {
-        return IntExp1.map("castAsInt", cast(exp), s -> NumberTypeSupport.convert(s, RANK_INT));
+        return IntExp1.map("castAsInt", cast(exp), s -> castResolved(s, NumericExpFactory::castAsInt));
     }
 
     @Override
     public NumExp<Long> castAsLong(NumExp<?> exp) {
-        return LongExp1.map("castAsLong", cast(exp), s -> NumberTypeSupport.convert(s, RANK_LONG));
+        return LongExp1.map("castAsLong", cast(exp), s -> castResolved(s, NumericExpFactory::castAsLong));
     }
 
     @Override
     public NumExp<Double> castAsDouble(NumExp<?> exp) {
-        return DoubleExp1.map("castAsDouble", cast(exp), s -> NumberTypeSupport.convert(s, RANK_DOUBLE));
+        return DoubleExp1.map("castAsDouble", cast(exp), s -> castResolved(s, NumericExpFactory::castAsDouble));
     }
 
     @Override
     public NumExp<Float> castAsFloat(NumExp<?> exp) {
-        return FloatExp1.map("castAsFloat", cast(exp), s -> NumberTypeSupport.convert(s, RANK_FLOAT));
+        return FloatExp1.map("castAsFloat", cast(exp), s -> castResolved(s, NumericExpFactory::castAsFloat));
     }
 
     @Override
     public NumExp<BigInteger> castAsBigint(NumExp<?> exp) {
-        return BigintExp1.map("castAsBigint", cast(exp), s -> NumberTypeSupport.convert(s, RANK_BIG_INTEGER));
+        return BigintExp1.map("castAsBigint", cast(exp), s -> castResolved(s, NumericExpFactory::castAsBigint));
     }
 
     @Override
     public DecimalExp castAsDecimal(NumExp<?> exp) {
-        return DecimalExp1.map("castAsDecimal", cast(exp), s -> NumberTypeSupport.convert(s, RANK_BIG_DECIMAL));
+        return DecimalExp1.map("castAsDecimal", cast(exp), s -> castResolved(s, NumericExpFactory::castAsDecimal));
     }
 
     @Override
@@ -182,5 +184,10 @@ class NumberExpFactory extends NumericExpFactory {
     @SuppressWarnings("unchecked")
     private Exp<Number> cast(Exp<?> exp) {
         return (Exp<Number>) exp;
+    }
+
+    private static <T> Series<T> castResolved(Series<Number> s, BiFunction<NumericExpFactory, NumExp<?>, ? extends Exp<T>> cast) {
+        ResolvedNumExp<?> resolved = NumberTypeResolver.resolve(s);
+        return cast.apply(NumericExpFactory.factory(resolved.getType()), resolved).eval(s);
     }
 }
