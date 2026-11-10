@@ -46,6 +46,16 @@ public class ExpParamsTest {
                         new Object[]{"abc"},
                         $strVal("abc")
                 ),
+                arguments(
+                        "(?)",
+                        new Object[]{1},
+                        $intVal(1)
+                ),
+                arguments(
+                        "(?)",
+                        new Object[]{true},
+                        $boolVal(true)
+                ),
 
                 arguments(
                         "? = 1",
@@ -216,6 +226,31 @@ public class ExpParamsTest {
                         new Object[]{"a"},
                         $col("a").eq($intVal(10))
                 )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void parameterError(String text, Object[] args, String expectedMessage) {
+        QLParserException e = assertThrows(QLParserException.class, () -> parseExp(text, args));
+        assertEquals(expectedMessage, e.getMessage());
+    }
+
+    static Stream<Arguments> parameterError() {
+        return Stream.of(
+                arguments("trim(?)", new Object[0],
+                        "Parameter '?' at 1:5 has no value: 0 parameter(s) bound, at least 1 used"),
+                arguments("int(a) > ? and\nstr(b) = ?", new Object[]{1},
+                        "Parameter '?' at 2:9 has no value: 1 parameter(s) bound, at least 2 used"),
+                arguments("int(a) in ?", new Object[]{5},
+                        "Parameter '?' at 1:10 is used as a list, so its value must be an array or a collection,"
+                                + " got: java.lang.Integer"),
+                arguments("int(?) > 1", new Object[]{1.1f},
+                        "Column 'int(..)' at 1:0 expects an integer index or a string name, got: 1.1 (Float)"),
+                arguments("str(?) = 'a'", new Object[]{null},
+                        "Column 'str(..)' at 1:0 expects an integer index or a string name, got: null"),
+                arguments("int(3000000000)", new Object[0],
+                        "Column 'int(..)' at 1:0 expects an integer index or a string name, got: 3000000000 (Long)")
         );
     }
 
