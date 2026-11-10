@@ -210,7 +210,7 @@ public class QLFunctionReflectionTest extends BaseQLFunctionsTest {
         Exp<?> exp = parseExp("dec(castAsNumber(a))");
         assertEquals($col("a").castAsNumber().castAsDecimal().abs(), exp);
 
-        DataFrame df = DataFrame.foldByColumn("a").of(-1, 2.5, -3L);
+        DataFrame df = DataFrame.foldByColumn("a").of("-1", "2.5", "-3");
         new SeriesAsserts(exp.eval(df)).expectData(new BigDecimal("1"), new BigDecimal("2.5"), new BigDecimal("3"));
     }
 
