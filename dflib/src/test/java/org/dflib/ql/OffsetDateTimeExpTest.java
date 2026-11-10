@@ -61,7 +61,9 @@ public class OffsetDateTimeExpTest {
                 arguments("castAsOffsetDateTime(null)", $val(null).castAsOffsetDateTime()),
                 arguments("castAsOffsetDateTime(1)", $intVal(1).castAsOffsetDateTime()),
                 arguments("castAsOffsetDateTime(true)", $boolVal(true).castAsOffsetDateTime()),
-                arguments("castAsOffsetDateTime('1')", $strVal("1").castAsOffsetDateTime())
+                arguments("castAsOffsetDateTime('1')", $strVal("1").castAsOffsetDateTime()),
+                arguments("castAsOffsetDateTime('31/01/2024 12:34:56 +01:00', 'dd/MM/yyyy HH:mm:ss XXX')",
+                        $strVal("31/01/2024 12:34:56 +01:00").castAsOffsetDateTime("dd/MM/yyyy HH:mm:ss XXX"))
         );
     }
 

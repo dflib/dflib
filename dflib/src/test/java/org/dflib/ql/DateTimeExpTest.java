@@ -60,7 +60,9 @@ public class DateTimeExpTest {
                 arguments("castAsDateTime(null)", $val(null).castAsDateTime()),
                 arguments("castAsDateTime(1)", $intVal(1).castAsDateTime()),
                 arguments("castAsDateTime(true)", $boolVal(true).castAsDateTime()),
-                arguments("castAsDateTime('1')", $strVal("1").castAsDateTime())
+                arguments("castAsDateTime('1')", $strVal("1").castAsDateTime()),
+                arguments("castAsDateTime('31/01/2024 12:34:56', 'dd/MM/yyyy HH:mm:ss')",
+                        $strVal("31/01/2024 12:34:56").castAsDateTime("dd/MM/yyyy HH:mm:ss"))
         );
     }
 
