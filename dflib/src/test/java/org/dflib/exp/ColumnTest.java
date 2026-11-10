@@ -56,9 +56,9 @@ public class ColumnTest {
     @Test
     public void castAsNumber() {
         NumExp<?> exp = $col(0).castAsNumber();
-        Series<Object> s = Series.of(new BigDecimal("5.01"), null, 12L, 1);
+        Series<Object> s = Series.of(new BigDecimal("5.01"), null, new BigDecimal("12"));
         new SeriesAsserts(exp.eval(s))
-                .expectData(BigDecimal.valueOf(5.01), null, BigDecimal.valueOf(12), BigDecimal.valueOf(1));
+                .expectData(new BigDecimal("5.01"), null, new BigDecimal("12"));
     }
 
     @Test
