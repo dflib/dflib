@@ -2,15 +2,18 @@ package org.dflib.csv;
 
 import org.dflib.ByteSource;
 import org.dflib.DataFrame;
+import org.dflib.csv.parser.format.CsvFormat;
+import org.dflib.csv.parser.format.Quote;
 import org.dflib.junit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.math.BigDecimal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CsvLoader_EmptyValues {
+public class CsvLoader_EmptyValuesTest {
 
     static final ByteSource EMPTY_WHOLES = ByteSource.of("""
             One,Two
@@ -38,6 +41,63 @@ public class CsvLoader_EmptyValues {
     }
 
     @Test
+    public void nullString_MandatoryQuotes() {
+        String csv = """
+                "One","Two","Three"
+                "a",NULL,"NULL"
+                NULL, "b",NULL
+                ,"c",
+                "d","e",NULL""";
+
+        DataFrame df = new CsvLoader()
+                .format(CsvFormat.defaultFormat().quote(Quote.of('"')).build())
+                .nullString("NULL")
+                .load(ByteSource.of(csv.getBytes()));
+
+        // unquoted nulls are allowed with mandatory quotes, as quoted values are never null
+        new DataFrameAsserts(df, "One", "Two", "Three")
+                .expectHeight(4)
+                .expectRow(0, "a", null, "NULL")
+                .expectRow(1, null, "b", null)
+                .expectRow(2, "", "c", "")
+                .expectRow(3, "d", "e", null);
+    }
+
+    @Test
+    public void nullString_MandatoryQuotes_TabDelimiter() {
+        String csv = "\"One\"\t\"Two\"\t\"Three\"\n"
+                + "\"a\"\t\t\"c\"\n"
+                + "\t\"b\"\t\n"
+                + "NULL\t\t\"NULL\"";
+
+        DataFrame df = new CsvLoader()
+                .format(CsvFormat.defaultFormat().delimiter("\t").quote(Quote.of('"')).build())
+                .nullString("NULL")
+                .load(ByteSource.of(csv.getBytes()));
+
+        new DataFrameAsserts(df, "One", "Two", "Three")
+                .expectHeight(3)
+                .expectRow(0, "a", "", "c")
+                .expectRow(1, "", "b", "")
+                .expectRow(2, null, "", "NULL");
+    }
+
+    @Test
+    public void mandatoryQuotes_UnquotedWhitespaceAtEndOfFile() {
+        CsvFormat format = CsvFormat.defaultFormat().quote(Quote.of('"')).build();
+
+        // an unquoted whitespace-only value should be read the same way regardless of what follows it
+        for (String end : new String[]{"", "\n", "\n\"y\",\"z\""}) {
+            DataFrame df = new CsvLoader()
+                    .format(format)
+                    .load(ByteSource.of(("\"A\",\"B\"\n\"x\",  " + end).getBytes()));
+
+            assertEquals("x", df.getColumn("A").get(0), end);
+            assertEquals("  ", df.getColumn("B").get(0), end);
+        }
+    }
+
+    @Test
     public void nullStringSingleChar() {
         String csv = """
                 One,Two
@@ -48,9 +108,10 @@ public class CsvLoader_EmptyValues {
                 .nullString(":")
                 .load(ByteSource.of(csv.getBytes()));
 
+        // quoted values are never null
         new DataFrameAsserts(df, "One", "Two")
                 .expectHeight(2)
-                .expectRow(0, null, "three")
+                .expectRow(0, ":", "three")
                 .expectRow(1, "five", null);
     }
 
@@ -78,9 +139,10 @@ public class CsvLoader_EmptyValues {
                 .emptyStringIsNull()
                 .load(EMPTY_STRINGS);
 
+        // quoted values are never null
         new DataFrameAsserts(df, "One", "Two")
                 .expectHeight(2)
-                .expectRow(0, null, "three")
+                .expectRow(0, "", "three")
                 .expectRow(1, "five", null);
     }
 

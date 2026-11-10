@@ -83,4 +83,38 @@ class QuoteProcessorTest {
         String value = QuoteProcessor.unescapeQuote(DataSlice.of("a$\"$,$\"".toCharArray(), true), '$', '"');
         assertEquals("a\"$,\"", value);
     }
+
+    @Test
+    void quoteEscapedEscape() {
+        assertEquals("a\\b", QuoteProcessor.unescapeQuote(DataSlice.of("a\\\\b".toCharArray(), true), '\\', '"'));
+        assertEquals("a\\\"b", QuoteProcessor.unescapeQuote(DataSlice.of("a\\\\\\\"b".toCharArray(), true), '\\', '"'));
+        assertEquals("\\", QuoteProcessor.unescapeQuote(DataSlice.of("\\\\".toCharArray(), true), '\\', '"'));
+        assertEquals("abc\\", QuoteProcessor.unescapeQuote(DataSlice.of("abc\\".toCharArray(), true), '\\', '"'));
+    }
+
+    @Test
+    void quoteCustomEscapedEscape() {
+        String value = QuoteProcessor.unescapeQuote(DataSlice.of("a$$b$\"".toCharArray(), true), '$', '"');
+        assertEquals("a$b\"", value);
+    }
+
+    @Test
+    void quoteUnescapesWithinSliceBounds() {
+        char[] data = "xx,a\\\\b".toCharArray();
+        DataSlice slice = DataSlice.of(data, true);
+        slice.setFrom(3);
+
+        assertEquals("a\\b", QuoteProcessor.unescapeQuote(slice, '\\', '"'));
+        assertEquals("xx,", new String(data, 0, 3));
+    }
+
+    @Test
+    void anyUnescapesWithinSliceBounds() {
+        char[] data = "xx,a\\,b".toCharArray();
+        DataSlice slice = DataSlice.of(data, true);
+        slice.setFrom(3);
+
+        assertEquals("a,b", QuoteProcessor.unescapeAny(slice, '\\'));
+        assertEquals("xx,", new String(data, 0, 3));
+    }
 }

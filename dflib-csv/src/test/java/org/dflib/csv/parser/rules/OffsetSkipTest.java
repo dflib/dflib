@@ -169,6 +169,45 @@ class OffsetSkipTest {
         assertEquals(3, pos, "Should consume both CR and LF when available");
     }
 
+    @Test
+    void backslashEscapedBackslashBeforeClosingQuote() {
+        ParserContext ctx = newContext();
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
+                .lineBreak(LineBreak.LF)
+                .quote(Quote.of('"'))
+                .escape(Escape.BACKSLASH)
+                .build());
+
+        int pos = rule.consume(ctx, DataSlice.of(new char[]{'"', 'a', '\\', '\\', '"', '\n', 'x'}));
+        assertEquals(6, pos);
+    }
+
+    @Test
+    void backslashEscapedBackslashAcrossSlices() {
+        ParserContext ctx = newContext();
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
+                .lineBreak(LineBreak.LF)
+                .quote(Quote.of('"'))
+                .escape(Escape.BACKSLASH)
+                .build());
+
+        assertEquals(ParserRule.CONTINUE, rule.consume(ctx, DataSlice.of(new char[]{'"', 'a', '\\'})));
+        assertEquals(3, rule.consume(ctx, DataSlice.of(new char[]{'\\', '"', '\n'})));
+    }
+
+    @Test
+    void customEscapedEscapeBeforeClosingQuote() {
+        ParserContext ctx = newContext();
+        ParserRule rule = newRule(CsvFormat.defaultFormat()
+                .lineBreak(LineBreak.LF)
+                .quote(Quote.of('"'))
+                .escape('$')
+                .build());
+
+        int pos = rule.consume(ctx, DataSlice.of(new char[]{'"', 'a', '$', '$', '"', '\n', 'x'}));
+        assertEquals(6, pos);
+    }
+
     private ParserRule newRule(CsvFormat format) {
         return new OffsetSkipFactory.OffsetRowSkipRule(format);
     }

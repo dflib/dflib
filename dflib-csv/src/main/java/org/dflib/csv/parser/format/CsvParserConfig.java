@@ -213,6 +213,7 @@ public class CsvParserConfig {
          */
         @Deprecated(forRemoval = true)
         public Builder csvFormat(CSVFormat format) {
+            this.csvFormatBuilder().validateCommonsFormat(format);
             this.csvFormatBuilder().copyFrom(format);
             return this;
         }

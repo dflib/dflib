@@ -57,7 +57,8 @@ public final class QuoteProcessor {
             return slice.toString();
         }
 
-        int next = 0;
+        // unescaping in place, within the slice bounds, as the rest of the buffer may still hold unprocessed data
+        int next = from;
         for (int i = from; i < to; i++) {
             char c = data[i];
             if (c == escapeChar && i < to - 1) {
@@ -68,7 +69,7 @@ public final class QuoteProcessor {
             }
         }
 
-        return new String(data, 0, next);
+        return new String(data, from, next - from);
     }
 
     static String unescapeQuote(DataSlice slice, char escapeChar, char quoteChar) {
@@ -79,13 +80,17 @@ public final class QuoteProcessor {
         char[] data = slice.data();
         int from = slice.from();
         int to = slice.to();
-        int next = 0;
+        // in DOUBLE mode the escape char is the quote char, otherwise the escape char escapes itself as well
+        boolean escapesItself = escapeChar != quoteChar;
+
+        // unescaping in place, within the slice bounds, as the rest of the buffer may still hold unprocessed data
+        int next = from;
         boolean changed = false;
 
         for (int i = from; i < to; i++) {
             char c = data[i];
-            if (c == escapeChar && i < to - 1 && data[i + 1] == quoteChar) {
-                data[next++] = quoteChar;
+            if (c == escapeChar && i < to - 1 && (data[i + 1] == quoteChar || (escapesItself && data[i + 1] == escapeChar))) {
+                data[next++] = data[i + 1];
                 i++;
                 changed = true;
             } else {
@@ -93,6 +98,6 @@ public final class QuoteProcessor {
             }
         }
 
-        return changed ? new String(data, 0, next) : slice.toString();
+        return changed ? new String(data, from, next - from) : slice.toString();
     }
 }

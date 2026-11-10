@@ -11,8 +11,8 @@ class ColumnEndQuotedFactory implements RuleFactory {
         char quote = format.quote().quoteChar();
         return switch (format.escape()) {
             case DOUBLE -> new ColumnEndQuotedDouble(quote);
-            case BACKSLASH -> new ColumnEndQuotedBackslash(quote);
-            case CUSTOM -> new ColumnEndQuotedCustom(quote, format.escapeChar());
+            case BACKSLASH -> new ColumnEndQuotedEscaped(quote, '\\');
+            case CUSTOM -> new ColumnEndQuotedEscaped(quote, format.escapeChar());
             case NONE -> new ColumnEndQuotedNone(quote);
         };
     }
@@ -28,6 +28,11 @@ class ColumnEndQuotedFactory implements RuleFactory {
 
         @Override
         public int consume(RuleContext context, DataSlice slice) {
+            if (!context.activeSlice().quoted()) {
+                // an unquoted column in place of a mandatory quoted one, there's no closing quote to look for
+                return slice.from();
+            }
+
             boolean pendingQuote = false;
             trailingQuoteOffsetAtEof = -1;
             char[] data = slice.data();
@@ -68,57 +73,44 @@ class ColumnEndQuotedFactory implements RuleFactory {
         }
     }
 
-    static final class ColumnEndQuotedBackslash implements ParserRule {
-        private final char quote;
-
-        ColumnEndQuotedBackslash(char quote) {
-            this.quote = quote;
-        }
-
-        @Override
-        public int consume(RuleContext context, DataSlice slice) {
-            char[] data = slice.data();
-            int from = slice.from();
-            int to = slice.to();
-            for (int i = from; i < to; i++) {
-                if (data[i] == quote) {
-                    if (i - 1 >= from && data[i - 1] == '\\') {
-                        context.markColumnEscape();
-                        continue;
-                    }
-                    context.markColumnEnd(i, false);
-                    return i + 1;
-                }
-            }
-            return CONTINUE;
-        }
-
-        @Override
-        public void validateAtEof(RuleContext context) {
-            throw new IllegalStateException("No closing quote found");
-        }
-    }
-
-    static final class ColumnEndQuotedCustom implements ParserRule {
+    /**
+     * Handles quoted columns with an escape char distinct from the quote. Within a quoted value, the escape char
+     * escapes the quote char and itself, any other char following the escape is taken literally (along with the
+     * escape).
+     */
+    static final class ColumnEndQuotedEscaped implements ParserRule {
         private final char quote;
         private final char escapeChar;
 
-        ColumnEndQuotedCustom(char quote, char escapeChar) {
+        ColumnEndQuotedEscaped(char quote, char escapeChar) {
             this.quote = quote;
             this.escapeChar = escapeChar;
         }
 
         @Override
         public int consume(RuleContext context, DataSlice slice) {
+            if (!context.activeSlice().quoted()) {
+                // an unquoted column in place of a mandatory quoted one, there's no closing quote to look for
+                return slice.from();
+            }
+
             char[] data = slice.data();
             int from = slice.from();
             int to = slice.to();
             for (int i = from; i < to; i++) {
-                if (data[i] == quote) {
-                    if (i - 1 >= from && data[i - 1] == escapeChar) {
-                        context.markColumnEscape();
-                        continue;
+                char c = data[i];
+                if (c == escapeChar) {
+                    if (i + 1 >= to) {
+                        // need the next char to decide; the column will be rescanned when more data is available
+                        return CONTINUE;
                     }
+
+                    char next = data[i + 1];
+                    if (next == quote || next == escapeChar) {
+                        context.markColumnEscape();
+                    }
+                    i++;
+                } else if (c == quote) {
                     context.markColumnEnd(i, false);
                     return i + 1;
                 }
@@ -141,6 +133,11 @@ class ColumnEndQuotedFactory implements RuleFactory {
 
         @Override
         public int consume(RuleContext context, DataSlice slice) {
+            if (!context.activeSlice().quoted()) {
+                // an unquoted column in place of a mandatory quoted one, there's no closing quote to look for
+                return slice.from();
+            }
+
             char[] data = slice.data();
             int from = slice.from();
             int to = slice.to();

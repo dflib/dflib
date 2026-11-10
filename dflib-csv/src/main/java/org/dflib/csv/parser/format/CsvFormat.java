@@ -300,14 +300,16 @@ public class CsvFormat {
          * Copies compatible settings from Apache Commons CSV format.
          */
         public void copyFrom(CSVFormat format) {
-            validateCommonsFormat(format);
+            Objects.requireNonNull(format);
 
             String delimiter = format.getDelimiterString();
             if (delimiter != null && !delimiter.isEmpty()) {
                 this.delimiter = new Delimiter(delimiter);
             }
 
-            this.lineBreak = switch (format.getRecordSeparator()) {
+            // the record separator is null for the formats created with CSVFormat.newFormat(..)
+            String recordSeparator = format.getRecordSeparator();
+            this.lineBreak = recordSeparator == null ? LineBreak.AUTO : switch (recordSeparator) {
                 case "\r" -> LineBreak.CR;
                 case "\n" -> LineBreak.LF;
                 default -> LineBreak.AUTO;
@@ -357,7 +359,10 @@ public class CsvFormat {
             }
         }
 
-        private void validateCommonsFormat(CSVFormat format) {
+        /**
+         * Logs warnings for the commons-csv parsing settings not supported by the CSV parser.
+         */
+        void validateCommonsFormat(CSVFormat format) {
             Objects.requireNonNull(format);
             DuplicateHeaderMode duplicateHeaderMode = format.getDuplicateHeaderMode();
             if (duplicateHeaderMode != null && duplicateHeaderMode != DuplicateHeaderMode.ALLOW_ALL) {
