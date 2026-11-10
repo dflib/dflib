@@ -265,6 +265,21 @@ public class FloatColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void in_SameAsEq() {
+
+        DataFrame df = DataFrame.byColumn("a").of(Series.ofFloat(0.1f, 0.5f));
+
+        new BoolSeriesAsserts($float("a").eq(0.5).eval(df)).expectData(false, true);
+        new BoolSeriesAsserts($float("a").in(0.5).eval(df)).expectData(false, true);
+
+        new BoolSeriesAsserts($float("a").eq(0.1).eval(df)).expectData(false, false);
+        new BoolSeriesAsserts($float("a").in(0.1).eval(df)).expectData(false, false);
+
+        new BoolSeriesAsserts($float("a").eq(new BigDecimal("0.1")).eval(df)).expectData(false, false);
+        new BoolSeriesAsserts($float("a").in(new BigDecimal("0.1")).eval(df)).expectData(false, false);
+    }
+
+    @Test
     public void testEquals() {
         assertExpEquals(
                 $float("a"),

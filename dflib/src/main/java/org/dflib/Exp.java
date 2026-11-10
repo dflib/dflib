@@ -826,7 +826,7 @@ public interface Exp<T> {
     }
 
     default Condition notIn(Object... values) {
-        return MapCondition1.map("in", this, s -> s.notIn(values));
+        return MapCondition1.map("notIn", this, s -> s.notIn(values));
     }
 
     default Condition isNull() {
