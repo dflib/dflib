@@ -3,6 +3,7 @@ package org.dflib;
 import org.dflib.f.CachingSupplier;
 import org.dflib.print.InlineClassExposingPrinter;
 import org.dflib.print.Printer;
+import org.dflib.ql.QLContext;
 
 import java.net.http.HttpClient;
 import java.util.Objects;
@@ -26,7 +27,9 @@ public class Environment {
                 ForkJoinPool.commonPool(),
                 5000,
                 new InlineClassExposingPrinter(),
-                createDefaultHttpClientSupplier());
+                createDefaultHttpClientSupplier(),
+                createDefaultQLContextSupplier()
+        );
 
         commonEnv = new AtomicReference<>(defaultEnv);
     }
@@ -38,6 +41,9 @@ public class Environment {
     // HttpClient creates at least 2 threads active until it is garbage collected. So create it lazily.
     // Note that HttpClient doesn't require an explicit shutdown.
     private final Supplier<HttpClient> lazyHttpClient;
+
+    // Building the default QL context is expensive and is not needed unless QL is used. So create it lazily.
+    private final Supplier<QLContext> lazyQLContext;
 
     public static Environment commonEnv() {
         return commonEnv.get();
@@ -51,6 +57,10 @@ public class Environment {
         return new CachingSupplier<>(s);
     }
 
+    private static Supplier<QLContext> createDefaultQLContextSupplier() {
+        return new CachingSupplier<>(() -> QLContext.builder().build());
+    }
+
     /**
      * Sets the singleton thread pool used by parallelizable operations. Intended for the apps to override the default
      * pool configured by DFLib.
@@ -61,7 +71,8 @@ public class Environment {
                 threadPool,
                 old.parallelExecThreshold,
                 old.printer,
-                old.lazyHttpClient));
+                old.lazyHttpClient,
+                old.lazyQLContext));
     }
 
     /**
@@ -72,7 +83,8 @@ public class Environment {
                 old.threadPool,
                 parallelExecThreshold,
                 old.printer,
-                old.lazyHttpClient));
+                old.lazyHttpClient,
+                old.lazyQLContext));
     }
 
     /**
@@ -83,7 +95,8 @@ public class Environment {
                 old.threadPool,
                 old.parallelExecThreshold,
                 printer,
-                old.lazyHttpClient));
+                old.lazyHttpClient,
+                old.lazyQLContext));
     }
 
     /**
@@ -96,7 +109,8 @@ public class Environment {
                 old.threadPool,
                 old.parallelExecThreshold,
                 old.printer,
-                supplier));
+                supplier,
+                old.lazyQLContext));
     }
 
     /**
@@ -107,7 +121,28 @@ public class Environment {
                 old.threadPool,
                 old.parallelExecThreshold,
                 old.printer,
-                new CachingSupplier<>(clientSupplier)));
+                new CachingSupplier<>(clientSupplier),
+                old.lazyQLContext));
+    }
+
+    /**
+     * Sets the common context of the QL parser used by the QL String methods of DataFrame, Series, etc., e.g.
+     * {@code setQLContext(QLContext.builder().function("myFn", Udf1.of(e -> e.castAsStr().trim())).build())}.
+     * Passing null resets the context to the default one.
+     *
+     * @since 2.0.0
+     */
+    public static void setQLContext(QLContext qlContext) {
+        Supplier<QLContext> supplier = qlContext != null
+                ? () -> qlContext
+                : createDefaultQLContextSupplier();
+
+        resetEnv(old -> new Environment(
+                old.threadPool,
+                old.parallelExecThreshold,
+                old.printer,
+                old.lazyHttpClient,
+                supplier));
     }
 
     static void resetEnv(UnaryOperator<Environment> envFactory) {
@@ -123,11 +158,13 @@ public class Environment {
             ExecutorService threadPool,
             int parallelExecThreshold,
             Printer printer,
-            Supplier<HttpClient> lazyHttpClient) {
+            Supplier<HttpClient> lazyHttpClient,
+            Supplier<QLContext> lazyQLContext) {
         this.threadPool = threadPool;
         this.parallelExecThreshold = parallelExecThreshold;
         this.printer = printer;
         this.lazyHttpClient = lazyHttpClient;
+        this.lazyQLContext = lazyQLContext;
     }
 
     public ExecutorService threadPool() {
@@ -152,6 +189,15 @@ public class Environment {
      */
     public HttpClient httpClient() {
         return lazyHttpClient.get();
+    }
+
+    /**
+     * Returns a lazily-created common context of the QL parser
+     *
+     * @since 2.0.0
+     */
+    public QLContext qlContext() {
+        return lazyQLContext.get();
     }
 
     // only used by tests
