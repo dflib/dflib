@@ -6,9 +6,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Converts the elements of an "in" / "notIn" list to the value type of a primitive Series. Integer types take the
- * elements whose values they can represent exactly, floating-point types take any number. Elements that are not
- * numbers, or do not fit the type, are skipped, as they can not match a value of the Series.
+ * Converts the elements of an "in" / "notIn" list to the value type of a primitive Series. An element matches a
+ * Series value when the two are equal after widening to the wider of their types, the same as with the "eq"
+ * expression. So an element of a wider type is taken only if the Series type can represent it exactly, and an
+ * element of a narrower type is always taken. Elements that are not numbers, or cannot be represented, are skipped,
+ * as they cannot match a value of the Series.
  */
 final class NumberSet {
 
@@ -19,12 +21,10 @@ final class NumberSet {
         Set<Integer> set = new HashSet<>();
         if (values != null) {
             for (Object o : values) {
-                if (o instanceof Integer i) {
-                    set.add(i);
-                } else if (o instanceof Number n) {
+                if (o instanceof Number n) {
                     Long l = exactLong(n);
-                    if (l != null && (int) (long) l == l) {
-                        set.add((int) (long) l);
+                    if (l != null && l.intValue() == l) {
+                        set.add(l.intValue());
                     }
                 }
             }
@@ -51,7 +51,12 @@ final class NumberSet {
         Set<Double> set = new HashSet<>();
         if (values != null) {
             for (Object o : values) {
-                if (o instanceof Number n) {
+                if (o instanceof BigDecimal bd) {
+                    Double d = exactDouble(bd);
+                    if (d != null) {
+                        set.add(d);
+                    }
+                } else if (o instanceof Number n) {
                     set.add(n.doubleValue());
                 }
             }
@@ -64,7 +69,10 @@ final class NumberSet {
         if (values != null) {
             for (Object o : values) {
                 if (o instanceof Number n) {
-                    set.add(n.floatValue());
+                    Float f = exactFloat(n);
+                    if (f != null) {
+                        set.add(f);
+                    }
                 }
             }
         }
@@ -72,8 +80,31 @@ final class NumberSet {
     }
 
     /**
+     * Returns the value as a float. A double or a decimal is wider than a float, so null is returned when the
+     * conversion is not exact.
+     */
+    private static Float exactFloat(Number n) {
+        return switch (n) {
+            case Float f -> f;
+            case Double d -> (double) d.floatValue() == d ? Float.valueOf(d.floatValue()) : null;
+            case BigDecimal bd -> {
+                Double d = exactDouble(bd);
+                yield d != null && (double) d.floatValue() == d ? Float.valueOf(d.floatValue()) : null;
+            }
+            default -> n.floatValue();
+        };
+    }
+
+    private static Double exactDouble(BigDecimal bd) {
+        double d = bd.doubleValue();
+
+        // the same double to decimal conversion as the one used to compare the two in expressions
+        return Double.isFinite(d) && BigDecimal.valueOf(d).compareTo(bd) == 0 ? d : null;
+    }
+
+    /**
      * Returns the value as a long when the conversion is exact, or null when the value is fractional, out of the
-     * long range, or not a number.
+     * long range, or NaN.
      */
     private static Long exactLong(Number n) {
         return switch (n) {
@@ -85,7 +116,7 @@ final class NumberSet {
             case BigDecimal bd -> longOfDecimal(bd);
             case Float f -> longOfDouble(f.doubleValue());
             case Double d -> longOfDouble(d);
-            default -> longOfDecimal(BigDecimal.valueOf(n.doubleValue()));
+            default -> longOfDouble(n.doubleValue());
         };
     }
 

@@ -276,6 +276,21 @@ public class DoubleColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void in_SameAsEq() {
+
+        DataFrame df = DataFrame.byColumn("a").of(Series.ofDouble(0.1, 0.5));
+
+        new BoolSeriesAsserts($double("a").eq(0.5f).eval(df)).expectData(false, true);
+        new BoolSeriesAsserts($double("a").in(0.5f).eval(df)).expectData(false, true);
+
+        new BoolSeriesAsserts($double("a").eq(0.1f).eval(df)).expectData(false, false);
+        new BoolSeriesAsserts($double("a").in(0.1f).eval(df)).expectData(false, false);
+
+        new BoolSeriesAsserts($double("a").eq(new BigDecimal("0.1")).eval(df)).expectData(true, false);
+        new BoolSeriesAsserts($double("a").in(new BigDecimal("0.1")).eval(df)).expectData(true, false);
+    }
+
+    @Test
     public void testEquals() {
         assertExpEquals(
                 $double("a"),

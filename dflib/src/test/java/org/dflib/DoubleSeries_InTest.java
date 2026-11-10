@@ -21,6 +21,14 @@ public class DoubleSeries_InTest {
     }
 
     @Test
+    public void in_Decimal_Inexact() {
+        BooleanSeries s = Series.ofDouble(0.1, Double.POSITIVE_INFINITY).in(
+                new BigDecimal("0.1000000000000000055511151231257827"),
+                new BigDecimal("1e400"));
+        new SeriesAsserts(s).expectData(false, false);
+    }
+
+    @Test
     public void in_NonNumeric() {
         BooleanSeries s = Series.ofDouble(1., 2.).in("1", null, 2);
         new SeriesAsserts(s).expectData(false, true);
@@ -36,6 +44,18 @@ public class DoubleSeries_InTest {
     public void notIn() {
         BooleanSeries s = Series.ofDouble(1., 2., 3.).notIn(1, 3.0f);
         new SeriesAsserts(s).expectData(false, true, false);
+    }
+
+    @Test
+    public void in_NullArray() {
+        BooleanSeries s = Series.ofDouble(1., 2.).in((Object[]) null);
+        new SeriesAsserts(s).expectData(false, false);
+    }
+
+    @Test
+    public void notIn_NonNumeric() {
+        BooleanSeries s = Series.ofDouble(1., 2.).notIn("1", null);
+        new SeriesAsserts(s).expectData(true, true);
     }
 
     @Test

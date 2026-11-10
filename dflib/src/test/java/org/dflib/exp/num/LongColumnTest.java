@@ -248,6 +248,26 @@ public class LongColumnTest extends BaseExpTest {
     }
 
     @Test
+    public void in_IntVals() {
+
+        Condition c = $long("a").in(1, 3);
+
+        DataFrame df = DataFrame.byColumn("a").of(Series.ofLong(1L, 2L, 3L));
+
+        new BoolSeriesAsserts(c.eval(df)).expectData(true, false, true);
+    }
+
+    @Test
+    public void notIn_IntVals() {
+
+        Condition c = $long("a").notIn(1, 3);
+
+        DataFrame df = DataFrame.byColumn("a").of(Series.ofLong(1L, 2L, 3L));
+
+        new BoolSeriesAsserts(c.eval(df)).expectData(false, true, false);
+    }
+
+    @Test
     public void cumSum() {
         NumExp<?> exp = $long("a").cumSum();
 

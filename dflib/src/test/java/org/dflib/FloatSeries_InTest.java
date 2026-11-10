@@ -16,8 +16,15 @@ public class FloatSeries_InTest {
 
     @Test
     public void in_OtherNumericTypes() {
-        BooleanSeries s = Series.ofFloat(1f, 2.5f, 3f, 4f, 0.1f).in(1, 2.5, 3L, BigInteger.valueOf(4), new BigDecimal("0.1"));
+        BooleanSeries s = Series.ofFloat(1f, 2.5f, 3f, 4f, 0.5f).in(1, 2.5, 3L, BigInteger.valueOf(4), new BigDecimal("0.5"));
         new SeriesAsserts(s).expectData(true, true, true, true, true);
+    }
+
+    @Test
+    public void in_WiderTypes_Inexact() {
+        // a float is widened to compare with doubles and decimals, so the values a float can't represent don't match
+        BooleanSeries s = Series.ofFloat(0.1f, 0f, Float.POSITIVE_INFINITY).in(0.1, new BigDecimal("0.1"), 1e-50, 1e40);
+        new SeriesAsserts(s).expectData(false, false, false);
     }
 
     @Test
@@ -36,6 +43,18 @@ public class FloatSeries_InTest {
     public void notIn() {
         BooleanSeries s = Series.ofFloat(1f, 2f, 3f).notIn(1, 3.0);
         new SeriesAsserts(s).expectData(false, true, false);
+    }
+
+    @Test
+    public void in_NullArray() {
+        BooleanSeries s = Series.ofFloat(1f, 2f).in((Object[]) null);
+        new SeriesAsserts(s).expectData(false, false);
+    }
+
+    @Test
+    public void notIn_NonNumeric() {
+        BooleanSeries s = Series.ofFloat(1f, 2f).notIn("1", null);
+        new SeriesAsserts(s).expectData(true, true);
     }
 
     @Test
