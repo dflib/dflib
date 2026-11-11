@@ -53,14 +53,14 @@
         <bootique.version>4.0-M7</bootique.version>
         <testcontainers.version>2.0.5</testcontainers.version>
         <junit.version>6.1.3</junit.version>
-        <jsonpath.version>2.9.0</jsonpath.version>
-        <avro.version>1.12.1</avro.version>
+        <jsonpath.version>2.10.0</jsonpath.version>
+        <avro.version>1.12.2</avro.version>
         <jackson.version>2.22.4</jackson.version>
         <jackson.databind.version>2.22.4</jackson.databind.version>
-        <poi.version>5.4.1</poi.version>
-        <commons.csv.version>1.11.0</commons.csv.version>
+        <poi.version>5.5.1</poi.version>
+        <commons.csv.version>1.14.1</commons.csv.version>
         <commons.compress.version>1.28.0</commons.compress.version>
-        <commons.lang3.version>3.19.0</commons.lang3.version>
+        <commons.lang3.version>3.20.0</commons.lang3.version>
         <mustache.version>0.9.10</mustache.version>
         <parquet.version>1.18.0</parquet.version>
         <hardwood.version>1.1.0.Beta1</hardwood.version>
@@ -68,7 +68,7 @@
         <zstd.version>1.5.7-26</zstd.version>
         <lz4.version>1.11.4</lz4.version>
         <hadoop.version>3.4.2</hadoop.version>
-        <json.smart.version>2.6.0</json.smart.version>
+        <json.smart.version>2.6.1</json.smart.version>
 
         <jjava.version>1.0-a7</jjava.version>
         <mysql.version>9.6.0</mysql.version>

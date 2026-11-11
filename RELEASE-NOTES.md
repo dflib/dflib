@@ -9,6 +9,7 @@
 * #657 Upgrade to Log4j 2.26.1
 * #658 Upgrade test stack to Bootique 4.0-M7
 * #659 Upgrade Maven plugins
+* #660 Upgrade Avro, POI, commons-csv, json-path
 
 ## Release 2.0.0-M7
 
