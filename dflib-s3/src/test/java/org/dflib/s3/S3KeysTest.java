@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,6 +41,24 @@ public class S3KeysTest {
 
         // the folder itself may be hidden, but its contents are not considered hidden
         assertFalse(S3Keys.isHidden(".cache/", ".cache/a.csv"));
+    }
+
+    @Test
+    void toFolderPrefix() {
+        assertEquals("", S3Keys.toFolderPrefix(""));
+        assertEquals("a/", S3Keys.toFolderPrefix("a"));
+        assertEquals("a/", S3Keys.toFolderPrefix("a/"));
+        assertEquals("a/b/", S3Keys.toFolderPrefix("a/b"));
+    }
+
+    @Test
+    void checkRelativeKey() {
+        assertDoesNotThrow(() -> S3Keys.checkRelativeKey("a.csv"));
+        assertDoesNotThrow(() -> S3Keys.checkRelativeKey("a/b.csv"));
+        assertThrows(NullPointerException.class, () -> S3Keys.checkRelativeKey(null));
+        assertThrows(IllegalArgumentException.class, () -> S3Keys.checkRelativeKey(""));
+        assertThrows(IllegalArgumentException.class, () -> S3Keys.checkRelativeKey("/a.csv"));
+        assertThrows(IllegalArgumentException.class, () -> S3Keys.checkRelativeKey("a/"));
     }
 
     @Test
