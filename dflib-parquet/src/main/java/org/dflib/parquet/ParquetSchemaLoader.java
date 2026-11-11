@@ -2,6 +2,7 @@ package org.dflib.parquet;
 
 import dev.hardwood.InputFile;
 import dev.hardwood.reader.ParquetFileReader;
+import dev.hardwood.reader.ParquetReadException;
 import dev.hardwood.schema.FileSchema;
 import org.dflib.ByteSource;
 
@@ -47,6 +48,8 @@ public class ParquetSchemaLoader {
             return reader.getFileSchema();
         } catch (IOException e) {
             throw new UncheckedIOException("Error reading Parquet schema: " + resourceId, e);
+        } catch (ParquetReadException e) {
+            throw new RuntimeException("Error reading Parquet schema: " + resourceId, e);
         }
     }
 }

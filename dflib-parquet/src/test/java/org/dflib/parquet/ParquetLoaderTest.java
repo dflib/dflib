@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ParquetLoaderTest {
 
@@ -52,5 +53,13 @@ public class ParquetLoaderTest {
                 .expectRow(0, 1, 2, 3, 4)
                 .expectRow(1, 5, 6, 7, 8)
                 .expectRow(2, 9, 10, 11, 12);
+    }
+
+    @Test
+    public void corruptSource() {
+        ByteSources src = ByteSources.of(Map.of("bad", ByteSource.of("not a parquet file".getBytes())));
+
+        RuntimeException e = assertThrows(RuntimeException.class, () -> Parquet.loader().loadAll(src));
+        assertEquals("Error reading Parquet source: bad", e.getMessage());
     }
 }

@@ -8,6 +8,7 @@ import dev.hardwood.metadata.SchemaElement;
 import dev.hardwood.reader.ColumnReader;
 import dev.hardwood.reader.ColumnReaders;
 import dev.hardwood.reader.ParquetFileReader;
+import dev.hardwood.reader.ParquetReadException;
 import dev.hardwood.reader.RowReader;
 import dev.hardwood.schema.ColumnProjection;
 import dev.hardwood.schema.FileSchema;
@@ -119,6 +120,8 @@ public class ParquetLoader {
             return load(reader, resourceId);
         } catch (IOException e) {
             throw new UncheckedIOException("Error reading Parquet source: " + resourceId, e);
+        } catch (ParquetReadException e) {
+            throw new RuntimeException("Error reading Parquet source: " + resourceId, e);
         }
     }
 
@@ -169,7 +172,7 @@ public class ParquetLoader {
             List<String> dfCols,
             Map<String, ConvertedType> legacyTypes,
             Set<String> dictionaryEncoded,
-            int height) {
+            int height) throws IOException {
 
         int w = dfCols.size();
         BatchReader[] readers = new BatchReader[w];
@@ -206,7 +209,7 @@ public class ParquetLoader {
             List<String> dfCols,
             Map<String, ConvertedType> legacyTypes,
             Set<String> dictionaryEncoded,
-            int height) {
+            int height) throws IOException {
 
         int w = dfCols.size();
 
@@ -302,7 +305,7 @@ public class ParquetLoader {
         return (int) height;
     }
 
-    private RowReader rowReader(ParquetFileReader reader, FileSchema schema, List<String> dfCols) {
+    private RowReader rowReader(ParquetFileReader reader, FileSchema schema, List<String> dfCols) throws IOException {
         return dfCols.size() == schema.getRootNode().children().size()
                 ? reader.rowReader()
                 : reader.buildRowReader().projection(projection(schema, dfCols)).build();

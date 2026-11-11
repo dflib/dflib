@@ -102,7 +102,7 @@ public class SchemaCompiler {
                     "If BigDecimal is used, a decimal configuration must be provided in the setup of ParquetSaver");
         }
 
-        LogicalType decimal = new LogicalType.DecimalType(config.scale(), config.precision());
+        LogicalType decimal = new LogicalType.DecimalType(config.precision(), config.scale());
 
         PhysicalType type = config.precision() <= 9
                 ? PhysicalType.INT32

@@ -10,6 +10,7 @@
 * #658 Upgrade test stack to Bootique 4.0-M7
 * #659 Upgrade Maven plugins
 * #660 Upgrade Avro, POI, commons-csv, json-path
+* #661 Upgrade to Hardwood 1.1.0.Beta3
 
 ## Release 2.0.0-M7
 

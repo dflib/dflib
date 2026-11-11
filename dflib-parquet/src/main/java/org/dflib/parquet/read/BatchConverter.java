@@ -235,17 +235,18 @@ public interface BatchConverter {
         FromBytes decoder = dictionary ? bytesDictionary(f) : f;
         return (r, t, o, n) -> {
             byte[] buffer = r.getBinaryValues();
-            int[] offsets = r.getBinaryOffsets();
+            int[] starts = r.getBinaryStarts();
+            int[] ends = r.getBinaryEnds();
             Validity validity = r.getLeafValidity();
             if (validity.hasNulls()) {
                 for (int i = 0; i < n; i++) {
                     t[o + i] = validity.isNull(i)
                             ? null
-                            : decoder.get(buffer, offsets[i], offsets[i + 1] - offsets[i]);
+                            : decoder.get(buffer, starts[i], ends[i] - starts[i]);
                 }
             } else {
                 for (int i = 0; i < n; i++) {
-                    t[o + i] = decoder.get(buffer, offsets[i], offsets[i + 1] - offsets[i]);
+                    t[o + i] = decoder.get(buffer, starts[i], ends[i] - starts[i]);
                 }
             }
         };
