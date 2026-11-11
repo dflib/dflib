@@ -14,6 +14,7 @@
 * #661 Upgrade to Hardwood 1.1.0.Beta3
 * #662 Upgrade Hadoop and Parquet test dependencies
 * #663 Upgrade to JJava 1.0-a8
+* #664 Upgrade to POI 6.0.0
 
 ## Release 2.0.0-M7
 
