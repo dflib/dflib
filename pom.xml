@@ -70,7 +70,7 @@
         <hadoop.version>3.4.3</hadoop.version>
         <json.smart.version>2.6.1</json.smart.version>
 
-        <jjava.version>1.0-a7</jjava.version>
+        <jjava.version>1.0-a8</jjava.version>
         <mysql.version>9.6.0</mysql.version>
         <postgresql.version>42.7.14</postgresql.version>
         <antlr4.version>4.13.2</antlr4.version>
