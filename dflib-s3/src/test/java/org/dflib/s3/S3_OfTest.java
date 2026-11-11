@@ -1,9 +1,9 @@
 package org.dflib.s3;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,7 +19,8 @@ public class S3_OfTest {
             "s3://b/data/2024|b|data/2024/",
             "b|b|''",
             "b/data|b|data/",
-            "b/data/|b|data/"
+            "b/data/|b|data/",
+            "b/archive/http://x|b|archive/http://x/"
     })
     void of(String location, String expectedBucket, String expectedPrefix) {
         S3 s3 = S3.of(location);
@@ -28,7 +29,7 @@ public class S3_OfTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"", "s3://", "s3:///k", "/k", "http://b/k", "s3a://b/k"})
+    @ValueSource(strings = {"", "s3://", "s3:///k", "/k", "http://b/k", "s3a://b/k", "s3://b//k", "b//k", "s3:/b/k", "s3:b", "S3://b/k"})
     void of_Invalid(String location) {
         assertThrows(IllegalArgumentException.class, () -> S3.of(location));
     }
@@ -39,7 +40,7 @@ public class S3_OfTest {
     }
 
     @Test
-    void of_ToString() {
+    void toStringLocation() {
         assertEquals("s3://b/", S3.of("b").toString());
         assertEquals("s3://b/data/", S3.of("s3://b/data").toString());
     }

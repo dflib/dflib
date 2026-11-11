@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Helpers for manipulating S3 keys and folder prefixes. A folder prefix is either an empty String or a String ending
- * with "/".
+ * Helpers for S3 keys and folder prefixes (either empty or ending with "/").
  *
  * @since 2.0.0
  */

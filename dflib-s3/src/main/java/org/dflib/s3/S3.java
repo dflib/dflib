@@ -20,22 +20,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Represents a "folder" in S3-compatible storage, i.e., a bucket plus an optional key prefix. Allows to
- * work with multiple objects in the folder as {@link ByteSources}.
- * And S3 object is immutable. All the methods that change its configuration return a new instance.
- * <p>
- * This connector treats any key prefix ending with "/" or objects with keys ending with "/" are treated
- * as folders as well, and are never returned as data sources.
- * <p>
- * Unless an explicit client is provided via {@link #client(S3Client)}, a shared default client is created lazily on
- * first access to S3. It takes its region and credentials from the standard AWS SDK configuration chains (environment
- * variables, system properties, "~/.aws/config", etc.).
+ * Represents a "folder" in S3-compatible storage (a bucket plus an optional key prefix). Allows to work with multiple
+ * objects in the folder as {@link ByteSources}. Keys ending with "/" are treated as folders. Unless a client is set
+ * via {@link #client(S3Client)}, a shared default client configured via the standard AWS SDK settings is used.
  *
  * @since 2.0.0
  */
 public class S3 {
 
-    private static final String SCHEME = "s3://";
+    static final String SCHEME = "s3://";
 
     private final String bucket;
     private final String prefix;
@@ -57,7 +50,7 @@ public class S3 {
         this.bucket = Objects.requireNonNull(bucket);
         this.prefix = Objects.requireNonNull(prefix);
 
-        // can be null, in which case the default client is used
+        // null means the default client
         this.client = client;
 
         this.includeSubfolders = includeSubfolders;
@@ -67,23 +60,24 @@ public class S3 {
     }
 
     /**
-     * Creates an S3 folder from a location String that contains a bucket name and an optional key prefix. The location
-     * may start with the "s3://" scheme or omit it. The prefix is treated as a folder, and a trailing slash is added to
-     * it if missing. E.g., "s3://my-bucket", "s3://my-bucket/data/2024", "my-bucket/data/2024/" are all valid
-     * locations. This method doesn't access S3 and doesn't require AWS configuration.
+     * Creates an S3 folder from a location like "s3://bucket/prefix" or "bucket/prefix". Doesn't access S3.
      */
     public static S3 of(String location) {
         Objects.requireNonNull(location);
 
         String path = location.startsWith(SCHEME) ? location.substring(SCHEME.length()) : location;
-        if (path.contains("://")) {
-            throw new IllegalArgumentException("Unsupported location scheme. Only '" + SCHEME + "' is allowed: " + location);
-        }
 
         int slash = path.indexOf('/');
         String bucket = slash < 0
                 ? path
                 : path.substring(0, slash);
+
+        // bucket names can't contain ':', so it indicates an unsupported scheme
+        if (bucket.indexOf(':') >= 0) {
+            throw new IllegalArgumentException("Unsupported location scheme or invalid bucket name. Only '"
+                    + SCHEME + "' scheme is allowed: " + location);
+        }
+
         if (bucket.isEmpty()) {
             throw new IllegalArgumentException("No bucket name in location: " + location);
         }
@@ -91,6 +85,10 @@ public class S3 {
         String prefix = slash < 0
                 ? ""
                 : S3Keys.toFolderPrefix(path.substring(slash + 1));
+        if (prefix.startsWith("/")) {
+            throw new IllegalArgumentException("Key prefix can not start with '/': " + location);
+        }
+
         return new S3(bucket, prefix, null, false, null, null, false);
     }
 
@@ -99,17 +97,14 @@ public class S3 {
     }
 
     /**
-     * Returns the key prefix of this folder. It is either an empty String (for the bucket root), or a String ending
-     * with "/".
+     * Returns the key prefix, either an empty String or a String ending with "/".
      */
     public String getPrefix() {
         return prefix;
     }
 
     /**
-     * Returns a new S3 folder with an explicitly provided S3Client. The caller is responsible for the client
-     * lifecycle (e.g., closing it when no longer needed). If this method is not called, a shared default client is
-     * used.
+     * Returns an instance of S3 that uses the provided client. The caller is responsible for closing it.
      */
     public S3 client(S3Client client) {
         Objects.requireNonNull(client);
@@ -117,8 +112,7 @@ public class S3 {
     }
 
     /**
-     * Returns an instance of S3 that is a subfolder of this folder. S3 keys are not normalized, so "." and ".."
-     * are treated as literal names.
+     * Returns an instance of S3 that is a subfolder of this folder.
      */
     public S3 path(String subfolder) {
         String subPrefix = S3Keys.appendPath(prefix, subfolder);
@@ -129,8 +123,7 @@ public class S3 {
 
     /**
      * Returns an instance of S3 that will only include objects that match the provided predicate. Any other
-     * preconfigured filters (specific extensions or inclusion of hidden objects) are also applied. The predicate
-     * receives objects with full keys.
+     * preconfigured filters (specific extensions or inclusion of hidden objects) are also applied.
      */
     public S3 include(Predicate<S3Object> filter) {
         Objects.requireNonNull(filter);
@@ -138,8 +131,7 @@ public class S3 {
     }
 
     /**
-     * Returns an instance of S3 that will include "hidden" objects. An object is considered hidden if any part of its
-     * key relative to this folder starts with a dot.
+     * Returns an instance of S3 that will include objects with any relative key part starting with a dot.
      */
     public S3 includeHidden() {
         return includeHidden
@@ -164,10 +156,8 @@ public class S3 {
     }
 
     /**
-     * Returns a single object within the folder. The key is relative to the folder. Since the key is explicit, the
-     * object doesn't need to match folder filters. E.g., a hidden object can be resolved even if the folder listing is
-     * not showing them. Same goes for extension filters, etc. This method does not access S3, so the object existence
-     * is only checked when the source is read.
+     * Returns a single object within the folder. Since the key is explicit, the object doesn't need to match folder
+     * filters. S3 is not accessed until the source is read.
      */
     public ByteSource source(String key) {
         S3Keys.checkRelativeKey(key);
@@ -175,15 +165,13 @@ public class S3 {
     }
 
     /**
-     * Returns all objects contained in the folder represented as {@link ByteSources}. The contents are filtered
-     * according to S3 configuration. The map keys are relative to this folder. S3 is accessed immediately to obtain
-     * the object list, while reading the objects is deferred until the sources are processed.
+     * Returns all objects contained in the folder represented as {@link ByteSources}, filtered according to S3
+     * configuration. The map keys are relative to this folder.
      */
     public ByteSources sources() {
         Supplier<S3Client> clientSupplier = clientSupplier();
         Map<String, ByteSource> sources = new LinkedHashMap<>();
 
-        // The map key must be relative to the folder, whereas the ByteSource must use the full key
         list().forEach(o -> sources.put(
                 S3Keys.relativize(prefix, o.key()),
                 new S3ByteSource(clientSupplier, bucket, o.key())));
@@ -196,11 +184,9 @@ public class S3 {
     }
 
     /**
-     * Returns the list of all objects contained in the folder, filtered according to S3 configuration and sorted by
-     * key. The objects have full keys. If "includeFolders" is true, subfolders are included as objects with keys
-     * ending with "/". If there's no physical "folder marker" object for a given subfolder, it is represented by a
-     * synthetic object that has no size, last modified date, etc. The folder itself is never included. A
-     * non-existent folder is reported as empty.
+     * Returns all objects in the folder, filtered according to S3 configuration and sorted by key. If "includeFolders"
+     * is true, subfolders are included as objects with keys ending with "/". These may be synthetic, with no size or
+     * last modified date. A non-existent folder is reported as empty.
      */
     public List<S3Object> list(boolean includeFolders) {
         return list(includeFolders, null);
@@ -218,7 +204,7 @@ public class S3 {
             request.maxKeys(pageSize);
         }
 
-        // sorts by key and ensures that each folder is only included once
+        // sorted by key, no duplicate folders
         Map<String, S3Object> objects = new TreeMap<>();
 
         try {
@@ -226,22 +212,23 @@ public class S3 {
 
                 for (S3Object o : page.contents()) {
                     String key = o.key();
-
-                    if (key.equals(prefix)) {
+                    if (key.equals(prefix) || (!includeFolders && key.endsWith("/"))) {
                         continue;
                     }
 
-                    // "put" ensures that physical folder markers replace any synthetic folders added earlier
+                    // physical folder markers override synthetic ones
                     objects.put(key, o);
 
-                    if (includeSubfolders) {
+                    if (includeSubfolders && includeFolders) {
                         S3Keys.impliedFolders(prefix, key)
                                 .forEach(f -> objects.putIfAbsent(f, folder(f)));
                     }
                 }
 
-                for (CommonPrefix cp : page.commonPrefixes()) {
-                    objects.putIfAbsent(cp.prefix(), folder(cp.prefix()));
+                if (includeFolders) {
+                    for (CommonPrefix cp : page.commonPrefixes()) {
+                        objects.putIfAbsent(cp.prefix(), folder(cp.prefix()));
+                    }
                 }
             }
         } catch (SdkException e) {
@@ -268,9 +255,11 @@ public class S3 {
 
     private Predicate<S3Object> combinedFilter(boolean includeFolders) {
         Predicate<S3Object> typeFilter = includeFolders ? o -> true : o -> !o.key().endsWith("/");
-        return Stream.of(filter, extFilter, includeHidden
-                        ? null
-                        : notHiddenFilter(prefix)).filter(Objects::nonNull).reduce(typeFilter, Predicate::and);
+        Predicate<S3Object> notHiddenFilter = includeHidden ? null : notHiddenFilter(prefix);
+
+        return Stream.of(filter, extFilter, notHiddenFilter)
+                .filter(Objects::nonNull)
+                .reduce(typeFilter, Predicate::and);
     }
 
     private static S3Object folder(String key) {

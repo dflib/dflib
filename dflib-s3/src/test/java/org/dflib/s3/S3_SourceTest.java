@@ -11,13 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class S3_SourceTest {
 
     @Test
-    void uri() {
+    void source_Uri() {
         assertEquals("s3://b/data/x/y.csv", S3.of("s3://b/data").source("x/y.csv").uri().get());
         assertEquals("s3://b/y.csv", S3.of("s3://b").source("y.csv").uri().get());
     }
 
     @Test
-    void uri_Compression() {
+    void source_Uri_Compression() {
         String uri = S3.of("s3://b/data").source("a.csv.gz").uri().get();
         assertEquals(Codec.GZIP, Codec.ofUri(uri).get());
     }

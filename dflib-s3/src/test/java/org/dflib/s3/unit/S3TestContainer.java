@@ -43,9 +43,6 @@ public class S3TestContainer {
         GenericContainer<?> container = new GenericContainer<>(IMAGE)
                 .withExposedPorts(PORT)
                 .withEnv("COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS", BUCKET);
-
-        // we are working in a GLOBAL scope, so just start the container as early as we can, and don't worry about
-        // shutdown...
         container.start();
 
         S3Client client = S3Client.builder()

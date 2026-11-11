@@ -35,6 +35,9 @@ public class S3_ListIT extends BaseS3Test {
         S3Object sub = objects.get(4);
         assertNull(sub.size());
         assertNull(sub.lastModified());
+
+        // in a single-level listing, a folder with a physical marker is also synthetic
+        assertNull(objects.get(2).lastModified());
     }
 
     @Test

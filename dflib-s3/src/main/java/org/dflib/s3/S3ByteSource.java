@@ -14,26 +14,24 @@ import java.util.function.Supplier;
  */
 class S3ByteSource implements ByteSource {
 
-    private final Supplier<S3Client> client;
+    private final Supplier<S3Client> clientSupplier;
     private final String bucket;
     private final String key;
 
-    S3ByteSource(Supplier<S3Client> client, String bucket, String key) {
-        this.client = client;
+    S3ByteSource(Supplier<S3Client> clientSupplier, String bucket, String key) {
+        this.clientSupplier = clientSupplier;
         this.bucket = bucket;
         this.key = key;
     }
 
     @Override
     public Optional<String> uri() {
-        return Optional.of("s3://" + bucket + "/" + key);
+        return Optional.of(S3.SCHEME + bucket + "/" + key);
     }
 
     @Override
     public InputStream stream() {
-
-        // the client may be initialized lazily, so resolve it at the very last moment
-        S3Client client = this.client.get();
+        S3Client client = clientSupplier.get();
         GetObjectRequest request = GetObjectRequest.builder().bucket(bucket).key(key).build();
 
         try {
