@@ -54,6 +54,18 @@ public class ParquetLoader_ColumnFilterTest {
     }
 
     @Test
+    public void cols_reorder_all() {
+        DataFrame df = Parquet.loader()
+                .cols("d", "c", "b", "a")
+                .load(_4COL_FILE);
+        new DataFrameAsserts(df, "d", "c", "b", "a")
+                .expectHeight(3)
+                .expectRow(0, 4, 3, 2, 1)
+                .expectRow(1, 8, 7, 6, 5)
+                .expectRow(2, 12, 11, 10, 9);
+    }
+
+    @Test
     public void cols_pos() {
         DataFrame df = Parquet.loader()
                 .cols(0, 2)
@@ -75,6 +87,18 @@ public class ParquetLoader_ColumnFilterTest {
                 .expectRow(0, 3, 1)
                 .expectRow(1, 7, 5)
                 .expectRow(2, 11, 9);
+    }
+
+    @Test
+    public void cols_pos_reorder_all() {
+        DataFrame df = Parquet.loader()
+                .cols(3, 2, 1, 0)
+                .load(_4COL_FILE);
+        new DataFrameAsserts(df, "d", "c", "b", "a")
+                .expectHeight(3)
+                .expectRow(0, 4, 3, 2, 1)
+                .expectRow(1, 8, 7, 6, 5)
+                .expectRow(2, 12, 11, 10, 9);
     }
 
     @Test

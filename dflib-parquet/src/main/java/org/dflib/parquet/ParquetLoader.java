@@ -128,12 +128,19 @@ public class ParquetLoader {
     private DataFrame load(ParquetFileReader reader, String resourceId) throws IOException {
 
         FileSchema schema = reader.getFileSchema();
-        List<String> dfCols = projectColumns(schema);
+        List<String> fileCols = fileColumns(schema);
+        List<String> dfCols = schemaProjector != null ? schemaProjector.project(fileCols) : fileCols;
 
         int w = dfCols.size();
         if (w == 0) {
             return DataFrame.empty();
         }
+
+        // reading every column in the file's order is not the same request as projecting all of them by name, and
+        // only the former lets Hardwood skip the projection machinery
+        ColumnProjection projection = dfCols.equals(fileCols)
+                ? ColumnProjection.all()
+                : ColumnProjection.columns(dfCols.toArray(new String[0]));
 
         int height = height(reader, resourceId);
         Map<String, ConvertedType> legacyTypes = legacyTypes(reader);
@@ -141,8 +148,8 @@ public class ParquetLoader {
 
         Index index = Index.of(dfCols.toArray(new String[0]));
         Series<?>[] columns = batchReadable(schema, dfCols, height)
-                ? readByColumn(reader, schema, dfCols, legacyTypes, dictionaryEncoded, height)
-                : readByRow(reader, schema, dfCols, legacyTypes, dictionaryEncoded, height);
+                ? readByColumn(reader, projection, schema, dfCols, legacyTypes, dictionaryEncoded, height)
+                : readByRow(reader, projection, schema, dfCols, legacyTypes, dictionaryEncoded, height);
 
         return new ColumnDataFrame(null, index, columns);
     }
@@ -168,6 +175,7 @@ public class ParquetLoader {
 
     private Series<?>[] readByColumn(
             ParquetFileReader reader,
+            ColumnProjection projection,
             FileSchema schema,
             List<String> dfCols,
             Map<String, ConvertedType> legacyTypes,
@@ -181,7 +189,7 @@ public class ParquetLoader {
             readers[i] = BatchReader.of(schema.getField(name), legacyTypes.get(name), dictionaryEncoded.contains(name), height);
         }
 
-        try (ColumnReaders columns = reader.columnReaders(projection(schema, dfCols))) {
+        try (ColumnReaders columns = reader.columnReaders(projection)) {
 
             ColumnReader[] columnReaders = new ColumnReader[w];
             for (int i = 0; i < w; i++) {
@@ -205,6 +213,7 @@ public class ParquetLoader {
 
     private Series<?>[] readByRow(
             ParquetFileReader reader,
+            ColumnProjection projection,
             FileSchema schema,
             List<String> dfCols,
             Map<String, ConvertedType> legacyTypes,
@@ -213,36 +222,31 @@ public class ParquetLoader {
 
         int w = dfCols.size();
 
-        try (RowReader rows = rowReader(reader, schema, dfCols)) {
+        ColumnBuilder[] builders = new ColumnBuilder[w];
+        for (int i = 0; i < w; i++) {
+            String name = dfCols.get(i);
+            builders[i] = ColumnBuilder.of(schema.getField(name), legacyTypes.get(name), dictionaryEncoded.contains(name), height);
+        }
 
-            // Hardwood presents projected columns in the file's own order, while DFLib must present them in the
-            // order the caller asked for, so values are accumulated in Hardwood's order and placed in DFLib's
-            ColumnBuilder[] builders = new ColumnBuilder[w];
-            int[] positions = new int[w];
-
-            for (int i = 0; i < w; i++) {
-                String name = rows.getFieldName(i);
-                builders[i] = ColumnBuilder.of(schema.getField(name), legacyTypes.get(name), dictionaryEncoded.contains(name), height);
-                positions[i] = dfCols.indexOf(name);
-            }
-
+        // Hardwood presents the projected fields in the order they were requested
+        try (RowReader rows = reader.buildRowReader().projection(projection).build()) {
             while (rows.hasNext()) {
                 rows.next();
                 for (int i = 0; i < w; i++) {
                     builders[i].append(rows, i);
                 }
             }
-
-            Series<?>[] columns = new Series[w];
-            for (int i = 0; i < w; i++) {
-                columns[positions[i]] = builders[i].toSeries();
-            }
-
-            return columns;
         }
+
+        Series<?>[] columns = new Series[w];
+        for (int i = 0; i < w; i++) {
+            columns[i] = builders[i].toSeries();
+        }
+
+        return columns;
     }
 
-    private List<String> projectColumns(FileSchema schema) {
+    private List<String> fileColumns(FileSchema schema) {
 
         List<SchemaNode> fields = schema.getRootNode().children();
         List<String> all = new ArrayList<>(fields.size());
@@ -250,7 +254,7 @@ public class ParquetLoader {
             all.add(f.name());
         }
 
-        return schemaProjector != null ? schemaProjector.project(all) : all;
+        return all;
     }
 
     /**
@@ -303,19 +307,5 @@ public class ParquetLoader {
         }
 
         return (int) height;
-    }
-
-    private RowReader rowReader(ParquetFileReader reader, FileSchema schema, List<String> dfCols) throws IOException {
-        return dfCols.size() == schema.getRootNode().children().size()
-                ? reader.rowReader()
-                : reader.buildRowReader().projection(projection(schema, dfCols)).build();
-    }
-
-    private ColumnProjection projection(FileSchema schema, List<String> dfCols) {
-        // reading every column is not the same request as projecting all of them by name, and only the former lets
-        // Hardwood skip the projection machinery
-        return dfCols.size() == schema.getRootNode().children().size()
-                ? ColumnProjection.all()
-                : ColumnProjection.columns(dfCols.toArray(new String[0]));
     }
 }
