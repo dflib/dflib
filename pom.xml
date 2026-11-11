@@ -62,12 +62,12 @@
         <commons.compress.version>1.28.0</commons.compress.version>
         <commons.lang3.version>3.20.0</commons.lang3.version>
         <mustache.version>0.9.10</mustache.version>
-        <parquet.version>1.18.0</parquet.version>
+        <parquet.version>1.18.2</parquet.version>
         <hardwood.version>1.1.0.Beta3</hardwood.version>
         <snappy.version>1.1.10.12</snappy.version>
         <zstd.version>1.5.7-26</zstd.version>
         <lz4.version>1.11.4</lz4.version>
-        <hadoop.version>3.4.2</hadoop.version>
+        <hadoop.version>3.4.3</hadoop.version>
         <json.smart.version>2.6.1</json.smart.version>
 
         <jjava.version>1.0-a7</jjava.version>
