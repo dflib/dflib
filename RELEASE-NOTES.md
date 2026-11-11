@@ -6,6 +6,7 @@
 * #654 CsvSaver: replace commons-csv with own implementation 
 * #655 Upgrade to Jackson 2.22.4
 * #656 Upgrade Parquet compression libraries
+* #657 Upgrade to Log4j 2.26.1
 
 ## Release 2.0.0-M7
 
