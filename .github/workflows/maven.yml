@@ -17,10 +17,10 @@ jobs:
 
     steps:
       - name: Checkout...
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up JDK...
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           java-version: ${{ matrix.java }}
           distribution: 'temurin'
@@ -35,14 +35,14 @@ jobs:
 
     steps:
     - name: Checkout...
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     # this action exports env.POM_VERSION variable
     - name: Export Maven coordinates...
       uses: bootique-tools/export-maven-coordinates-action@v1
 
     - name: Set up JDK...
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v6
       # skip this for the release versions
       if: contains(env.POM_VERSION, '-SNAPSHOT')
       with:
