@@ -4,6 +4,7 @@
 * #642 rows().expand(..) should take an expression
 * #643 Replace the "parquet-java" Parquet engine with Hardwood
 * #654 CsvSaver: replace commons-csv with own implementation 
+* #655 Upgrade to Jackson 2.22.4
 
 ## Release 2.0.0-M7
 
