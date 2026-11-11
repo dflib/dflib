@@ -64,9 +64,9 @@
         <mustache.version>0.9.10</mustache.version>
         <parquet.version>1.18.0</parquet.version>
         <hardwood.version>1.1.0.Beta1</hardwood.version>
-        <snappy.version>1.1.10.8</snappy.version>
-        <zstd.version>1.5.7-9</zstd.version>
-        <lz4.version>1.11.0</lz4.version>
+        <snappy.version>1.1.10.12</snappy.version>
+        <zstd.version>1.5.7-26</zstd.version>
+        <lz4.version>1.11.4</lz4.version>
         <hadoop.version>3.4.2</hadoop.version>
         <json.smart.version>2.6.0</json.smart.version>
 
