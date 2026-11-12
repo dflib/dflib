@@ -7,8 +7,23 @@ import org.dflib.Series;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 class ColumnSets {
+
+    static DataFrame appendExpansion(DataFrame source, Series<?>[] columns, String prefix) {
+        Objects.requireNonNull(prefix, "Null expansion prefix");
+
+        String[] labels = new String[columns.length];
+        for (int i = 0; i < labels.length; i++) {
+            labels[i] = prefix + i;
+            if (source.getColumnsIndex().contains(labels[i])) {
+                throw new IllegalArgumentException("Expansion column already exists: " + labels[i]);
+            }
+        }
+
+        return source.cols(labels).merge(columns);
+    }
 
     static Series<?>[] mapIterables(DataFrame source, Exp<? extends Iterable<?>> mapper) {
         Series<? extends Iterable<?>> ranges = mapper.eval(source);
