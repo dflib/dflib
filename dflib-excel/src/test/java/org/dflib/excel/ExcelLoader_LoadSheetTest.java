@@ -242,6 +242,43 @@ public class ExcelLoader_LoadSheetTest {
         }
     }
 
+    @Test
+    public void fromStream_Limit() throws IOException {
+
+        try (InputStream in = getClass().getResourceAsStream("one-sheet.xlsx")) {
+            DataFrame s1 = new ExcelLoader().limit(1).loadSheet(in, "Sheet1");
+            new DataFrameAsserts(s1, "A", "B")
+                    .expectHeight(1)
+                    .expectRow(0, "One", "Two");
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {2, 3, 100})
+    public void fromStream_Limit_AboveHeight(int limit) throws IOException {
+
+        try (InputStream in = getClass().getResourceAsStream("one-sheet.xlsx")) {
+            DataFrame s1 = new ExcelLoader().limit(limit).loadSheet(in, "Sheet1");
+            new DataFrameAsserts(s1, "A", "B")
+                    .expectHeight(2)
+                    .expectRow(0, "One", "Two")
+                    .expectRow(1, "Three", "Four");
+        }
+    }
+
+    @Test
+    public void fromStream_FirstRowAsHeader_Offset_Limit_AboveHeight() throws IOException {
+
+        try (InputStream in = getClass().getResourceAsStream("one-sheet-offset.xlsx")) {
+
+            DataFrame s1 = new ExcelLoader().offset(2).limit(5).firstRowAsHeader().loadSheet(in, "Sheet1");
+            new DataFrameAsserts(s1, "t1", "t2")
+                    .expectHeight(2)
+                    .expectRow(0, "One", "Two")
+                    .expectRow(1, "Three", "Four");
+        }
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"cardinality.xls", "cardinality.xlsx"})
     public void valueCardinality_Nulls(String source) throws IOException {

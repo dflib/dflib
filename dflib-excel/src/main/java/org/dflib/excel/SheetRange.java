@@ -77,7 +77,7 @@ class SheetRange {
         }
 
         return rows >= height
-                ? new SheetRange(startCol, endCol, endRow, endRow)
+                ? this
                 : new SheetRange(startCol, endCol, startRow, startRow + rows);
     }
 
