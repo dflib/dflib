@@ -95,6 +95,43 @@ public class ExcelLoader_LoadSheetTest {
         assertThrows(RuntimeException.class, () -> new ExcelLoader().loadSheet(file, "No_such_Sheet"));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"multi-sheet.xls", "multi-sheet.xlsx"})
+    public void invalidSheetName_Message(String source) throws URISyntaxException, IOException {
+        File file = new File(getClass().getResource(source).toURI());
+        RuntimeException e1 = assertThrows(RuntimeException.class, () -> new ExcelLoader().loadSheet(file, "No_such_Sheet"));
+        assertEquals("No sheet 'No_such_Sheet' in workbook loaded from " + file.getPath(), e1.getMessage());
+
+        try (InputStream in = getClass().getResourceAsStream(source)) {
+            RuntimeException e2 = assertThrows(RuntimeException.class, () -> new ExcelLoader().loadSheet(in, "No_such_Sheet"));
+            assertEquals("No sheet 'No_such_Sheet' in workbook", e2.getMessage());
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"multi-sheet.xls", "multi-sheet.xlsx"})
+    public void invalidSheetNum(String source) throws URISyntaxException, IOException {
+        File file = new File(getClass().getResource(source).toURI());
+        RuntimeException e1 = assertThrows(RuntimeException.class, () -> new ExcelLoader().loadSheet(file, 100));
+        assertEquals("No sheet 100 in workbook loaded from " + file.getPath(), e1.getMessage());
+
+        try (InputStream in = getClass().getResourceAsStream(source)) {
+            RuntimeException e2 = assertThrows(RuntimeException.class, () -> new ExcelLoader().loadSheet(in, -1));
+            assertEquals("No sheet -1 in workbook", e2.getMessage());
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"multi-sheet.xls", "multi-sheet.xlsx"})
+    public void sheetNameIgnoreCase(String source) throws URISyntaxException {
+        File file = new File(getClass().getResource(source).toURI());
+
+        DataFrame s2 = new ExcelLoader().loadSheet(file, "s2");
+        new DataFrameAsserts(s2, "A", "B", "C", "D")
+                .expectHeight(1)
+                .expectRow(0, "Five", "Six", "Seven", "Eight");
+    }
+
     @Test
     public void dataTypes() throws URISyntaxException {
 
