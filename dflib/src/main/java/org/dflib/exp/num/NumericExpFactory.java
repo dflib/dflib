@@ -26,6 +26,8 @@ public abstract class NumericExpFactory {
 
         typeConversionRank = new HashMap<>();
 
+        // an "unknown" number type that is resolved at eval time (see "castAsNumber")
+        typeConversionRank.put(Number.class, -1);
         typeConversionRank.put(BigDecimal.class, 0);
 
         typeConversionRank.put(Double.class, 1);
@@ -47,6 +49,8 @@ public abstract class NumericExpFactory {
         // typeConversionRank.put(Byte.class, 6);
 
         factories = new HashMap<>();
+
+        factories.put(Number.class, new NumberExpFactory());
 
         factories.put(BigDecimal.class, decimalFactory);
         factories.put(BigInteger.class, new BigintExpFactory());
@@ -91,6 +95,13 @@ public abstract class NumericExpFactory {
 
     public static NumericExpFactory factory(Exp<? extends Number> left, Exp<? extends Number> right) {
         return factory(left.getType(), right.getType());
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public static NumericExpFactory factory(Exp<? extends Number> one, Exp<? extends Number> two, Exp<? extends Number> three) {
+        return factory(one.getType(), two.getType(), three.getType());
     }
 
     public static NumericExpFactory factory(Class<? extends Number> left, Class<? extends Number> right) {
