@@ -149,7 +149,7 @@ public interface DateTimeExp extends Exp<LocalDateTime> {
 
 
     default Condition between(LocalDateTime from, LocalDateTime to) {
-        return between(Exp.$val(from), Exp.$val(to));
+        return between(Exp.$dateTimeVal(from), Exp.$dateTimeVal(to));
     }
 
     /**
@@ -185,7 +185,7 @@ public interface DateTimeExp extends Exp<LocalDateTime> {
      * @since 2.0.0
      */
     default Condition notBetween(LocalDateTime from, LocalDateTime to) {
-        return notBetween(Exp.$val(from), Exp.$val(to));
+        return notBetween(Exp.$dateTimeVal(from), Exp.$dateTimeVal(to));
     }
 
     /**

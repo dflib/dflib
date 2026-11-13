@@ -60,7 +60,8 @@ public class TimeExpTest {
                 arguments("castAsTime(null)", $val(null).castAsTime()),
                 arguments("castAsTime(1)", $intVal(1).castAsTime()),
                 arguments("castAsTime(true)", $boolVal(true).castAsTime()),
-                arguments("castAsTime('1')", $strVal("1").castAsTime())
+                arguments("castAsTime('1')", $strVal("1").castAsTime()),
+                arguments("castAsTime('12|34|56', 'HH|mm|ss')", $strVal("12|34|56").castAsTime("HH|mm|ss"))
         );
     }
 
