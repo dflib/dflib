@@ -43,11 +43,18 @@ public class QLFunctions {
     }
 
     /**
-     * Starts a builder of a registry that includes the built-in functions, unless
+     * Starts a builder of a root registry that includes the built-in functions, unless
      * {@link Builder#noDefaultFunctions()} is called.
      */
     static Builder builder() {
-        return new Builder();
+        return new Builder(null);
+    }
+
+    /**
+     * Starts a builder of a registry layered on top of this one.
+     */
+    Builder extend() {
+        return new Builder(this);
     }
 
     /**
@@ -279,7 +286,8 @@ public class QLFunctions {
     /**
      * A builder of a function registry. A function is registered as a {@link QLFunction} class, or as a
      * {@code Udf0..UdfN} object; a lambda needs a type to be reflected on, so it is registered via
-     * {@code Udf1.of(e -> ..)}, {@code Udf2.of(..)}, etc.
+     * {@code Udf1.of(e -> ..)}, {@code Udf2.of(..)}, etc. A function of the parent registry (or a built-in one) can
+     * get more overloads via {@code function(..)}, or be replaced as a whole via {@code override(..)}.
      */
     static class Builder {
 
@@ -288,11 +296,14 @@ public class QLFunctions {
 
         private static final Set<String> KEYWORDS = keywords();
 
+        private final QLFunctions parent;
         private final Map<String, SequencedSet<QLFunctionDescriptor>> functions = new LinkedHashMap<>();
+        private final Set<String> overridden = new LinkedHashSet<>();
 
         private boolean defaultFunctions = true;
 
-        private Builder() {
+        private Builder(QLFunctions parent) {
+            this.parent = parent;
         }
 
         Builder function(String name, Udf0<?> function) {
@@ -326,6 +337,46 @@ public class QLFunctions {
             return this;
         }
 
+        /**
+         * Registers a function that replaces all the inherited overloads of the function with the same name. More
+         * overloads can be added to the replacement via other {@code override(..)} or {@code function(..)} calls.
+         */
+        Builder override(String name, Udf0<?> function) {
+            function(name, function);
+            overridden.add(name);
+            return this;
+        }
+
+        Builder override(String name, Udf1<?, ?> function) {
+            function(name, function);
+            overridden.add(name);
+            return this;
+        }
+
+        Builder override(String name, Udf2<?, ?, ?> function) {
+            function(name, function);
+            overridden.add(name);
+            return this;
+        }
+
+        Builder override(String name, Udf3<?, ?, ?, ?> function) {
+            function(name, function);
+            overridden.add(name);
+            return this;
+        }
+
+        Builder override(String name, UdfN<?> function) {
+            function(name, function);
+            overridden.add(name);
+            return this;
+        }
+
+        Builder override(String name, QLFunction function) {
+            function(name, function);
+            overridden.add(name);
+            return this;
+        }
+
         Builder function(QLFunctionDescriptor descriptor) {
             String name = descriptor.name();
             checkName(name);
@@ -350,23 +401,59 @@ public class QLFunctions {
         }
 
         /**
-         * Excludes the built-in functions from the registry, leaving only the explicitly registered ones.
+         * Excludes the built-in functions from the registry, leaving only the explicitly registered ones. Only
+         * applicable to a root registry, as a layered registry inherits the functions of its parent.
          */
         Builder noDefaultFunctions() {
+            if (parent != null) {
+                throw new IllegalStateException("Can't exclude the default functions from a registry extending"
+                        + " another registry");
+            }
+
             this.defaultFunctions = false;
             return this;
         }
 
         QLFunctions build() {
 
-            // built-ins go first, so that they win ties with custom functions
-            Builder builder = new Builder().noDefaultFunctions();
-            if (defaultFunctions) {
-                DefaultQLFunctions.register(builder);
+            QLFunctions base = parent != null ? parent : defaultFunctions ? Defaults.FUNCTIONS : null;
+
+            // the parent overloads go first, so that they win ties with the overloads added on top of them
+            Map<String, SequencedSet<QLFunctionDescriptor>> merged = new LinkedHashMap<>();
+            if (base != null) {
+                base.functions.forEach((name, descriptors) -> merged.put(name, new LinkedHashSet<>(descriptors)));
             }
 
-            functions.values().forEach(descriptors -> descriptors.forEach(builder::function));
-            return new QLFunctions(builder.functions);
+            for (String name : overridden) {
+                if (merged.remove(name) == null) {
+                    throw new IllegalArgumentException("No function '" + name + "' to override");
+                }
+            }
+
+            functions.forEach((name, descriptors) -> {
+                SequencedSet<QLFunctionDescriptor> mergedDescriptors = merged.computeIfAbsent(name, n -> new LinkedHashSet<>());
+                for (QLFunctionDescriptor d : descriptors) {
+                    // the same shape within this builder is already rejected, so a collision is with an inherited one
+                    if (!mergedDescriptors.add(d)) {
+                        throw new IllegalArgumentException("Function " + d.shape()
+                                + " already defined, use override(..) to replace it");
+                    }
+                }
+            });
+
+            return new QLFunctions(merged);
+        }
+    }
+
+    // Building the registry of the built-in functions is expensive, so it is done once and lazily
+    private static class Defaults {
+
+        static final QLFunctions FUNCTIONS = create();
+
+        private static QLFunctions create() {
+            Builder builder = new Builder(null).noDefaultFunctions();
+            DefaultQLFunctions.register(builder);
+            return builder.build();
         }
     }
 }
