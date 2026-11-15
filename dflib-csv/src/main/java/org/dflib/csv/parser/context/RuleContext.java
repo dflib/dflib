@@ -24,6 +24,11 @@ public interface RuleContext {
 
     boolean isLastSliceQuoted();
 
+    /**
+     * Notifies the context that the current row has more values than the header.
+     */
+    void markExtraValues();
+
     // only used by the ColumnEndQuoted rules, could be potentially removed in the future
     DataSlice activeSlice();
 }

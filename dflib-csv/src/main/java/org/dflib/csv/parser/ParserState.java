@@ -21,5 +21,6 @@ public enum ParserState {
     END_QUOTED,
     DELIMITER,
     END_OF_LINE,
-    DELIMITER_OR_END_OF_LINE
+    DELIMITER_OR_END_OF_LINE,
+    SKIP_EXTRA_VALUES
 }

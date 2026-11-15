@@ -23,6 +23,11 @@ final class CsvScanner {
      */
     static final int MAX_BUFFER_SIZE = 8 * 1024 * 1024; // 8mb
 
+    /**
+     * Max number of chars before and after the error position to include in the error message
+     */
+    static final int ERROR_EXCERPT_RADIUS = 50;
+
     final ParserContext context;
     final ParserRuleFlow ruleFlow;
 
@@ -69,20 +74,67 @@ final class CsvScanner {
                 }
                 lastParsePos = ruleSlice.from();
                 endOfBuffer();
+                // keep the slice in sync with the (possibly compacted) buffer for the error reporting
+                ruleSlice.setFrom(lastParsePos);
+            }
+
+            if (!context.stopRequested()) {
+                eof(rule);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-
-        if (!context.stopRequested()) {
-            eof(rule);
+        } catch (IllegalStateException e) {
+            throw withLocation(e, ruleSlice.from());
         }
     }
 
     private void eof(ParserRule rule) {
-        rule.validateAtEof(context);
         readBuffer.flip();
+        rule.validateAtEof(context);
         context.markLastRow(readBuffer.limit());
+    }
+
+    /**
+     * Adds the row number and the line text to a parsing error.
+     */
+    private IllegalStateException withLocation(IllegalStateException e, int position) {
+        String message = e.getMessage() != null ? e.getMessage() : "Parsing error";
+
+        // offset rows are not counted by the context, and can't fail
+        int row = Math.max(0, ruleFlow.config.offset()) + context.rowsRead() + 1;
+        String excerpt = excerpt(readBuffer.array(), position, readBuffer.limit());
+
+        return new IllegalStateException(message + " (row " + row + ")"
+                + (excerpt.isEmpty() ? "" : ": " + excerpt), e);
+    }
+
+    /**
+     * Returns a part of the line around the position, limited to {@link #ERROR_EXCERPT_RADIUS} chars in each direction.
+     */
+    private static String excerpt(char[] data, int position, int limit) {
+        int pos = Math.max(0, Math.min(position, limit));
+
+        int start = pos;
+        while (start > 0 && pos - start < ERROR_EXCERPT_RADIUS && !isLineBreak(data[start - 1])) {
+            start--;
+        }
+
+        int end = pos;
+        while (end < limit && end - pos < ERROR_EXCERPT_RADIUS && !isLineBreak(data[end])) {
+            end++;
+        }
+
+        if (start == end) {
+            return "";
+        }
+
+        String prefix = start > 0 && !isLineBreak(data[start - 1]) ? "..." : "";
+        String suffix = end < limit && !isLineBreak(data[end]) ? "..." : "";
+        return prefix + new String(data, start, end - start) + suffix;
+    }
+
+    private static boolean isLineBreak(char c) {
+        return c == '\n' || c == '\r';
     }
 
     /**

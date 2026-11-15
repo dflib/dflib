@@ -16,6 +16,7 @@
 * #663 Upgrade to JJava 1.0-a8
 * #664 Upgrade to POI 6.0.0
 * #665 ExcelLoader.limit(..) returns no rows if the limit is >= row count
+* #667 CSV loader: "Unexpected data after closing quote" has no location and hides the real cause (header narrower than data)
 
 ## Release 2.0.0-M7
 

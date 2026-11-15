@@ -103,8 +103,16 @@ public class CsvParser {
         this.dfBuilder = new DataFrameBuilder(config);
         this.context.setCallback(new ColumnDetectionCallback(buildListener(), config.csvFormat().trailingDelimiter()));
         new CsvScanner(context, ruleFlow).scan(reader);
+        warnOnExtraValues();
         checkEmptyAppender();
         return dfBuilder.buildDataFrame();
+    }
+
+    private void warnOnExtraValues() {
+        int rows = context.extraValuesRows();
+        if (rows > 0) {
+            LOGGER.warn("{} row(s) had more values than the header, extra values were ignored", rows);
+        }
     }
 
     /**
@@ -144,7 +152,7 @@ public class CsvParser {
                     builder.skip();
                 } else {
                     throw new IllegalStateException("More columns defined in the provided format, " +
-                            "that are detected in the file. Use CsvLoader.nullPadRows() if this is intended.");
+                            "that are detected in the file. Use CsvLoader.nullPadRows() if this is intended");
                 }
             }
         }

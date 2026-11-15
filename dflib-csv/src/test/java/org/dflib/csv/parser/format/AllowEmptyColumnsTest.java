@@ -62,7 +62,7 @@ class AllowEmptyColumnsTest {
         new DfParserAsserts(csv, format, "id", "name", "value", "extra")
                 .expectHeight(4)
                 .expectRow(0, "1", "A", "foo", null)
-                .expectRow(1, "2", "B", "bar", "extraVal,unused")
+                .expectRow(1, "2", "B", "bar", "extraVal")
                 .expectRow(2, "3", "", "baz", null)
                 .expectRow(3, "4", "D", "bar", "extra");
     }

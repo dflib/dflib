@@ -524,7 +524,8 @@ public class CsvLoader {
 
     /**
      * If any CSV rows are shorter than the header, pad those with nulls.
-     * If not set, and such condition is encountered, an exception is thrown.
+     * If not set, and such condition is encountered, an exception is thrown. Rows longer than the header are always
+     * allowed: the extra values are ignored, and a warning is logged.
      *
      * @since 2.0.0
      */

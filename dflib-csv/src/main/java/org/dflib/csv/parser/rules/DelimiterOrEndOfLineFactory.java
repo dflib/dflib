@@ -13,8 +13,11 @@ class DelimiterOrEndOfLineFactory implements RuleFactory {
         char escapeChar = RuleFactorySupport.getEscapeChar(format);
 
         if (format.lineBreak() == LineBreak.AUTO) {
-            return handleEscapes
-                    ? new DelimiterOrAnyEndOfLineEscaped(format.delimiter().asArray(), escapeChar)
+            if (handleEscapes) {
+                return new DelimiterOrAnyEndOfLineEscaped(format.delimiter().asArray(), escapeChar);
+            }
+            return format.delimiter().isSingleChar()
+                    ? new DelimiterSingleCharOrAnyEndOfLine(format.delimiter().singleChar())
                     : new DelimiterOrAnyEndOfLine(format.delimiter().asArray());
         }
         return handleEscapes
@@ -71,6 +74,48 @@ class DelimiterOrEndOfLineFactory implements RuleFactory {
                     }
                     delimiterCharsMatched = 0;
                     seenCR = false;
+                }
+            }
+            return CONTINUE;
+        }
+    }
+
+    /**
+     * A version of {@link DelimiterOrAnyEndOfLine} for the most common case of a single-char delimiter.
+     */
+    static class DelimiterSingleCharOrAnyEndOfLine extends DelimiterBaseRule {
+        private final char delimiter;
+
+        DelimiterSingleCharOrAnyEndOfLine(char delimiter) {
+            this.delimiter = delimiter;
+        }
+
+        @Override
+        public int consume(RuleContext context, DataSlice slice) {
+            char[] data = slice.data();
+            int from = slice.from();
+            int to = slice.to();
+
+            boolean afterQuote = context.isLastSliceQuoted();
+
+            // the delimiter can't be a line break char (see CsvFormatValidator), so the order of checks doesn't matter
+            for (int i = from; i < to; i++) {
+                char c = data[i];
+                if (c == delimiter) {
+                    context.markColumnEnd(i, true);
+                    return i + 1;
+                } else if (c == '\n') {
+                    context.markRowEnd(i);
+                    return i + 1;
+                } else if (c == '\r') {
+                    if (i + 1 < to && data[i + 1] == '\n') {
+                        context.markRowEnd(i);
+                        return i + 2;
+                    }
+                    context.markRowEnd(i);
+                    return i + 1;
+                } else if (afterQuote) {
+                    throwUnexpectedDataAfterQuote();
                 }
             }
             return CONTINUE;

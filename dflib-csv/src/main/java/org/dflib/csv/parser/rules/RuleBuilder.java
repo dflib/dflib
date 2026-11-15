@@ -27,6 +27,7 @@ public class RuleBuilder {
         RULE_FACTORIES.put(ParserState.DELIMITER, new DelimiterFactory());
         RULE_FACTORIES.put(ParserState.END_OF_LINE, new EndOfLineFactory());
         RULE_FACTORIES.put(ParserState.DELIMITER_OR_END_OF_LINE, new DelimiterOrEndOfLineFactory());
+        RULE_FACTORIES.put(ParserState.SKIP_EXTRA_VALUES, new SkipExtraValuesFactory());
     }
 
     public static ParserRule[] buildRules(CsvFormat format) {

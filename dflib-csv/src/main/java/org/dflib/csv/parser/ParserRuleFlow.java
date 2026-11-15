@@ -177,13 +177,9 @@ final class ParserRuleFlow {
                     ? ParserState.DELIMITER_OR_END_OF_LINE
                     : ParserState.DELIMITER);
         }
-        // replace the last delimiter with END_OF_LINE or trailing delimiter
-        if (config.csvFormat().trailingDelimiter()) {
-            states.set(states.size() - 1, ParserState.DELIMITER_OR_END_OF_LINE);
-            states.add(ParserState.END_OF_LINE);
-        } else {
-            states.set(states.size() - 1, ParserState.END_OF_LINE);
-        }
+        // the last column ends either with a line break or with a delimiter
+        states.set(states.size() - 1, ParserState.DELIMITER_OR_END_OF_LINE);
+        states.add(ParserState.SKIP_EXTRA_VALUES);
         return states.toArray(new ParserState[0]);
     }
 

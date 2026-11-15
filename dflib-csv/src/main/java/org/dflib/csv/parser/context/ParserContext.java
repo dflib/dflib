@@ -30,6 +30,11 @@ public class ParserContext implements RuleContext {
     private boolean lastSliceQuoted;
     private boolean allowEmptyColumns;
 
+    // rows skipped as empty or comments, needed to report row numbers
+    private int skippedRows;
+    // rows that had more values than the header
+    private int extraValuesRows;
+
     // Row-first mode fields
     private DataSlice[] rowSlices;
     private char[] deferredData;
@@ -146,6 +151,7 @@ public class ParserContext implements RuleContext {
     public void markRowEnd(int position) {
         if (skipRow) {
             skipRow = false;
+            skippedRows++;
             resetForRow();
             return;
         }
@@ -163,7 +169,7 @@ public class ParserContext implements RuleContext {
                     rowSlices[i].setFrom(-1);
                 }
             } else {
-                throw new IllegalStateException("Unexpected end of the row " + this.position);
+                throw new IllegalStateException("Unexpected end of the row");
             }
         }
 
@@ -186,6 +192,23 @@ public class ParserContext implements RuleContext {
     @Override
     public boolean isLastSliceQuoted() {
         return lastSliceQuoted;
+    }
+
+    @Override
+    public void markExtraValues() {
+        extraValuesRows++;
+    }
+
+    /**
+     * Returns the number of rows read so far, including the header and the rows skipped as empty or comments, but not
+     * the offset rows.
+     */
+    public int rowsRead() {
+        return position.row + skippedRows;
+    }
+
+    public int extraValuesRows() {
+        return extraValuesRows;
     }
 
     public void markLastRow(int lastPosition) {
