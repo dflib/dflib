@@ -7,16 +7,16 @@ import org.dflib.csv.parser.format.Escape;
 import org.dflib.csv.parser.format.LineBreak;
 
 /**
- * Skips the rest of the row after the last column defined by the header.
+ * Skips a row, taking into account the line breaks in the quoted values. Used for the offset rows.
  */
-class SkipExtraValuesFactory implements RuleFactory {
+class SkipRowFactory implements RuleFactory {
 
     @Override
     public ParserRule create(CsvFormat format) {
-        return new SkipExtraValues(format);
+        return new SkipRow(format);
     }
 
-    static final class SkipExtraValues implements ParserRule {
+    static final class SkipRow implements ParserRule {
 
         private final char quote;
         private final boolean doubleQuoteEscape;
@@ -25,14 +25,13 @@ class SkipExtraValuesFactory implements RuleFactory {
         private final LineBreak lineBreak;
 
         // row state, kept between the calls, so that the consumed data is not rescanned
-        private boolean sawData;
         private boolean valueStart;
         private boolean inQuotes;
         private boolean pendingQuote;
         private boolean escapeNext;
         private int delimiterCharsMatched;
 
-        SkipExtraValues(CsvFormat format) {
+        SkipRow(CsvFormat format) {
             this.quote = format.quote().quoteChar();
             this.doubleQuoteEscape = format.escape() == Escape.DOUBLE;
             this.escapeChar = RuleFactorySupport.getEscapeChar(format);
@@ -83,24 +82,24 @@ class SkipExtraValuesFactory implements RuleFactory {
                 switch (lineBreak) {
                     case LF -> {
                         if (c == '\n') {
-                            return endRow(context, i, i + 1);
+                            return endRow(i + 1);
                         }
                     }
                     case CR -> {
                         if (c == '\r') {
-                            return endRow(context, i, i + 1);
+                            return endRow(i + 1);
                         }
                     }
                     case AUTO -> {
                         if (c == '\n') {
-                            return endRow(context, i, i + 1);
+                            return endRow(i + 1);
                         } else if (c == '\r') {
                             if (i + 1 >= to) {
                                 // need the next char to tell CRLF from CR, rescan when more data is available
                                 slice.setFrom(i);
                                 return CONTINUE;
                             }
-                            return endRow(context, i, data[i + 1] == '\n' ? i + 2 : i + 1);
+                            return endRow(data[i + 1] == '\n' ? i + 2 : i + 1);
                         }
                     }
                     case CRLF -> {
@@ -109,13 +108,11 @@ class SkipExtraValuesFactory implements RuleFactory {
                                 slice.setFrom(i);
                                 return CONTINUE;
                             } else if (data[i + 1] == '\n') {
-                                return endRow(context, i, i + 2);
+                                return endRow(i + 2);
                             }
                         }
                     }
                 }
-
-                sawData = true;
 
                 if (escapeNext) {
                     escapeNext = false;
@@ -149,27 +146,12 @@ class SkipExtraValuesFactory implements RuleFactory {
             return CONTINUE;
         }
 
-        @Override
-        public void validateAtEof(RuleContext context) {
-            if (inQuotes && !pendingQuote) {
-                throw new IllegalStateException("No closing quote found");
-            }
-            if (sawData) {
-                context.markExtraValues();
-            }
-        }
-
-        private int endRow(RuleContext context, int lineBreakPosition, int next) {
-            if (sawData) {
-                context.markExtraValues();
-            }
+        private int endRow(int next) {
             resetRowState();
-            context.markRowEnd(lineBreakPosition);
             return next;
         }
 
         private void resetRowState() {
-            sawData = false;
             valueStart = true;
             inQuotes = false;
             pendingQuote = false;

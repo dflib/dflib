@@ -8,6 +8,7 @@ import org.dflib.junit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
+import java.math.BigDecimal;
 
 class CsvLoader_ColFormatTest {
 
@@ -130,5 +131,25 @@ class CsvLoader_ColFormatTest {
                 .expectHeight(2)
                 .expectRow(0, "X")
                 .expectRow(1, null);
+    }
+
+    @Test
+    void numbers_LeadingPlusAndWhitespace() {
+        String csv = "A,B,C,D\n+5,+6, 1.5 ,+1e3\n-5,-6,-2.5,1.5\n";
+
+        DataFrame df = new CsvLoader()
+                .intCol("A")
+                .longCol("B")
+                .doubleCol("C")
+                .decimalCol("D")
+                .load(new StringReader(csv));
+
+        new DataFrameAsserts(df, "A", "B", "C", "D")
+                .expectHeight(2)
+                .expectIntColumns(0)
+                .expectLongColumns(1)
+                .expectDoubleColumns(2)
+                .expectRow(0, 5, 6L, 1.5, new BigDecimal("1e3"))
+                .expectRow(1, -5, -6L, -2.5, new BigDecimal("1.5"));
     }
 }

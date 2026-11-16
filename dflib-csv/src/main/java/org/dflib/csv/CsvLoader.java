@@ -28,7 +28,8 @@ import java.util.Objects;
 import java.util.Random;
 
 /**
- * A configurable loader of CSV files.
+ * A configurable loader of CSV files. Rows shorter than the header are padded with nulls, and rows longer than the
+ * header add columns named by position (e.g., "c3").
  */
 public class CsvLoader {
 
@@ -141,7 +142,7 @@ public class CsvLoader {
     /**
      * Provides an explicit header for the processed CSV. If not set, the first row of CSV will be treated as a header.
      * If set, the first row will be treated as data. Column names are assigned to CSV columns positionally from left
-     * to right. Header provided here must have a size less or equal to the number of columns in the CSV.
+     * to right. Extra values beyond the header are ignored, missing values are loaded as nulls.
      * <p>The columns of the result DataFrame may be the same or a subset of the header columns (if further filtered via
      * the various "cols(..)" methods</p>.
      *
@@ -172,7 +173,7 @@ public class CsvLoader {
     /**
      * Configures the loader to only process the specified columns, and include them in the DataFrame in the specified
      * order. Column names argument refers to the names of the resulting DataFrame that may or may not match the CSV
-     * columns header, depending on the loader settings.
+     * columns header, depending on the loader settings. Columns for the rows wider than the header are not added.
      *
      * @return this loader instance
      */
@@ -182,7 +183,8 @@ public class CsvLoader {
     }
 
     /**
-     * Configures the loader to only process the specified columns.
+     * Configures the loader to only process the specified columns. Columns for the rows wider than the header are not
+     * added.
      *
      * @return this loader instance
      */
@@ -519,19 +521,6 @@ public class CsvLoader {
         this.configBuilder.nullable(true);
         this.configBuilder.csvFormatBuilder()
                 .nullString(Objects.requireNonNull(nullString));
-        return this;
-    }
-
-    /**
-     * If any CSV rows are shorter than the header, pad those with nulls.
-     * If not set, and such condition is encountered, an exception is thrown. Rows longer than the header are always
-     * allowed: the extra values are ignored, and a warning is logged.
-     *
-     * @since 2.0.0
-     */
-    public CsvLoader nullPadRows() {
-        this.configBuilder.nullable(true);
-        this.configBuilder.csvFormatBuilder().allowEmptyColumns();
         return this;
     }
 

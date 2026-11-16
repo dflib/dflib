@@ -56,9 +56,13 @@ class LongParserTest {
     }
 
     @Test
-    void parseLeadingPlusUnsupported() {
-        String s = "+123";
-        assertThrows(NumberFormatException.class, () -> parse(s));
+    void parseLeadingPlus() {
+        assertEquals(123L, parse("+123"));
+    }
+
+    @Test
+    void parsePlusOnly() {
+        assertThrows(NumberFormatException.class, () -> parse("+"));
     }
 
     @Test

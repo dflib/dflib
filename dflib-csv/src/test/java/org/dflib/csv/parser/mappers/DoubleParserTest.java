@@ -29,7 +29,15 @@ class DoubleParserTest {
             "4.9e-324",
             "1e-325",
             "-0",
-            "-0.0"
+            "-0.0",
+            "+123.0",
+            "+1e3",
+            " 1.5",
+            "1.5 ",
+            "\t-1.5 ",
+            "1.5f",
+            "2d",
+            "0x1p3"
     })
     void parseFiniteAndBoundaryValuesMatchJdk(String s) {
         double expected = Double.parseDouble(s);
@@ -37,10 +45,6 @@ class DoubleParserTest {
         assertEquals(Double.doubleToRawLongBits(expected), Double.doubleToRawLongBits(actual));
     }
 
-    @Test
-    void parseLeadingPlusUnsupported() {
-        assertThrows(NumberFormatException.class, () -> parse("+123.0"));
-    }
 
     @ParameterizedTest
     @ValueSource(strings = {

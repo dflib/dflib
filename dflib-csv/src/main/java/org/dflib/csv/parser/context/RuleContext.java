@@ -14,6 +14,9 @@ public interface RuleContext {
 
     void markColumnEnd(int position, boolean optional);
 
+    /**
+     * Marks the end of the row. The rule must return right after this call.
+     */
     void markRowEnd(int position);
 
     void overrideState(ParserState parserState);
@@ -23,11 +26,6 @@ public interface RuleContext {
     void markColumnEscape();
 
     boolean isLastSliceQuoted();
-
-    /**
-     * Notifies the context that the current row has more values than the header.
-     */
-    void markExtraValues();
 
     // only used by the ColumnEndQuoted rules, could be potentially removed in the future
     DataSlice activeSlice();

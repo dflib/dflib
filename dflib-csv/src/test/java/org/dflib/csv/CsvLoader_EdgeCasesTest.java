@@ -9,7 +9,6 @@ import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CsvLoader_EdgeCasesTest {
 
@@ -69,6 +68,33 @@ class CsvLoader_EdgeCasesTest {
     }
 
     @Test
+    void offset_QuoteInsideValue() {
+        String csv = "Monitor 27\" sale,x\nA,B\n1,2\n3,4";
+
+        DataFrame df = new CsvLoader()
+                .offset(1)
+                .load(new StringReader(csv));
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(2)
+                .expectRow(0, "1", "2")
+                .expectRow(1, "3", "4");
+    }
+
+    @Test
+    void offset_QuotedLineBreak() {
+        String csv = "\"Report\nfor 2026\",x\nA,B\n1,2";
+
+        DataFrame df = new CsvLoader()
+                .offset(1)
+                .load(new StringReader(csv));
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(1)
+                .expectRow(0, "1", "2");
+    }
+
+    @Test
     void offsetPastAllRows() {
         String csv = "A,B\n1,2\n3,4";
 
@@ -109,9 +135,13 @@ class CsvLoader_EdgeCasesTest {
     void limit_malformedTail() {
         String csv = "A,B\n1,2\n\"bad";
 
-        assertThrows(IllegalStateException.class, () -> new CsvLoader()
+        DataFrame df = new CsvLoader()
                 .limit(1)
-                .load(new StringReader(csv)));
+                .load(new StringReader(csv));
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(1)
+                .expectRow(0, "1", "2");
     }
 
     @Test

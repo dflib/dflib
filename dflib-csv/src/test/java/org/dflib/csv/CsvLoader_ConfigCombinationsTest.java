@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.io.StringReader;
 import java.util.Random;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CsvLoader_ConfigCombinationsTest {
@@ -142,10 +143,12 @@ class CsvLoader_ConfigCombinationsTest {
     void intCol_emptyNull_noDefault() {
         String csv = "A,B\n1,\n,4";
 
-        assertThrows(IllegalArgumentException.class, () -> new CsvLoader()
+        IllegalStateException e = assertThrows(IllegalStateException.class, () -> new CsvLoader()
                 .emptyStringIsNull()
                 .intCol("A")
                 .load(new StringReader(csv)));
+        assertEquals("Can't convert value of column 'A': missing or null value, and no default is set for the int " +
+                "column (row 3): ,4", e.getMessage());
     }
 
     @Test
@@ -245,14 +248,13 @@ class CsvLoader_ConfigCombinationsTest {
                 .expectRow(2, "Y", "Q");
     }
 
-    // --- nullPadRows + column selection ---
+    // --- short rows + column selection ---
 
     @Test
-    void nullPadRows_cols() {
+    void shortRows_cols() {
         String csv = "A,B,C\n1,2,3\n4";
 
         DataFrame df = new CsvLoader()
-                .nullPadRows()
                 .cols("A", "C")
                 .load(new StringReader(csv));
 
@@ -263,11 +265,10 @@ class CsvLoader_ConfigCombinationsTest {
     }
 
     @Test
-    void nullPadRows_colsExcept() {
+    void shortRows_colsExcept() {
         String csv = "A,B,C\n1,2,3\n4";
 
         DataFrame df = new CsvLoader()
-                .nullPadRows()
                 .colsExcept("B")
                 .load(new StringReader(csv));
 
@@ -278,11 +279,10 @@ class CsvLoader_ConfigCombinationsTest {
     }
 
     @Test
-    void nullPadRows_intCol_cols() {
+    void shortRows_intCol_cols() {
         String csv = "A,B,C\n1,2,3\n4";
 
         DataFrame df = new CsvLoader()
-                .nullPadRows()
                 .intCol("A", 0)
                 .cols("A", "C")
                 .load(new StringReader(csv));
@@ -293,14 +293,13 @@ class CsvLoader_ConfigCombinationsTest {
                 .expectRow(1, 4, null);
     }
 
-    // --- nullPadRows + rows predicate ---
+    // --- short rows + rows predicate ---
 
     @Test
-    void nullPadRows_rows() {
+    void shortRows_rows() {
         String csv = "A,B\n1,2\n3\n5,6";
 
         DataFrame df = new CsvLoader()
-                .nullPadRows()
                 .emptyStringIsNull()
                 .rows(RowPredicate.of("B", (String s) -> s != null))
                 .load(new StringReader(csv));

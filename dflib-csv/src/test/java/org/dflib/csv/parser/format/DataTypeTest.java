@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DataTypeTest {
 
@@ -289,7 +290,9 @@ class DataTypeTest {
                 .column(CsvColumnMapping.column("val").type(CsvColumnType.INTEGER))
                 .build();
 
-        assertThrows(NumberFormatException.class, () -> new CsvParser(format).parse(new StringReader(csv)));
+        IllegalStateException e = assertThrows(IllegalStateException.class,
+                () -> new CsvParser(format).parse(new StringReader(csv)));
+        assertTrue(e.getMessage().startsWith("Can't convert value of column 'val'"), e.getMessage());
     }
 
     @Test

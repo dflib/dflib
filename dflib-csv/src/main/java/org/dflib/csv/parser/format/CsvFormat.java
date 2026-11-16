@@ -17,7 +17,6 @@ import java.util.Objects;
  *      .skipEmptyRows()
  *      .delimiter(";")
  *      .enableComments("#")
- *      .allowEmptyColumns()
  *      .build();
  *
  * DataFrame df = Csv.loader().format(myFormat).load(Path.of("./my.csv"));
@@ -36,7 +35,6 @@ public class CsvFormat {
     final LineBreak lineBreak;
     final String comment;
     final boolean skipEmptyRows;
-    final boolean allowEmptyColumns;
 
     // could be overridden on a column level
     final Trim trim;
@@ -54,7 +52,6 @@ public class CsvFormat {
         this.escapeChar = builder.escapeChar;
         this.comment = builder.comment;
         this.skipEmptyRows = builder.skipEmptyRows;
-        this.allowEmptyColumns = builder.allowEmptyColumns;
         this.nullString = builder.nullString;
         this.trailingDelimiter = builder.trailingDelimiter;
     }
@@ -127,13 +124,6 @@ public class CsvFormat {
     }
 
     /**
-     * Returns whether empty columns are allowed.
-     */
-    public boolean allowEmptyColumns() {
-        return allowEmptyColumns;
-    }
-
-    /**
      * Returns a token recognized as null, or {@code null} for default behavior.
      */
     public String nullString() {
@@ -159,7 +149,6 @@ public class CsvFormat {
         char escapeChar;
         String comment;
         boolean skipEmptyRows;
-        boolean allowEmptyColumns;
         String nullString;
         boolean trailingDelimiter;
 
@@ -172,7 +161,6 @@ public class CsvFormat {
             escapeChar = 0;
             comment = null;
             skipEmptyRows = true;
-            allowEmptyColumns = false;
             nullString = null;
             trailingDelimiter = false;
         }
@@ -268,14 +256,6 @@ public class CsvFormat {
          */
         public Builder skipEmptyRows() {
             this.skipEmptyRows = true;
-            return this;
-        }
-
-        /**
-         * Allows empty columns in parsed rows.
-         */
-        public Builder allowEmptyColumns() {
-            this.allowEmptyColumns = true;
             return this;
         }
 
@@ -400,7 +380,6 @@ public class CsvFormat {
             this.escapeChar = format.escapeChar;
             this.comment = format.comment;
             this.skipEmptyRows = format.skipEmptyRows;
-            this.allowEmptyColumns = format.allowEmptyColumns;
             this.nullString = format.nullString;
             this.trailingDelimiter = format.trailingDelimiter;
 

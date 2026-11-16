@@ -98,4 +98,36 @@ class CommentTest {
                 .expectRow(0, "1", "A")
                 .expectRow(1, "2", "B");
     }
+
+    @Test
+    void manyCommentsBeforeHeader() {
+        String csv = """
+                # comment 1
+                # comment 2
+
+                # comment 3
+                id,name
+                1,A
+                """;
+
+        CsvFormat format = CsvFormat.defaultFormat().enableComments().build();
+
+        new DfParserAsserts(csv, format, "id", "name")
+                .expectHeight(1)
+                .expectRow(0, "1", "A");
+    }
+
+    @Test
+    void commentPrefixSplitAcrossReads() {
+        // the comment prefix starts at the last char of the first buffer read
+        String first = "a".repeat(8 * 1024 - 5);
+        String csv = "id\n" + first + "\n//c\nb\n";
+
+        CsvFormat format = CsvFormat.defaultFormat().enableComments("//").build();
+
+        new DfParserAsserts(csv, format, "id")
+                .expectHeight(2)
+                .expectRow(0, first)
+                .expectRow(1, "b");
+    }
 }

@@ -22,6 +22,8 @@ final class IntParser {
         if (data[from] == '-') {
             minus = true;
             from++;
+        } else if (data[from] == '+') {
+            from++;
         }
 
         if (from >= to) {

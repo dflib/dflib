@@ -2,6 +2,7 @@ package org.dflib.csv.parser;
 
 import org.dflib.csv.parser.context.DataSlice;
 import org.dflib.csv.parser.context.ParserContext;
+import org.dflib.csv.parser.format.LineBreak;
 import org.dflib.csv.parser.rules.ParserRule;
 
 import java.io.IOException;
@@ -52,18 +53,34 @@ final class CsvScanner {
     void scan(Reader reader) {
         ParserRule rule = ruleFlow.initialRule();
         DataSlice ruleSlice = new DataSlice();
+        boolean autoLineBreak = ruleFlow.config.csvFormat().lineBreak() == LineBreak.AUTO;
+        // the previous read ended with CR, the LF that may follow belongs to it
+        boolean skipLf = false;
         int newPosition;
         try {
             while (reader.read(readBuffer) != -1) {
                 readBuffer.flip();
                 char[] data = readBuffer.array();
+                int limit = readBuffer.limit();
+                if (skipLf && lastParsePos < limit) {
+                    if (data[lastParsePos] == '\n') {
+                        lastParsePos++;
+                    }
+                    skipLf = false;
+                }
+
                 ruleSlice.setData(data);
                 ruleSlice.setFrom(lastParsePos);
-                ruleSlice.setTo(readBuffer.limit());
+                ruleSlice.setTo(limit);
+                newPosition = ParserRule.CONTINUE;
                 while (ruleSlice.from() < ruleSlice.to()) {
                     newPosition = rule.consume(context, ruleSlice);
-                    if (context.stopRequested()) {
-                        return;
+                    if (context.rowEnded()) {
+                        context.endRow();
+                        // only a row can request a stop
+                        if (context.stopRequested()) {
+                            return;
+                        }
                     }
                     if (newPosition == ParserRule.CONTINUE) {
                         // rule can't find what it needs to end
@@ -72,6 +89,7 @@ final class CsvScanner {
                     ruleSlice.setFrom(newPosition);
                     rule = ruleFlow.nextRule();
                 }
+                skipLf = autoLineBreak && newPosition == limit && data[limit - 1] == '\r';
                 lastParsePos = ruleSlice.from();
                 endOfBuffer();
                 // keep the slice in sync with the (possibly compacted) buffer for the error reporting
@@ -150,7 +168,7 @@ final class CsvScanner {
 
         // Compute the earliest offset to preserve
         int earliest = anchor;
-        if (lastParsePos > 0 && lastParsePos < limit) {
+        if (lastParsePos < limit) {
             earliest = earliest >= 0 ? Math.min(earliest, lastParsePos) : lastParsePos;
         }
 
@@ -161,8 +179,17 @@ final class CsvScanner {
             return;
         }
 
-        // 2. Data starts at 0 and spans the entire buffer — grow
+        // 2. Data starts at 0
         if (earliest == 0) {
+
+            // a partial read, keep reading after the data
+            if (limit < readBuffer.capacity()) {
+                readBuffer.position(limit);
+                readBuffer.limit(readBuffer.capacity());
+                return;
+            }
+
+            // the buffer is full — grow
             int newSize = readBuffer.capacity() * 2;
             if (newSize > MAX_BUFFER_SIZE) {
                 throw new RuntimeException("Char buffer is too small to read a single value");

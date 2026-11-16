@@ -60,7 +60,6 @@ class WidthDetectionTest {
                 .column(CsvColumnMapping.column("id"))
                 .column(CsvColumnMapping.column("name"))
                 .column(CsvColumnMapping.column("extra").nullable(true))
-                .csvFormat(CsvFormat.defaultFormat().allowEmptyColumns())
                 .build();
 
         new DfParserAsserts(csv, format, "id", "name", "extra")
@@ -82,7 +81,6 @@ class WidthDetectionTest {
                 .column(CsvColumnMapping.column(0).type(CsvColumnType.INTEGER))
                 .column(CsvColumnMapping.column(1).type(CsvColumnType.STRING))
                 .column(CsvColumnMapping.column(2).type(CsvColumnType.DOUBLE).nullableWithDefault(true, 0.0))
-                .csvFormat(CsvFormat.defaultFormat().allowEmptyColumns())
                 .build();
 
         new DfParserAsserts(csv, format, "c0", "c1", "c2")
@@ -166,7 +164,6 @@ class WidthDetectionTest {
         CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .csvFormat(CsvFormat.defaultFormat().allowEmptyColumns())
                 .column(CsvColumnMapping.column(0))
                 .column(CsvColumnMapping.column(1))
                 .column(CsvColumnMapping.column(2))

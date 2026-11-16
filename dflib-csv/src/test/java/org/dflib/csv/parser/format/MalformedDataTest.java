@@ -1,6 +1,7 @@
 package org.dflib.csv.parser.format;
 
 import org.dflib.csv.parser.CsvParser;
+import org.dflib.csv.parser.test.DfParserAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
@@ -154,10 +155,22 @@ class MalformedDataTest {
     }
 
     @Test
-    void whitespaceBeforeDelimiterError() {
+    void whitespaceBeforeDelimiter() {
         String csv = """
                 id,name,age
-                1,"alpha" ,2
+                1,"alpha" \t,2
+                """;
+
+        new DfParserAsserts(csv, "id", "name", "age")
+                .expectHeight(1)
+                .expectRow(0, "1", "alpha", "2");
+    }
+
+    @Test
+    void dataAfterWhitespaceAfterQuoteError() {
+        String csv = """
+                id,name,age
+                1,"alpha" x,2
                 """;
 
         assertMalformed(csv);

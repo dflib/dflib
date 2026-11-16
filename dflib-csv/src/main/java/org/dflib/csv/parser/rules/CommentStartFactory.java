@@ -28,15 +28,16 @@ class CommentStartFactory implements RuleFactory {
                 return slice.from();
             }
             int from = slice.from();
-            int to = slice.to();
-            if (to - from < commentPrefix.length) {
-                return from;
-            }
+            int len = Math.min(slice.to() - from, commentPrefix.length);
             char[] data = slice.data();
-            for (int i = 0; i < commentPrefix.length; i++) {
+            for (int i = 0; i < len; i++) {
                 if (data[from + i] != commentPrefix[i]) {
                     return from;
                 }
+            }
+            if (len < commentPrefix.length) {
+                // the prefix may continue in the next buffer read
+                return CONTINUE;
             }
             context.skipRow(from);
             context.overrideState(ParserState.END_OF_LINE);

@@ -16,13 +16,14 @@ class ValueMappers {
     private ValueMappers() {
     }
 
-    // Primitive mappers (one per primitive type)
+    // Primitive mappers (one per primitive type). Missing and null values require a default value
     static BoolValueMapper<DataSlice[]> forBool(Function<DataSlice[], DataSlice> sliceMapper,
                                                 CsvColumnMapping columnFormat) {
-        if (!columnFormat.nullable()) {
+        if (!hasDefault(columnFormat)) {
             return row -> {
                 DataSlice s = sliceMapper.apply(row);
-                return !s.empty() && BoolParser.parse(s);
+                if (s.empty() || isNull(s)) throw noValue("boolean");
+                return BoolParser.parse(s);
             };
         }
         boolean defaultValue = defaultValue(columnFormat);
@@ -35,10 +36,11 @@ class ValueMappers {
 
     static IntValueMapper<DataSlice[]> forInt(Function<DataSlice[], DataSlice> sliceMapper,
                                               CsvColumnMapping columnFormat) {
-        if (!columnFormat.nullable()) {
+        if (!hasDefault(columnFormat)) {
             return row -> {
                 DataSlice s = sliceMapper.apply(row);
-                return s.empty() ? 0 : IntParser.parse(s);
+                if (s.empty() || isNull(s)) throw noValue("int");
+                return IntParser.parse(s);
             };
         }
         int defaultValue = defaultValue(columnFormat);
@@ -51,10 +53,11 @@ class ValueMappers {
 
     static LongValueMapper<DataSlice[]> forLong(Function<DataSlice[], DataSlice> sliceMapper,
                                                 CsvColumnMapping columnFormat) {
-        if (!columnFormat.nullable()) {
+        if (!hasDefault(columnFormat)) {
             return row -> {
                 DataSlice s = sliceMapper.apply(row);
-                return s.empty() ? 0 : LongParser.parse(s);
+                if (s.empty() || isNull(s)) throw noValue("long");
+                return LongParser.parse(s);
             };
         }
         long defaultValue = defaultValue(columnFormat);
@@ -67,10 +70,11 @@ class ValueMappers {
 
     static FloatValueMapper<DataSlice[]> forFloat(Function<DataSlice[], DataSlice> sliceMapper,
                                                   CsvColumnMapping columnFormat) {
-        if (!columnFormat.nullable()) {
+        if (!hasDefault(columnFormat)) {
             return row -> {
                 DataSlice s = sliceMapper.apply(row);
-                return s.empty() ? 0 : (float) DoubleParser.parse(s);
+                if (s.empty() || isNull(s)) throw noValue("float");
+                return (float) DoubleParser.parse(s);
             };
         }
         float defaultValue = defaultValue(columnFormat);
@@ -83,10 +87,11 @@ class ValueMappers {
 
     static DoubleValueMapper<DataSlice[]> forDouble(Function<DataSlice[], DataSlice> sliceMapper,
                                                     CsvColumnMapping columnFormat) {
-        if (!columnFormat.nullable()) {
+        if (!hasDefault(columnFormat)) {
             return row -> {
                 DataSlice s = sliceMapper.apply(row);
-                return s.empty() ? 0 : DoubleParser.parse(s);
+                if (s.empty() || isNull(s)) throw noValue("double");
+                return DoubleParser.parse(s);
             };
         }
         double defaultValue = defaultValue(columnFormat);
@@ -109,7 +114,7 @@ class ValueMappers {
             };
         }
 
-        T defaultValue = defaultValue(columnFormat, false);
+        T defaultValue = defaultValue(columnFormat);
 
         return row -> {
             DataSlice s = sliceMapper.apply(row);
@@ -118,16 +123,17 @@ class ValueMappers {
         };
     }
 
+    private static boolean hasDefault(CsvColumnMapping columnFormat) {
+        return columnFormat.nullable() && columnFormat.defaultValue() != null;
+    }
+
     @SuppressWarnings("unchecked")
-    private static <T> T defaultValue(CsvColumnMapping columnFormat, boolean mandatory) {
-        if (mandatory && columnFormat.defaultValue() == null) {
-            throw new IllegalArgumentException("No default value is set for the nullable column `" + columnFormat.name() + "`");
-        }
+    private static <T> T defaultValue(CsvColumnMapping columnFormat) {
         return (T) columnFormat.defaultValue();
     }
 
-    private static <T> T defaultValue(CsvColumnMapping columnFormat) {
-        return defaultValue(columnFormat, true);
+    private static IllegalStateException noValue(String type) {
+        return new IllegalStateException("missing or null value, and no default is set for the " + type + " column");
     }
 
     private static boolean isNull(DataSlice slice) {

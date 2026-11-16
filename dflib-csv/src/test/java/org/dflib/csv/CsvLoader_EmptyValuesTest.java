@@ -11,7 +11,9 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CsvLoader_EmptyValuesTest {
 
@@ -152,7 +154,9 @@ public class CsvLoader_EmptyValuesTest {
                 .intCol(0)
                 .intCol(1);
 
-        assertThrows(IllegalArgumentException.class, () -> loader.load(EMPTY_WHOLES));
+        IllegalStateException e = assertThrows(IllegalStateException.class, () -> loader.load(EMPTY_WHOLES));
+        assertTrue(e.getMessage().startsWith("Can't convert value of column 'One'"), e.getMessage());
+        assertInstanceOf(NumberFormatException.class, e.getCause().getCause());
     }
 
     @Test
@@ -175,7 +179,9 @@ public class CsvLoader_EmptyValuesTest {
                 .longCol(0)
                 .longCol(1);
 
-        assertThrows(IllegalArgumentException.class, () -> loader.load(EMPTY_WHOLES));
+        IllegalStateException e = assertThrows(IllegalStateException.class, () -> loader.load(EMPTY_WHOLES));
+        assertTrue(e.getMessage().startsWith("Can't convert value of column 'One'"), e.getMessage());
+        assertInstanceOf(NumberFormatException.class, e.getCause().getCause());
     }
 
     @Test

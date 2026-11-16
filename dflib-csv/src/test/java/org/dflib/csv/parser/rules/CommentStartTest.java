@@ -60,18 +60,23 @@ class CommentStartTest {
     }
 
     @Test
-    void partialPrefixDoesNotMatch() {
+    void partialPrefixWaitsForData() {
         ParserContext ctx = newContext();
         ParserRule rule = newRule(CsvFormat.defaultFormat().enableComments("//").build());
 
-        char[] buf = {'/'};
-        int pos = rule.consume(ctx, DataSlice.of(buf));
-
-        assertEquals(0, pos, "Should return current slice start when prefix cannot fully fit");
+        DataSlice slice = DataSlice.of(new char[]{'/'});
+        assertEquals(ParserRule.CONTINUE, rule.consume(ctx, slice), "Should wait for the rest of the prefix");
+        assertEquals(0, slice.from(), "Partial prefix should be rescanned");
         assertEquals(0, ctx.stateOverride, "State should not be overridden for partial prefix");
+    }
 
-        ctx.markRowEnd(buf.length);
-        assertEquals(1, ctx.position().row, "Partial prefix row should not be skipped");
+    @Test
+    void partialPrefixMismatch() {
+        ParserContext ctx = newContext();
+        ParserRule rule = newRule(CsvFormat.defaultFormat().enableComments("//").build());
+
+        assertEquals(0, rule.consume(ctx, DataSlice.of(new char[]{'x'})));
+        assertEquals(0, ctx.stateOverride, "State should not be overridden for a non-matching prefix");
     }
 
     @Test

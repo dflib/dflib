@@ -12,6 +12,8 @@ import org.dflib.csv.parser.format.Quote;
 import org.dflib.junit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,26 +24,72 @@ class CsvScannerTest {
     void endOfBufferNoColumnStarted() {
         CsvScanner scanner = newScanner(oneColumnFormat());
         primeReadBuffer(scanner, "abc");
+        scanner.lastParsePos = 3;
 
         scanner.endOfBuffer();
 
         assertEquals(0, scanner.readBuffer.position());
         assertEquals(scanner.readBuffer.capacity(), scanner.readBuffer.limit());
+        assertEquals(0, scanner.lastParsePos);
     }
 
     @Test
-    void endOfBufferGrows() {
+    void endOfBufferKeepsUnconsumed() {
         CsvScanner scanner = newScanner(oneColumnFormat());
-        primeReadBuffer(scanner, "abcd");
-        scanner.context.activeSlice().setFrom(0);
+        primeReadBuffer(scanner, "abc");
+        scanner.lastParsePos = 1;
+
+        scanner.endOfBuffer();
+
+        assertEquals(2, scanner.readBuffer.position());
+        assertEquals('b', scanner.readBuffer.get(0));
+        assertEquals(0, scanner.lastParsePos);
+    }
+
+    @Test
+    void endOfBufferKeepsUnconsumedAtStart() {
+        CsvScanner scanner = newScanner(oneColumnFormat());
+        primeReadBuffer(scanner, "\r");
+        scanner.lastParsePos = 0;
 
         int initialCapacity = scanner.readBuffer.capacity();
         scanner.endOfBuffer();
 
-        assertEquals(initialCapacity * 2, scanner.readBuffer.capacity());
+        assertEquals(initialCapacity, scanner.readBuffer.capacity());
+        assertEquals(1, scanner.readBuffer.position());
+        assertEquals('\r', scanner.readBuffer.get(0));
+    }
+
+    @Test
+    void endOfBufferContinuesIfNotFull() {
+        CsvScanner scanner = newScanner(oneColumnFormat());
+        primeReadBuffer(scanner, "abcd");
+        scanner.context.activeSlice().setFrom(0);
+        scanner.lastParsePos = 4;
+
+        int initialCapacity = scanner.readBuffer.capacity();
+        scanner.endOfBuffer();
+
+        assertEquals(initialCapacity, scanner.readBuffer.capacity());
         assertEquals(4, scanner.readBuffer.position());
+        assertEquals(initialCapacity, scanner.readBuffer.limit());
         assertEquals('a', scanner.readBuffer.get(0));
         assertEquals('d', scanner.readBuffer.get(3));
+    }
+
+    @Test
+    void endOfBufferGrowsIfFull() {
+        CsvScanner scanner = newScanner(oneColumnFormat());
+        primeReadBuffer(scanner, "a".repeat(CsvScanner.INITIAL_BUFFER_SIZE - 1) + "d");
+        scanner.context.activeSlice().setFrom(0);
+        scanner.lastParsePos = CsvScanner.INITIAL_BUFFER_SIZE;
+
+        scanner.endOfBuffer();
+
+        assertEquals(CsvScanner.INITIAL_BUFFER_SIZE * 2, scanner.readBuffer.capacity());
+        assertEquals(CsvScanner.INITIAL_BUFFER_SIZE, scanner.readBuffer.position());
+        assertEquals('a', scanner.readBuffer.get(0));
+        assertEquals('d', scanner.readBuffer.get(CsvScanner.INITIAL_BUFFER_SIZE - 1));
     }
 
     @Test
@@ -49,6 +97,7 @@ class CsvScannerTest {
         CsvScanner scanner = newScanner(oneColumnFormat());
         primeReadBuffer(scanner, "01234567");
         scanner.context.activeSlice().setFrom(3);
+        scanner.lastParsePos = 8;
 
         scanner.endOfBuffer();
 
@@ -56,6 +105,59 @@ class CsvScannerTest {
         assertEquals(5, scanner.readBuffer.position());
         assertEquals('3', scanner.readBuffer.get(0));
         assertEquals('7', scanner.readBuffer.get(4));
+    }
+
+    @Test
+    void smallReads() {
+        String value = "a".repeat(200);
+        String csv = "c0,c1\n" + (value + "," + value + "\n").repeat(100);
+
+        // the buffer used to grow on each partial read
+        DataFrame df = new CsvParser().parse(new SmallReadsReader(csv, 5));
+        new DataFrameAsserts(df, "c0", "c1")
+                .expectHeight(100)
+                .expectRow(99, value, value);
+    }
+
+    @Test
+    void singleCharReads() {
+        String csv = "a,b\r\n1,2\r\n\r\n\"3\r\n\",4\r\n5,\"6\"\r\n";
+
+        DataFrame df = new CsvParser().parse(new SmallReadsReader(csv, 1));
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(3)
+                .expectRow(0, "1", "2")
+                .expectRow(1, "3\r\n", "4")
+                .expectRow(2, "5", "6");
+    }
+
+    @Test
+    void singleCharReads_CrlfLineBreak() {
+        String csv = "a,b\r\n1,2\r\n\r\n3,4\r\n";
+
+        CsvParserConfig format = CsvParserConfig.builder()
+                .csvFormat(CsvFormat.defaultFormat().lineBreak(LineBreak.CRLF))
+                .build();
+
+        DataFrame df = new CsvParser(format).parse(new SmallReadsReader(csv, 1));
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(2)
+                .expectRow(0, "1", "2")
+                .expectRow(1, "3", "4");
+    }
+
+    @Test
+    void crlfSplitAcrossReads() {
+        String first = "a".repeat(CsvScanner.INITIAL_BUFFER_SIZE - 1);
+        String csv = "h\r\n" + first.substring(3) + "\r\nb\r\n";
+
+        DataFrame df = parse(csv, oneColumnFormat());
+
+        new DataFrameAsserts(df, "c0")
+                .expectHeight(3)
+                .expectRow(0, "h")
+                .expectRow(1, first.substring(3))
+                .expectRow(2, "b");
     }
 
     @Test
@@ -280,6 +382,29 @@ class CsvScannerTest {
                         .lineBreak(LineBreak.LF)
                         .escape(Escape.BACKSLASH))
                 .build();
+    }
+
+    /**
+     * A reader that returns at most N chars per read, like a slow network stream.
+     */
+    static class SmallReadsReader extends Reader {
+        private final StringReader delegate;
+        private final int maxRead;
+
+        SmallReadsReader(String data, int maxRead) {
+            this.delegate = new StringReader(data);
+            this.maxRead = maxRead;
+        }
+
+        @Override
+        public int read(char[] cbuf, int off, int len) throws IOException {
+            return delegate.read(cbuf, off, Math.min(len, maxRead));
+        }
+
+        @Override
+        public void close() {
+            delegate.close();
+        }
     }
 
     private static void primeReadBuffer(CsvScanner scanner, String data) {

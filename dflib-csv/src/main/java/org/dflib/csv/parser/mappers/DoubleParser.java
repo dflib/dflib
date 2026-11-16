@@ -39,6 +39,8 @@ final class DoubleParser {
         if (data[from] == '-') {
             minus = true;
             from++;
+        } else if (data[from] == '+') {
+            from++;
         }
 
         if (from >= to) {
@@ -70,10 +72,9 @@ final class DoubleParser {
 
             } else if (c == '.' && !seenDot) {
                 seenDot = true;
-            } else if (c == 'e' || c == 'E') {
-                return fallback(slice);
             } else {
-                throw new NumberFormatException("Invalid character: '" + c + "'");
+                // an exponent, whitespace, hex, etc. - fall back to the JDK, it also reports errors
+                return fallback(slice);
             }
             from++;
         }

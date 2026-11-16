@@ -57,13 +57,20 @@ class BigDecimalParserTest {
     }
 
     @Test
-    void parseLeadingPlusUnsupported() {
-        assertThrows(NumberFormatException.class, () -> parse("+123.0"));
+    void parseLeadingPlus() {
+        assertEquals(new BigDecimal("123.0"), parse("+123.0"));
     }
 
     @Test
-    void parseExponentUnsupported() {
-        assertThrows(NumberFormatException.class, () -> parse("1e3"));
+    void parseExponent() {
+        assertEquals(new BigDecimal("1e3"), parse("1e3"));
+        assertEquals(new BigDecimal("-1.5E-3"), parse("-1.5E-3"));
+    }
+
+    @Test
+    void parseInvalid() {
+        assertThrows(NumberFormatException.class, () -> parse("12a34"));
+        assertThrows(NumberFormatException.class, () -> parse("+"));
     }
 
     @Test

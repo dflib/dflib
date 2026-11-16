@@ -15,7 +15,6 @@ class TrailingDelimiterTest {
         CsvParserConfig format = CsvParserConfig.builder()
                 .autoColumns(false)
                 .excludeHeaderValues(false)
-                .csvFormat(CsvFormat.defaultFormat().allowEmptyColumns())
                 .column(CsvColumnMapping.column("c0"))
                 .column(CsvColumnMapping.column("c1"))
                 .column(CsvColumnMapping.column("c2"))

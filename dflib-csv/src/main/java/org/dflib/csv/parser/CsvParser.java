@@ -2,7 +2,6 @@ package org.dflib.csv.parser;
 
 import org.dflib.ByteSource;
 import org.dflib.DataFrame;
-import org.dflib.builder.DataFrameAppender;
 import org.dflib.codec.Codec;
 import org.dflib.csv.parser.format.CsvColumnMapping;
 import org.dflib.csv.parser.format.CsvParserConfig;
@@ -17,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -100,19 +100,11 @@ public class CsvParser {
         this.columnsBuilder = new CsvColumnsBuilder();
         this.context = new ParserContext();
         this.ruleFlow = new ParserRuleFlow(config, context);
-        this.dfBuilder = new DataFrameBuilder(config);
+        this.dfBuilder = new DataFrameBuilder(config, columnsBuilder);
         this.context.setCallback(new ColumnDetectionCallback(buildListener(), config.csvFormat().trailingDelimiter()));
         new CsvScanner(context, ruleFlow).scan(reader);
-        warnOnExtraValues();
         checkEmptyAppender();
         return dfBuilder.buildDataFrame();
-    }
-
-    private void warnOnExtraValues() {
-        int rows = context.extraValuesRows();
-        if (rows > 0) {
-            LOGGER.warn("{} row(s) had more values than the header, extra values were ignored", rows);
-        }
     }
 
     /**
@@ -131,9 +123,25 @@ public class CsvParser {
         // append the first row, if needed
         if(!config.excludeHeaderValues()) {
             // use the actual callback to consume the row
-            listener = listener.andThen(slices -> context.callback().onNewRow(slices));
+            listener = listener.andThen(slices -> context.callback().onNewRow(padToWidth(slices)));
         }
         return listener;
+    }
+
+    /**
+     * Pads the first row to the width of the user-defined columns.
+     */
+    private DataSlice[] padToWidth(DataSlice[] slices) {
+        int width = columnsBuilder.size();
+        if (slices.length >= width) {
+            return slices;
+        }
+
+        DataSlice[] padded = Arrays.copyOf(slices, width);
+        for (int i = slices.length; i < width; i++) {
+            padded[i] = new DataSlice();
+        }
+        return padded;
     }
 
     /**
@@ -141,26 +149,18 @@ public class CsvParser {
      * @param detected columns detected by the AUTO stage.
      */
     private void buildColumns(DataSlice[] detected) {
-        int csvWidth = detected.length;
-        for(int i = csvWidth; i < columnsBuilder.size(); i++) {
-            // ignore columns that are not in the actual file
-            CsvColumnMapping.Builder builder = columnsBuilder.get(i);
-            if(!builder.isSkipped()) {
-                if(config.csvFormat().allowEmptyColumns()) {
-                    LOGGER.warn("More columns defined in the provided format, " +
-                            "that are detected in the file. Column {} will be empty in the result.", i);
-                    builder.skip();
-                } else {
-                    throw new IllegalStateException("More columns defined in the provided format, " +
-                            "that are detected in the file. Use CsvLoader.nullPadRows() if this is intended");
-                }
-            }
+        List<CsvColumnMapping> columns = columnsBuilder.build(config);
+        int width = columns.size();
+
+        if (width > detected.length) {
+            LOGGER.warn("Columns {} are defined in the loader, but are missing in the first CSV row. They will be " +
+                            "null, unless some rows have more values",
+                    columns.subList(detected.length, width).stream().map(CsvColumnMapping::name).toList());
         }
-        List<CsvColumnMapping> fullWidthColumns = columnsBuilder.build(config);
-        List<CsvColumnMapping> trimmedToWidthColumns = fullWidthColumns.subList(0, csvWidth);
-        this.ruleFlow.initColumns(trimmedToWidthColumns);
-        this.context.initRowBuffer(csvWidth, config.csvFormat().allowEmptyColumns());
-        initAppender(fullWidthColumns);
+
+        this.ruleFlow.initColumns(columns);
+        this.context.initRowBuffer(width);
+        initAppender(columns);
     }
 
     /**
@@ -168,11 +168,11 @@ public class CsvParser {
      * @param columns merged columns data.
      */
     void initAppender(List<CsvColumnMapping> columns) {
-        DataFrameAppender<DataSlice[]> appender = dfBuilder.buildAppender(columns);
+        dfBuilder.buildAppender(columns);
         int limit = config.limit() + (config.excludeHeaderValues() ? 1 : 0);
         this.context.setCallback(config.limit() >= 0
-                ? new LimitCallback(this.context, appender, limit)
-                : new NoLimitCallback(appender)
+                ? new LimitCallback(this.context, dfBuilder, limit)
+                : dfBuilder
         );
     }
 

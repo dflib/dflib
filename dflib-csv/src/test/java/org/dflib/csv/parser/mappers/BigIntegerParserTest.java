@@ -50,9 +50,13 @@ class BigIntegerParserTest {
     }
 
     @Test
-    void parseLeadingPlusUnsupported() {
-        String s = "+123";
-        assertThrows(NumberFormatException.class, () -> parse(s));
+    void parseLeadingPlus() {
+        assertEquals(BigInteger.valueOf(123), parse("+123"));
+    }
+
+    @Test
+    void parsePlusOnly() {
+        assertThrows(NumberFormatException.class, () -> parse("+"));
     }
 
     @Test

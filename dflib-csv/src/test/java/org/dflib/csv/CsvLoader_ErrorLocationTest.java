@@ -1,11 +1,16 @@
 package org.dflib.csv;
 
 import org.dflib.ByteSource;
+import org.dflib.RowPredicate;
 import org.dflib.csv.parser.format.CsvFormat;
 import org.junit.jupiter.api.Test;
 
+import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Parsing errors should report the row and the text of the line where the error occurred.
@@ -24,6 +29,26 @@ public class CsvLoader_ErrorLocationTest {
                 """;
 
         assertEquals("Unexpected data after closing quote (row 2): 1,\"alpha\"x",
+                loadError(new CsvLoader(), csv));
+    }
+
+    @Test
+    public void dataAfterClosingQuote_AfterWhitespace() {
+        String csv = """
+                id,name
+                1,"alpha" x
+                """;
+
+        assertEquals("Unexpected data after closing quote (row 2): 1,\"alpha\" x",
+                loadError(new CsvLoader(), csv));
+    }
+
+    @Test
+    public void rowNumberWithCrlfSplitAcrossReads() {
+        // the CR of the second line is the last char of the first buffer read
+        String csv = "h\r\n" + "a".repeat(8 * 1024 - 4) + "\r\nb\r\n\"x\"y\r\n";
+
+        assertEquals("Unexpected data after closing quote (row 4): \"x\"y",
                 loadError(new CsvLoader(), csv));
     }
 
@@ -62,14 +87,15 @@ public class CsvLoader_ErrorLocationTest {
     }
 
     @Test
-    public void shortRow() {
+    public void shortRow_Primitive() {
         String csv = """
                 A,B,C
                 0,1,2
                 3,4""";
 
-        assertEquals("Unexpected end of the row (row 3): 3,4",
-                loadError(new CsvLoader(), csv));
+        assertEquals("Can't convert value of column 'C': missing or null value, and no default is set for the int " +
+                        "column (row 3): 3,4",
+                loadError(new CsvLoader().intCol("C"), csv));
     }
 
     @Test
@@ -114,13 +140,75 @@ public class CsvLoader_ErrorLocationTest {
     }
 
     @Test
-    public void columnsMismatch() {
+    public void conversionError() {
         String csv = """
-                0,1
-                2,3""";
+                a,b
+                1,2
+                x,3
+                """;
 
-        assertEquals("More columns defined in the provided format, that are detected in the file. " +
-                        "Use CsvLoader.nullPadRows() if this is intended (row 1): 0,1",
-                loadError(new CsvLoader().header("A", "B", "C"), csv));
+        IllegalStateException e = assertThrows(IllegalStateException.class,
+                () -> new CsvLoader().intCol("a").load(ByteSource.of(csv.getBytes())));
+
+        assertEquals("Can't convert value of column 'a': Unexpected character for a numeric value: 'x' in x (row 3): x,3",
+                e.getMessage());
+        assertInstanceOf(NumberFormatException.class, e.getCause().getCause());
+    }
+
+    @Test
+    public void conversionError_Date() {
+        String csv = """
+                a,b
+                2026-01-01,2
+                2026-13-01,3
+                """;
+
+        String message = loadError(new CsvLoader().dateCol("a"), csv);
+        assertTrue(message.startsWith("Can't convert value of column 'a': "), message);
+        assertTrue(message.endsWith(" (row 3): 2026-13-01,3"), message);
+    }
+
+    @Test
+    public void conversionError_GenerateHeader() {
+        String csv = """
+                1,x
+                1,2
+                """;
+
+        assertEquals("Can't convert value of column 'c1': Unexpected character for a numeric value: 'x' (row 1): 1,x",
+                loadError(new CsvLoader().generateHeader().longCol(1), csv));
+    }
+
+    @Test
+    public void conversionError_RowFilter() {
+        String csv = """
+                a,b
+                1,2
+                x,3
+                """;
+
+        CsvLoader loader = new CsvLoader()
+                .intCol("a")
+                .rows(RowPredicate.of("b", (String b) -> !b.isEmpty()));
+
+        assertEquals("Can't convert value of column 'a': Unexpected character for a numeric value: 'x' in x (row 3): x,3",
+                loadError(loader, csv));
+    }
+
+    @Test
+    public void conversionError_Sample() {
+        String csv = """
+                a,b
+                1,2
+                3,4
+                x,5
+                """;
+
+        CsvLoader loader = new CsvLoader()
+                .intCol("a")
+                .rowsSample(10, new Random(1));
+
+        assertEquals("Can't convert value of column 'a': Unexpected character for a numeric value: 'x' in x (row 4): x,5",
+                loadError(loader, csv));
     }
 }

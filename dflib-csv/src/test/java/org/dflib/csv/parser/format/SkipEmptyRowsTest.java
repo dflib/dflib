@@ -135,4 +135,36 @@ class SkipEmptyRowsTest {
                 .expectHeight(1)
                 .expectRow(0, "2", "B");
     }
+
+    @Test
+    void skipManyEmptyBeforeHeader() {
+        String csv = "\n\nid,name\n1,A\n\n\n2,B\n";
+
+        new DfParserAsserts(csv, "id", "name")
+                .expectHeight(2)
+                .expectRow(0, "1", "A")
+                .expectRow(1, "2", "B");
+    }
+
+    @Test
+    void skipManyEmptyBeforeHeader_Crlf() {
+        String csv = "\r\n\r\n\r\nid,name\r\n1,A\r\n";
+
+        new DfParserAsserts(csv, "id", "name")
+                .expectHeight(1)
+                .expectRow(0, "1", "A");
+    }
+
+    @Test
+    void skipManyEmptyBeforeHeader_Offset() {
+        String csv = "title\n\n\nid,name\n1,A\n";
+
+        CsvParserConfig format = CsvParserConfig.builder()
+                .offset(1)
+                .build();
+
+        new DfParserAsserts(csv, format, "id", "name")
+                .expectHeight(1)
+                .expectRow(0, "1", "A");
+    }
 }

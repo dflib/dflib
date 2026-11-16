@@ -50,7 +50,7 @@ class MiscTest {
     }
 
     @Test
-    void earlyOut() {
+    void shortRows() {
         String csv = """
                 id,val,name
                 1,
@@ -59,10 +59,10 @@ class MiscTest {
                 """;
 
         new DfParserAsserts(csv, "id", "val", "name")
-                .expectHeight(2)
-                .expectColumn("id", "1", "2")
-                .expectColumn("val", "\n", "val2")
-                .expectColumn("name", "name1", "name2");
+                .expectHeight(3)
+                .expectRow(0, "1", "", null)
+                .expectRow(1, "", "name1", null)
+                .expectRow(2, "2", "val2", "name2");
     }
 
     @Test

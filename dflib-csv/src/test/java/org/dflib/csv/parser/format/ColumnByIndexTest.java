@@ -63,7 +63,6 @@ class ColumnByIndexTest {
                 .column(CsvColumnMapping.column(0))
                 .column(CsvColumnMapping.column(1))
                 .column(CsvColumnMapping.column(2))
-                .csvFormat(CsvFormat.defaultFormat().allowEmptyColumns().build())
                 .build();
 
         new DfParserAsserts(csv, format, "c0", "c1", "c2")

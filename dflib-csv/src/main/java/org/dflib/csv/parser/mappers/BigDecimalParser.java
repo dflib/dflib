@@ -26,6 +26,8 @@ final class BigDecimalParser {
         if (data[from] == '-') {
             minus = true;
             from++;
+        } else if (data[from] == '+') {
+            from++;
         }
 
         if (from >= to) {
@@ -62,7 +64,8 @@ final class BigDecimalParser {
                 seenDot = true;
 
             } else {
-                throw new NumberFormatException("Invalid character: '" + c + "'");
+                // fall back to the JDK (e.g., for an exponent), it also reports errors
+                return new BigDecimal(slice.toString());
             }
         }
 

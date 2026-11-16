@@ -18,16 +18,14 @@ public class RuleBuilder {
         RULE_FACTORIES.put(ParserState.NO, new NoopFactory());
         RULE_FACTORIES.put(ParserState.EMPTY_ROW, new EmptyRowFactory());
         RULE_FACTORIES.put(ParserState.COMMENT, new CommentStartFactory());
-        RULE_FACTORIES.put(ParserState.SKIP_ROW, new OffsetSkipFactory());
+        RULE_FACTORIES.put(ParserState.SKIP_ROW, new SkipRowFactory());
         RULE_FACTORIES.put(ParserState.START_ANY, new ColumnStartAnyFactory());
         RULE_FACTORIES.put(ParserState.START_QUOTED_OPTIONAL, new ColumnStartQuotedOptionalFactory());
         RULE_FACTORIES.put(ParserState.START_QUOTED, new ColumnStartQuotedFactory());
         RULE_FACTORIES.put(ParserState.START_UNQUOTED, new ColumnStartUnquotedFactory());
         RULE_FACTORIES.put(ParserState.END_QUOTED, new ColumnEndQuotedFactory());
-        RULE_FACTORIES.put(ParserState.DELIMITER, new DelimiterFactory());
         RULE_FACTORIES.put(ParserState.END_OF_LINE, new EndOfLineFactory());
         RULE_FACTORIES.put(ParserState.DELIMITER_OR_END_OF_LINE, new DelimiterOrEndOfLineFactory());
-        RULE_FACTORIES.put(ParserState.SKIP_EXTRA_VALUES, new SkipExtraValuesFactory());
     }
 
     public static ParserRule[] buildRules(CsvFormat format) {

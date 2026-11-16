@@ -22,6 +22,8 @@ final class BigIntegerParser {
         if (data[from] == '-') {
             negative = true;
             from++;
+        } else if (data[from] == '+') {
+            from++;
         }
 
         if (from >= to) {

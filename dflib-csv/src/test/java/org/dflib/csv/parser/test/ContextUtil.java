@@ -7,7 +7,14 @@ import org.dflib.csv.parser.context.ParserContext;
 public class ContextUtil {
 
     public static ParserContext newContext() {
-        ParserContext parserContext = new ParserContext();
+        // the same as the scanner does after each rule
+        ParserContext parserContext = new ParserContext() {
+            @Override
+            public void markRowEnd(int position) {
+                super.markRowEnd(position);
+                endRow();
+            }
+        };
         parserContext.setCallback(new TestCallback());
         return parserContext;
     }

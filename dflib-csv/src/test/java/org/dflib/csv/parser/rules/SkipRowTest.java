@@ -11,7 +11,9 @@ import org.junit.jupiter.api.Test;
 import static org.dflib.csv.parser.test.ContextUtil.newContext;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class OffsetSkipTest {
+class SkipRowTest {
+
+    private static final String NEXT_ROW = "NEXT";
 
     @Test
     void lfUnquoted() {
@@ -119,10 +121,10 @@ class OffsetSkipTest {
         int pos1 = rule.consume(ctx, s1);
 
         assertEquals(ParserRule.CONTINUE, pos1, "First slice should wait for LF after CR");
-        assertEquals(2, s1.from(), "Slice start should advance to end when continuing");
+        assertEquals(1, s1.from(), "CR should be rescanned when more data is available");
 
-        int pos2 = rule.consume(ctx, DataSlice.of(new char[]{'\n', 'x'}));
-        assertEquals(1, pos2, "Second slice should consume LF and finish skipped row");
+        int pos2 = rule.consume(ctx, DataSlice.of(new char[]{'\r', '\n', 'x'}));
+        assertEquals(2, pos2, "Second slice should consume CRLF and finish skipped row");
     }
 
     @Test
@@ -208,7 +210,112 @@ class OffsetSkipTest {
         assertEquals(6, pos);
     }
 
-    private ParserRule newRule(CsvFormat format) {
-        return new OffsetSkipFactory.OffsetRowSkipRule(format);
+    @Test
+    void quoteInsideUnquotedValue() {
+        ParserContext ctx = newContext();
+        ParserRule rule = newRule(CsvFormat.defaultFormat().build());
+
+        int pos = rule.consume(ctx, DataSlice.of("Monitor 27\" sale,x\nA".toCharArray()));
+        assertEquals(19, pos, "Quote inside an unquoted value should not start a quoted value");
+    }
+
+    @Test
+    void quoteAfterDelimiter() {
+        ParserContext ctx = newContext();
+        ParserRule rule = newRule(CsvFormat.defaultFormat().build());
+
+        int pos = rule.consume(ctx, DataSlice.of("a,\"b\nc\",d\nA".toCharArray()));
+        assertEquals(10, pos, "Quote at the value start should start a quoted value");
+    }
+
+    @Test
+    void split_Lf() {
+        assertSkipsTo(CsvFormat.defaultFormat().lineBreak(LineBreak.LF).build(),
+                "x,\"a,b\n\"\"c\",d\nNEXT");
+    }
+
+    @Test
+    void split_Crlf() {
+        assertSkipsTo(CsvFormat.defaultFormat().lineBreak(LineBreak.CRLF).build(),
+                "\"q\r\n\",z\rw\r\nNEXT");
+    }
+
+    @Test
+    void split_Cr() {
+        assertSkipsTo(CsvFormat.defaultFormat().lineBreak(LineBreak.CR).build(),
+                "\"a\rb\",c\rNEXT");
+    }
+
+    @Test
+    void split_Auto() {
+        assertSkipsTo(CsvFormat.defaultFormat().build(),
+                "\"a\r\nb\",c\r\nNEXT");
+    }
+
+    @Test
+    void split_AutoSingleCr() {
+        assertSkipsTo(CsvFormat.defaultFormat().build(),
+                "\"a\rb\",c\rNEXT");
+    }
+
+    @Test
+    void split_BackslashEscape() {
+        assertSkipsTo(CsvFormat.defaultFormat().lineBreak(LineBreak.LF).escape(Escape.BACKSLASH).build(),
+                "\"a\\\"\n\\\\\",b\\,c\nNEXT");
+    }
+
+    @Test
+    void split_NoEscape() {
+        assertSkipsTo(CsvFormat.defaultFormat().lineBreak(LineBreak.LF).escape(Escape.NONE).build(),
+                "\"a\n\"b\",c\nNEXT");
+    }
+
+    @Test
+    void split_NoQuote() {
+        assertSkipsTo(CsvFormat.defaultFormat().lineBreak(LineBreak.LF).quote(Quote.none()).build(),
+                "\"a,b\nNEXT");
+    }
+
+    @Test
+    void split_QuoteNotAtValueStart() {
+        assertSkipsTo(CsvFormat.defaultFormat().lineBreak(LineBreak.LF).build(),
+                "5\"inch,x\nNEXT");
+    }
+
+    @Test
+    void split_MultiCharDelimiter() {
+        assertSkipsTo(CsvFormat.defaultFormat().lineBreak(LineBreak.LF).delimiter("||").build(),
+                "x||\"a||\n\"||y\nNEXT");
+    }
+
+    /**
+     * Checks that the rule stops right before the {@link #NEXT_ROW} marker, with the data split into two slices at
+     * every possible position.
+     */
+    private static void assertSkipsTo(CsvFormat format, String data) {
+        int expected = data.indexOf(NEXT_ROW);
+        for (int split = 1; split <= data.length(); split++) {
+            ParserRule rule = newRule(format);
+
+            DataSlice first = slice(data, 0, split);
+            int pos = rule.consume(newContext(), first);
+            if (pos == ParserRule.CONTINUE) {
+                pos = rule.consume(newContext(), slice(data, first.from(), data.length()));
+            }
+
+            assertEquals(expected, pos, "Wrong row end, split at " + split);
+        }
+    }
+
+    private static DataSlice slice(String data, int from, int to) {
+        DataSlice slice = new DataSlice();
+        slice.setData(data.toCharArray());
+        slice.setFrom(from);
+        slice.setTo(to);
+        return slice;
+    }
+
+    private static ParserRule newRule(CsvFormat format) {
+        return new SkipRowFactory.SkipRow(format);
     }
 }

@@ -174,6 +174,73 @@ class DelimiterOrEndOfLineTest {
         assertEquals(0, ctx.position().column, "Column should reset after row end");
     }
 
+    @Test
+    void overlappingPattern() {
+        ParserContext ctx = newContext();
+        ParserRule rule = newRule(LineBreak.AUTO, "aba");
+        char[] buf = {'x', 'a', 'b', 'a', 'b', 'a', 'y'};
+        ctx.markColumnStart(0);
+        int pos = rule.consume(ctx, DataSlice.of(buf));
+        assertEquals(4, pos, "Should return index after first occurrence 'aba' at 1..3");
+        assertEquals(1, ctx.position().column, "Column advanced after first match");
+    }
+
+    @Test
+    void nonZeroStartIndex() {
+        ParserContext ctx = newContext();
+        ParserRule rule = newRule(LineBreak.AUTO, "mn");
+        char[] buf = {'a', 'b', 'm', 'n', 'c'};
+        ctx.markColumnStart(2);
+        DataSlice data = DataSlice.of(buf);
+        data.setFrom(2);
+        int pos = rule.consume(ctx, data);
+        assertEquals(4, pos, "Match starting at non-zero index should end at 4");
+        assertEquals(1, ctx.position().column, "Column advanced after match");
+    }
+
+    @Test
+    void singleCharLf_CrIsData() {
+        ParserContext ctx = newContext();
+        ParserRule rule = newRule(LineBreak.LF, ",");
+        char[] buf = {'a', '\r', 'b', '\n', 'x'};
+        ctx.markColumnStart(0);
+        int pos = rule.consume(ctx, DataSlice.of(buf));
+        assertEquals(4, pos, "CR is a part of the value in LF mode");
+        assertEquals(1, ctx.position().row);
+    }
+
+    @Test
+    void singleCharCr_LfIsData() {
+        ParserContext ctx = newContext();
+        ParserRule rule = newRule(LineBreak.CR, ";");
+        char[] buf = {'a', '\n', 'b', ';', 'x'};
+        ctx.markColumnStart(0);
+        int pos = rule.consume(ctx, DataSlice.of(buf));
+        assertEquals(4, pos, "LF is a part of the value in CR mode");
+        assertEquals(1, ctx.position().column);
+    }
+
+    @Test
+    void multiChar_PartialMatchRestarts() {
+        ParserContext ctx = newContext();
+        ParserRule rule = newRule(LineBreak.AUTO, "ab");
+        char[] buf = {'x', 'a', 'a', 'b', 'y'};
+        ctx.markColumnStart(0);
+        int pos = rule.consume(ctx, DataSlice.of(buf));
+        assertEquals(4, pos, "Delimiter should be found after a partial match");
+        assertEquals(1, ctx.position().column);
+    }
+
+    @Test
+    void multiChar_PartialMatchAtSliceEnd() {
+        ParserContext ctx = newContext();
+        ParserRule rule = newRule(LineBreak.AUTO, "||");
+        DataSlice slice = DataSlice.of(new char[]{'x', '|'});
+        ctx.markColumnStart(0);
+        assertEquals(ParserRule.CONTINUE, rule.consume(ctx, slice), "Delimiter may continue in the next read");
+        assertEquals(0, ctx.position().column);
+    }
+
     private ParserRule newRule(LineBreak lineBreak, String delimiter) {
         CsvFormat format = CsvFormat.defaultFormat()
                 .delimiter(delimiter)

@@ -103,9 +103,8 @@ public class CsvColumnsBuilder {
 
     private void ensureSize(int idxTo) {
         for (int i = columns.size(); i <= idxTo; i++) {
-            // skip this filler column
-            // it could be set later
-            columns.add(CsvColumnMapping.column(i).skip());
+            // a filler column, it could be set later
+            columns.add(CsvColumnMapping.column(i));
         }
     }
 

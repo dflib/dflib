@@ -1,10 +1,13 @@
 package org.dflib.csv.parser;
 
+import org.dflib.csv.parser.context.DataSlice;
 import org.dflib.csv.parser.context.ParserContext;
-import org.dflib.csv.parser.format.CsvColumnFormat;
+import org.dflib.csv.parser.context.RuleContext;
 import org.dflib.csv.parser.format.CsvColumnMapping;
 import org.dflib.csv.parser.format.CsvFormat;
 import org.dflib.csv.parser.format.CsvParserConfig;
+import org.dflib.csv.parser.format.LineBreak;
+import org.dflib.csv.parser.format.Quote;
 import org.dflib.csv.parser.rules.ParserRule;
 import org.dflib.csv.parser.rules.RuleBuilder;
 
@@ -31,7 +34,8 @@ import java.util.List;
  * <h4>3. COLUMN</h4>
  * <p>
  * This is the main state, parsing is based on a fast per-column state flow. Tries to optimize rule transition based on
- * the columns format (e.g., skipping quotes if quotes are explicitly set to NONE).
+ * the columns format (e.g., skipping quotes if quotes are explicitly set to NONE). Any column may end the row, and a
+ * delimiter after the last column adds a column to the flow.
  *
  * <h4>State Overrides</h3>
  * <p>In AUTO and COLUMN modes rules may request a specific next state via {@code context.overrideState(...)}
@@ -129,12 +133,12 @@ final class ParserRuleFlow {
                 yield skipRowRule;
             }
             case AUTO -> {
-                if (context.stateOverride == 0) {
-                    context.setCurrentState(autoFlow[context.currentState()]);
-                    yield parserRules[context.currentState()];
-                } else {
-                    yield parserRules[context.nextStateOverride()];
-                }
+                // track the overridden state too, so that the flow continues from it
+                int next = context.stateOverride == 0
+                        ? autoFlow[context.currentState()]
+                        : context.nextStateOverride();
+                context.setCurrentState(next);
+                yield parserRules[next];
             }
             case COLUMN -> {
                 if (context.stateOverride == 0) {
@@ -164,23 +168,25 @@ final class ParserRuleFlow {
         if (config.csvFormat().comment() != null) {
             states.add(ParserState.COMMENT);
         }
-        for (CsvColumnMapping columnFormat : columns) {
-            if (columnFormat.format().quote().optional()) {
-                states.add(ParserState.START_ANY);
-            } else if (columnFormat.format().quote().noQuote()) {
-                states.add(ParserState.START_UNQUOTED);
-            } else {
-                states.add(ParserState.START_QUOTED);
-                states.add(ParserState.END_QUOTED);
-            }
-            states.add(config.csvFormat().allowEmptyColumns()
-                    ? ParserState.DELIMITER_OR_END_OF_LINE
-                    : ParserState.DELIMITER);
+        for (CsvColumnMapping column : columns) {
+            addColumnStates(states, column.format().quote());
         }
-        // the last column ends either with a line break or with a delimiter
-        states.set(states.size() - 1, ParserState.DELIMITER_OR_END_OF_LINE);
-        states.add(ParserState.SKIP_EXTRA_VALUES);
         return states.toArray(new ParserState[0]);
+    }
+
+    /**
+     * Adds the states of a single column.
+     */
+    private static void addColumnStates(List<ParserState> states, Quote quote) {
+        if (quote.optional()) {
+            states.add(ParserState.START_ANY);
+        } else if (quote.noQuote()) {
+            states.add(ParserState.START_UNQUOTED);
+        } else {
+            states.add(ParserState.START_QUOTED);
+            states.add(ParserState.END_QUOTED);
+        }
+        states.add(ParserState.DELIMITER_OR_END_OF_LINE);
     }
 
     /**
@@ -228,10 +234,65 @@ final class ParserRuleFlow {
      */
     private ParserRule[] buildColumnFlowRules(List<CsvColumnMapping> columns) {
         ParserState[] states = buildDefaultStateFlow(columns);
-        ParserRule[] rules = new ParserRule[states.length];
+        ParserRule[] rules = new ParserRule[states.length + 1];
         for (int i = 0; i < states.length; i++) {
             rules[i] = parserRules[states[i].ordinal()];
         }
+        rules[states.length] = new AddColumnRule();
         return rules;
+    }
+
+    /**
+     * The last rule of the column flow, reached on a delimiter after the last column. Adds a column, unless the
+     * delimiter is the trailing one.
+     */
+    private final class AddColumnRule implements ParserRule {
+
+        private final LineBreak lineBreak = config.csvFormat().lineBreak();
+
+        @Override
+        public int consume(RuleContext ruleContext, DataSlice slice) {
+            char[] data = slice.data();
+            int from = slice.from();
+            char c = data[from];
+
+            if (lineBreak == LineBreak.CRLF && c == '\r' && from + 1 >= slice.to()) {
+                // need the next char to check for LF
+                return CONTINUE;
+            }
+
+            boolean lineEnd = switch (lineBreak) {
+                case AUTO -> c == '\n' || c == '\r';
+                case LF -> c == '\n';
+                case CR -> c == '\r';
+                case CRLF -> c == '\r' && data[from + 1] == '\n';
+            };
+
+            if (lineEnd) {
+                context.overrideState(ParserState.END_OF_LINE);
+            } else {
+                addColumn();
+            }
+            return from;
+        }
+
+        private void addColumn() {
+            List<ParserState> states = new ArrayList<>();
+            addColumnStates(states, config.csvFormat().quote());
+
+            // insert the new column rules before this rule
+            int at = context.flowIndex;
+            ParserRule[] rules = Arrays.copyOf(columnFlowRules, at + states.size() + 1);
+            for (int i = 0; i < states.size(); i++) {
+                rules[at + i] = parserRules[states.get(i).ordinal()];
+            }
+            rules[rules.length - 1] = this;
+
+            columnFlowRules = rules;
+            context.addColumn();
+
+            // continue with the start of the new column
+            context.flowIndex = at - 1;
+        }
     }
 }

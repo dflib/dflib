@@ -50,7 +50,11 @@ class EmptyRowFactory implements RuleFactory {
                 case CRLF -> {
                     if (c == '\r') {
                         int next = from + 1;
-                        if (next < slice.to() && data[next] == '\n') {
+                        if (next >= slice.to()) {
+                            // need the next char to check for LF
+                            return CONTINUE;
+                        }
+                        if (data[next] == '\n') {
                             context.skipRow(from);
                             context.overrideState(ParserState.END_OF_LINE);
                         }

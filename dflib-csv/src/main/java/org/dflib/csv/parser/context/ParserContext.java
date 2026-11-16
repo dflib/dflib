@@ -2,6 +2,8 @@ package org.dflib.csv.parser.context;
 
 import org.dflib.csv.parser.ParserState;
 
+import java.util.Arrays;
+
 /**
  * General context holder of the parsing process.
  * Internal API. Part of the {@link org.dflib.csv.CsvLoader} API
@@ -28,12 +30,11 @@ public class ParserContext implements RuleContext {
     public int flowIndex = -1;
     // when true - last processed slice (i.e., column) was quoted
     private boolean lastSliceQuoted;
-    private boolean allowEmptyColumns;
 
     // rows skipped as empty or comments, needed to report row numbers
     private int skippedRows;
-    // rows that had more values than the header
-    private int extraValuesRows;
+    // the row end marked by a rule, processed by endRow()
+    private int rowEnd = -1;
 
     // Row-first mode fields
     private DataSlice[] rowSlices;
@@ -48,7 +49,6 @@ public class ParserContext implements RuleContext {
     public ParserContext() {
         this.activeSlice = new DataSlice();
         this.position = new RowColumnPosition();
-        this.allowEmptyColumns = true;
     }
 
     public void setCallback(DataCallback callback) {
@@ -63,7 +63,7 @@ public class ParserContext implements RuleContext {
         return stopRequested;
     }
 
-    public void initRowBuffer(int columnCount, boolean allowEmptyColumns) {
+    public void initRowBuffer(int columnCount) {
         this.rowSlices = new DataSlice[columnCount];
         for (int i = 0; i < columnCount; i++) {
             this.rowSlices[i] = new DataSlice();
@@ -75,7 +75,21 @@ public class ParserContext implements RuleContext {
         this.position.column = 0;
         this.rowFirstMode = true;
         this.activeSlice = rowSlices[0];
-        this.allowEmptyColumns = allowEmptyColumns;
+    }
+
+    /**
+     * Adds a column to the row buffer for a row wider than the known columns.
+     */
+    public void addColumn() {
+        if (!rowFirstMode) {
+            return;
+        }
+
+        int w = rowSlices.length;
+        DataSlice slice = new DataSlice();
+        slice.setData(rowSlices[0].data());
+        rowSlices = Arrays.copyOf(rowSlices, w + 1);
+        rowSlices[w] = slice;
     }
 
     public void rebindRowSlices(char[] data) {
@@ -91,7 +105,8 @@ public class ParserContext implements RuleContext {
 
     public int bufferAnchor() {
         if (rowFirstMode) {
-            return rowSlices[0].from();
+            // preserve only an unfinished row, the slices of a processed row are stale
+            return position.column > 0 || activeSlice.open() ? rowSlices[0].from() : -1;
         }
         return activeSlice.from();
     }
@@ -149,6 +164,24 @@ public class ParserContext implements RuleContext {
 
     @Override
     public void markRowEnd(int position) {
+        // processed by the scanner after the rule returns, so that the row processing is not inlined into the rules
+        rowEnd = position;
+    }
+
+    /**
+     * Returns true if a rule marked the row end.
+     */
+    public boolean rowEnded() {
+        return rowEnd >= 0;
+    }
+
+    /**
+     * Processes the row marked by {@link #markRowEnd(int)}.
+     */
+    public void endRow() {
+        int position = rowEnd;
+        rowEnd = -1;
+
         if (skipRow) {
             skipRow = false;
             skippedRows++;
@@ -159,17 +192,10 @@ public class ParserContext implements RuleContext {
         // optional since the previous column could be quoted
         markColumnEnd(position, true);
 
-        // check for missing columns in this row
-        if (rowFirstMode && this.position.column < rowSlices.length) {
-            if (allowEmptyColumns) {
-                // Ensure that missing columns in short rows do not retain values from the previous row.
-                // Missing slices are represented as "not open" (from == -1), so downstream extractors can treat them as null.
-                for (int i = this.position.column; i < rowSlices.length; i++) {
-                    // mark this slice as invalid
-                    rowSlices[i].setFrom(-1);
-                }
-            } else {
-                throw new IllegalStateException("Unexpected end of the row");
+        // pad a short row with "not open" slices, read as nulls
+        if (rowFirstMode) {
+            for (int i = this.position.column; i < rowSlices.length; i++) {
+                rowSlices[i].reset();
             }
         }
 
@@ -194,21 +220,12 @@ public class ParserContext implements RuleContext {
         return lastSliceQuoted;
     }
 
-    @Override
-    public void markExtraValues() {
-        extraValuesRows++;
-    }
-
     /**
      * Returns the number of rows read so far, including the header and the rows skipped as empty or comments, but not
      * the offset rows.
      */
     public int rowsRead() {
         return position.row + skippedRows;
-    }
-
-    public int extraValuesRows() {
-        return extraValuesRows;
     }
 
     public void markLastRow(int lastPosition) {
@@ -220,6 +237,7 @@ public class ParserContext implements RuleContext {
                 markColumnStart(lastPosition);
             }
             markRowEnd(lastPosition);
+            endRow();
         }
     }
 
@@ -246,12 +264,11 @@ public class ParserContext implements RuleContext {
 
     public boolean checkLimit(int limit) {
         // Note: we do not check the offset here, as it was processed at the OFFSET stage
-        if(position.row < limit) {
-            return true;
+        if (position.row + 1 >= limit) {
+            // the last row to take, no need to read further
+            stopRequested = true;
         }
-        // this logic will allow one extra row to be processed to keep limit check fast
-        stopRequested = true;
-        return false;
+        return position.row < limit;
     }
 
     @Override

@@ -3,10 +3,10 @@ package org.dflib.csv.parser.format;
 import org.dflib.csv.parser.test.DfParserAsserts;
 import org.junit.jupiter.api.Test;
 
-class AllowEmptyColumnsTest {
+class RaggedRowsTest {
 
     @Test
-    void allowMissingTrailingColumns() {
+    void missingTrailingColumns() {
         String csv = """
                 id,name,age
                 1,A,10
@@ -17,7 +17,6 @@ class AllowEmptyColumnsTest {
                 .column(CsvColumnMapping.column("id"))
                 .column(CsvColumnMapping.column("name"))
                 .column(CsvColumnMapping.column("age"))
-                .csvFormat(CsvFormat.defaultFormat().allowEmptyColumns().build())
                 .build();
 
         new DfParserAsserts(csv, format, "id", "name", "age")
@@ -27,7 +26,7 @@ class AllowEmptyColumnsTest {
     }
 
     @Test
-    void allowMultipleMissingColumns() {
+    void multipleMissingColumns() {
         String csv = """
                 id,name,age,city
                 1,A,10,Boston
@@ -39,7 +38,6 @@ class AllowEmptyColumnsTest {
                 .column(CsvColumnMapping.column("name"))
                 .column(CsvColumnMapping.column("age"))
                 .column(CsvColumnMapping.column("city"))
-                .csvFormat(CsvFormat.defaultFormat().allowEmptyColumns().build())
                 .build();
 
         new DfParserAsserts(csv, format, "id", "name", "age", "city")
@@ -50,7 +48,6 @@ class AllowEmptyColumnsTest {
 
     @Test
     void inconsistentColumnCount() {
-        CsvFormat format = CsvFormat.defaultFormat().allowEmptyColumns().build();
         String csv = """
                 id,name,value,extra
                 1,A,foo
@@ -59,11 +56,11 @@ class AllowEmptyColumnsTest {
                 4,D,bar,extra
                 """;
 
-        new DfParserAsserts(csv, format, "id", "name", "value", "extra")
+        new DfParserAsserts(csv, "id", "name", "value", "extra", "c4")
                 .expectHeight(4)
-                .expectRow(0, "1", "A", "foo", null)
-                .expectRow(1, "2", "B", "bar", "extraVal")
-                .expectRow(2, "3", "", "baz", null)
-                .expectRow(3, "4", "D", "bar", "extra");
+                .expectRow(0, "1", "A", "foo", null, null)
+                .expectRow(1, "2", "B", "bar", "extraVal", "unused")
+                .expectRow(2, "3", "", "baz", null, null)
+                .expectRow(3, "4", "D", "bar", "extra", null);
     }
 }
