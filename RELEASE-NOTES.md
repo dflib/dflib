@@ -18,6 +18,7 @@
 * #665 ExcelLoader.limit(..) returns no rows if the limit is >= row count
 * #667 CSV loader: "Unexpected data after closing quote" has no location and hides the real cause (header narrower than data)
 * #668 CSV: load more malformed data shapes by default
+* #670 CSV loader: slow first load due to a deoptimization in the scanner loop
 
 ## Release 2.0.0-M7
 

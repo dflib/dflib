@@ -43,6 +43,11 @@ final class CsvScanner {
      */
     int lastParsePos;
 
+    /**
+     * The current parser rule
+     */
+    private ParserRule rule;
+
     CsvScanner(ParserContext context, ParserRuleFlow ruleFlow) {
         this.ruleFlow = ruleFlow;
         this.readBuffer = CharBuffer.allocate(INITIAL_BUFFER_SIZE);
@@ -51,12 +56,11 @@ final class CsvScanner {
     }
 
     void scan(Reader reader) {
-        ParserRule rule = ruleFlow.initialRule();
+        this.rule = ruleFlow.initialRule();
         DataSlice ruleSlice = new DataSlice();
         boolean autoLineBreak = ruleFlow.config.csvFormat().lineBreak() == LineBreak.AUTO;
         // the previous read ended with CR, the LF that may follow belongs to it
         boolean skipLf = false;
-        int newPosition;
         try {
             while (reader.read(readBuffer) != -1) {
                 readBuffer.flip();
@@ -72,25 +76,12 @@ final class CsvScanner {
                 ruleSlice.setData(data);
                 ruleSlice.setFrom(lastParsePos);
                 ruleSlice.setTo(limit);
-                newPosition = ParserRule.CONTINUE;
-                while (ruleSlice.from() < ruleSlice.to()) {
-                    newPosition = rule.consume(context, ruleSlice);
-                    if (context.rowEnded()) {
-                        context.endRow();
-                        // only a row can request a stop
-                        if (context.stopRequested()) {
-                            return;
-                        }
-                    }
-                    if (newPosition == ParserRule.CONTINUE) {
-                        // rule can't find what it needs to end
-                        break;
-                    }
-                    ruleSlice.setFrom(newPosition);
-                    rule = ruleFlow.nextRule();
+                int newPosition = scanBuffer(ruleSlice, limit);
+                if (context.stopRequested()) {
+                    return;
                 }
+
                 skipLf = autoLineBreak && newPosition == limit && data[limit - 1] == '\r';
-                lastParsePos = ruleSlice.from();
                 endOfBuffer();
                 // keep the slice in sync with the (possibly compacted) buffer for the error reporting
                 ruleSlice.setFrom(lastParsePos);
@@ -104,6 +95,46 @@ final class CsvScanner {
         } catch (IllegalStateException e) {
             throw withLocation(e, ruleSlice.from());
         }
+    }
+
+    /**
+     * Runs the parser rules over the buffer, updating {@link #rule} and {@link #lastParsePos}. Kept separate, with a
+     * single loop exit and no rarely taken branches, so that the JIT doesn't deoptimize the scanner during the first
+     * loads.
+     *
+     * @return the position returned by the last rule
+     */
+    private int scanBuffer(DataSlice ruleSlice, int limit) {
+        ParserRule rule = this.rule;
+        int newPosition = ParserRule.CONTINUE;
+        int resumePosition = ruleSlice.from();
+
+        while (ruleSlice.from() < limit) {
+            newPosition = rule.consume(context, ruleSlice);
+
+            // rules only mark the row end, see ParserContext.markRowEnd()
+            if (context.rowEnded()) {
+                context.endRow();
+                // only a row can request a stop
+                if (context.stopRequested()) {
+                    break;
+                }
+            }
+
+            if (newPosition == ParserRule.CONTINUE) {
+                // the rule needs more data
+                resumePosition = ruleSlice.from();
+                ruleSlice.setFrom(limit);
+            } else {
+                resumePosition = newPosition;
+                ruleSlice.setFrom(newPosition);
+                rule = ruleFlow.nextRule();
+            }
+        }
+
+        this.rule = rule;
+        this.lastParsePos = resumePosition;
+        return newPosition;
     }
 
     private void eof(ParserRule rule) {
