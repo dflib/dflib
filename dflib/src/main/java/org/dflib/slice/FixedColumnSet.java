@@ -112,8 +112,18 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
+    public ColumnSet expand(Exp<? extends Iterable<?>> splitExp, String prefix) {
+        return withExpandedSource(ColumnSets.appendExpansion(source, ColumnSets.mapIterables(source, splitExp), prefix));
+    }
+
+    @Override
     public ColumnSet expandArray(Exp<? extends Object[]> splitExp) {
         return doExpand(ColumnSets.mapArrays(source, splitExp));
+    }
+
+    @Override
+    public ColumnSet expandArray(Exp<? extends Object[]> splitExp, String prefix) {
+        return withExpandedSource(ColumnSets.appendExpansion(source, ColumnSets.mapArrays(source, splitExp), prefix));
     }
 
     @Override
@@ -697,8 +707,12 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     private ColumnSet doExpand(Series[] expansionColumns) {
+        return withExpandedSource(source.cols().merge(expansionColumns));
+    }
+
+    private ColumnSet withExpandedSource(DataFrame expanded) {
         return new FixedColumnSet(
-                source.cols().merge(expansionColumns),
+                expanded,
                 csIndexResolver,
                 colCompactor
         );

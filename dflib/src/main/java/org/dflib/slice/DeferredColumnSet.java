@@ -68,8 +68,18 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
+    public ColumnSet expand(Exp<? extends Iterable<?>> splitExp, String prefix) {
+        return expandedDelegate(ColumnSets.appendExpansion(source, ColumnSets.mapIterables(source, splitExp), prefix));
+    }
+
+    @Override
     public ColumnSet expandArray(Exp<? extends Object[]> splitExp) {
         return expandedDelegate(ColumnSets.mapArrays(source, splitExp));
+    }
+
+    @Override
+    public ColumnSet expandArray(Exp<? extends Object[]> splitExp, String prefix) {
+        return expandedDelegate(ColumnSets.appendExpansion(source, ColumnSets.mapArrays(source, splitExp), prefix));
     }
 
     @Override
@@ -497,6 +507,11 @@ public class DeferredColumnSet implements ColumnSet {
                 : this;
 
         DataFrame expanded = expansionDelegate.merge(expansionColumns);
+
+        return expandedDelegate(expanded);
+    }
+
+    private ColumnSet expandedDelegate(DataFrame expanded) {
 
         // TODO: needlessly copying columns of "expanded" as there's no direct access to them
         int w = expanded.width();
