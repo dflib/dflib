@@ -1,6 +1,5 @@
 package org.dflib.excel;
 
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.dflib.DataFrame;
 import org.dflib.Extractor;
@@ -89,13 +88,15 @@ public class SheetLoader {
     }
 
     public DataFrame load(Sheet sheet) {
+        return load(new PoiSheetData(sheet));
+    }
 
-        boolean firstRowAsHeader = this.firstRowAsHeader != null ? this.firstRowAsHeader : false;
+    DataFrame load(SheetData sheet) {
+
+        boolean firstRowAsHeader = isFirstRowAsHeader();
+
         // Don't skip empty rows or columns in the middle of a range, but truncate leading empty rows and columns
-        int limit = this.limit != null && this.limit >= 0 ? (firstRowAsHeader ? this.limit + 1 : this.limit) : -1;
-        int offset = this.offset != null ? this.offset : 0;
-
-        SheetRange range = SheetRange.valuesRange(sheet).offset(offset).limit(limit);
+        SheetRange range = sheet.valuesRange().offset(rowOffset()).limit(rowLimit());
         if (range.width == 0) {
             return DataFrame.empty();
         }
@@ -104,28 +105,42 @@ public class SheetLoader {
             return DataFrame.empty(range.header());
         }
 
-        Row row0 = getRow(sheet, range, 0);
+        RowData row0 = sheet.row(range.startRow);
         Index index = firstRowAsHeader && row0 != null ? range.header(row0) : range.header();
-        Extractor<Row, ?>[] extractors = extractors(range, index);
+        Extractor<RowData, ?>[] extractors = extractors(range, index);
 
-        DataFrameAppender<Row> builder = DataFrame.byRow(extractors).columnIndex(index).appender();
+        DataFrameAppender<RowData> builder = DataFrame.byRow(extractors).columnIndex(index).appender();
 
         if (!firstRowAsHeader) {
             builder.append(row0);
         }
 
         for (int r = 1; r < range.height; r++) {
-            builder.append(getRow(sheet, range, r));
+            builder.append(sheet.row(range.startRow + r));
         }
 
         return builder.toDataFrame();
     }
 
-    private Row getRow(Sheet sh, SheetRange range, int rowOffset) {
-        return sh.getRow(range.startRow + rowOffset);
+    private boolean isFirstRowAsHeader() {
+        return firstRowAsHeader != null ? firstRowAsHeader : false;
     }
 
-    private Extractor<Row, ?>[] extractors(SheetRange range, Index dfHeader) {
+    /**
+     * Returns the number of rows to skip, counting from the first non-phantom row of the sheet.
+     */
+    int rowOffset() {
+        return offset != null ? offset : 0;
+    }
+
+    /**
+     * Returns the max number of rows to read after the offset (including the header row), or -1 for no limit.
+     */
+    int rowLimit() {
+        return limit != null && limit >= 0 ? (isFirstRowAsHeader() ? limit + 1 : limit) : -1;
+    }
+
+    private Extractor<RowData, ?>[] extractors(SheetRange range, Index dfHeader) {
 
         Map<Integer, ColConfigurator> configurators = new HashMap<>();
         for (ColConfigurator c : colConfigurators) {
@@ -139,7 +154,7 @@ public class SheetLoader {
             }
         }
 
-        Extractor<Row, ?>[] extractors = new Extractor[range.width];
+        Extractor<RowData, ?>[] extractors = new Extractor[range.width];
         for (int i = 0; i < range.width; i++) {
             int sheetPos = range.startCol + i;
             ColConfigurator cc = configurators.computeIfAbsent(sheetPos, ii -> ColConfigurator.objectCol(ii, false));

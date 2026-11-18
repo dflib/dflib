@@ -1,5 +1,6 @@
 package org.dflib.excel;
 
+import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -64,51 +65,27 @@ public class ExcelLoader {
 
 
     public DataFrame loadSheet(Sheet sheet) {
-        SheetLoader storedSl = sheetLoaders.get(sheet.getSheetName());
-
-        // note that the stored SheetLoader is mutated here
-        SheetLoader sl = storedSl != null ? storedSl.mergeWith(defaultSheetLoader) : defaultSheetLoader;
-
-        return sl.load(sheet);
+        return sheetLoader(sheet.getSheetName()).load(sheet);
     }
 
     /**
      * @since 1.1.0
      */
     public DataFrame loadSheet(ByteSource src, String sheetName) {
-        try (Workbook wb = src.processStream(this::loadWorkbook)) {
-            Sheet sheet = wb.getSheet(sheetName);
-            if (sheet == null) {
-                throw new RuntimeException("No sheet '" + sheetName + "' in workbook");
-            }
-            return loadSheet(sheet);
-        } catch (IOException e) {
-            throw new RuntimeException("Error closing Excel workbook", e);
+        try (WorkbookData wb = src.processStream(this::openWorkbook)) {
+            return loadSheet(wb, sheetName, "");
         }
     }
 
     public DataFrame loadSheet(InputStream in, String sheetName) {
-        try (Workbook wb = loadWorkbook(in)) {
-            Sheet sheet = wb.getSheet(sheetName);
-            if (sheet == null) {
-                throw new RuntimeException("No sheet '" + sheetName + "' in workbook");
-            }
-            return loadSheet(sheet);
-        } catch (IOException e) {
-            throw new RuntimeException("Error closing Excel workbook", e);
+        try (WorkbookData wb = openWorkbook(in)) {
+            return loadSheet(wb, sheetName, "");
         }
     }
 
     public DataFrame loadSheet(File file, String sheetName) {
-        // loading from file is optimized, so do not call "load(InputStream in)", and use a separate path
-        try (Workbook wb = loadWorkbook(file)) {
-            Sheet sheet = wb.getSheet(sheetName);
-            if (sheet == null) {
-                throw new RuntimeException("No sheet '" + sheetName + "' in workbook loaded from " + file.getPath());
-            }
-            return loadSheet(sheet);
-        } catch (IOException e) {
-            throw new RuntimeException("Error closing Excel workbook loaded from " + file.getPath(), e);
+        try (WorkbookData wb = openWorkbook(file)) {
+            return loadSheet(wb, sheetName, " loaded from " + file.getPath());
         }
     }
 
@@ -124,39 +101,20 @@ public class ExcelLoader {
      * @since 1.1.0
      */
     public DataFrame loadSheet(ByteSource src, int sheetNum) {
-        try (Workbook wb = src.processStream(this::loadWorkbook)) {
-            Sheet sheet = wb.getSheetAt(sheetNum);
-            if (sheet == null) {
-                throw new RuntimeException("No sheet " + sheetNum + " in workbook");
-            }
-            return loadSheet(sheet);
-        } catch (IOException e) {
-            throw new RuntimeException("Error closing Excel workbook", e);
+        try (WorkbookData wb = src.processStream(this::openWorkbook)) {
+            return loadSheet(wb, sheetNum, "");
         }
     }
 
     public DataFrame loadSheet(InputStream in, int sheetNum) {
-        try (Workbook wb = loadWorkbook(in)) {
-            Sheet sheet = wb.getSheetAt(sheetNum);
-            if (sheet == null) {
-                throw new RuntimeException("No sheet " + sheetNum + " in workbook");
-            }
-            return loadSheet(sheet);
-        } catch (IOException e) {
-            throw new RuntimeException("Error closing Excel workbook", e);
+        try (WorkbookData wb = openWorkbook(in)) {
+            return loadSheet(wb, sheetNum, "");
         }
     }
 
     public DataFrame loadSheet(File file, int sheetNum) {
-        // loading from file is optimized, so do not call "load(InputStream in)", and use a separate path
-        try (Workbook wb = loadWorkbook(file)) {
-            Sheet sheet = wb.getSheetAt(sheetNum);
-            if (sheet == null) {
-                throw new RuntimeException("No sheet " + sheetNum + " in workbook loaded from " + file.getPath());
-            }
-            return loadSheet(sheet);
-        } catch (IOException e) {
-            throw new RuntimeException("Error closing Excel workbook loaded from " + file.getPath(), e);
+        try (WorkbookData wb = openWorkbook(file)) {
+            return loadSheet(wb, sheetNum, " loaded from " + file.getPath());
         }
     }
 
@@ -185,23 +143,20 @@ public class ExcelLoader {
      * @since 1.1.0
      */
     public Map<String, DataFrame> load(ByteSource src) {
-        return src.processStream(this::load);
+        try (WorkbookData wb = src.processStream(this::openWorkbook)) {
+            return loadAll(wb);
+        }
     }
 
     public Map<String, DataFrame> load(InputStream in) {
-        try (Workbook wb = loadWorkbook(in)) {
-            return load(wb);
-        } catch (IOException e) {
-            throw new RuntimeException("Error closing Excel workbook", e);
+        try (WorkbookData wb = openWorkbook(in)) {
+            return loadAll(wb);
         }
     }
 
     public Map<String, DataFrame> load(File file) {
-        // loading from file is optimized, so do not call "load(InputStream in)", and use a separate path
-        try (Workbook wb = loadWorkbook(file)) {
-            return load(wb);
-        } catch (IOException e) {
-            throw new RuntimeException("Error closing Excel workbook loaded from " + file.getPath(), e);
+        try (WorkbookData wb = openWorkbook(file)) {
+            return loadAll(wb);
         }
     }
 
@@ -213,22 +168,73 @@ public class ExcelLoader {
         return load(new File(filePath));
     }
 
-    private Workbook loadWorkbook(File file) {
-        // loading from file is optimized, so do not call "loadWorkbook(InputStream in)", and use a separate path
+    private SheetLoader sheetLoader(String sheetName) {
+        SheetLoader storedSl = sheetLoaders.get(sheetName);
+        return storedSl != null ? storedSl.mergeWith(defaultSheetLoader) : defaultSheetLoader;
+    }
+
+    private Map<String, DataFrame> loadAll(WorkbookData wb) {
+
+        // preserve sheet ordering
+        Map<String, DataFrame> data = new LinkedHashMap<>();
+
+        int len = wb.sheetCount();
+        for (int i = 0; i < len; i++) {
+            data.put(wb.sheetName(i), loadSheetAt(wb, i));
+        }
+
+        return data;
+    }
+
+    private DataFrame loadSheet(WorkbookData wb, String sheetName, String location) {
+        int sheetNum = wb.sheetIndex(sheetName);
+        if (sheetNum < 0) {
+            throw new RuntimeException("No sheet '" + sheetName + "' in workbook" + location);
+        }
+
+        return loadSheetAt(wb, sheetNum);
+    }
+
+    private DataFrame loadSheet(WorkbookData wb, int sheetNum, String location) {
+        if (sheetNum < 0 || sheetNum >= wb.sheetCount()) {
+            throw new RuntimeException("No sheet " + sheetNum + " in workbook" + location);
+        }
+
+        return loadSheetAt(wb, sheetNum);
+    }
+
+    private DataFrame loadSheetAt(WorkbookData wb, int sheetNum) {
+        SheetLoader sl = sheetLoader(wb.sheetName(sheetNum));
+        return sl.load(wb.sheet(sheetNum, sl.rowOffset(), sl.rowLimit()));
+    }
+
+    WorkbookData openWorkbook(File file) {
+        // loading from file is optimized, so do not call "openWorkbook(InputStream in)", and use a separate path
         Objects.requireNonNull(file, "Null file");
 
         try {
-            return WorkbookFactory.create(file, null, true);
+
+            // XLSX files are read with a streaming reader; everything else (XLS, encrypted XLSX) - with POI usermodel
+            return FileMagic.valueOf(file) == FileMagic.OOXML
+                    ? XlsxWorkbookData.open(file)
+                    : new PoiWorkbookData(WorkbookFactory.create(file, null, true));
         } catch (IOException e) {
             throw new RuntimeException("Error reading file: " + file, e);
         }
     }
 
-    private Workbook loadWorkbook(InputStream in) {
+    WorkbookData openWorkbook(InputStream in) {
         Objects.requireNonNull(in, "Null input stream");
 
+        // ensure the stream supports mark/reset needed to check the format
+        InputStream markableIn = FileMagic.prepareToCheckMagic(in);
+
         try {
-            return WorkbookFactory.create(in);
+
+            // XLSX files are read with a streaming reader; everything else (XLS, encrypted XLSX) - with POI usermodel
+            return FileMagic.valueOf(markableIn) == FileMagic.OOXML
+                    ? XlsxWorkbookData.open(markableIn)
+                    : new PoiWorkbookData(WorkbookFactory.create(markableIn));
         } catch (IOException e) {
             throw new RuntimeException("Error reading Excel data", e);
         }
