@@ -61,8 +61,6 @@ import org.dflib.exp.str.SubstrFromExp;
 import org.dflib.exp.str.SubstrFromLenExp;
 import org.dflib.exp.str.TrimExp;
 import org.dflib.exp.str.UpperExp;
-import org.dflib.ql.QLParserInvoker;
-import org.dflib.ql.antlr4.ExpParser;
 import org.dflib.sort.ExpSorter;
 
 import java.math.BigDecimal;
@@ -623,9 +621,7 @@ public interface Exp<T> {
      * @since 2.0.0
      */
     static Exp<?> parseExp(String ql, Object... params) {
-        return QLParserInvoker
-                .parse(ql, ExpParser::expRoot, params)
-                .exp;
+        return Environment.commonEnv().qlContext().parseExp(ql, params);
     }
 
     /**
@@ -637,9 +633,7 @@ public interface Exp<T> {
      * @since 2.0.0
      */
     static Exp<?>[] parseExps(String ql, Object... params) {
-        return QLParserInvoker
-                .parse(ql, ExpParser::expArray, params)
-                .expressions;
+        return Environment.commonEnv().qlContext().parseExps(ql, params);
     }
 
     /**
