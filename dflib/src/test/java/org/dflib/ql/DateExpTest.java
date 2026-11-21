@@ -60,7 +60,8 @@ public class DateExpTest {
                 arguments("castAsDate(null)", $val(null).castAsDate()),
                 arguments("castAsDate(1)", $intVal(1).castAsDate()),
                 arguments("castAsDate(true)", $boolVal(true).castAsDate()),
-                arguments("castAsDate('1')", $strVal("1").castAsDate())
+                arguments("castAsDate('1')", $strVal("1").castAsDate()),
+                arguments("castAsDate('31/01/2024', 'dd/MM/yyyy')", $strVal("31/01/2024").castAsDate("dd/MM/yyyy"))
         );
     }
 

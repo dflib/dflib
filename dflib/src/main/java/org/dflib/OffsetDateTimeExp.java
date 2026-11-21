@@ -153,7 +153,7 @@ public interface OffsetDateTimeExp extends Exp<OffsetDateTime> {
 
 
     default Condition between(OffsetDateTime from, OffsetDateTime to) {
-        return between(Exp.$val(from), Exp.$val(to));
+        return between(Exp.$offsetDateTimeVal(from), Exp.$offsetDateTimeVal(to));
     }
 
     /**
@@ -189,7 +189,7 @@ public interface OffsetDateTimeExp extends Exp<OffsetDateTime> {
      * @since 2.0.0
      */
     default Condition notBetween(OffsetDateTime from, OffsetDateTime to) {
-        return notBetween(Exp.$val(from), Exp.$val(to));
+        return notBetween(Exp.$offsetDateTimeVal(from), Exp.$offsetDateTimeVal(to));
     }
 
     /**

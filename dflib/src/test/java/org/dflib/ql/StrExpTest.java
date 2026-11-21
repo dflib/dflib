@@ -216,9 +216,13 @@ public class StrExpTest {
             "CONCAT()",
             "trim()",
             "substr('example')",
-            "substr('example', 1 + 2)",
+            "substr('example', 'a')",
             "substr('example', 2, null)",
             "substr('example', 2, -1)",
+            "substr('example', b)",
+            "substr(a, b)",
+            "substr('example', int(b))",
+            "substr('example', 2, c)",
     })
     public void function_returnsStrExp_throws(String text) {
         assertThrows(QLParserException.class, () -> parseExp(text));
@@ -236,7 +240,10 @@ public class StrExpTest {
                 arguments("split('a,b,c', ',')", $strVal("a,b,c").split(",")),
                 arguments("split('a,b,c', ',', 2)", $strVal("a,b,c").split(",", 2)),
                 arguments("split(str(1), '|')", $str(1).split("|")),
-                arguments("split(trim(' a|b|c '), '|', 2)", $strVal(" a|b|c ").trim().split("|", 2))
+                arguments("split(trim(' a|b|c '), '|', 2)", $strVal(" a|b|c ").trim().split("|", 2)),
+                arguments("split(a, ',')", $col("a").castAsStr().split(",")),
+                arguments("split(a, ',', 2)", $col("a").castAsStr().split(",", 2)),
+                arguments("split(time(1), ':')", $time(1).castAsStr().split(":"))
         );
     }
 
@@ -246,7 +253,6 @@ public class StrExpTest {
             "split('a,b,c')",
             "split('a,b,c', )",
             "split(, ',')",
-            "split(time(1), ':')",
     })
     public void split_throws(String text) {
         assertThrows(QLParserException.class, () -> parseExp(text));
@@ -267,6 +273,21 @@ public class StrExpTest {
                 arguments("min(str(1), matches(str(1), '#.*'))", $str(1).min($str(1).matches("#.*"))),
                 arguments("max(str(1), matches(str(1), '#.*'))", $str(1).max($str(1).matches("#.*"))),
                 arguments("min(str(1), matches(str(2), '#.*'))", $str(1).min($str(2).matches("#.*")))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    public void aggregate_overAFunction(String text, Exp<?> expected) {
+        Exp<?> exp = parseExp(text);
+        assertInstanceOf(StrExp.class, exp);
+        assertEquals(expected, exp);
+    }
+
+    static Stream<Arguments> aggregate_overAFunction() {
+        return Stream.of(
+                arguments("min(trim(a))", $col("a").trim().min()),
+                arguments("max(lower(a))", $col("a").lower().max())
         );
     }
 

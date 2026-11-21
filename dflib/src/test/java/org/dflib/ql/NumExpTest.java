@@ -371,8 +371,22 @@ public class NumExpTest {
                 arguments("castAsNumber('1')", $strVal("1").castAsNumber()),
                 arguments("castAsInt(null)", $val(null).castAsInt()),
                 arguments("castAsInt(true)", $boolVal(true).castAsInt()),
-                arguments("castAsInt('1')", $strVal("1").castAsInt())
+                arguments("castAsInt('1')", $strVal("1").castAsInt()),
+                arguments("castAsLong('1')", $strVal("1").castAsLong()),
+                arguments("castAsBigint('1')", $strVal("1").castAsBigint()),
+                arguments("castAsFloat('1.5')", $strVal("1.5").castAsFloat()),
+                arguments("castAsDouble('1.5')", $strVal("1.5").castAsDouble()),
+                arguments("castAsDecimal('1.5')", $strVal("1.5").castAsDecimal())
         );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "castAsInt()",
+            "castAsLong(1, 2)",
+    })
+    void cast_throws(String text) {
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -435,8 +449,8 @@ public class NumExpTest {
         return Stream.of(
                 arguments("count()", count()),
                 arguments("count( )", count()),
-                arguments("count(int(1) > 0)", count($int(1).lt(0))),
-                arguments("count(int(a) > 0)", count($int("a").lt(0))),
+                arguments("count(int(1) > 0)", count($int(1).gt(0))),
+                arguments("count(int(a) > 0)", count($int("a").gt(0))),
                 arguments("rowNum()", rowNum()),
                 arguments("rowNum( )", rowNum()),
                 arguments("abs(-5)", $intVal(-5).abs()),
@@ -444,8 +458,20 @@ public class NumExpTest {
                 arguments("round(3.14)", $floatVal(3.14f).round()),
                 arguments("scale(decimal(1), 3)", $decimal(1).scale(3)),
                 arguments("scale(double(1), 3)", $double(1).castAsDecimal().scale(3)),
-                arguments("len(str(a))", $str("a").len())
+                arguments("len(str(a))", $str("a").len()),
+                arguments("len(a)", $col("a").castAsStr().len()),
+                arguments("len(ifNull(a, b))", ifNull($col("a"), $col("b")).castAsStr().len()),
+                arguments("len(if(a = 1, b, c))",
+                        ifExp($col("a").eq($val(1)), $col("b"), $col("c")).castAsStr().len())
         );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "scale(decimal(1), date(1))",
+    })
+    void function_throws(String text) {
+        assertThrows(QLParserException.class, () -> parseExp(text));
     }
 
     @ParameterizedTest
@@ -471,7 +497,8 @@ public class NumExpTest {
                 arguments("avg(int(1), int(1) > 0)", $int(1).avg($int(1).gt(1))),
                 arguments("median(int(1), int(1) > 0)", $int(1).median($int(1).gt(1))),
                 arguments("quantile(int(1), 0.5, int(1) > 0)", $int(1).quantile(0.5, $int(1).gt(1))),
-                arguments("sum(int(1), int(2) > 0)", $int(1).sum($int(2).gt(1)))
+                arguments("sum(int(1), int(2) > 0)", $int(1).sum($int(2).gt(1))),
+                arguments("min(len(a))", $col("a").castAsStr().len().min())
         );
     }
 }
