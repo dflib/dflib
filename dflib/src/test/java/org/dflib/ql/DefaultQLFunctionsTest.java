@@ -3,19 +3,9 @@ package org.dflib.ql;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.dflib.Exp.$bigintVal;
 import static org.dflib.Exp.$bool;
@@ -23,8 +13,6 @@ import static org.dflib.Exp.$boolVal;
 import static org.dflib.Exp.$col;
 import static org.dflib.Exp.$date;
 import static org.dflib.Exp.$dateTime;
-import static org.dflib.Exp.$dateTimeVal;
-import static org.dflib.Exp.$dateVal;
 import static org.dflib.Exp.$decimal;
 import static org.dflib.Exp.$doubleVal;
 import static org.dflib.Exp.$floatVal;
@@ -32,41 +20,16 @@ import static org.dflib.Exp.$int;
 import static org.dflib.Exp.$intVal;
 import static org.dflib.Exp.$longVal;
 import static org.dflib.Exp.$offsetDateTime;
-import static org.dflib.Exp.$offsetDateTimeVal;
 import static org.dflib.Exp.$str;
 import static org.dflib.Exp.$strVal;
 import static org.dflib.Exp.$time;
-import static org.dflib.Exp.$timeVal;
-import static org.dflib.Exp.$val;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class DefaultQLFunctionsTest {
 
-    private static final QLFunctions FUNCTIONS = QLFunctions.builder().build();
-
-    static Stream<Arguments> defaultDescriptors() {
-        return FUNCTIONS.descriptors().map(d -> arguments(d.shape(), d));
-    }
-
-    @ParameterizedTest(name = "{0}")
-    @MethodSource("defaultDescriptors")
-    public void resolveOwnSignature(String shape, QLFunctionDescriptor descriptor) {
-
-        List<Exp<?>> args = plausibleArgs(descriptor);
-
-        assertSame(
-                descriptor,
-                FUNCTIONS.function(descriptor.name(), args.stream().map(QLFunctionArg::of).toList()),
-                () -> shape + " is shadowed by another overload for its own argument types");
-
-        // and the producer accepts what the resolver matched
-        descriptor.expProducer().apply(args);
-    }
+    private static final QLFunctions FUNCTIONS = QLContext.builder().build().functions;
 
     @Test
     public void allDefaults() {
@@ -88,13 +51,6 @@ public class DefaultQLFunctionsTest {
 
     @Test
     public void zeroArityOverloads() {
-        assertEquals(0, resolve("count").args().size());
-        assertFalse(resolve("count").varArgs());
-
-        assertEquals(0, resolve("concat").args().size());
-        assertTrue(resolve("concat").varArgs());
-        assertTrue(resolve("concat", $str("a"), $str("b"), $str("c")).varArgs());
-
         assertEquals(Exp.count(), call("count"));
         assertEquals(Exp.count($bool("b")), call("count", $bool("b")));
         assertEquals(Exp.concat(), call("concat"));
@@ -110,6 +66,14 @@ public class DefaultQLFunctionsTest {
                 call("vConcat", $str("a"), $strVal(","), $strVal("["), $strVal("]")));
         assertEquals($str("a").vConcat($bool("b"), ",", "[", "]"),
                 call("vConcat", $str("a"), $bool("b"), $strVal(","), $strVal("["), $strVal("]")));
+        assertEquals($col("a").vConcat($col("b").castAsBool(), ",", "[", "]"),
+                call("vConcat", $col("a"), $col("b"), $strVal(","), $strVal("["), $strVal("]")));
+
+        assertEquals("vConcat() takes (exp, [filter,] delimiter[, prefix, suffix]) arguments",
+                assertThrows(IllegalArgumentException.class, () -> call("vConcat", $str("a"))).getMessage());
+        assertEquals("vConcat() filter is not a condition: b",
+                assertThrows(IllegalArgumentException.class, () -> call("vConcat",
+                        $str("a"), $int("b"), $strVal(","), $strVal("["), $strVal("]"))).getMessage());
     }
 
     @Test
@@ -169,13 +133,13 @@ public class DefaultQLFunctionsTest {
 
     @Test
     public void untypedReceiver_Ambiguous_throws() {
-        assertEquals("Ambiguous call to year(OBJECT): argument 1 is untyped, cast it explicitly.",
-                assertThrows(IllegalArgumentException.class, () -> resolve("year", $col("c"))).getMessage());
+        assertEquals("year(): argument 1 is untyped, cast it explicitly to one of DATE, DATETIME, OFFSETDATETIME",
+                assertThrows(IllegalArgumentException.class, () -> call("year", $col("c"))).getMessage());
 
-        assertEquals("Ambiguous call to min(OBJECT): argument 1 is untyped, cast it explicitly.",
-                assertThrows(IllegalArgumentException.class, () -> resolve("min", $col("c"))).getMessage());
+        assertEquals("min(): argument 1 is untyped, cast it explicitly to one of NUMERIC, STRING, DATE, TIME, DATETIME",
+                assertThrows(IllegalArgumentException.class, () -> call("min", $col("c"))).getMessage());
 
-        assertThrows(IllegalArgumentException.class, () -> resolve("plusDays", $col("c"), $intVal(1)));
+        assertThrows(IllegalArgumentException.class, () -> call("plusDays", $col("c"), $intVal(1)));
     }
 
     @Test
@@ -282,18 +246,17 @@ public class DefaultQLFunctionsTest {
     @Test
     public void plusDays_NonConstCount_throws() {
         assertThrows(IllegalArgumentException.class,
-                () -> resolve("plusDays", $date("d"), $strVal("3")));
-        assertThrows(IllegalArgumentException.class,
-                () -> resolve("plusWeeks", $date("d"), $int("n")));
-        assertThrows(IllegalArgumentException.class,
-                () -> resolve("plusWeeks", $date("d"), $intVal(1).add(2)));
+                () -> call("plusDays", $date("d"), $strVal("3")));
+
+        assertEquals("Not a constant: n", assertThrows(IllegalArgumentException.class,
+                () -> call("plusWeeks", $date("d"), $int("n"))).getMessage());
+        assertEquals("Not a constant: 1 + 2", assertThrows(IllegalArgumentException.class,
+                () -> call("plusWeeks", $date("d"), $intVal(1).add(2))).getMessage());
     }
 
     @Test
     public void unsupportedReceiver_throws() {
-        assertEquals("No overload of avg matches avg(STRING). Available: avg(NUMERIC), avg(DATE), avg(TIME),"
-                        + " avg(DATETIME), avg(NUMERIC, BOOLEAN), avg(DATE, BOOLEAN), avg(TIME, BOOLEAN),"
-                        + " avg(DATETIME, BOOLEAN)",
+        assertEquals("avg(): argument 1 of type STRING is not one of NUMERIC, DATE, TIME, DATETIME",
                 assertThrows(IllegalArgumentException.class, () -> call("avg", $str("s"))).getMessage());
 
         assertThrows(IllegalArgumentException.class, () -> call("min", $offsetDateTime("odt")));
@@ -307,62 +270,13 @@ public class DefaultQLFunctionsTest {
     @Test
     public void unknownFunction_throws() {
         assertEquals("Unknown function: noSuchFunction",
-                assertThrows(IllegalArgumentException.class, () -> resolve("noSuchFunction", $int("i"))).getMessage());
-        assertThrows(IllegalArgumentException.class, () -> resolve("rowNum", $int("i")));
-        assertThrows(IllegalArgumentException.class, () -> resolve("year"));
-        assertThrows(IllegalArgumentException.class, () -> resolve("last", $col("c"), $bool("b")));
-    }
-
-    private static QLFunctionDescriptor resolve(String name, Exp<?>... args) {
-        return FUNCTIONS.function(name, Arrays.stream(args).map(QLFunctionArg::of).toList());
+                assertThrows(IllegalArgumentException.class, () -> call("noSuchFunction", $int("i"))).getMessage());
+        assertThrows(IllegalArgumentException.class, () -> call("rowNum", $int("i")));
+        assertThrows(IllegalArgumentException.class, () -> call("year"));
+        assertThrows(IllegalArgumentException.class, () -> call("last", $col("c"), $bool("b")));
     }
 
     private static Exp<?> call(String name, Exp<?>... args) {
         return FUNCTIONS.call(name, List.of(args));
-    }
-
-    /**
-     * An argument list matching exactly what the descriptor declares.
-     */
-    private static List<Exp<?>> plausibleArgs(QLFunctionDescriptor descriptor) {
-
-        List<Exp<?>> args = new ArrayList<>();
-        for (QLFunctionArg a : descriptor.args()) {
-            TypeClassifier type = a.type();
-            args.add(a.constant() ? constant(type) : column(type));
-        }
-
-        if (descriptor.varArgs()) {
-            args.add($str("s"));
-            args.add($int("i"));
-        }
-
-        return args;
-    }
-
-    private static Exp<?> column(TypeClassifier type) {
-        return switch (type) {
-            case NUMERIC -> $int("i");
-            case STRING -> $str("s");
-            case BOOLEAN -> $bool("b");
-            case DATE -> $date("d");
-            case TIME -> $time("t");
-            case DATETIME -> $dateTime("dt");
-            case OFFSETDATETIME -> $offsetDateTime("odt");
-            case OBJECT -> $col("o");
-        };
-    }
-
-    private static Exp<?> constant(TypeClassifier type) {
-        return switch (type) {
-            case NUMERIC -> $intVal(1);
-            case STRING -> $strVal("a");
-            case BOOLEAN -> $boolVal(true);
-            case DATE -> $dateVal(LocalDate.of(2024, 1, 2));
-            case TIME -> $timeVal(LocalTime.of(1, 2, 3));
-            case DATETIME -> $dateTimeVal(LocalDateTime.of(2024, 1, 2, 3, 4, 5));
-            case OFFSETDATETIME -> $offsetDateTimeVal(OffsetDateTime.parse("2024-01-02T03:04:05+01:00"));
-            case OBJECT -> $val(new Object());
-        };
     }
 }

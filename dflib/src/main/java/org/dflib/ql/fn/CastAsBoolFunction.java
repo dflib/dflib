@@ -1,17 +1,17 @@
 package org.dflib.ql.fn;
 
-import org.dflib.Condition;
 import org.dflib.Exp;
-import org.dflib.ql.QLFunction;
+import org.dflib.Udf1;
 
 /**
  * QL {@code castAsBool(e)} function.
  *
  * @since 2.0.0
  */
-public class CastAsBoolFunction implements QLFunction {
+public class CastAsBoolFunction implements Udf1<Object, Boolean> {
 
-    public Condition call(Exp<?> e) {
+    @Override
+    public Exp<Boolean> call(Exp<Object> e) {
         return e.castAsBool();
     }
 }

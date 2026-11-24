@@ -1,17 +1,19 @@
 package org.dflib.ql.fn;
 
-import org.dflib.Condition;
 import org.dflib.Exp;
-import org.dflib.ql.QLFunction;
+import org.dflib.Udf2;
+
+import static org.dflib.ql.fn.FunctionUtils.scalar;
 
 /**
  * QL {@code startsWith(e, prefix)} function.
  *
  * @since 2.0.0
  */
-public class StartsWithFunction implements QLFunction {
+public class StartsWithFunction implements Udf2<Object, String, Boolean> {
 
-    public Condition call(Exp<?> e, String prefix) {
-        return e.startsWith(prefix);
+    @Override
+    public Exp<Boolean> call(Exp<Object> e, Exp<String> prefix) {
+        return e.startsWith(scalar(prefix, String.class));
     }
 }

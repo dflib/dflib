@@ -2,6 +2,8 @@ package org.dflib.ql;
 
 import org.dflib.Environment;
 import org.dflib.Exp;
+import org.dflib.Udf1;
+import org.dflib.Udf2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,24 +20,18 @@ import static org.dflib.Exp.$intVal;
 import static org.dflib.Exp.$str;
 import static org.dflib.Exp.$strVal;
 import static org.dflib.Exp.parseExp;
-import static org.dflib.ql.DescriptorBuilder.descriptor;
-import static org.dflib.ql.IdentityFunctions.identity;
-import static org.dflib.ql.TypeClassifier.NUMERIC;
-import static org.dflib.ql.TypeClassifier.OBJECT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PolymorphicDispatchTest extends BaseQLFunctionsTest {
 
     @BeforeEach
     public void setUpFunctions() {
-        QLFunctions.Builder builder = QLFunctions.builder();
-        identity(builder, "pmin");
-        identity(builder, "plusLike", new QLFunctionArg(NUMERIC, true));
-
-        Environment.setQLContext(new QLContext(builder
-                .function(descriptor("foo").arg(OBJECT).as(args -> args.get(0).castAsInt()))
-                .function(descriptor("anyLike").arg(OBJECT).as(args -> args.get(0).first()))
-                .build()));
+        Environment.setQLContext(QLContext.builder()
+                .function("pmin", Udf1.of(e -> e))
+                .function("plusLike", Udf2.of((e, n) -> e))
+                .function("foo", Udf1.of(e -> e.castAsInt()))
+                .function("anyLike", Udf1.of(e -> e.first()))
+                .build());
     }
 
     @Test

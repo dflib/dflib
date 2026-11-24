@@ -2,25 +2,32 @@ package org.dflib.ql.fn;
 
 import org.dflib.DateExp;
 import org.dflib.DateTimeExp;
+import org.dflib.Exp;
 import org.dflib.OffsetDateTimeExp;
-import org.dflib.ql.QLFunction;
+import org.dflib.Udf2;
+
+import static org.dflib.ql.TypeClassifier.DATE;
+import static org.dflib.ql.TypeClassifier.DATETIME;
+import static org.dflib.ql.TypeClassifier.OFFSETDATETIME;
+import static org.dflib.ql.fn.FunctionUtils.scalar;
+import static org.dflib.ql.fn.FunctionUtils.unchecked;
+import static org.dflib.ql.fn.FunctionUtils.unsupportedArg;
 
 /**
- * QL {@code plusWeeks(e, n)} function.
+ * QL {@code plusWeeks(e, count)} function.
  *
  * @since 2.0.0
  */
-public class PlusWeeksFunction implements QLFunction {
+public class PlusWeeksFunction implements Udf2<Object, Number, Object> {
 
-    public DateExp call(DateExp e, int n) {
-        return e.plusWeeks(n);
-    }
-
-    public DateTimeExp call(DateTimeExp e, int n) {
-        return e.plusWeeks(n);
-    }
-
-    public OffsetDateTimeExp call(OffsetDateTimeExp e, int n) {
-        return e.plusWeeks(n);
+    @Override
+    public Exp<Object> call(Exp<Object> e, Exp<Number> count) {
+        int n = scalar(count, int.class);
+        return unchecked(switch ((Exp<?>) e) {
+            case DateExp d -> d.plusWeeks(n);
+            case DateTimeExp dt -> dt.plusWeeks(n);
+            case OffsetDateTimeExp odt -> odt.plusWeeks(n);
+            default -> throw unsupportedArg("plusWeeks", e, DATE, DATETIME, OFFSETDATETIME);
+        });
     }
 }

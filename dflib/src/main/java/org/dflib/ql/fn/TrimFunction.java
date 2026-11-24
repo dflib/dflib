@@ -1,17 +1,17 @@
 package org.dflib.ql.fn;
 
 import org.dflib.Exp;
-import org.dflib.StrExp;
-import org.dflib.ql.QLFunction;
+import org.dflib.Udf1;
 
 /**
  * QL {@code trim(e)} function.
  *
  * @since 2.0.0
  */
-public class TrimFunction implements QLFunction {
+public class TrimFunction implements Udf1<Object, String> {
 
-    public StrExp call(Exp<?> e) {
+    @Override
+    public Exp<String> call(Exp<Object> e) {
         return e.trim();
     }
 }

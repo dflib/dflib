@@ -1,8 +1,7 @@
 package org.dflib.ql.fn;
 
 import org.dflib.Exp;
-import org.dflib.NumExp;
-import org.dflib.ql.QLFunction;
+import org.dflib.Udf1;
 
 import java.math.BigInteger;
 
@@ -11,9 +10,10 @@ import java.math.BigInteger;
  *
  * @since 2.0.0
  */
-public class CastAsBigintFunction implements QLFunction {
+public class CastAsBigintFunction implements Udf1<Object, BigInteger> {
 
-    public NumExp<BigInteger> call(Exp<?> e) {
+    @Override
+    public Exp<BigInteger> call(Exp<Object> e) {
         return e.castAsBigint();
     }
 }

@@ -1,16 +1,19 @@
 package org.dflib.ql.fn;
 
 import org.dflib.Exp;
-import org.dflib.ql.QLFunction;
+import org.dflib.Udf1;
+
+import java.util.Set;
 
 /**
  * QL {@code set(e)} function.
  *
  * @since 2.0.0
  */
-public class SetFunction implements QLFunction {
+public class SetFunction implements Udf1<Object, Set<Object>> {
 
-    public Exp<?> call(Exp<?> e) {
+    @Override
+    public Exp<Set<Object>> call(Exp<Object> e) {
         return e.set();
     }
 }

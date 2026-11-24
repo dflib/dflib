@@ -1,27 +1,30 @@
 package org.dflib.ql.fn;
 
 import org.dflib.DateTimeExp;
-import org.dflib.NumExp;
+import org.dflib.Exp;
 import org.dflib.OffsetDateTimeExp;
 import org.dflib.TimeExp;
-import org.dflib.ql.QLFunction;
+import org.dflib.Udf1;
+
+import static org.dflib.ql.TypeClassifier.DATETIME;
+import static org.dflib.ql.TypeClassifier.OFFSETDATETIME;
+import static org.dflib.ql.TypeClassifier.TIME;
+import static org.dflib.ql.fn.FunctionUtils.unsupportedArg;
 
 /**
  * QL {@code hour(e)} function.
  *
  * @since 2.0.0
  */
-public class HourFunction implements QLFunction {
+public class HourFunction implements Udf1<Object, Integer> {
 
-    public NumExp<Integer> call(TimeExp e) {
-        return e.hour();
-    }
-
-    public NumExp<Integer> call(DateTimeExp e) {
-        return e.hour();
-    }
-
-    public NumExp<Integer> call(OffsetDateTimeExp e) {
-        return e.hour();
+    @Override
+    public Exp<Integer> call(Exp<Object> e) {
+        return switch ((Exp<?>) e) {
+            case TimeExp t -> t.hour();
+            case DateTimeExp dt -> dt.hour();
+            case OffsetDateTimeExp odt -> odt.hour();
+            default -> throw unsupportedArg("hour", e, TIME, DATETIME, OFFSETDATETIME);
+        };
     }
 }

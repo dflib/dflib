@@ -2,6 +2,7 @@ package org.dflib.ql;
 
 import org.dflib.Environment;
 import org.dflib.Exp;
+import org.dflib.Udf1;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -9,7 +10,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static org.dflib.ql.IdentityFunctions.identity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -77,24 +77,31 @@ public class ParseErrorReportingTest {
 
     @Test
     public void semanticError_NoMatchingOverload() {
-        String substrOverloads = "Available: substr(OBJECT, const NUMERIC), substr(OBJECT, const NUMERIC, const NUMERIC)";
+        String substrOverloads = "Available: substr(OBJECT, NUMERIC), substr(OBJECT, NUMERIC, NUMERIC)";
 
         QLParserException e = assertThrows(QLParserException.class, () -> Exp.parseExp("substr('example')"));
-        assertEquals("Function 'substr' at 1:0: No overload of substr matches substr(const STRING). " + substrOverloads, e.getMessage());
+        assertEquals("Function 'substr' at 1:0: No overload of substr matches substr(STRING). " + substrOverloads, e.getMessage());
 
         QLParserException nested = assertThrows(QLParserException.class, () -> Exp.parseExp("len(substr('a'))"));
-        assertEquals("Function 'substr' at 1:4: No overload of substr matches substr(const STRING). " + substrOverloads, nested.getMessage());
+        assertEquals("Function 'substr' at 1:4: No overload of substr matches substr(STRING). " + substrOverloads, nested.getMessage());
 
-        QLParserException nonConst = assertThrows(QLParserException.class, () -> Exp.parseExp("substr(a, int(b))"));
-        assertEquals("Function 'substr' at 1:0: No overload of substr matches substr(OBJECT, NUMERIC<Integer>). " + substrOverloads,
-                nonConst.getMessage());
+    }
+
+    @Test
+    public void semanticError_NotAConstant() {
+        QLParserException typed = assertThrows(QLParserException.class, () -> Exp.parseExp("substr(a, int(b))"));
+        assertEquals("Function 'substr' at 1:0: Not a constant: b", typed.getMessage());
+
+        // an untyped argument is cast before the function sees it
+        QLParserException untyped = assertThrows(QLParserException.class, () -> Exp.parseExp("plusDays(date(d), b)"));
+        assertEquals("Function 'plusDays' at 1:0: Not a constant: castAsNumber(b)", untyped.getMessage());
     }
 
     @Test
     public void semanticError_Producer() {
         QLParserException e = assertThrows(QLParserException.class, () -> Exp.parseExp("year(str(a))"));
-        assertEquals("Function 'year' at 1:0: No overload of year matches year(STRING)."
-                + " Available: year(DATE), year(DATETIME), year(OFFSETDATETIME)", e.getMessage());
+        assertEquals("Function 'year' at 1:0: year(): argument 1 of type STRING is not one of DATE, DATETIME,"
+                + " OFFSETDATETIME", e.getMessage());
 
         QLParserException scale = assertThrows(QLParserException.class, () -> Exp.parseExp("scale(int(a), 1.5)"));
         assertEquals("Function 'scale' at 1:0: Not an integer constant: 1.5", scale.getMessage());
@@ -104,7 +111,7 @@ public class ParseErrorReportingTest {
     public void semanticError_WrongReturnType() {
         QLContext original = Environment.commonEnv().qlContext();
         try {
-            Environment.setQLContext(new QLContext(identity(QLFunctions.builder(), "f").build()));
+            Environment.setQLContext(QLContext.builder().function("f", Udf1.of(e -> e)).build());
 
             QLParserException num = assertThrows(QLParserException.class, () -> Exp.parseExp("f(str(a)) + 1"));
             assertEquals("Operator '+' at 1:10 expects a numeric operand, got a string one: a", num.getMessage());

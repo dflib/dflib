@@ -1,17 +1,19 @@
 package org.dflib.ql.fn;
 
-import org.dflib.DecimalExp;
 import org.dflib.Exp;
-import org.dflib.ql.QLFunction;
+import org.dflib.Udf1;
+
+import java.math.BigDecimal;
 
 /**
  * QL {@code castAsDecimal(e)} function.
  *
  * @since 2.0.0
  */
-public class CastAsDecimalFunction implements QLFunction {
+public class CastAsDecimalFunction implements Udf1<Object, BigDecimal> {
 
-    public DecimalExp call(Exp<?> e) {
+    @Override
+    public Exp<BigDecimal> call(Exp<Object> e) {
         return e.castAsDecimal();
     }
 }

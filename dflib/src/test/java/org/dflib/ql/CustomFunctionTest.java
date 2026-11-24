@@ -2,9 +2,10 @@ package org.dflib.ql;
 
 import org.dflib.Environment;
 import org.dflib.Exp;
-import org.dflib.StrExp;
 import org.dflib.Udf1;
 import org.dflib.Udf2;
+import org.dflib.ql.fn.Substr2Function;
+import org.dflib.ql.fn.UpperFunction;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -45,8 +46,28 @@ public class CustomFunctionTest extends BaseQLFunctionsTest {
     }
 
     @Test
+    public void builtInClass_Alias() {
+
+        Environment.setQLContext(QLContext.builder()
+                .function("left", new Substr2Function())
+                .build());
+
+        assertEquals($col("a").substr(2), parseExp("left(a, 2)"));
+    }
+
+    @Test
+    public void builtInClass_Delegate() {
+
+        Environment.setQLContext(QLContext.builder()
+                .function("shout", Udf1.of(e -> Exp.concat(new UpperFunction().call(e), "!")))
+                .build());
+
+        assertEquals(Exp.concat($col("a").upper(), "!"), parseExp("shout(a)"));
+    }
+
+    @Test
     public void noDefaultFunctions() {
-        QLFunctions functions = QLFunctions.builder()
+        QLContext functions = QLContext.builder()
                 .noDefaultFunctions()
                 .function("twice", new TwiceFunction())
                 .build();
@@ -62,40 +83,16 @@ public class CustomFunctionTest extends BaseQLFunctionsTest {
     public void customFunction_BuiltInCollision() {
 
         // reported at build time, as that is when the built-ins are added
-        QLFunctions.Builder builder = QLFunctions.builder().function("trim", new TrimFunction());
+        QLContext.Builder builder = QLContext.builder().function("trim", new TrimFunction());
 
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, builder::build);
         assertEquals("Function trim(OBJECT) already defined", e.getMessage());
 
-        assertEquals(new TrimFunction().call($col("a")), QLFunctions.builder()
+        assertEquals(new TrimFunction().call($col("a")), QLContext.builder()
                 .noDefaultFunctions()
                 .function("trim", new TrimFunction())
                 .build()
                 .call("trim", List.of($col("a"))));
-    }
-
-    @Test
-    public void customOverload_MoreSpecific() {
-
-        // the built-in "trim" is declared over "Exp<?>", so a "StrExp" overload is a better match for a string
-        Environment.setQLContext(QLContext.builder()
-                .function("trim", new StrTrimFunction())
-                .build());
-
-        assertEquals(new StrTrimFunction().call($str("a")), parseExp("trim(str(a))"));
-        assertEquals($col("a").trim(), parseExp("trim(a)"));
-    }
-
-    @Test
-    public void customOverload_Tied() {
-
-        // "vConcat(str(a), ',')" matches the built-in "vConcat(Exp<?>, const String)" and the custom
-        // "vConcat(StrExp, const Object)" with one wildcard each, and the built-in is registered first
-        Environment.setQLContext(QLContext.builder()
-                .function("vConcat", new StrVConcatFunction())
-                .build());
-
-        assertEquals($str("a").vConcat(null, ",", "", ""), parseExp("vConcat(str(a), ',')"));
     }
 
     private static class TwiceFunction implements Udf1<Integer, Integer> {
@@ -109,19 +106,6 @@ public class CustomFunctionTest extends BaseQLFunctionsTest {
         @Override
         public Exp<String> call(Exp<Object> exp) {
             return exp.castAsStr().trim();
-        }
-    }
-
-    private static class StrTrimFunction implements Udf1<String, String> {
-        @Override
-        public Exp<String> call(Exp<String> exp) {
-            return exp.castAsStr().trim().upper();
-        }
-    }
-
-    public static class StrVConcatFunction implements QLFunction {
-        public Exp<?> call(StrExp e, Object delimiter) {
-            return e.vConcat(null, String.valueOf(delimiter), "<", ">");
         }
     }
 }

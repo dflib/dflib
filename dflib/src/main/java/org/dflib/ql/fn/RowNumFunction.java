@@ -1,17 +1,17 @@
 package org.dflib.ql.fn;
 
 import org.dflib.Exp;
-import org.dflib.NumExp;
-import org.dflib.ql.QLFunction;
+import org.dflib.Udf0;
 
 /**
  * QL {@code rowNum()} function.
  *
  * @since 2.0.0
  */
-public class RowNumFunction implements QLFunction {
+public class RowNumFunction implements Udf0<Integer> {
 
-    public NumExp<Integer> call() {
+    @Override
+    public Exp<Integer> call() {
         return Exp.rowNum();
     }
 }

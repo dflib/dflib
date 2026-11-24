@@ -135,7 +135,7 @@ class ExpParserUtils {
      */
     static Exp<?> fn(QLContext context, Token name, List<Exp<?>> args) {
         try {
-            return context.functions().call(name.getText(), args);
+            return context.call(name.getText(), args);
         } catch (QLParserException e) {
             // a nested call already reported its own position
             throw e;

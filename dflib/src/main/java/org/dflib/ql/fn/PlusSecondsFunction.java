@@ -1,26 +1,33 @@
 package org.dflib.ql.fn;
 
 import org.dflib.DateTimeExp;
+import org.dflib.Exp;
 import org.dflib.OffsetDateTimeExp;
 import org.dflib.TimeExp;
-import org.dflib.ql.QLFunction;
+import org.dflib.Udf2;
+
+import static org.dflib.ql.TypeClassifier.DATETIME;
+import static org.dflib.ql.TypeClassifier.OFFSETDATETIME;
+import static org.dflib.ql.TypeClassifier.TIME;
+import static org.dflib.ql.fn.FunctionUtils.scalar;
+import static org.dflib.ql.fn.FunctionUtils.unchecked;
+import static org.dflib.ql.fn.FunctionUtils.unsupportedArg;
 
 /**
- * QL {@code plusSeconds(e, n)} function.
+ * QL {@code plusSeconds(e, count)} function.
  *
  * @since 2.0.0
  */
-public class PlusSecondsFunction implements QLFunction {
+public class PlusSecondsFunction implements Udf2<Object, Number, Object> {
 
-    public TimeExp call(TimeExp e, int n) {
-        return e.plusSeconds(n);
-    }
-
-    public DateTimeExp call(DateTimeExp e, int n) {
-        return e.plusSeconds(n);
-    }
-
-    public OffsetDateTimeExp call(OffsetDateTimeExp e, int n) {
-        return e.plusSeconds(n);
+    @Override
+    public Exp<Object> call(Exp<Object> e, Exp<Number> count) {
+        int n = scalar(count, int.class);
+        return unchecked(switch ((Exp<?>) e) {
+            case TimeExp t -> t.plusSeconds(n);
+            case DateTimeExp dt -> dt.plusSeconds(n);
+            case OffsetDateTimeExp odt -> odt.plusSeconds(n);
+            default -> throw unsupportedArg("plusSeconds", e, TIME, DATETIME, OFFSETDATETIME);
+        });
     }
 }

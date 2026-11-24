@@ -1,16 +1,17 @@
 package org.dflib.ql.fn;
 
 import org.dflib.Exp;
-import org.dflib.ql.QLFunction;
+import org.dflib.Udf2;
 
 /**
  * QL {@code ifNull(e, ifNull)} function.
  *
  * @since 2.0.0
  */
-public class IfNullFunction implements QLFunction {
+public class IfNullFunction implements Udf2<Object, Object, Object> {
 
-    public <T> Exp<T> call(Exp<T> e, Exp<T> ifNull) {
-        return Exp.ifNull(e, ifNull);
+    @Override
+    public Exp<Object> call(Exp<Object> e, Exp<Object> ifNullExp) {
+        return Exp.ifNull(e, ifNullExp);
     }
 }

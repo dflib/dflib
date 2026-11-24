@@ -2,26 +2,29 @@ package org.dflib.ql.fn;
 
 import org.dflib.DateExp;
 import org.dflib.DateTimeExp;
-import org.dflib.NumExp;
+import org.dflib.Exp;
 import org.dflib.OffsetDateTimeExp;
-import org.dflib.ql.QLFunction;
+import org.dflib.Udf1;
+
+import static org.dflib.ql.TypeClassifier.DATE;
+import static org.dflib.ql.TypeClassifier.DATETIME;
+import static org.dflib.ql.TypeClassifier.OFFSETDATETIME;
+import static org.dflib.ql.fn.FunctionUtils.unsupportedArg;
 
 /**
  * QL {@code year(e)} function.
  *
  * @since 2.0.0
  */
-public class YearFunction implements QLFunction {
+public class YearFunction implements Udf1<Object, Integer> {
 
-    public NumExp<Integer> call(DateExp e) {
-        return e.year();
-    }
-
-    public NumExp<Integer> call(DateTimeExp e) {
-        return e.year();
-    }
-
-    public NumExp<Integer> call(OffsetDateTimeExp e) {
-        return e.year();
+    @Override
+    public Exp<Integer> call(Exp<Object> e) {
+        return switch ((Exp<?>) e) {
+            case DateExp d -> d.year();
+            case DateTimeExp dt -> dt.year();
+            case OffsetDateTimeExp odt -> odt.year();
+            default -> throw unsupportedArg("year", e, DATE, DATETIME, OFFSETDATETIME);
+        };
     }
 }
