@@ -8,8 +8,6 @@ import org.dflib.ql.fn.Substr2Function;
 import org.dflib.ql.fn.UpperFunction;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.dflib.Exp.$col;
 import static org.dflib.Exp.$int;
 import static org.dflib.Exp.$intVal;
@@ -66,33 +64,11 @@ public class CustomFunctionTest extends BaseQLFunctionsTest {
     }
 
     @Test
-    public void noDefaultFunctions() {
-        QLContext functions = QLContext.builder()
-                .noDefaultFunctions()
-                .function("twice", new TwiceFunction())
-                .build();
-
-        assertEquals(new TwiceFunction().call($int("a")), functions.call("twice", List.of($int("a"))));
-
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-                () -> functions.call("abs", List.of($int("a"))));
-        assertEquals("Unknown function: abs", e.getMessage());
-    }
-
-    @Test
     public void customFunction_BuiltInCollision() {
-
-        // reported at build time, as that is when the built-ins are added
         QLContext.Builder builder = QLContext.builder().function("trim", new TrimFunction());
 
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, builder::build);
         assertEquals("Function trim(OBJECT) already defined", e.getMessage());
-
-        assertEquals(new TrimFunction().call($col("a")), QLContext.builder()
-                .noDefaultFunctions()
-                .function("trim", new TrimFunction())
-                .build()
-                .call("trim", List.of($col("a"))));
     }
 
     private static class TwiceFunction implements Udf1<Integer, Integer> {

@@ -16,25 +16,25 @@ import static org.dflib.Exp.$col;
 import static org.dflib.Exp.$int;
 import static org.dflib.Exp.$intVal;
 import static org.dflib.Exp.$str;
+import static org.dflib.ql.QLFunctionDescriptor.of;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class QLFunctionsTest {
 
-    private static QLContext.Builder registry() {
-        return QLContext.builder().noDefaultFunctions();
+    private static QLFunctions functions(QLFunctionDescriptor... descriptors) {
+        return new QLFunctions(List.of(descriptors));
     }
 
-    private static String error(QLContext functions, String name, Exp<?>... args) {
+    private static String error(QLFunctions functions, String name, Exp<?>... args) {
         return assertThrows(IllegalArgumentException.class, () -> functions.call(name, List.of(args))).getMessage();
     }
 
     @Test
     public void call_ByArity() {
-        QLContext functions = registry()
-                .function("sum", new Int2SumFunction())
-                .function("sum", new Int3SumFunction())
-                .build();
+        QLFunctions functions = functions(
+                of("sum", new Int2SumFunction()),
+                of("sum", new Int3SumFunction()));
 
         assertEquals(new Int2SumFunction().call($int("a"), $int("b")),
                 functions.call("sum", List.of($int("a"), $int("b"))));
@@ -44,17 +44,16 @@ public class QLFunctionsTest {
 
     @Test
     public void call_UnknownName() {
-        QLContext functions = registry().function("sum", new Int2SumFunction()).build();
+        QLFunctions functions = functions(of("sum", new Int2SumFunction()));
 
         assertEquals("Unknown function: multiply", error(functions, "multiply", $int("a"), $int("b")));
     }
 
     @Test
     public void call_WrongArity_throws() {
-        QLContext functions = registry()
-                .function("sum", new Int2SumFunction())
-                .function("sum", new Int3SumFunction())
-                .build();
+        QLFunctions functions = functions(
+                of("sum", new Int2SumFunction()),
+                of("sum", new Int3SumFunction()));
 
         assertEquals("No overload of sum matches sum(NUMERIC). Available: sum(NUMERIC, NUMERIC),"
                         + " sum(NUMERIC, NUMERIC, NUMERIC)",
@@ -63,10 +62,9 @@ public class QLFunctionsTest {
 
     @Test
     public void call_WrongArgTypes_throws() {
-        QLContext functions = registry()
-                .function("sum", new Int2SumFunction())
-                .function("sum", new Int3SumFunction())
-                .build();
+        QLFunctions functions = functions(
+                of("sum", new Int2SumFunction()),
+                of("sum", new Int3SumFunction()));
 
         assertEquals("No overload of sum matches sum(NUMERIC, STRING). Available: sum(NUMERIC, NUMERIC),"
                         + " sum(NUMERIC, NUMERIC, NUMERIC)",
@@ -75,11 +73,10 @@ public class QLFunctionsTest {
 
     @Test
     public void call_UntypedArg_Cast() {
-        QLContext functions = registry()
-                .function("f", new StrArgFunction())
-                .function("g", new BoolNumArgFunction())
-                .function("h", new DateObjArgFunction())
-                .build();
+        QLFunctions functions = functions(
+                of("f", new StrArgFunction()),
+                of("g", new BoolNumArgFunction()),
+                of("h", new DateObjArgFunction()));
 
         assertEquals($col("a").castAsStr(), functions.call("f", List.of($col("a"))));
         assertEquals($str("a"), functions.call("f", List.of($str("a"))));
@@ -91,7 +88,7 @@ public class QLFunctionsTest {
 
     @Test
     public void call_ObjectParam() {
-        QLContext functions = registry().function("f", Udf1.of(e -> e)).build();
+        QLFunctions functions = functions(of("f", Udf1.of(e -> e)));
 
         assertEquals($col("a"), functions.call("f", List.of($col("a"))));
         assertEquals($int("a"), functions.call("f", List.of($int("a"))));
@@ -100,7 +97,7 @@ public class QLFunctionsTest {
 
     @Test
     public void call_VarArgs() {
-        QLContext functions = registry().function("sum", new IntNSumFunction()).build();
+        QLFunctions functions = functions(of("sum", new IntNSumFunction()));
 
         assertEquals($int("a"), functions.call("sum", List.of($int("a"))));
         assertEquals($int("a").add($int("b")).add($int("c")),
@@ -109,10 +106,9 @@ public class QLFunctionsTest {
 
     @Test
     public void call_VarArgs_FixedArityPreferred() {
-        QLContext functions = registry()
-                .function("sum", new IntNSumFunction())
-                .function("sum", new Int2SumFunction())
-                .build();
+        QLFunctions functions = functions(
+                of("sum", new IntNSumFunction()),
+                of("sum", new Int2SumFunction()));
 
         assertEquals(new Int2SumFunction().call($int("a"), $int("b")),
                 functions.call("sum", List.of($int("a"), $int("b"))));
@@ -123,7 +119,7 @@ public class QLFunctionsTest {
 
     @Test
     public void call_ConstantParam() {
-        QLContext functions = registry().function("substr", new Substr2Function()).build();
+        QLFunctions functions = functions(of("substr", new Substr2Function()));
 
         assertEquals($str("a").substr(1), functions.call("substr", List.of($str("a"), $intVal(1))));
 
@@ -133,18 +129,12 @@ public class QLFunctionsTest {
     }
 
     @Test
-    public void build_DuplicateArity_throws() {
-        QLContext.Builder fixed = registry()
-                .function("f", new StrArgFunction())
-                .function("f", Udf1.of(e -> e));
-        assertEquals("Function f(OBJECT) already defined",
-                assertThrows(IllegalArgumentException.class, fixed::build).getMessage());
+    public void duplicateArity_throws() {
+        assertEquals("Function f(OBJECT) already defined", assertThrows(IllegalArgumentException.class,
+                () -> functions(of("f", new StrArgFunction()), of("f", Udf1.of(e -> e)))).getMessage());
 
-        QLContext.Builder varArgs = registry()
-                .function("sum", new IntNSumFunction())
-                .function("sum", UdfN.of(Exp::concat));
-        assertEquals("Function sum(...) already defined",
-                assertThrows(IllegalArgumentException.class, varArgs::build).getMessage());
+        assertEquals("Function sum(...) already defined", assertThrows(IllegalArgumentException.class,
+                () -> functions(of("sum", new IntNSumFunction()), of("sum", UdfN.of(Exp::concat)))).getMessage());
     }
 
     private static class StrArgFunction implements Udf1<String, String> {

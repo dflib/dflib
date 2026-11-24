@@ -34,11 +34,12 @@ public final class QLContext {
     }
 
     /**
-     * Starts a builder of a context that includes the built-in functions, unless {@link Builder#noDefaultFunctions()}
-     * is called.
+     * Starts a builder of a context that includes the built-in functions.
      */
     public static Builder builder() {
-        return new Builder();
+        Builder builder = new Builder();
+        DefaultQLFunctions.register(builder);
+        return builder;
     }
 
     /**
@@ -59,7 +60,6 @@ public final class QLContext {
     public static final class Builder {
 
         private final List<QLFunctionDescriptor> functions = new ArrayList<>();
-        private boolean defaultFunctions = true;
 
         private Builder() {
         }
@@ -89,22 +89,8 @@ public final class QLContext {
             return this;
         }
 
-        /**
-         * Excludes the built-in functions from the context, leaving only the explicitly registered ones.
-         */
-        public Builder noDefaultFunctions() {
-            this.defaultFunctions = false;
-            return this;
-        }
-
         public QLContext build() {
-            Builder all = new Builder();
-            if (defaultFunctions) {
-                DefaultQLFunctions.register(all);
-            }
-
-            all.functions.addAll(functions);
-            return new QLContext(new QLFunctions(all.functions));
+            return new QLContext(new QLFunctions(functions));
         }
     }
 }
