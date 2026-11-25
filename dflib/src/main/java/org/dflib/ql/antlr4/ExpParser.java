@@ -4,7 +4,6 @@ package org.dflib.ql.antlr4;
 import java.util.stream.Collectors;
 
 import org.dflib.*;
-import org.dflib.ql.QLContext;
 
 import static org.dflib.ql.antlr4.ExpParserUtils.*;
 import static org.dflib.ql.antlr4.Literals.*;
@@ -123,15 +122,10 @@ public class ExpParser extends Parser {
 
 
 	// global state of the parser
-	PositionalParamSource paramSource;
-	QLContext context;
+	ParserScope scope;
 
-	public void setParameters(Object... params) {
-	    this.paramSource = new PositionalParamSource(params);
-	}
-
-	public void setContext(QLContext context) {
-	    this.context = context;
+	public void setScope(ParserScope scope) {
+	    this.scope = scope;
 	}
 
 	public ExpParser(TokenStream input) {
@@ -1545,7 +1539,7 @@ public class ExpParser extends Parser {
 				setState(242);
 				match(RP);
 
-				        ((FnCallContext)_localctx).exp =  fn(context, ((FnCallContext)_localctx).IDENTIFIER, ((FnCallContext)_localctx).args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
+				        ((FnCallContext)_localctx).exp =  scope.fn(((FnCallContext)_localctx).IDENTIFIER, ((FnCallContext)_localctx).args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
 				    
 				}
 				break;
@@ -1554,7 +1548,7 @@ public class ExpParser extends Parser {
 				{
 				setState(244);
 				((FnCallContext)_localctx).UDF_PARAMETER = match(UDF_PARAMETER);
-				 ((FnCallContext)_localctx).udf =  paramSource.nextFunction(((FnCallContext)_localctx).UDF_PARAMETER); 
+				 ((FnCallContext)_localctx).udf =  scope.nextParamFunction(((FnCallContext)_localctx).UDF_PARAMETER); 
 				setState(246);
 				match(LP);
 				setState(255);
@@ -1588,7 +1582,7 @@ public class ExpParser extends Parser {
 				setState(257);
 				match(RP);
 
-				        ((FnCallContext)_localctx).exp =  udf(((FnCallContext)_localctx).UDF_PARAMETER, _localctx.udf, ((FnCallContext)_localctx).args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
+				        ((FnCallContext)_localctx).exp =  scope.udf(((FnCallContext)_localctx).UDF_PARAMETER, _localctx.udf, ((FnCallContext)_localctx).args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
 				    
 				}
 				break;
@@ -1681,7 +1675,7 @@ public class ExpParser extends Parser {
 				{
 				setState(270);
 				((ScalarContext)_localctx).PARAMETER = match(PARAMETER);
-				 ((ScalarContext)_localctx).value =  paramSource.next(((ScalarContext)_localctx).PARAMETER); 
+				 ((ScalarContext)_localctx).value =  scope.nextParam(((ScalarContext)_localctx).PARAMETER); 
 				}
 				break;
 			default:
@@ -1780,7 +1774,7 @@ public class ExpParser extends Parser {
 				{
 				setState(286);
 				((AnyScalarListContext)_localctx).PARAMETER = match(PARAMETER);
-				 ((AnyScalarListContext)_localctx).value =  paramSource.nextArray(((AnyScalarListContext)_localctx).PARAMETER); 
+				 ((AnyScalarListContext)_localctx).value =  scope.nextParamArray(((AnyScalarListContext)_localctx).PARAMETER); 
 				}
 				break;
 			default:
@@ -2238,7 +2232,7 @@ public class ExpParser extends Parser {
 				{
 				setState(330);
 				((ColumnIdContext)_localctx).PARAMETER = match(PARAMETER);
-				 ((ColumnIdContext)_localctx).id =  paramSource.next(((ColumnIdContext)_localctx).PARAMETER); 
+				 ((ColumnIdContext)_localctx).id =  scope.nextParam(((ColumnIdContext)_localctx).PARAMETER); 
 				}
 				break;
 			default:

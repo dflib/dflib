@@ -4,7 +4,6 @@ package org.dflib.ql.antlr4;
 import java.util.stream.Collectors;
 
 import org.dflib.*;
-import org.dflib.ql.QLContext;
 
 import static org.dflib.ql.antlr4.ExpParserUtils.*;
 import static org.dflib.ql.antlr4.Literals.*;
@@ -114,15 +113,10 @@ public class ExpLexer extends Lexer {
 
 
 	// global state of the parser
-	PositionalParamSource paramSource;
-	QLContext context;
+	ParserScope scope;
 
-	public void setParameters(Object... params) {
-	    this.paramSource = new PositionalParamSource(params);
-	}
-
-	public void setContext(QLContext context) {
-	    this.context = context;
+	public void setScope(ParserScope scope) {
+	    this.scope = scope;
 	}
 
 

@@ -11,6 +11,7 @@ import org.dflib.ql.antlr4.ExpLexer;
 import org.dflib.ql.antlr4.ExpStrictLexer;
 import org.dflib.ql.antlr4.ExpParser;
 import org.dflib.ql.antlr4.LexerCancellationException;
+import org.dflib.ql.antlr4.ParserScope;
 
 import java.time.format.DateTimeParseException;
 import java.util.function.Function;
@@ -31,8 +32,7 @@ public class QLParserInvoker {
         ExpParser parser = new ExpParser(new CommonTokenStream(lexer));
         parser.removeErrorListeners(); // remove logging to std.err
         parser.addErrorListener(new ErrorListener());
-        parser.setParameters(params);
-        parser.setContext(Environment.commonEnv().qlContext());
+        parser.setScope(new ParserScope(Environment.commonEnv().qlContext(), params));
 
         try {
             return parserFunction.apply(parser);
