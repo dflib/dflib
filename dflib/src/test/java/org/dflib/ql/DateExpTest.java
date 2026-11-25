@@ -60,7 +60,8 @@ public class DateExpTest {
                 arguments("castAsDate(null)", $val(null).castAsDate()),
                 arguments("castAsDate(1)", $intVal(1).castAsDate()),
                 arguments("castAsDate(true)", $boolVal(true).castAsDate()),
-                arguments("castAsDate('1')", $strVal("1").castAsDate())
+                arguments("castAsDate('1')", $strVal("1").castAsDate()),
+                arguments("castAsDate('31/01/2024', 'dd/MM/yyyy')", $strVal("31/01/2024").castAsDate("dd/MM/yyyy"))
         );
     }
 
@@ -92,6 +93,10 @@ public class DateExpTest {
                         .between($date(2), $date(3))),
                 arguments("date(1) not between date(2) and date(3)", $date(1)
                         .notBetween($date(2), $date(3))),
+                arguments("date(1) between '2020-01-01' and date(2)", $date(1)
+                        .between($dateVal(LocalDate.of(2020, 1, 1)), $date(2))),
+                arguments("date(1) not between date(2) and '2020-12-31'", $date(1)
+                        .notBetween($date(2), $dateVal(LocalDate.of(2020, 12, 31)))),
                 arguments("date(1) = plusDays(date(2), 1)", $date(1).eq($date(2).plusDays(1))),
                 arguments("date(1) = '1970-01-01'", $date(1).eq("1970-01-01")),
                 arguments("date(1) in ('2002-01-01')", $date(1)
