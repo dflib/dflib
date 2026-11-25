@@ -2,6 +2,7 @@
 
 * #567 QL: context-based functions
 * #578 Static cast methods in Udf interfaces
+* #579 Exp: castAsNum() operator
 * #642 rows().expand(..) should take an expression
 * #643 Replace the "parquet-java" Parquet engine with Hardwood
 * #645 Hardwood now ensures projection order
