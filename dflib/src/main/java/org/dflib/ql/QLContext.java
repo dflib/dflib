@@ -43,8 +43,8 @@ public final class QLContext {
     }
 
     /**
-     * Resolves a function call by its name and argument types against the functions of this context, and builds
-     * the call expression.
+     * Resolves a function call by its name and number of arguments against the functions of this context, and
+     * builds the call expression.
      *
      * @throws IllegalArgumentException if the function is unknown, no overload matches the arguments, or the
      *                                  matching overload rejects them
@@ -54,8 +54,8 @@ public final class QLContext {
     }
 
     /**
-     * A builder of a {@link QLContext}. A function is registered as a {@code Udf0..UdfN} object; a lambda needs a
-     * type to be reflected on, so it is registered via {@code Udf1.of(e -> ..)}, {@code Udf2.of(..)}, etc.
+     * A builder of a {@link QLContext}. A function is registered as a {@code Udf0..UdfN} object. A lambda is
+     * wrapped via {@code Udf1.of(e -> ..)}, {@code Udf2.of(..)}, etc., and its arguments are untyped.
      */
     public static final class Builder {
 

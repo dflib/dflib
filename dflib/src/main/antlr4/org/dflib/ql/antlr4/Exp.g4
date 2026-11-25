@@ -137,7 +137,7 @@ primary returns [Exp<?> exp]
     ;
 
 /**
- * A call of a function from the QL function registry, resolved by name and argument types.
+ * A call of a function from the QL function registry, resolved by name and number of arguments.
  */
 fnCall returns [Exp<?> exp]
     : IDENTIFIER '(' (args+=expression (',' args+=expression)*)? ')' {
@@ -158,7 +158,7 @@ scalar returns [Object value]
     ;
 
 /**
- * List of a comma-sperated scalars
+ * A list of comma-separated scalars
  */
 anyScalarList returns [Object[] value]
     : '(' values+=scalar (',' values+=scalar)* ')' { $value = $values.stream().map(a -> a.value).toArray(); }
@@ -241,7 +241,7 @@ identifier returns [String id]
 
 /**
  * Creates an aggregating expression whose "reduce" operation returns an array containing all Series values.
- * Array component type should be provided as a fully quolified class name (e.g. 'java.lang.String').
+ * Array component type should be provided as a fully qualified class name (e.g. 'java.lang.String').
  */
 array returns [Exp<?> exp]
     : ARRAY '(' e=expression ',' t=strScalar ')' { $exp = ExpParserUtils.array($e.exp, $t.value); }
@@ -311,6 +311,7 @@ GT: '>';
 //@ doc:inline
 BETWEEN: 'between';
 
+//@ doc:inline
 IN: 'in';
 
 //@ doc:inline
@@ -362,8 +363,6 @@ STR: 'str';
 
 //@ doc:inline
 COL: 'col';
-
-// *Functions*
 
 //@ doc:inline
 DATE: 'date';

@@ -11,7 +11,7 @@ import org.dflib.Udf2;
 public class IfNullFunction implements Udf2<Object, Object, Object> {
 
     @Override
-    public Exp<Object> call(Exp<Object> e, Exp<Object> ifNullExp) {
-        return Exp.ifNull(e, ifNullExp);
+    public Exp<Object> call(Exp<Object> e, Exp<Object> ifNull) {
+        return Exp.ifNull(e, ifNull);
     }
 }

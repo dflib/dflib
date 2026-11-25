@@ -126,10 +126,10 @@ public class Environment {
     }
 
     /**
-     * Sets the common context of the QL parser used by the QL String methods of DataFrame, Series, etc., e.g.
-     * {@code setQLContext(QLContext.builder().function("myFn", Udf1.of(e -> e.castAsStr().trim())).build())}.
-     * Passing null resets the context to the default one.
+     * Sets the common context of the QL parser used by the QL String methods of DataFrame, Series, etc. Passing null
+     * resets the context to the default one.
      *
+     * @see QLContext
      * @since 2.0.0
      */
     public static void setQLContext(QLContext qlContext) {

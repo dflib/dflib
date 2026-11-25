@@ -32,7 +32,7 @@ class Literals {
     private static final Pattern UNDERSCORES = Pattern.compile("_+");
     private static final Pattern OCTAL_PREFIX = Pattern.compile("0(?=.)");
 
-    public static Number parseIntegerValue(String token) {
+    static Number parseIntegerValue(String token) {
         int radix = radix(token);
         String sanitizedToken = sanitizeNumScalar(token, radix);
         Matcher matcher = INTEGER_LITERAL.matcher(sanitizedToken);
@@ -62,7 +62,7 @@ class Literals {
         return value;
     }
 
-    public static Number parseFloatingPointValue(String token) {
+    static Number parseFloatingPointValue(String token) {
         String normalizedToken = stripUnderscores(token).toLowerCase();
         Matcher matcher = FLOAT_LITERAL.matcher(normalizedToken);
         if (!matcher.matches()) {
@@ -94,7 +94,7 @@ class Literals {
         return value;
     }
 
-    public static BigDecimal parseDecimalValue(String token) {
+    private static BigDecimal parseDecimalValue(String token) {
         if (token == null) {
             throw new NullPointerException("Input string cannot be null.");
         }
@@ -208,11 +208,11 @@ class Literals {
         return i < 0 ? s : s.substring(0, i) + s.substring(i + prefix.length());
     }
 
-    public static String unescapeIdentifier(String raw) {
+    static String unescapeIdentifier(String raw) {
         return raw != null ? raw.replace("``", "`") : null;
     }
 
-    public static String unescapeString(String raw) {
+    static String unescapeString(String raw) {
         return raw != null ? raw.replace("''", "'") : null;
     }
 }

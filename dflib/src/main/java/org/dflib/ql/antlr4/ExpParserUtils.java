@@ -297,8 +297,9 @@ class ExpParserUtils {
     // Errors
 
     private static QLParserException operandMismatch(Token op, Exp<?> exp, String required) {
-        return new QLParserException("Operator '" + op.getText() + "' at " + position(op) + " expects a " + required
-                + " operand, got a " + expTypeLabel(exp) + " one: " + (exp != null ? exp.toQL() : "null"));
+        return new QLParserException("Operator '" + op.getText() + "' at " + position(op) + " expects "
+                + withArticle(required) + " operand, got " + withArticle(expTypeLabel(exp)) + " one: "
+                + (exp != null ? exp.toQL() : "null"));
     }
 
     private static QLParserException elementMismatch(Token op, Exp<?> exp, Object element) {
@@ -309,12 +310,12 @@ class ExpParserUtils {
                 : label + " values";
 
         return new QLParserException("Operator '" + op.getText() + "' at " + position(op) + " expects a list of "
-                + expected + " for a " + label + " expression, got: " + element);
+                + expected + " for " + withArticle(label) + " expression, got: " + element);
     }
 
     private static QLParserException unsupportedOperator(Token op, Exp<?> exp) {
-        return new QLParserException("Operator '" + op.getText() + "' at " + position(op) + " is not supported for a "
-                + expTypeLabel(exp) + " expression: " + (exp != null ? exp.toQL() : "null"));
+        return new QLParserException("Operator '" + op.getText() + "' at " + position(op) + " is not supported for "
+                + withArticle(expTypeLabel(exp)) + " expression: " + (exp != null ? exp.toQL() : "null"));
     }
 
     // the grammar only passes the tokens the operator rules match, so this is a programming error, not a user one
@@ -336,8 +337,12 @@ class ExpParserUtils {
             case StrExp ignored -> "string";
             case Condition ignored -> "boolean";
             case null -> "null";
-            default -> "generic";
+            default -> "untyped";
         };
+    }
+
+    private static String withArticle(String label) {
+        return ("aeiou".indexOf(label.charAt(0)) >= 0 ? "an " : "a ") + label;
     }
 
     @FunctionalInterface
