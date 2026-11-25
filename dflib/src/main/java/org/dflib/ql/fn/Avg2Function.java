@@ -7,11 +7,8 @@ import org.dflib.Exp;
 import org.dflib.NumExp;
 import org.dflib.TimeExp;
 import org.dflib.Udf2;
+import org.dflib.ql.TypeClassifier;
 
-import static org.dflib.ql.TypeClassifier.DATE;
-import static org.dflib.ql.TypeClassifier.DATETIME;
-import static org.dflib.ql.TypeClassifier.NUMERIC;
-import static org.dflib.ql.TypeClassifier.TIME;
 import static org.dflib.ql.fn.FunctionUtils.unchecked;
 import static org.dflib.ql.fn.FunctionUtils.unsupportedArg;
 
@@ -30,7 +27,8 @@ public class Avg2Function implements Udf2<Object, Boolean, Object> {
             case DateExp d -> d.avg(f);
             case TimeExp t -> t.avg(f);
             case DateTimeExp dt -> dt.avg(f);
-            default -> throw unsupportedArg("avg", e, NUMERIC, DATE, TIME, DATETIME);
+            default -> throw unsupportedArg("avg", e,
+                    TypeClassifier.NUMERIC, TypeClassifier.DATE, TypeClassifier.TIME, TypeClassifier.DATETIME);
         });
     }
 }

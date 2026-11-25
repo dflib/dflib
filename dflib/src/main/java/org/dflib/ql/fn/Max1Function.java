@@ -7,12 +7,8 @@ import org.dflib.NumExp;
 import org.dflib.StrExp;
 import org.dflib.TimeExp;
 import org.dflib.Udf1;
+import org.dflib.ql.TypeClassifier;
 
-import static org.dflib.ql.TypeClassifier.DATE;
-import static org.dflib.ql.TypeClassifier.DATETIME;
-import static org.dflib.ql.TypeClassifier.NUMERIC;
-import static org.dflib.ql.TypeClassifier.STRING;
-import static org.dflib.ql.TypeClassifier.TIME;
 import static org.dflib.ql.fn.FunctionUtils.unchecked;
 import static org.dflib.ql.fn.FunctionUtils.unsupportedArg;
 
@@ -31,7 +27,9 @@ public class Max1Function implements Udf1<Object, Object> {
             case DateExp d -> d.max();
             case TimeExp t -> t.max();
             case DateTimeExp dt -> dt.max();
-            default -> throw unsupportedArg("max", e, NUMERIC, STRING, DATE, TIME, DATETIME);
+            default -> throw unsupportedArg("max", e,
+                    TypeClassifier.NUMERIC, TypeClassifier.STRING, TypeClassifier.DATE, TypeClassifier.TIME,
+                    TypeClassifier.DATETIME);
         });
     }
 }

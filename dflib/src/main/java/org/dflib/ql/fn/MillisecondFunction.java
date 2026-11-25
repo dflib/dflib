@@ -5,10 +5,8 @@ import org.dflib.Exp;
 import org.dflib.OffsetDateTimeExp;
 import org.dflib.TimeExp;
 import org.dflib.Udf1;
+import org.dflib.ql.TypeClassifier;
 
-import static org.dflib.ql.TypeClassifier.DATETIME;
-import static org.dflib.ql.TypeClassifier.OFFSETDATETIME;
-import static org.dflib.ql.TypeClassifier.TIME;
 import static org.dflib.ql.fn.FunctionUtils.unsupportedArg;
 
 /**
@@ -24,7 +22,8 @@ public class MillisecondFunction implements Udf1<Object, Integer> {
             case TimeExp t -> t.millisecond();
             case DateTimeExp dt -> dt.millisecond();
             case OffsetDateTimeExp odt -> odt.millisecond();
-            default -> throw unsupportedArg("millisecond", e, TIME, DATETIME, OFFSETDATETIME);
+            default -> throw unsupportedArg("millisecond", e,
+                    TypeClassifier.TIME, TypeClassifier.DATETIME, TypeClassifier.OFFSETDATETIME);
         };
     }
 }

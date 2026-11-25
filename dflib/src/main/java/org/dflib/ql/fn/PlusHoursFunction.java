@@ -5,10 +5,8 @@ import org.dflib.Exp;
 import org.dflib.OffsetDateTimeExp;
 import org.dflib.TimeExp;
 import org.dflib.Udf2;
+import org.dflib.ql.TypeClassifier;
 
-import static org.dflib.ql.TypeClassifier.DATETIME;
-import static org.dflib.ql.TypeClassifier.OFFSETDATETIME;
-import static org.dflib.ql.TypeClassifier.TIME;
 import static org.dflib.ql.fn.FunctionUtils.scalar;
 import static org.dflib.ql.fn.FunctionUtils.unchecked;
 import static org.dflib.ql.fn.FunctionUtils.unsupportedArg;
@@ -27,7 +25,8 @@ public class PlusHoursFunction implements Udf2<Object, Number, Object> {
             case TimeExp t -> t.plusHours(n);
             case DateTimeExp dt -> dt.plusHours(n);
             case OffsetDateTimeExp odt -> odt.plusHours(n);
-            default -> throw unsupportedArg("plusHours", e, TIME, DATETIME, OFFSETDATETIME);
+            default -> throw unsupportedArg("plusHours", e,
+                    TypeClassifier.TIME, TypeClassifier.DATETIME, TypeClassifier.OFFSETDATETIME);
         });
     }
 }

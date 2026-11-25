@@ -5,10 +5,8 @@ import org.dflib.DateTimeExp;
 import org.dflib.Exp;
 import org.dflib.OffsetDateTimeExp;
 import org.dflib.Udf1;
+import org.dflib.ql.TypeClassifier;
 
-import static org.dflib.ql.TypeClassifier.DATE;
-import static org.dflib.ql.TypeClassifier.DATETIME;
-import static org.dflib.ql.TypeClassifier.OFFSETDATETIME;
 import static org.dflib.ql.fn.FunctionUtils.unsupportedArg;
 
 /**
@@ -24,7 +22,8 @@ public class YearFunction implements Udf1<Object, Integer> {
             case DateExp d -> d.year();
             case DateTimeExp dt -> dt.year();
             case OffsetDateTimeExp odt -> odt.year();
-            default -> throw unsupportedArg("year", e, DATE, DATETIME, OFFSETDATETIME);
+            default -> throw unsupportedArg("year", e,
+                    TypeClassifier.DATE, TypeClassifier.DATETIME, TypeClassifier.OFFSETDATETIME);
         };
     }
 }

@@ -5,10 +5,8 @@ import org.dflib.DateTimeExp;
 import org.dflib.Exp;
 import org.dflib.OffsetDateTimeExp;
 import org.dflib.Udf1;
+import org.dflib.ql.TypeClassifier;
 
-import static org.dflib.ql.TypeClassifier.DATE;
-import static org.dflib.ql.TypeClassifier.DATETIME;
-import static org.dflib.ql.TypeClassifier.OFFSETDATETIME;
 import static org.dflib.ql.fn.FunctionUtils.unsupportedArg;
 
 /**
@@ -24,7 +22,8 @@ public class DayFunction implements Udf1<Object, Integer> {
             case DateExp d -> d.day();
             case DateTimeExp dt -> dt.day();
             case OffsetDateTimeExp odt -> odt.day();
-            default -> throw unsupportedArg("day", e, DATE, DATETIME, OFFSETDATETIME);
+            default -> throw unsupportedArg("day", e,
+                    TypeClassifier.DATE, TypeClassifier.DATETIME, TypeClassifier.OFFSETDATETIME);
         };
     }
 }

@@ -6,11 +6,8 @@ import org.dflib.Exp;
 import org.dflib.NumExp;
 import org.dflib.TimeExp;
 import org.dflib.Udf2;
+import org.dflib.ql.TypeClassifier;
 
-import static org.dflib.ql.TypeClassifier.DATE;
-import static org.dflib.ql.TypeClassifier.DATETIME;
-import static org.dflib.ql.TypeClassifier.NUMERIC;
-import static org.dflib.ql.TypeClassifier.TIME;
 import static org.dflib.ql.fn.FunctionUtils.scalar;
 import static org.dflib.ql.fn.FunctionUtils.unchecked;
 import static org.dflib.ql.fn.FunctionUtils.unsupportedArg;
@@ -30,7 +27,8 @@ public class Quantile2Function implements Udf2<Object, Number, Object> {
             case DateExp d -> d.quantile(p);
             case TimeExp t -> t.quantile(p);
             case DateTimeExp dt -> dt.quantile(p);
-            default -> throw unsupportedArg("quantile", e, NUMERIC, DATE, TIME, DATETIME);
+            default -> throw unsupportedArg("quantile", e,
+                    TypeClassifier.NUMERIC, TypeClassifier.DATE, TypeClassifier.TIME, TypeClassifier.DATETIME);
         });
     }
 }

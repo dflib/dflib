@@ -7,11 +7,8 @@ import org.dflib.Exp;
 import org.dflib.NumExp;
 import org.dflib.TimeExp;
 import org.dflib.Udf2;
+import org.dflib.ql.TypeClassifier;
 
-import static org.dflib.ql.TypeClassifier.DATE;
-import static org.dflib.ql.TypeClassifier.DATETIME;
-import static org.dflib.ql.TypeClassifier.NUMERIC;
-import static org.dflib.ql.TypeClassifier.TIME;
 import static org.dflib.ql.fn.FunctionUtils.unchecked;
 import static org.dflib.ql.fn.FunctionUtils.unsupportedArg;
 
@@ -30,7 +27,8 @@ public class Median2Function implements Udf2<Object, Boolean, Object> {
             case DateExp d -> d.median(f);
             case TimeExp t -> t.median(f);
             case DateTimeExp dt -> dt.median(f);
-            default -> throw unsupportedArg("median", e, NUMERIC, DATE, TIME, DATETIME);
+            default -> throw unsupportedArg("median", e,
+                    TypeClassifier.NUMERIC, TypeClassifier.DATE, TypeClassifier.TIME, TypeClassifier.DATETIME);
         });
     }
 }

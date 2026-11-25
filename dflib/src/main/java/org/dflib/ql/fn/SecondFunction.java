@@ -5,10 +5,8 @@ import org.dflib.Exp;
 import org.dflib.OffsetDateTimeExp;
 import org.dflib.TimeExp;
 import org.dflib.Udf1;
+import org.dflib.ql.TypeClassifier;
 
-import static org.dflib.ql.TypeClassifier.DATETIME;
-import static org.dflib.ql.TypeClassifier.OFFSETDATETIME;
-import static org.dflib.ql.TypeClassifier.TIME;
 import static org.dflib.ql.fn.FunctionUtils.unsupportedArg;
 
 /**
@@ -24,7 +22,8 @@ public class SecondFunction implements Udf1<Object, Integer> {
             case TimeExp t -> t.second();
             case DateTimeExp dt -> dt.second();
             case OffsetDateTimeExp odt -> odt.second();
-            default -> throw unsupportedArg("second", e, TIME, DATETIME, OFFSETDATETIME);
+            default -> throw unsupportedArg("second", e,
+                    TypeClassifier.TIME, TypeClassifier.DATETIME, TypeClassifier.OFFSETDATETIME);
         };
     }
 }

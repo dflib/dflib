@@ -5,10 +5,8 @@ import org.dflib.DateTimeExp;
 import org.dflib.Exp;
 import org.dflib.OffsetDateTimeExp;
 import org.dflib.Udf2;
+import org.dflib.ql.TypeClassifier;
 
-import static org.dflib.ql.TypeClassifier.DATE;
-import static org.dflib.ql.TypeClassifier.DATETIME;
-import static org.dflib.ql.TypeClassifier.OFFSETDATETIME;
 import static org.dflib.ql.fn.FunctionUtils.scalar;
 import static org.dflib.ql.fn.FunctionUtils.unchecked;
 import static org.dflib.ql.fn.FunctionUtils.unsupportedArg;
@@ -27,7 +25,8 @@ public class PlusDaysFunction implements Udf2<Object, Number, Object> {
             case DateExp d -> d.plusDays(n);
             case DateTimeExp dt -> dt.plusDays(n);
             case OffsetDateTimeExp odt -> odt.plusDays(n);
-            default -> throw unsupportedArg("plusDays", e, DATE, DATETIME, OFFSETDATETIME);
+            default -> throw unsupportedArg("plusDays", e,
+                    TypeClassifier.DATE, TypeClassifier.DATETIME, TypeClassifier.OFFSETDATETIME);
         });
     }
 }
