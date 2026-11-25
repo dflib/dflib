@@ -714,6 +714,7 @@ numFn returns [NumExp<?> exp] locals [Function<NumExp<?>, NumExp<?>> fn]
     | castAsFloat { $exp = $castAsFloat.exp; }
     | castAsDouble { $exp = $castAsDouble.exp; }
     | castAsDecimal { $exp = $castAsDecimal.exp; }
+    | castAsNumber { $exp = $castAsNumber.exp; }
     | timeFieldFn { $exp = $timeFieldFn.exp; }
     | dateFieldFn { $exp = $dateFieldFn.exp; }
     | dateTimeFieldFn { $exp = $dateTimeFieldFn.exp; }
@@ -996,6 +997,17 @@ castAsDouble returns [NumExp<Double> exp]
  */
 castAsDecimal returns [DecimalExp exp]
     : CAST_AS_DECIMAL '(' expression ')' { $exp = $expression.exp.castAsDecimal(); }
+    ;
+
+
+/**
+ * Casts an expression to a Numeric value.
+ *
+ * Parameters:
+ *  - The expression to be cast.
+ */
+castAsNumber returns [NumExp<?> exp]
+    : CAST_AS_NUMBER '(' expression ')' { $exp = $expression.exp.castAsNumber(); }
     ;
 
 /**
@@ -1361,6 +1373,7 @@ fnName returns [String id]
     | CAST_AS_FLOAT
     | CAST_AS_DOUBLE
     | CAST_AS_DECIMAL
+    | CAST_AS_NUMBER
     | CAST_AS_STR
     | CAST_AS_TIME
     | CAST_AS_DATE
@@ -1537,6 +1550,9 @@ CAST_AS_DOUBLE: 'castAsDouble';
 
 //@ doc:inline
 CAST_AS_DECIMAL: 'castAsDecimal';
+
+//@ doc:inline
+CAST_AS_NUMBER: 'castAsNumber';
 
 //@ doc:inline
 CAST_AS_STR: 'castAsStr';
