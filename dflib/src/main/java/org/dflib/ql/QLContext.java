@@ -54,7 +54,7 @@ public final class QLContext {
     }
 
     /**
-     * Builds a call of a function passed to the parser as a {@code ?f} parameter.
+     * Builds a call of a function passed to the parser as a {@code ?(..)} parameter.
      *
      * @throws IllegalArgumentException if the object is not a {@code Udf0..UdfN}, or it rejects the arguments
      */

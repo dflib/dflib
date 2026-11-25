@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * The state of a single parser run: the context to resolve the functions, and the values bound to the {@code ?} and
- * {@code ?f} placeholders, handed out in the order of the placeholders.
+ * The state of a single parser run: the context to resolve the functions, and the values bound to the {@code ?}
+ * placeholders, handed out in the order of the placeholders.
  */
 public class ParserScope {
 
@@ -57,7 +57,7 @@ public class ParserScope {
     }
 
     /**
-     * Returns the value bound to the {@code ?f} placeholder, checking that it is a function object the parser can
+     * Returns the value bound to the {@code ?(..)} placeholder, checking that it is a function object the parser can
      * call: a {@code Udf0..UdfN}.
      */
     Object nextParamFunction(Token placeholder) {

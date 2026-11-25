@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
- * Tests of functions passed to the parser as {@code ?f} parameters.
+ * Tests of functions passed to the parser as {@code ?(..)} parameters.
  */
 public class UdfParamsTest {
 
@@ -59,23 +59,24 @@ public class UdfParamsTest {
 
     static Stream<Arguments> udfExpression() {
         return Stream.of(
-                arguments("?f()", new Object[]{COUNT}, count()),
-                arguments("?f(a)", new Object[]{LEN}, len($col("a"))),
-                arguments("?f(a, b)", new Object[]{PAIR}, pair($col("a"), $col("b"))),
-                arguments("?f(a, b, c)", new Object[]{TRIPLE}, triple($col("a"), $col("b"), $col("c"))),
-                arguments("?f(a, b, c, d)", new Object[]{JOIN}, concat($col("a"), $col("b"), $col("c"), $col("d"))),
-                arguments("?f(int(a), 'x', ?)", new Object[]{TRIPLE, 5}, triple($int("a"), $strVal("x"), $intVal(5))),
+                arguments("?()", new Object[]{COUNT}, count()),
+                arguments("?(a)", new Object[]{LEN}, len($col("a"))),
+                arguments("?(a, b)", new Object[]{PAIR}, pair($col("a"), $col("b"))),
+                arguments("?(a, b, c)", new Object[]{TRIPLE}, triple($col("a"), $col("b"), $col("c"))),
+                arguments("?(a, b, c, d)", new Object[]{JOIN}, concat($col("a"), $col("b"), $col("c"), $col("d"))),
+                arguments("?(int(a), 'x', ?)", new Object[]{TRIPLE, 5}, triple($int("a"), $strVal("x"), $intVal(5))),
+                arguments("? (a)", new Object[]{LEN}, len($col("a"))),
 
                 // nested, and mixed with named functions and operators
-                arguments("?f(?f(a, b))", new Object[]{LEN, PAIR}, len(pair($col("a"), $col("b")))),
-                arguments("abs(?f(a))", new Object[]{LEN}, len($col("a")).abs()),
-                arguments("?f(trim(a)) + 1", new Object[]{LEN}, len($col("a").trim()).add($intVal(1))),
-                arguments("?f(a) in (?, 2)", new Object[]{LEN, 1}, len($col("a")).in(1, 2)),
+                arguments("?(?(a, b))", new Object[]{LEN, PAIR}, len(pair($col("a"), $col("b")))),
+                arguments("abs(?(a))", new Object[]{LEN}, len($col("a")).abs()),
+                arguments("?(trim(a)) + 1", new Object[]{LEN}, len($col("a").trim()).add($intVal(1))),
+                arguments("?(a) in (?, 2)", new Object[]{LEN, 1}, len($col("a")).in(1, 2)),
 
                 // parameters are bound in the order of the placeholders
-                arguments("?f(a, ?) = ?", new Object[]{PAIR, "x", "a-x"},
+                arguments("?(a, ?) = ?", new Object[]{PAIR, "x", "a-x"},
                         pair($col("a"), $strVal("x")).eq($strVal("a-x"))),
-                arguments("?f(a) > ? and castAsBool(?f(e, ?))", new Object[]{LEN, 5, PAIR, 1},
+                arguments("?(a) > ? and castAsBool(?(e, ?))", new Object[]{LEN, 5, PAIR, 1},
                         len($col("a")).gt($intVal(5)).and(pair($col("e"), $intVal(1)).castAsBool()))
         );
     }
@@ -86,9 +87,9 @@ public class UdfParamsTest {
         // an untyped argument is cast to the declared parameter type, as for a registered function
         assertEquals(
                 $col("a").castAsNumber().castAsInt().mul($intVal(2)).castAsInt(),
-                parseExp("?f(a)", new TwiceFunction()));
+                parseExp("?(a)", new TwiceFunction()));
 
-        assertEquals(new TwiceFunction().call($int("a")), parseExp("?f(int(a))", new TwiceFunction()));
+        assertEquals(new TwiceFunction().call($int("a")), parseExp("?(int(a))", new TwiceFunction()));
     }
 
     @ParameterizedTest
@@ -100,24 +101,24 @@ public class UdfParamsTest {
 
     static Stream<Arguments> parameterError() {
         return Stream.of(
-                arguments("?f(a)", new Object[0],
-                        "Parameter '?f' at 1:0 has no value: 0 parameter(s) bound, at least 1 used"),
-                arguments("?f(a) > ?", new Object[]{LEN},
-                        "Parameter '?' at 1:8 has no value: 1 parameter(s) bound, at least 2 used"),
-                arguments("?f(a)", new Object[]{5},
-                        "Parameter '?f' at 1:0 is used as a function, so its value must be a Udf0..UdfN object, got:"
+                arguments("?(a)", new Object[0],
+                        "Parameter '?' at 1:0 has no value: 0 parameter(s) bound, at least 1 used"),
+                arguments("?(a) > ?", new Object[]{LEN},
+                        "Parameter '?' at 1:7 has no value: 1 parameter(s) bound, at least 2 used"),
+                arguments("?(a)", new Object[]{5},
+                        "Parameter '?' at 1:0 is used as a function, so its value must be a Udf0..UdfN object, got:"
                                 + " java.lang.Integer"),
-                arguments("int(a) > 1 and ?f(a)", new Object[]{null},
-                        "Parameter '?f' at 1:15 is used as a function, so its value must be a Udf0..UdfN object, got:"
+                arguments("int(a) > 1 and ?(a)", new Object[]{null},
+                        "Parameter '?' at 1:15 is used as a function, so its value must be a Udf0..UdfN object, got:"
                                 + " null"),
-                arguments("?f(a)", new Object[]{PAIR},
-                        "Function '?f' at 1:0: No overload of ?f matches ?f(OBJECT). Available: ?f(OBJECT, OBJECT)"),
-                arguments("?f(str(a))", new Object[]{new TwiceFunction()},
-                        "Function '?f' at 1:0: No overload of ?f matches ?f(STRING). Available: ?f(NUMERIC)"),
-                arguments("?f(a)", new Object[]{Udf1.of(e -> {
+                arguments("?(a)", new Object[]{PAIR},
+                        "Function '?' at 1:0: No overload of ? matches ?(OBJECT). Available: ?(OBJECT, OBJECT)"),
+                arguments("?(str(a))", new Object[]{new TwiceFunction()},
+                        "Function '?' at 1:0: No overload of ? matches ?(STRING). Available: ?(NUMERIC)"),
+                arguments("?(a)", new Object[]{Udf1.of(e -> {
                             throw new IllegalStateException("boom");
                         })},
-                        "Function '?f' at 1:0: boom")
+                        "Function '?' at 1:0: boom")
         );
     }
 
@@ -129,11 +130,9 @@ public class UdfParamsTest {
 
     static Stream<String> syntaxError() {
         return Stream.of(
-                // only the lowercase "?f" is a function placeholder
+                // a function placeholder has no name
+                "?f(a)",
                 "?F(a)",
-                // a function placeholder must be called
-                "?f",
-                "?f + 1",
                 "? f(a)"
         );
     }
@@ -145,18 +144,18 @@ public class UdfParamsTest {
                 "yy", 2,
                 "zzz", 3);
 
-        new DataFrameAsserts(df.rows("?f(a) > ?", LEN, 1).select(), "a", "b")
+        new DataFrameAsserts(df.rows("?(a) > ?", LEN, 1).select(), "a", "b")
                 .expectHeight(2)
                 .expectRow(0, "yy", 2)
                 .expectRow(1, "zzz", 3);
 
-        new DataFrameAsserts(df.cols("c").select("?f(a, b)", PAIR), "c")
+        new DataFrameAsserts(df.cols("c").select("?(a, b)", PAIR), "c")
                 .expectHeight(3)
                 .expectRow(0, "x-1")
                 .expectRow(1, "yy-2")
                 .expectRow(2, "zzz-3");
 
-        new DataFrameAsserts(df.sort("?f(a) desc", LEN), "a", "b")
+        new DataFrameAsserts(df.sort("?(a) desc", LEN), "a", "b")
                 .expectHeight(3)
                 .expectRow(0, "zzz", 3)
                 .expectRow(1, "yy", 2)

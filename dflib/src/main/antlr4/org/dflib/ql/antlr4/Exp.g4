@@ -138,9 +138,9 @@ fnCall returns [Exp<?> exp] locals [Object udf]
         $exp = scope.fn($IDENTIFIER, $args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
     }
     // the function parameter is consumed before the arguments are parsed, as they may contain parameters themselves
-    | UDF_PARAMETER { $udf = scope.nextParamFunction($UDF_PARAMETER); }
+    | PARAMETER { $udf = scope.nextParamFunction($PARAMETER); }
       '(' (args+=expression (',' args+=expression)*)? ')' {
-        $exp = scope.udf($UDF_PARAMETER, $udf, $args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
+        $exp = scope.udf($PARAMETER, $udf, $args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
     }
     ;
 
@@ -402,9 +402,6 @@ AS: 'as';
 
 //@ doc:inline
 PARAMETER: '?';
-
-//@ doc:inline
-UDF_PARAMETER: '?f';
 
 /**
  * Matches an integer literal in decimal, hexadecimal, octal, or binary format.
