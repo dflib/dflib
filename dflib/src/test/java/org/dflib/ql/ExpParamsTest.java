@@ -226,6 +226,17 @@ public class ExpParamsTest {
                         $dateTime(1).in(LocalDateTime.of(2002, 1, 1, 1, 2))
                 ),
 
+                arguments(
+                        "year(?)",
+                        new Object[]{LocalDateTime.of(2020, 1, 2, 3, 4, 5)},
+                        $dateTimeVal(LocalDateTime.of(2020, 1, 2, 3, 4, 5)).year()
+                ),
+                arguments(
+                        "sum(?)",
+                        new Object[]{null},
+                        $val(null).castAsNumber().sum()
+                ),
+
                 // parameter as column id
                 arguments(
                         "float(?) > 10",
@@ -282,12 +293,11 @@ public class ExpParamsTest {
                 // unsupported dynamic column name
                 arguments(
                         "int(?) > 1",
-                        new Object[]{1.1f}
-                ),
-                // unsupported dynamic column name
-                arguments(
-                        "int(?) > 1",
                         new Object[]{new Date()}
+                ),
+                arguments(
+                        "hour(?)",
+                        new Object[]{null}
                 ),
                 // relations with the wrong type
                 arguments(

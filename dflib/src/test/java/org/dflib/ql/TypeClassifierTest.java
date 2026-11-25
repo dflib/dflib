@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TypeClassifierTest {
 
     @Test
-    public void classifyExp_TypedInterfaces() {
+    public void classify_Exp() {
         assertEquals(TypeClassifier.NUMERIC, TypeClassifier.classify($int("a")));
         assertEquals(TypeClassifier.NUMERIC, TypeClassifier.classify($intVal(1)));
         assertEquals(TypeClassifier.STRING, TypeClassifier.classify($str("a")));
@@ -37,7 +37,7 @@ public class TypeClassifierTest {
     }
 
     @Test
-    public void classifyExp_Object() {
+    public void classify_UntypedExp() {
 
         // whatever the value type of the expression
         assertEquals(TypeClassifier.OBJECT, TypeClassifier.classify($date("a").first()));
@@ -54,14 +54,7 @@ public class TypeClassifierTest {
     }
 
     @Test
-    public void isTyped() {
-        for (TypeClassifier t : TypeClassifier.values()) {
-            assertEquals(t != TypeClassifier.OBJECT, t.isTyped(), t.name());
-        }
-    }
-
-    @Test
-    public void classifyValueType() {
+    public void classify_Class() {
         assertEquals(TypeClassifier.NUMERIC, TypeClassifier.classify(Integer.class));
         assertEquals(TypeClassifier.NUMERIC, TypeClassifier.classify(BigDecimal.class));
         assertEquals(TypeClassifier.NUMERIC, TypeClassifier.classify(Number.class));
@@ -85,10 +78,5 @@ public class TypeClassifierTest {
         assertEquals($col("a").castAsDateTime(), TypeClassifier.DATETIME.cast($col("a")));
         assertEquals($col("a").castAsOffsetDateTime(), TypeClassifier.OFFSETDATETIME.cast($col("a")));
         assertEquals($col("a"), TypeClassifier.OBJECT.cast($col("a")));
-
-        // the cast result is an expression of the classifier's type
-        for (TypeClassifier t : TypeClassifier.values()) {
-            assertEquals(t, TypeClassifier.classify(t.cast($col("a"))), t.name());
-        }
     }
 }

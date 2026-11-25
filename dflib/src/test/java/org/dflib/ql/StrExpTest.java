@@ -272,20 +272,7 @@ public class StrExpTest {
                 arguments("max(str(1))", $str(1).max()),
                 arguments("min(str(1), matches(str(1), '#.*'))", $str(1).min($str(1).matches("#.*"))),
                 arguments("max(str(1), matches(str(1), '#.*'))", $str(1).max($str(1).matches("#.*"))),
-                arguments("min(str(1), matches(str(2), '#.*'))", $str(1).min($str(2).matches("#.*")))
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    public void aggregate_overAFunction(String text, Exp<?> expected) {
-        Exp<?> exp = parseExp(text);
-        assertInstanceOf(StrExp.class, exp);
-        assertEquals(expected, exp);
-    }
-
-    static Stream<Arguments> aggregate_overAFunction() {
-        return Stream.of(
+                arguments("min(str(1), matches(str(2), '#.*'))", $str(1).min($str(2).matches("#.*"))),
                 arguments("min(trim(a))", $col("a").trim().min()),
                 arguments("max(lower(a))", $col("a").lower().max())
         );

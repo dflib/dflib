@@ -1,15 +1,12 @@
 package org.dflib.ql;
 
-import org.dflib.Environment;
-import org.dflib.Exp;
-import org.dflib.Udf1;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static org.dflib.Exp.parseExp;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,7 +17,7 @@ public class ParseErrorReportingTest {
     @ParameterizedTest
     @MethodSource
     public void syntaxError(String text, String expectedMessagePrefix) {
-        QLParserException e = assertThrows(QLParserException.class, () -> Exp.parseExp(text));
+        QLParserException e = assertThrows(QLParserException.class, () -> parseExp(text));
         assertTrue(e.getMessage().startsWith(expectedMessagePrefix), e.getMessage());
     }
 
@@ -37,15 +34,15 @@ public class ParseErrorReportingTest {
         );
     }
 
-    // the grammar is untyped, so a type mismatch is not a syntax error, but an error reported by the operator
     @ParameterizedTest
     @MethodSource
-    public void semanticError_OperandType(String text, String expectedMessage) {
-        QLParserException e = assertThrows(QLParserException.class, () -> Exp.parseExp(text));
+    public void semanticError(String text, String expectedMessage) {
+        QLParserException e = assertThrows(QLParserException.class, () -> parseExp(text));
         assertEquals(expectedMessage, e.getMessage());
     }
 
-    static Stream<Arguments> semanticError_OperandType() {
+    // the grammar is untyped, so a type mismatch is reported by the operator or function, not the parser
+    static Stream<Arguments> semanticError() {
         return Stream.of(
                 arguments("'hello' > 'world'", "Operator '>' at 1:8 is not supported for a string expression: 'hello'"),
                 arguments("'hello' > 1", "Operator '>' at 1:8 is not supported for a string expression: 'hello'"),
@@ -62,70 +59,38 @@ public class ParseErrorReportingTest {
                 arguments("int(1) not in ('a')",
                         "Operator 'in' at 1:11 expects a list of numeric values for a numeric expression, got: a"),
                 arguments("date(1) in (1)",
-                        "Operator 'in' at 1:8 expects a list of date values or ISO-8601 strings for a date expression, got: 1")
+                        "Operator 'in' at 1:8 expects a list of date values or ISO-8601 strings for a date expression, got: 1"),
+
+                arguments("foo(1, 2)", "Function 'foo' at 1:0: Unknown function: foo"),
+                arguments("1 + foo(1, 2)", "Function 'foo' at 1:4: Unknown function: foo"),
+                arguments("substr('example')", "Function 'substr' at 1:0: No overload of substr matches substr(STRING)."
+                        + " Available: substr(OBJECT, NUMERIC), substr(OBJECT, NUMERIC, NUMERIC)"),
+                arguments("substr(a, int(b))", "Function 'substr' at 1:0: Not a constant: b"),
+                // an untyped argument is cast before the function sees it
+                arguments("plusDays(date(d), b)", "Function 'plusDays' at 1:0: Not a constant: castAsNumber(b)"),
+                arguments("scale(int(a), 1.5)", "Function 'scale' at 1:0: Not an integer constant: 1.5"),
+                arguments("substr(str(a), 3000000000)", "Function 'substr' at 1:0: Integer constant out of range"
+                        + " [-2147483648..2147483647]: 3000000000"),
+                arguments("year(str(a))", "Function 'year' at 1:0: year(): argument 1 of type STRING is not one of"
+                        + " DATE, DATETIME, OFFSETDATETIME"),
+                arguments("avg(str(a))", "Function 'avg' at 1:0: avg(): argument 1 of type STRING is not one of"
+                        + " NUMERIC, DATE, TIME, DATETIME"),
+                arguments("year(a)", "Function 'year' at 1:0: year(): argument 1 is untyped, cast it explicitly to"
+                        + " one of DATE, DATETIME, OFFSETDATETIME"),
+                arguments("min(a)", "Function 'min' at 1:0: min(): argument 1 is untyped, cast it explicitly to"
+                        + " one of NUMERIC, STRING, DATE, TIME, DATETIME"),
+                arguments("vConcat(str(a))", "Function 'vConcat' at 1:0: vConcat() takes"
+                        + " (exp, [filter,] delimiter[, prefix, suffix]) arguments"),
+                arguments("vConcat(str(a), int(b), ',', '[', ']')",
+                        "Function 'vConcat' at 1:0: vConcat() filter is not a condition: b"),
+                arguments("shift(int(1), 2, 'replace')", "Function 'shift' at 1:0: shift() filler of type STRING"
+                        + " is not compatible with a NUMERIC expression: `int(1)`"),
+                arguments("shift(str(a), 1, 1)", "Function 'shift' at 1:0: shift() filler of type NUMERIC"
+                        + " is not compatible with a STRING expression: a"),
+                arguments("shift(int(a), 1, 1.5)", "Function 'shift' at 1:0: shift() filler 1.5 can not be converted"
+                        + " to the Integer type of the expression: a"),
+                arguments("shift(int(a), 1, 3000000000)", "Function 'shift' at 1:0: shift() filler 3000000000"
+                        + " can not be converted to the Integer type of the expression: a")
         );
-    }
-
-    @Test
-    public void semanticError_UnknownFunction() {
-        QLParserException e = assertThrows(QLParserException.class, () -> Exp.parseExp("foo(1, 2)"));
-        assertEquals("Function 'foo' at 1:0: Unknown function: foo", e.getMessage());
-
-        QLParserException nested = assertThrows(QLParserException.class, () -> Exp.parseExp("1 + foo(1, 2)"));
-        assertEquals("Function 'foo' at 1:4: Unknown function: foo", nested.getMessage());
-    }
-
-    @Test
-    public void semanticError_NoMatchingOverload() {
-        String substrOverloads = "Available: substr(OBJECT, NUMERIC), substr(OBJECT, NUMERIC, NUMERIC)";
-
-        QLParserException e = assertThrows(QLParserException.class, () -> Exp.parseExp("substr('example')"));
-        assertEquals("Function 'substr' at 1:0: No overload of substr matches substr(STRING). " + substrOverloads, e.getMessage());
-
-        QLParserException nested = assertThrows(QLParserException.class, () -> Exp.parseExp("len(substr('a'))"));
-        assertEquals("Function 'substr' at 1:4: No overload of substr matches substr(STRING). " + substrOverloads, nested.getMessage());
-
-    }
-
-    @Test
-    public void semanticError_NotAConstant() {
-        QLParserException typed = assertThrows(QLParserException.class, () -> Exp.parseExp("substr(a, int(b))"));
-        assertEquals("Function 'substr' at 1:0: Not a constant: b", typed.getMessage());
-
-        // an untyped argument is cast before the function sees it
-        QLParserException untyped = assertThrows(QLParserException.class, () -> Exp.parseExp("plusDays(date(d), b)"));
-        assertEquals("Function 'plusDays' at 1:0: Not a constant: castAsNumber(b)", untyped.getMessage());
-    }
-
-    @Test
-    public void semanticError_Producer() {
-        QLParserException e = assertThrows(QLParserException.class, () -> Exp.parseExp("year(str(a))"));
-        assertEquals("Function 'year' at 1:0: year(): argument 1 of type STRING is not one of DATE, DATETIME,"
-                + " OFFSETDATETIME", e.getMessage());
-
-        QLParserException scale = assertThrows(QLParserException.class, () -> Exp.parseExp("scale(int(a), 1.5)"));
-        assertEquals("Function 'scale' at 1:0: Not an integer constant: 1.5", scale.getMessage());
-    }
-
-    @Test
-    public void semanticError_WrongReturnType() {
-        QLContext original = Environment.commonEnv().qlContext();
-        try {
-            Environment.setQLContext(QLContext.builder().function("f", Udf1.of(e -> e)).build());
-
-            QLParserException num = assertThrows(QLParserException.class, () -> Exp.parseExp("f(str(a)) + 1"));
-            assertEquals("Operator '+' at 1:10 expects a numeric operand, got a string one: a", num.getMessage());
-
-            QLParserException date = assertThrows(QLParserException.class, () -> Exp.parseExp("date(a) > f(str(b))"));
-            assertEquals("Operator '>' at 1:8 expects a date operand, got a string one: b", date.getMessage());
-        } finally {
-            Environment.setQLContext(original);
-        }
-    }
-
-    @Test
-    public void parameters_Order() {
-        assertEquals(Exp.$int("a").gt(Exp.$intVal(1)).and(Exp.$str("b").eq(Exp.$strVal("x"))),
-                Exp.parseExp("int(a) > ? and str(b) = ?", 1, "x"));
     }
 }

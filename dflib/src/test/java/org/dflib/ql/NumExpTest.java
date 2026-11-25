@@ -77,7 +77,8 @@ public class NumExpTest {
                 arguments("1 / 2 * 3 % 4", $intVal(1).div(2).mul(3).mod(4)),
                 arguments("1 % 2 * 3 / 4", $intVal(1).mod(2).mul(3).div(4)),
                 arguments("1 + 2 - 3 + 4", $intVal(1).add(2).sub(3).add(4)),
-                arguments("1 - 2 + 3 - 4", $intVal(1).sub(2).add(3).sub(4))
+                arguments("1 - 2 + 3 - 4", $intVal(1).sub(2).add(3).sub(4)),
+                arguments("- int(a) * 2", $int("a").negate().mul(2))
         );
     }
 
@@ -115,7 +116,9 @@ public class NumExpTest {
                 arguments("2147483647", $val(Integer.MAX_VALUE)),
                 arguments("-2147483648", $val(Integer.MIN_VALUE)),
                 arguments("000", $val(0)),
-                arguments("-000", $val(0))
+                arguments("-000", $val(0)),
+                arguments("- 1", $val(-1)),
+                arguments("-(-1)", $val(1))
         );
     }
 
@@ -155,7 +158,9 @@ public class NumExpTest {
                 arguments("0123123123123123", $val(123123123123123L)),
                 arguments("-0123123123123123", $val(-123123123123123L)),
                 arguments("9223372036854775807", $val(Long.MAX_VALUE)),
-                arguments("-9223372036854775808", $val(Long.MIN_VALUE))
+                arguments("-9223372036854775808", $val(Long.MIN_VALUE)),
+                // negated min value is widened
+                arguments("-(-2147483648)", $val(2147483648L))
         );
     }
 
@@ -190,7 +195,8 @@ public class NumExpTest {
                 arguments("0x999999999999999999A3F", $val(new BigInteger("11605687868300440077179455"))),
                 arguments("-0xFFFFFFFFFFFFFFFFF", $val(new BigInteger("-295147905179352825855"))),
                 arguments("0123123123123123123123123", $val(new BigInteger("123123123123123123123123"))),
-                arguments("-0123123123123123123123123", $val(new BigInteger("-123123123123123123123123")))
+                arguments("-0123123123123123123123123", $val(new BigInteger("-123123123123123123123123"))),
+                arguments("-(-9223372036854775808)", $val(new BigInteger("9223372036854775808")))
         );
     }
 
@@ -281,7 +287,8 @@ public class NumExpTest {
                 arguments("0x1.0p-122d", $doubleVal(0x1.0p-122)),
                 arguments("-0x1.0p-122d", $doubleVal(-0x1.0p-122)),
                 arguments("0x1.fffffeP+123d", $doubleVal(0x1.fffffeP+123)),
-                arguments("-0x1.fffffep+123d", $doubleVal(-0x1.fffffeP+123))
+                arguments("-0x1.fffffep+123d", $doubleVal(-0x1.fffffeP+123)),
+                arguments("- 1.5d", $doubleVal(-1.5))
         );
     }
 

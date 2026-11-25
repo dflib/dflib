@@ -73,8 +73,10 @@ public class ConditionTest {
                 arguments("(bool(a) or bool(b)) and bool(c)", $bool("a").or($bool("b")).and($bool("c"))),
                 arguments("not (bool(a) and bool(c))", not($bool("a").and($bool("c")))),
 
-                // 1. [not] takes precedence over everything
+                // 1. [not] takes precedence over [and, or], but not over comparisons
                 arguments("not bool(a) and bool(c)", not($bool("a")).and($bool("c"))),
+                arguments("not int(a) > 1", not($int("a").gt($intVal(1)))),
+                arguments("not bool(a) = true", not($bool("a").eq($boolVal(true)))),
 
                 // 2. [*, /, %, +, -] takes precedence over [<, >, <=, >=]
                 arguments("5 + 1 < 6 * 2", $intVal(5).add(1).lt($intVal(6).mul(2))),
@@ -90,12 +92,20 @@ public class ConditionTest {
                 // 4. [=, !=] takes precedence over [and]
                 arguments("true and 5 != 4", $boolVal(true).and($intVal(5).ne(4))),
                 arguments("true and 5 = 4", $boolVal(true).and($intVal(5).eq(4))),
+                arguments("1 + 2 > 2 and true", $intVal(1).add($intVal(2)).gt($intVal(2)).and($boolVal(true))),
 
                 // 5. [and] takes precedence over [or]
                 arguments("bool(a) or bool(b) and bool(c)", $bool("a").or($bool("b").and($bool("c")))),
 
                 // 6. left to right eval of [=, !=]
-                arguments("5 = 1 != (6 = 2)", $intVal(5).eq(1).ne($intVal(6).eq(2)))
+                arguments("5 = 1 != (6 = 2)", $intVal(5).eq(1).ne($intVal(6).eq(2))),
+
+                // "between" bounds and "in" bind tighter than [and, or]
+                arguments("int(a) between 1 and 5 and bool(b)",
+                        $int("a").between($intVal(1), $intVal(5)).and($bool("b"))),
+                arguments("int(a) not between 1 + 1 and 5 * 2 or bool(b)",
+                        $int("a").notBetween($intVal(1).add($intVal(1)), $intVal(5).mul($intVal(2))).or($bool("b"))),
+                arguments("str(a) in ('x') and str(b) not in ('y')", $str("a").in("x").and($str("b").notIn("y")))
         );
     }
     
