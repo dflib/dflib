@@ -54,6 +54,15 @@ public final class QLContext {
     }
 
     /**
+     * Builds a call of a function passed to the parser as a {@code ?(..)} parameter.
+     *
+     * @throws IllegalArgumentException if the object is not a {@code Udf0..UdfN}, or it rejects the arguments
+     */
+    public static Exp<?> callUdf(Object function, List<Exp<?>> args) {
+        return QLFunctions.callUdf(function, args);
+    }
+
+    /**
      * A builder of a {@link QLContext}. A function is registered as a {@code Udf0..UdfN} object. A lambda is
      * wrapped via {@code Udf1.of(e -> ..)}, {@code Udf2.of(..)}, etc., and its arguments are untyped.
      */

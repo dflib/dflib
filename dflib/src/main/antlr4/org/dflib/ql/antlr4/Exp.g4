@@ -4,7 +4,6 @@ grammar Exp;
 import java.util.stream.Collectors;
 
 import org.dflib.*;
-import org.dflib.ql.QLContext;
 
 import static org.dflib.ql.antlr4.ExpParserUtils.*;
 import static org.dflib.ql.antlr4.Literals.*;
@@ -12,15 +11,10 @@ import static org.dflib.ql.antlr4.Literals.*;
 
 @members {
 // global state of the parser
-PositionalParamSource paramSource;
-QLContext context;
+ParserScope scope;
 
-public void setParameters(Object... params) {
-    this.paramSource = new PositionalParamSource(params);
-}
-
-public void setContext(QLContext context) {
-    this.context = context;
+public void setScope(ParserScope scope) {
+    this.scope = scope;
 }
 }
 
@@ -137,11 +131,16 @@ primary returns [Exp<?> exp]
     ;
 
 /**
- * A call of a function from the QL function registry, resolved by name and number of arguments.
+ * A call of a function.
  */
-fnCall returns [Exp<?> exp]
+fnCall returns [Exp<?> exp] locals [Object udf]
     : IDENTIFIER '(' (args+=expression (',' args+=expression)*)? ')' {
-        $exp = fn(context, $IDENTIFIER, $args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
+        $exp = scope.fn($IDENTIFIER, $args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
+    }
+    // the function parameter is consumed before the arguments are parsed, as they may contain parameters themselves
+    | PARAMETER { $udf = scope.nextParamFunction($PARAMETER); }
+      '(' (args+=expression (',' args+=expression)*)? ')' {
+        $exp = scope.udf($PARAMETER, $udf, $args.stream().map(ctx -> ctx.exp).collect(Collectors.toList()));
     }
     ;
 
@@ -154,7 +153,7 @@ scalar returns [Object value]
     : boolScalar { $value = $boolScalar.value; }
     | numScalar { $value = $numScalar.value; }
     | strScalar { $value = $strScalar.value; }
-    | PARAMETER { $value = paramSource.next($PARAMETER); }
+    | PARAMETER { $value = scope.nextParam($PARAMETER); }
     ;
 
 /**
@@ -162,7 +161,7 @@ scalar returns [Object value]
  */
 anyScalarList returns [Object[] value]
     : '(' values+=scalar (',' values+=scalar)* ')' { $value = $values.stream().map(a -> a.value).toArray(); }
-    | PARAMETER { $value = paramSource.nextArray($PARAMETER); }
+    | PARAMETER { $value = scope.nextParamArray($PARAMETER); }
     ;
 
 /**
@@ -224,7 +223,7 @@ column returns [Exp<?> exp]
 columnId returns [Object id]
     : integerScalar { $id = $integerScalar.value; }
     | identifier { $id = $identifier.id; }
-    | PARAMETER { $id = paramSource.next($PARAMETER); }
+    | PARAMETER { $id = scope.nextParam($PARAMETER); }
     ;
 
 /**

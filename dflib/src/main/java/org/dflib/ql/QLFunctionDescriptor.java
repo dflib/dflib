@@ -48,6 +48,19 @@ record QLFunctionDescriptor(String name,
         return new QLFunctionDescriptor(name, List.of(), true, exps -> function.call(exps.toArray(new Exp[0])));
     }
 
+    static QLFunctionDescriptor of(String name, Object function) {
+        return switch (function) {
+            case Udf0<?> f -> of(name, f);
+            case Udf1<?, ?> f -> of(name, f);
+            case Udf2<?, ?, ?> f -> of(name, f);
+            case Udf3<?, ?, ?, ?> f -> of(name, f);
+            case UdfN<?> f -> of(name, f);
+            case null, default -> throw new IllegalArgumentException(
+                    "Not a function: expected a Udf0..UdfN object, got: "
+                            + (function != null ? function.getClass().getName() : "null"));
+        };
+    }
+
     /**
      * Reads the argument types off the {@code Exp<A>} parameters of the Udf "call" method. A lambda has them erased
      * to a plain {@code Exp}, so it takes arguments of any type.
